@@ -2,7 +2,7 @@
 
 EpicSpine is a document-centered operating system for AI-assisted software delivery.
 
-The core idea is simple: every serious body of work gets a living epic document that preserves the intent, context, current state, acceptance target, issue ledger, decisions, and handoffs. GitHub issues remain the execution board, but the spine remains the clean thread that explains how the work fits together.
+The core idea is simple: every serious body of work gets a living epic document that preserves the intent, context, current state, acceptance target, issue ledger, decisions, and handoffs. GitHub issues remain the execution board, while the spine remains authoritative for intent and coordination.
 
 Open the deck: [index.html](index.html)
 
@@ -102,13 +102,27 @@ flowchart LR
     I -->|"scope or state changed"| S
 ```
 
+## Authority By Artifact
+
+EpicSpine does not call every surface a source of truth. Each artifact has a specific authority:
+
+| Artifact | Authoritative for |
+|---|---|
+| EpicSpine | Intent, scope, epic acceptance, dependencies, decisions, rollup state |
+| GitHub issue | Detailed execution state for one ticket |
+| Branch, PR, and code | The implementation that actually exists |
+| Validation evidence | What passed or failed for an exact commit in a named environment |
+| Epic 0 spine | Project direction, child-spine relationships, cross-epic health |
+
+One active **spine steward** reconciles these surfaces. The Epic 0 worker normally stewards the root spine; the epic worker normally stewards one child spine. Ticket workers and testers write structured handoffs to their issue unless a narrow spine section is explicitly delegated.
+
 ## Role Binding
 
 Agents are bound to identities before they act:
 
 - **Epic 0 worker** keeps the full project picture and spins out child spines.
 - **Planner** shapes scope, backlog, acceptance, and dispatch.
-- **Epic worker** owns delivery for one child spine through GitHub issues and subagents.
+- **Epic worker** is the delivery lead and active steward for one child spine, managing GitHub issues, subagents, and integration inside accepted scope.
 - **Ticket worker** executes one assigned GitHub issue.
 - **Tester** proves pass/fail and may run bounded fix loops.
 - **Reviewer / observer** reads and reports unless promoted.
@@ -137,6 +151,8 @@ flowchart TD
     Evidence --> Child
 ```
 
+Every binding names the role, bound spine, bound issue when applicable, active steward, stable assignment identity, authority, and expected handoff. This makes the work resumable when an agent stalls or is replaced.
+
 Canonical prompt:
 
 ```text
@@ -159,30 +175,46 @@ EpicSpine agents work toward terminal states:
 
 Parallel agents need isolated execution and a fresh shared base.
 
-- One ticket worker should use one branch or worktree by default.
-- `main` is the default integration and deployment/test base unless the spine declares another branch.
-- Merge ready-for-test work back to `main` frequently.
-- If work cannot merge yet, the issue and spine must show branch, PR, blocker, owner, and next action.
-- New agents should bootstrap from the freshest integrated base, not from stale long-lived branches.
+- One ticket worker uses one dedicated branch by default.
+- Concurrent workers use separate worktrees so each branch has isolated filesystem state; the worktree does not replace the branch.
+- Every dispatch records branch, base commit, integration target, owner, and latest verified time.
+- Protected `main` is the default integration and deployment base unless the spine declares another branch.
+- Merge small changes after review and required checks pass, and integrate frequently.
+- If work cannot merge, the issue and spine show branch, PR, blocker, owner, latest commit, and next action.
+- New agents bootstrap from the freshest validated integration base, not stale long-lived branches.
 
 ```mermaid
 flowchart LR
     Main["main<br/>fresh integration base"]
     W1["worker branch<br/>issue 1"]
     W2["worker branch<br/>issue 2"]
-    W3["worker worktree<br/>issue 3"]
-    Test["human/tester validates<br/>from main or named integration branch"]
+    W3["worker branch + worktree<br/>issue 3"]
+    Test["human/tester validates<br/>exact commit on named surface"]
 
     Main --> W1
     Main --> W2
     Main --> W3
-    W1 -->|"ready for test"| Main
-    W2 -->|"ready for test"| Main
-    W3 -->|"ready for test"| Main
+    W1 -->|"review + checks pass"| Main
+    W2 -->|"review + checks pass"| Main
+    W3 -->|"review + checks pass"| Main
     Main --> Test
 ```
 
-## Milestone 0
+The integration gates are precise:
+
+- `review`: implementation complete, PR open, required automated checks passing;
+- `testing`: the exact commit is available in a named test surface and acceptance validation is in progress;
+- `done`: acceptance passed, evidence linked, residual risk recorded, and the spine reconciled.
+
+## Human Gates And Recovery
+
+The spine names the actions that require human approval: product or acceptance changes, production deployment, destructive migrations, credentials, irreversible external actions, and any experiential acceptance automation cannot prove.
+
+A blocker names the decision, human owner, evidence, exact input required, and what may continue independently. `Human required` is not a complete blocker.
+
+Every assignment records a stable identity, issue, branch, base and latest commit, last verified time, blocker, and next action. If an agent disappears, the epic worker preserves the old history, marks the assignment superseded, records the takeover identity and starting commit, and dispatches from the freshest safe base.
+
+## Milestone 0 And Current Package
 
 Milestone 0 for this public repo is intentionally small:
 
@@ -190,7 +222,7 @@ Milestone 0 for this public repo is intentionally small:
 - one standalone HTML deck;
 - enough vocabulary to explain Epic 0, child spines, role binding, GitHub issue discipline, and goal-seeking agents.
 
-The next milestone is to package the skill, templates, and examples so agents can install and use EpicSpine directly.
+Milestone 0 is complete. The repository now also includes the installable skill, reusable spine and issue templates, the detailed operating model, and a local structural validator.
 
 ## Skill Layout
 
@@ -206,6 +238,8 @@ skill/
       github-issue-template.md
     references/
       operating-model.md
+    scripts/
+      validate_spine.py
 ```
 
 To use it manually in an existing Codex session:
@@ -216,3 +250,11 @@ Re-read SKILL.md before continuing.
 Identity: Epic 0 worker
 Bound spine: <path to root spine>
 ```
+
+Validate a project spine after creating or materially restructuring it:
+
+```sh
+python3 skill/epic-spine/scripts/validate_spine.py --strict path/to/EPIC.md
+```
+
+The validator checks local document structure and recorded evidence. It does not claim to verify remote GitHub state.

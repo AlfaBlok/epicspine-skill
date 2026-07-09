@@ -2,6 +2,15 @@
 
 Read this when creating a new EpicSpine from scratch, repairing an inconsistent spine, or changing the planner/worker/tester workflow.
 
+## Contents
+
+- Prior art and artifact authority
+- Spine, issue, and write-scope boundaries
+- Role binding and goal-seeking persistence
+- GitHub issue board and integration flow
+- Human gates, recovery, and takeover
+- Document health, status, drift, and handoffs
+
 ## Prior Art
 
 EpicSpine combines several established practices:
@@ -13,6 +22,20 @@ EpicSpine combines several established practices:
 - Issue-tracked execution: use GitHub issues for bounded implementation and validation tickets.
 
 The distinctive rule is that the epic document remains the clean bootstrap artifact and durable memory. Issues are synchronized execution records where deep ticket-specific detail can live.
+
+## Authority By Artifact
+
+Use explicit authority instead of calling every surface a source of truth:
+
+| Artifact | Authoritative For |
+|---|---|
+| EpicSpine | Intent, scope, epic acceptance, dependencies, decisions, and rollup state |
+| GitHub issue | Detailed execution state for one ticket |
+| Branch, PR, and code | The implementation that actually exists |
+| Validation evidence | What passed or failed for an exact commit in a named environment |
+| Epic 0 spine | Project direction, child-spine relationships, and cross-epic health |
+
+The active spine steward reconciles these surfaces. If they disagree, prefer observable implementation and validation facts for what exists, then update the spine's durable state without silently changing intent or acceptance.
 
 ## Spine And Issue Boundary
 
@@ -46,17 +69,27 @@ An agent must know which spine it is bound to before editing anything.
 - **Portfolio spine:** a parent/meta-spine that rolls up multiple epics and owns cross-epic health, dependencies, and decisions.
 - **Epic 0 spine:** the root/project spine. It holds the full project context, thrust, child-spine map, cross-epic state, and desired operating behavior.
 - **Child spine:** an epic-specific spine that owns its implementation state, ticket ledger, validation evidence, and local decisions.
+- **Spine steward:** the one active agent responsible for reconciling and committing a spine at a given time.
+
+Use one active steward per spine:
+
+- The Epic 0 worker normally stewards the root/project spine.
+- The epic worker normally stewards a child spine during delivery.
+- A planner may steward a spine during planning when explicitly bound.
+- Ticket workers and testers write detailed state to their issue and submit structured handoffs by default.
+- Delegate a narrow spine section explicitly when another role must write directly. Do not allow concurrent rewrites of mission, acceptance, current state, or the issue ledger.
+- Transfer stewardship by recording the outgoing steward, incoming steward, time, current commit, and next action.
 
 Default permissions:
 
 | Role | Bound Spine | Referenced Spines |
 |---|---|---|
-| Epic 0 worker | Write root/project state, child-spine map, rollups, cross-epic decisions, dispatch notes | Read all child spines; create/propose child spines |
-| Portfolio planner | Write rollups, dependencies, cross-epic decisions | Read; propose child updates |
-| Epic planner | Write scope, issues, decisions for that epic | Read; propose parent/sibling updates |
-| Epic worker | Write bound spine delivery state, create/update issues, dispatch ticket workers | Read; propose child updates |
-| Ticket worker | Write implementation status, PR links, handoff notes for assigned ticket | Read only |
-| Tester | Write validation evidence, pass/fail, risk notes for assigned ticket | Read only |
+| Epic 0 worker | Steward root/project state, child-spine map, rollups, cross-epic decisions, dispatch notes | Read all child spines; create/propose child spines |
+| Portfolio planner | Steward explicitly bound planning/rollup sections | Read; propose child updates |
+| Epic planner | Steward scope, issues, and decisions while explicitly bound for planning | Read; propose parent/sibling updates |
+| Epic worker | Steward bound child-spine delivery state, create/update issues, dispatch ticket workers | Read; propose parent/sibling updates |
+| Ticket worker | Write code, issue detail, PR, and structured handoff; write a spine section only if delegated | Read only |
+| Tester | Write issue evidence and structured handoff; write validation section only if delegated | Read only |
 | Reviewer | Read unless explicitly delegated | Read only |
 
 When a parent spine references child spines, do not let the parent agent directly mutate child detail by default. It should record a proposed child-spine update and route it to the child spine's planner.
@@ -68,6 +101,8 @@ An EpicSpine role is an operating identity. A fresh agent or harness becomes par
 - one role;
 - one bound spine;
 - one bound issue or ledger row when doing ticket work;
+- one named spine steward;
+- one stable assignment identity;
 - one handoff contract.
 
 Use this prompt pattern:
@@ -77,6 +112,8 @@ Use $epic-spine.
 You are now the <Epic 0 worker|planner|epic worker|ticket worker|tester|reviewer|observer> for <Epic name>.
 Bound spine: <path or URL>
 Bound issue: <URL or ledger row, if any>
+Spine steward: <task/thread/agent>
+Assignment identity: <stable task/thread/agent/owner>
 Expected handoff: <what to update and report>
 ```
 
@@ -86,9 +123,9 @@ Authority by role:
 |---|---|---|---|---|
 | Epic 0 worker | Keep the full project picture and spin out child spines/workers | Bound Epic 0 spine, child-spine drafts, coordination issues | Mutate child implementation detail without authority | Child scope conflicts, project direction changes, or human decision is needed |
 | Planner | Shape intent, scope, backlog, dispatch | Bound spine planning sections, issue board | Implement code by default | Work needs product/scope decision or multi-spine edit |
-| Epic worker | Deliver scoped epic through issue/subagent loop | Bound spine delivery state, GitHub issues, dispatch notes | Change acceptance, product intent, or cross-spine scope without input | Epic is ready for human test, or a required decision blocks delivery |
-| Ticket worker | Execute one bound ticket | Code for the issue, issue comments, limited spine status/handoff | Rewrite mission, acceptance, or broad architecture | Code/issue/spine diverge, blocker changes scope |
-| Tester | Validate against acceptance | Test evidence, issue comments, limited spine validation/status | Change implementation code by default | Acceptance is unclear, failure implies scope or design change |
+| Epic worker | Act as delivery lead for scoped epic through issue/subagent loop | Bound spine as steward, GitHub issues, dispatch and integration state | Change acceptance, product intent, or cross-spine scope without input | Epic is ready for human test, or a required decision blocks delivery |
+| Ticket worker | Execute one bound ticket | Issue branch/code, issue comments, PR, structured handoff | Rewrite the spine, mission, acceptance, or broad architecture unless explicitly delegated | Code/issue/spine diverge, blocker changes scope |
+| Tester | Validate against acceptance | Test evidence, issue comments, structured handoff | Change implementation code or shared spine state by default | Acceptance is unclear, failure implies scope or design change |
 | Reviewer | Inspect and advise | Findings only unless promoted | Mutate docs/issues/code | Finding requires owner decision |
 | Observer | Bootstrap and summarize | Nothing unless promoted | Mutate docs/issues/code | Binding is unclear |
 
@@ -118,7 +155,9 @@ Subagent write discipline:
 
 - Epic workers write to the bound spine.
 - Epic 0 workers write to the root/project spine and create or propose child spines.
-- Ticket workers/subagents write deep detail to their assigned GitHub issue.
+- Ticket workers/subagents write deep detail and their final structured handoff to the assigned GitHub issue.
+- Testers write exact commit/environment evidence to the issue and return a structured result.
+- The active steward alone reconciles the spine unless a narrow section is explicitly delegated.
 - The bound spine receives only clean state: issue links, PR/branch links, blockers, decisions needed, validation evidence, and next action.
 - If a subagent needs a decision outside its issue, it raises it in the issue; the epic worker summarizes the durable consequence in the spine.
 
@@ -133,28 +172,39 @@ Do not use tester self-fix for product decisions, broad refactors, architecture 
 
 ## GitHub Issue Board Flow
 
-Use GitHub issues as the board for executable work. The spine remains the coordination source of truth.
+Use GitHub issues as the board for executable work. The spine remains the authoritative coordination record for the epic.
 
 Default location contract:
 
 - Spine documents live in the repository, usually under `docs/`, unless the spine declares another location.
 - GitHub issues live in the same repository as the bound spine unless the spine declares another issue repository.
 - One active Issue Ledger row should map to one GitHub issue.
-- GitHub Projects may be used as views, but they are not the source of truth.
+- GitHub Projects may be used as views, but they are not authoritative for epic intent or acceptance.
 - PRs and branches are implementation evidence; link them from both the issue and spine ledger.
+
+An epic worker may create and dispatch tickets inside already accepted scope. The planner owns changes to intent, acceptance, cross-epic structure, or decomposition that materially changes the approved plan.
 
 ## Branch, Worktree, And Integration Model
 
-Use branch/worktree isolation for parallel workers, and keep the integration line fresh.
+Use dedicated branches plus worktree isolation for parallel workers, and keep the integration line fresh.
 
-- **One ticket worker = one issue = one branch or worktree** by default.
+- **One ticket worker = one issue = one dedicated branch** by default.
 - Use branch names that identify the issue or role, for example `epic-2.4/c-3-checkout` or `issue-671-cloud-checkout`.
-- Use separate worktrees when parallel agents need independent filesystem state.
-- `main` is the default integration and deployment/test base unless the spine declares another branch.
-- Merge to `main` frequently when work is ready for test. New agents should bootstrap from the freshest integrated base, not from a stale long-lived branch.
+- Use a separate worktree for each concurrent agent that needs independent filesystem state. A worktree normally checks out the dedicated issue branch; it does not replace the branch.
+- Record branch, worktree when used, base commit SHA, integration target, owner, and latest verified time at dispatch.
+- Protected `main` is the default integration and deployment base unless the spine declares another branch.
+- Merge small work frequently after required review and automated checks pass. New agents should bootstrap from the freshest validated integration base, not a stale long-lived branch.
 - If work cannot merge, keep the issue ledger and GitHub issue explicit: branch, PR, blocker, owner, and next action.
 - Prefer small PRs that can merge independently over large hidden branches.
-- Human test should run from merged `main` or from a named integration branch recorded in the bound spine.
+- Human test should run from merged `main`, a named integration branch, or an explicit PR preview recorded in the spine. Always record the tested commit and environment.
+
+Integration gates:
+
+| Status | Required Meaning |
+|---|---|
+| `review` | Implementation complete, PR open, and required automated checks passing |
+| `testing` | Exact commit available in the named test surface; acceptance validation in progress |
+| `done` | Acceptance passed, evidence linked, residual risk recorded, spine reconciled |
 
 The purpose is not ceremony. It prevents each worker's branch from becoming private state that future agents cannot see.
 
@@ -169,10 +219,42 @@ Planner flow:
    - no expected write conflict in the same files, services, migrations, or release surface;
    - acceptance criteria can be validated independently;
    - each worker can complete with only its issue plus the bound spine bootstrap map.
-6. Dispatch workers with explicit bound spine, issue, write scope, required reads, acceptance criteria, and handoff requirements.
+6. Dispatch workers with explicit bound spine, steward, assignment identity, dedicated branch, base commit, integration target, write scope, required reads, acceptance criteria, human gates, and handoff requirements.
 7. Record dispatch state in the spine so a later planner can see which worker owns which issue.
 
-Parallel dispatch is a planner responsibility. Workers may request follow-up issues, but should not create a new parallel batch unless explicitly promoted to planner.
+Planners dispatch the initial plan. Epic workers may dispatch or re-dispatch parallel batches inside accepted scope; they must return scope or acceptance changes to the planner.
+
+## Human Gates
+
+Declare which actions require human approval. At minimum, consider:
+
+- product intent or acceptance changes;
+- production deployment;
+- destructive migrations or data deletion;
+- credentials, secrets, or privileged access;
+- irreversible external actions;
+- final experiential acceptance that automation cannot prove.
+
+A blocked handoff must name the decision, human owner, evidence, exact input required, and what can continue independently. Do not use `human required` as a complete blocker.
+
+## Recovery And Takeover
+
+Make assignments resumable. Every active issue should expose:
+
+- stable assignment identity and owner;
+- bound spine and active steward;
+- branch, worktree if used, base commit, and latest commit;
+- integration target and PR;
+- last verified absolute time;
+- blocker and exact next action.
+
+When an assignment becomes stale or abandoned:
+
+1. Verify the issue, branch, PR, code, and latest evidence.
+2. Mark the old assignment `superseded` or otherwise visibly inactive; do not erase its history.
+3. Record the takeover identity, starting commit, and any untrusted or unverified work.
+4. Re-dispatch from the freshest safe base and reconcile the issue ledger.
+5. Notify the spine steward, or assume stewardship only through an explicit transfer.
 
 ## Document Invariants
 
@@ -182,7 +264,8 @@ An EpicSpine is healthy when:
 - A new teammate can understand the intent and state without reading deep issue discussion.
 - The issue ledger and GitHub issue state agree, or drift is explicitly flagged.
 - The write-scope boundary is explicit enough that an agent knows what it may edit.
-- Every active ticket has role, status, acceptance, latest evidence, and next action.
+- Exactly one active steward is named for each writable spine.
+- Every active ticket has assignment identity, owner, branch, base commit, role, status, acceptance, latest verified time, evidence, and next action.
 - Every major decision has date, rationale, and evidence.
 - Every validation claim links to a command, artifact, review, screenshot, or explicit manual check.
 - The bootstrap map separates mandatory reads from conditional reads.
@@ -195,21 +278,25 @@ Use these statuses unless a repository already has its own vocabulary:
 - `ready`: scoped and ready for the owning role.
 - `active`: currently being worked.
 - `blocked`: cannot progress without named input or dependency.
-- `review`: implementation is ready for review or test.
-- `testing`: validation is in progress.
-- `done`: accepted against criteria and reflected in the spine.
+- `review`: implementation is complete, PR is open, and required automated checks pass.
+- `testing`: the exact commit is available in a named test surface and acceptance validation is in progress.
+- `done`: accepted against criteria, evidence is linked, and durable state is reflected in the spine.
+- `superseded`: an assignment was replaced; preserve its history and point to the takeover.
 - `deferred`: intentionally postponed.
 
 ## Issue Ledger Columns
 
 - `Issue`: GitHub issue link or `draft`.
 - `Role`: planner, worker, or tester.
+- `Owner`: stable assignment identity or responsible human.
 - `Title`: short executable ticket name.
 - `Status`: one status from the shared vocabulary.
 - `Depends On`: issue links or prerequisites.
 - `PR/Branch`: implementation pointer, if any.
+- `Base`: base commit SHA used for the assignment.
 - `Acceptance`: compact ticket acceptance target.
 - `Latest Evidence`: newest relevant proof, command, artifact, or comment.
+- `Last Verified`: absolute date/time of the latest trusted reconciliation.
 - `Next Action`: one concrete next step.
 
 ## Clean-Spine Discipline
@@ -219,6 +306,7 @@ Agents must keep the spine readable as the epic's operating surface.
 Do include:
 
 - concise current state;
+- active spine steward and last reconciliation point;
 - durable decisions and rationale;
 - acceptance criteria and scope changes;
 - dependency and blocker summaries;
@@ -251,8 +339,9 @@ When the bound spine conflicts with GitHub issues, PRs, or code:
 
 1. State the conflict plainly.
 2. Identify the freshest evidence by timestamp and source.
-3. Update the spine if the correct state is clear.
-4. If unclear, record an Open Question and stop before making irreversible execution changes.
+3. Use the authority-by-artifact contract to decide which fact each surface owns.
+4. Have the steward update the spine if the correct durable state is clear.
+5. If unclear, record an Open Question and stop before making irreversible execution changes.
 
 When a referenced read-only spine appears stale:
 
