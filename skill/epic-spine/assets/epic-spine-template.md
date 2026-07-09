@@ -6,6 +6,7 @@ Updated: YYYY-MM-DD
 Repository: <owner/repo or path>
 Primary document: <link or path to this file>
 GitHub issues: <owner/repo/issues or "same repository">
+Integration branch: main
 Planner: <name or agent/thread>
 Worker: <name or agent/thread>
 Tester: <name or agent/thread>
@@ -94,6 +95,13 @@ Keep this section high-signal. Link to GitHub issues, PRs, commits, logs, and de
 | Issue | Role | Title | Status | Depends On | PR/Branch | Acceptance | Latest Evidence | Next Action |
 |---|---|---|---|---|---|---|---|---|
 | draft | Planner | <ticket title> | draft | - | - | <ticket acceptance> | - | <next action> |
+
+## Branch And Integration
+
+- Default integration branch: `main`
+- Worker isolation: one ticket worker per branch or worktree by default.
+- Ready-for-test rule: merge completed work to the integration branch frequently so new agents bootstrap from the freshest base.
+- If not merged, the issue ledger must show branch/PR, blocker, owner, and next action.
 
 ## Planner Queue
 

@@ -6,6 +6,8 @@ Assigned identity: <agent/thread/name>
 Status: ready
 Depends on: <issue links or none>
 Bound spine: <same as EpicSpine unless explicitly different>
+Branch / worktree: <branch name, worktree path, or TBD>
+Integration target: main
 
 ## Goal
 
@@ -40,6 +42,7 @@ When done, update the EpicSpine:
 - [ ] Handoff Journal entry
 - [ ] Validation Evidence if testing was performed
 - [ ] Proposed Cross-Spine Updates if this work reveals changes needed in read-only spines
+- [ ] Merge or PR status against the integration branch
 
 ## Notes
 

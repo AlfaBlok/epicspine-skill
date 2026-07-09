@@ -155,6 +155,33 @@ EpicSpine agents work toward terminal states:
 - a ticket worker loops until the issue is ready for testing or precisely blocked;
 - a tester loops until acceptance passes, failure is evidenced, or a larger planner decision is required.
 
+## Branch And Integration Discipline
+
+Parallel agents need isolated execution and a fresh shared base.
+
+- One ticket worker should use one branch or worktree by default.
+- `main` is the default integration and deployment/test base unless the spine declares another branch.
+- Merge ready-for-test work back to `main` frequently.
+- If work cannot merge yet, the issue and spine must show branch, PR, blocker, owner, and next action.
+- New agents should bootstrap from the freshest integrated base, not from stale long-lived branches.
+
+```mermaid
+flowchart LR
+    Main["main<br/>fresh integration base"]
+    W1["worker branch<br/>issue 1"]
+    W2["worker branch<br/>issue 2"]
+    W3["worker worktree<br/>issue 3"]
+    Test["human/tester validates<br/>from main or named integration branch"]
+
+    Main --> W1
+    Main --> W2
+    Main --> W3
+    W1 -->|"ready for test"| Main
+    W2 -->|"ready for test"| Main
+    W3 -->|"ready for test"| Main
+    Main --> Test
+```
+
 ## Milestone 0
 
 Milestone 0 for this public repo is intentionally small:

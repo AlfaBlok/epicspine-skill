@@ -71,6 +71,17 @@ Default rule: **read broadly, write narrowly.**
 
 Use parent or portfolio spines for rollups, dependencies, health, and cross-epic decisions. Keep child spines authoritative for their own implementation state, validation evidence, and ticket ledger.
 
+## Branch And Integration Discipline
+
+Default rule: **isolate execution, integrate frequently.**
+
+- Each ticket worker should use a separate branch or worktree for its assigned issue.
+- The shared integration line is `main` unless the bound spine declares another branch.
+- Merge completed, reviewed, ready-for-test work back to `main` frequently so new agents bootstrap from the freshest base.
+- Do not let long-lived worker branches become hidden project state. If work cannot merge yet, keep the GitHub issue and bound spine updated with blocker, branch, PR, and next action.
+- If a separate branch is not practical, use separate worktrees or clearly isolated commits, then merge or reconcile into `main` as soon as the work is ready for test.
+- Human test should normally happen from merged `main` or a named integration branch that is explicitly recorded in the spine.
+
 ## Role Protocols
 
 ### Epic 0 Worker
@@ -117,6 +128,7 @@ Use when the user binds an agent to deliver an epic, for example "you are now th
 - Own the delivery goal inside the scope already defined by the bound spine. Do not change product intent, acceptance, or cross-spine scope without planner/user input.
 - Convert current spine state into GitHub issues when executable tickets are missing or too large.
 - Dispatch ticket workers or subagents on independent issues. Each dispatched subagent must write detailed progress into its assigned GitHub issue, not into the spine.
+- Assign each ticket worker a branch or worktree where practical, and keep merge status visible in the issue ledger.
 - Keep the bound spine clean and current: issue ledger, dispatch state, PR/branch links, validation evidence, blockers, and next action.
 - Loop until the epic is ready for human testing, ready for tester handoff, or blocked by a precise required human/planner decision.
 - If subagent work reveals divergence from the spine, record the divergence in the bound spine and route it to the planner instead of silently changing direction.
@@ -129,6 +141,7 @@ Use when implementing a ticket.
 - Continue until the issue is implemented and ready for testing, or until a precise blocker requires planner/user input.
 - Start from the issue row in the spine, then read the linked GitHub issue.
 - Confirm the target acceptance criteria and test expectations before editing code.
+- Work on a separate branch or worktree for the assigned issue unless explicitly told otherwise.
 - Keep the spine clean: link the GitHub issue, commits, PRs, logs, and detailed notes rather than copying them into the spine.
 - Update the issue ledger status and handoff journal when implementation is ready for testing.
 - Do not rewrite mission, non-goals, or acceptance criteria. If implementation reveals a scope problem, record it as a planner question in the bound spine.
@@ -223,6 +236,7 @@ Bound spine: <path or URL>
 Goal: deliver this epic until it is ready for human test, tester handoff, or blocked by required input.
 Authority: create/update GitHub issues within existing scope, dispatch ticket workers, and update the bound spine; do not change acceptance or cross-spine scope without planner/user input.
 Subagent rule: each ticket worker writes deep detail into its assigned GitHub issue; the epic worker writes only clean state, links, blockers, and durable outcomes into the spine.
+Integration rule: ticket workers use separate branches/worktrees; merge ready-for-test work to main frequently so new agents start from the freshest integrated base.
 ```
 
 ## Resources

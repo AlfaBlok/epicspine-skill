@@ -143,6 +143,21 @@ Default location contract:
 - GitHub Projects may be used as views, but they are not the source of truth.
 - PRs and branches are implementation evidence; link them from both the issue and spine ledger.
 
+## Branch, Worktree, And Integration Model
+
+Use branch/worktree isolation for parallel workers, and keep the integration line fresh.
+
+- **One ticket worker = one issue = one branch or worktree** by default.
+- Use branch names that identify the issue or role, for example `epic-2.4/c-3-checkout` or `issue-671-cloud-checkout`.
+- Use separate worktrees when parallel agents need independent filesystem state.
+- `main` is the default integration and deployment/test base unless the spine declares another branch.
+- Merge to `main` frequently when work is ready for test. New agents should bootstrap from the freshest integrated base, not from a stale long-lived branch.
+- If work cannot merge, keep the issue ledger and GitHub issue explicit: branch, PR, blocker, owner, and next action.
+- Prefer small PRs that can merge independently over large hidden branches.
+- Human test should run from merged `main` or from a named integration branch recorded in the bound spine.
+
+The purpose is not ceremony. It prevents each worker's branch from becoming private state that future agents cannot see.
+
 Planner flow:
 
 1. Reconcile the spine Issue Ledger against GitHub issues.

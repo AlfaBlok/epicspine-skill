@@ -574,6 +574,34 @@
 
   <section class="slide">
     <header>
+      <div class="eyebrow">Integration discipline</div>
+      <h2>Separate branches. Fresh main. Frequent merges.</h2>
+    </header>
+    <div class="body">
+      <div class="flow">
+        <div class="box">
+          <strong>main</strong>
+          <span>The freshest integrated base for new agents, deployment, and human testing.</span>
+        </div>
+        <div class="arrow">›</div>
+        <div class="box">
+          <strong>worker branch / worktree</strong>
+          <span>Each ticket worker gets isolated execution for one issue.</span>
+        </div>
+        <div class="arrow">›</div>
+        <div class="box">
+          <strong>merge when ready</strong>
+          <span>Ready-for-test work returns to main; blockers stay visible in the issue and spine.</span>
+        </div>
+      </div>
+      <div class="callout">
+        <p>Do not let long-lived branches become hidden project state. If it is ready for test, merge it or record exactly why it cannot merge.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <header>
       <div class="eyebrow">Write scope</div>
       <h2>Read broadly. Write narrowly.</h2>
     </header>
@@ -620,7 +648,7 @@
   </section>
 </main>
 <div class="controls">
-  <span id="counter">1 / 11</span>
+  <span id="counter">1 / 12</span>
   <button type="button" id="prev" aria-label="Previous slide">‹</button>
   <button type="button" id="next" aria-label="Next slide">›</button>
 </div>
