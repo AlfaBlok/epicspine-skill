@@ -1,4 +1,4 @@
 interface:
   display_name: "EpicSpine"
-  short_description: "Document-centric epic operating system"
-  default_prompt: "Use $epic-spine to epicspine this epic document, update its issue ledger, and identify the next planner/worker/tester handoff."
+  short_description: "Authority-driven epic delivery system"
+  default_prompt: "Use $epic-spine to bind a role and steward, orient from the epic document, reconcile its GitHub execution state, and drive the next handoff."

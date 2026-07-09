@@ -482,6 +482,35 @@
 
   <section class="slide">
     <header>
+      <div class="eyebrow">Authority map</div>
+      <h2>Different artifacts own different kinds of truth.</h2>
+    </header>
+    <div class="body">
+      <div class="grid">
+        <div class="card">
+          <span class="tag gold">EpicSpine</span>
+          <h3>Intent and coordination</h3>
+          <p>Scope, epic acceptance, dependencies, decisions, and rollup state.</p>
+        </div>
+        <div class="card">
+          <span class="tag blue">Issue + code</span>
+          <h3>Execution and implementation</h3>
+          <p>The issue owns ticket detail. The branch, PR, and code show what actually exists.</p>
+        </div>
+        <div class="card">
+          <span class="tag green">Evidence</span>
+          <h3>What has been proved</h3>
+          <p>Validation names the exact commit, environment, method, result, and residual risk.</p>
+        </div>
+      </div>
+      <div class="callout">
+        <p>One active spine steward reconciles contradictions. A stale document never overrides observable code or test evidence.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <header>
       <div class="eyebrow">The skill</div>
       <h2>The skill teaches agents the operating discipline.</h2>
     </header>
@@ -496,6 +525,7 @@
           <div class="row"><strong>operating-model.md</strong><span>Deeper role, scope, GitHub, and persistence model.</span><b class="pill">ref</b></div>
           <div class="row"><strong>epic template</strong><span>Starting point for root and child spines.</span><b class="pill">asset</b></div>
           <div class="row"><strong>issue template</strong><span>Ticket shape for GitHub execution.</span><b class="pill">asset</b></div>
+          <div class="row"><strong>validate_spine.py</strong><span>Local structural contract checker.</span><b class="pill">tool</b></div>
         </div>
       </div>
     </div>
@@ -525,20 +555,20 @@
           </tr>
           <tr>
             <td>Epic worker</td>
-            <td>One child epic delivery loop</td>
-            <td>Bound spine, GitHub issues, dispatch state</td>
+            <td>One child epic as delivery lead</td>
+            <td>Bound spine as steward, issues, dispatch state</td>
             <td>Ready for human test or tester handoff</td>
           </tr>
           <tr>
             <td>Ticket worker</td>
             <td>One GitHub issue</td>
-            <td>Issue detail, PR, limited spine handoff</td>
+            <td>Issue detail, dedicated branch, PR, handoff</td>
             <td>Ready for testing or precisely blocked</td>
           </tr>
           <tr>
             <td>Tester</td>
             <td>Acceptance evidence</td>
-            <td>Validation result, risk, follow-up issues</td>
+            <td>Issue evidence, exact commit, risk</td>
             <td>Pass, evidenced fail, or planner decision</td>
           </tr>
         </tbody>
@@ -575,27 +605,27 @@
   <section class="slide">
     <header>
       <div class="eyebrow">Integration discipline</div>
-      <h2>Separate branches. Fresh main. Frequent merges.</h2>
+      <h2>Dedicated branches. Protected main. Verified merges.</h2>
     </header>
     <div class="body">
       <div class="flow">
         <div class="box">
-          <strong>main</strong>
-          <span>The freshest integrated base for new agents, deployment, and human testing.</span>
+          <strong>issue branch + worktree</strong>
+          <span>Every ticket has a dedicated branch. Concurrent agents use separate worktrees for filesystem isolation.</span>
         </div>
         <div class="arrow">›</div>
         <div class="box">
-          <strong>worker branch / worktree</strong>
-          <span>Each ticket worker gets isolated execution for one issue.</span>
+          <strong>review gate</strong>
+          <span>Implementation complete, PR open, and required automated checks passing.</span>
         </div>
         <div class="arrow">›</div>
         <div class="box">
-          <strong>merge when ready</strong>
-          <span>Ready-for-test work returns to main; blockers stay visible in the issue and spine.</span>
+          <strong>integration + test</strong>
+          <span>Merge small reviewed work, then test an exact commit on a named surface before acceptance.</span>
         </div>
       </div>
       <div class="callout">
-        <p>Do not let long-lived branches become hidden project state. If it is ready for test, merge it or record exactly why it cannot merge.</p>
+        <p>Integrate frequently, but never blindly. New agents start from the freshest validated base; unmerged state remains explicit in the issue and spine.</p>
       </div>
     </div>
   </section>
@@ -608,20 +638,48 @@
     <div class="body">
       <div class="grid">
         <div class="card">
-          <span class="tag gold">Bound spine</span>
-          <h3>The document you may edit</h3>
-          <p>Each agent is bound to one spine. That spine is the writable operating surface for its role.</p>
+          <span class="tag gold">One steward</span>
+          <h3>One active reconciler</h3>
+          <p>The root worker stewards Epic 0; the epic worker normally stewards its child spine.</p>
         </div>
         <div class="card">
-          <span class="tag blue">Referenced spines</span>
-          <h3>Context by default</h3>
-          <p>Parent, child, and sibling spines are read-only unless the agent is explicitly granted write authority.</p>
+          <span class="tag blue">Ticket workers</span>
+          <h3>Issue-first handoffs</h3>
+          <p>Workers and testers write detail to their issue unless a narrow spine section is explicitly delegated.</p>
         </div>
         <div class="card">
           <span class="tag red">Cross-spine drift</span>
           <h3>Propose, do not mutate</h3>
           <p>Record proposed changes in the bound spine, then route them to the owner of the target spine.</p>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <header>
+      <div class="eyebrow">Recovery and human gates</div>
+      <h2>The system remains resumable when an agent stops.</h2>
+    </header>
+    <div class="body">
+      <div class="flow">
+        <div class="box">
+          <strong>resumable assignment</strong>
+          <span>Stable identity, issue, branch, base and latest commit, last verified time, blocker, next action.</span>
+        </div>
+        <div class="arrow">›</div>
+        <div class="box">
+          <strong>explicit takeover</strong>
+          <span>Preserve old history, mark it superseded, name the new owner and starting commit.</span>
+        </div>
+        <div class="arrow">›</div>
+        <div class="box">
+          <strong>named human gate</strong>
+          <span>State the decision, owner, evidence, exact input required, and work that may continue.</span>
+        </div>
+      </div>
+      <div class="callout">
+        <p>&ldquo;Human required&rdquo; is not a blocker description. Product changes, production actions, secrets, destructive work, and irreversible actions need precise approval gates.</p>
       </div>
     </div>
   </section>
@@ -638,17 +696,18 @@
           <div class="row"><strong>Use</strong><span>$epic-spine</span><b class="pill">skill</b></div>
           <div class="row"><strong>Identity</strong><span>Epic 0 worker</span><b class="pill">role</b></div>
           <div class="row"><strong>Bound spine</strong><span>docs/EPIC-0.md</span><b class="pill">scope</b></div>
+          <div class="row"><strong>Steward</strong><span>task / thread / agent identity</span><b class="pill">write</b></div>
           <div class="row"><strong>Goal</strong><span>Keep the full project picture, create child spines, bind workers, and loop until clear next actions or human input.</span><b class="pill">drive</b></div>
         </div>
       </div>
       <div class="callout">
-        <p>Milestone 0 is this: README plus deck. Enough language for humans and agents to agree on the operating system.</p>
+        <p>The public package now includes the skill, templates, operating model, HTML deck, and a local spine validator.</p>
       </div>
     </div>
   </section>
 </main>
 <div class="controls">
-  <span id="counter">1 / 12</span>
+  <span id="counter">1 / 14</span>
   <button type="button" id="prev" aria-label="Previous slide">‹</button>
   <button type="button" id="next" aria-label="Next slide">›</button>
 </div>

@@ -1,6 +1,6 @@
 ---
 name: epic-spine
-description: EpicSpine / Epic Spine document-centric operating system for AI-assisted software work. Use when asked to epicspine an epic, create, read, orient on, maintain, execute from, update backlog tickets for, or dispatch parallel workers from a living epic document that coordinates planner, worker, and tester agents; maps required context for fast bootstrap; tracks GitHub issues, PRs, decisions, acceptance criteria, handoffs, and validation evidence; or keeps a project/epic document as the source of truth while issues are used as executable tickets.
+description: EpicSpine / Epic Spine document-centric operating system for AI-assisted software work. Use when asked to epicspine an epic, create, read, orient on, maintain, execute from, update backlog tickets for, or dispatch parallel workers from a living epic document that coordinates planner, worker, and tester agents; maps required context for fast bootstrap; tracks authority, GitHub issues, branches, PRs, decisions, acceptance criteria, handoffs, and validation evidence; or keeps a project/epic document authoritative for intent and coordination while issues are executable tickets.
 ---
 
 # EpicSpine
@@ -19,16 +19,31 @@ The document must let a new planner, worker, tester, or reviewer start from near
 - Put deep ticket discussion in the GitHub issue or PR, then summarize only the durable consequence back into the spine.
 - If an issue discussion changes intent, scope, acceptance, dependency, or current state, write that change back into the bound spine.
 
+## Authority By Artifact
+
+Do not treat one artifact as authoritative for every kind of truth:
+
+- The EpicSpine is authoritative for intent, scope, epic acceptance, dependencies, decisions, and rollup state.
+- The GitHub issue is authoritative for detailed execution state of one ticket.
+- The branch, pull request, and code are authoritative for the implementation that actually exists.
+- Validation evidence is authoritative for what has been proved in a named environment against a named commit.
+- The Epic 0 spine is authoritative for project direction, child-spine relationships, and cross-epic health.
+
+The active spine steward reconciles contradictions. Never overwrite observable code or test evidence merely because the spine says something older.
+
 ## Role Binding
 
 An agent must know its bound role before it acts. Treat a prompt like "you are now a worker for Epic 2.4" as a role-binding instruction.
 
-Role binding has four parts:
+Role binding has seven parts:
 
 - **Identity:** Epic 0 worker, planner, epic worker, ticket worker, tester, reviewer, or observer.
 - **Bound spine:** the one EpicSpine document the agent may write by default.
 - **Bound issue:** the GitHub issue or ledger row the agent is responsible for, if any.
+- **Spine steward:** the one active agent responsible for reconciling and committing the bound spine.
+- **Assignment identity:** a stable task, thread, agent, or owner name used for recovery and takeover.
 - **Authority:** what the role may change, what it must not change, and when it must raise a divergence.
+- **Handoff:** the terminal state and durable records the role must leave behind.
 
 If the role, spine, or issue is unclear, bootstrap read-only and ask for the missing binding before editing. A harness or fresh agent can be turned into any role by giving it the role, bound spine, bound issue, and expected handoff.
 
@@ -42,7 +57,7 @@ EpicSpine agents should work toward a terminal state, not merely perform one pas
 - A ticket worker's goal is to bring the bound issue to "ready for testing" or "blocked with a precise required input." Keep working through ordinary implementation obstacles without returning early.
 - A tester's goal is to reach a trustworthy pass/fail outcome. Keep testing until acceptance passes, a bounded fix loop succeeds, or a larger decision is required.
 - Stop and ask only when the next step requires user/planner judgment, credentials, production-risk approval, cross-spine authority, or a scope/acceptance change.
-- When stopping, update the bound spine and issue with the exact terminal state, evidence, and next required decision.
+- When stopping, update the bound issue with the exact terminal state, evidence, and next required decision, then reconcile the spine if you are its steward or notify the steward.
 
 ## Name
 
@@ -51,19 +66,22 @@ Call the pattern **EpicSpine** in conversation. Use `epic-spine` for files, labe
 ## Workflow
 
 1. **Find the spine first.** If the user gives a document, read it before GitHub issues, PRs, or code. If no document exists and the user wants this workflow, create one from `assets/epic-spine-template.md`.
-2. **Establish write scope.** Identify the primary spine this agent is bound to. Treat referenced parent, child, or sibling spines as read-only unless the user explicitly grants write authority for those documents.
+2. **Establish write scope.** Identify the primary spine and its active steward. Treat referenced parent, child, or sibling spines as read-only unless the user explicitly grants write authority for those documents.
 3. **Establish role binding.** Identify whether this agent is Epic 0 worker, planner, epic worker, ticket worker, tester, reviewer, or observer. Apply that role's authority limits before taking action.
 4. **Build the bootstrap map.** Extract the goal, non-goals, acceptance criteria, current status, issue ledger, decision log, open questions, and knowledge graph links.
 5. **Follow only relevant links.** Read mandatory links first, then conditional links whose labels match the task. Do not expand the graph indiscriminately.
-6. **Reconcile execution state.** Inspect GitHub issues, PRs, branches, and local code only after the document has oriented you. Flag drift between the document and issue state.
+6. **Reconcile execution state.** Inspect GitHub issues, PRs, branches, local code, and validation evidence only after the document has oriented you. Resolve each fact using the authority-by-artifact contract and flag unresolved drift.
 7. **Act in role.** Apply the Epic 0 worker, planner, epic worker, ticket worker, or tester protocol below.
-8. **Write back narrowly.** Update only the bound spine with decisions, issue changes, PR links, validation evidence, and handoff notes before considering the work complete. Escalate proposed changes to other spines instead of editing them.
+8. **Write back narrowly.** Write ticket detail and structured handoffs to the bound issue. If you are the steward, reconcile durable decisions, state, PR links, evidence, and handoffs into the bound spine. Escalate proposed changes to other spines instead of editing them.
 
 ## Write Scope
 
 Default rule: **read broadly, write narrowly.**
 
 - The agent's **bound spine** is the primary spine named by the user, issue, branch, or explicit task context. It is the only spine the agent may edit by default.
+- Each spine must name one **active steward**. The Epic 0 worker normally stewards the root spine; the epic worker normally stewards a child spine; a planner may steward a spine during planning when explicitly bound.
+- The steward reconciles and commits spine updates. Other agents write detailed state to their bound issue and submit a structured handoff unless explicitly delegated a narrow spine section.
+- Do not let multiple agents concurrently rewrite mission, acceptance, current state, or the issue ledger. Transfer stewardship explicitly when the active writer changes.
 - Referenced parent, child, sibling, portfolio, roadmap, or meta-spines are read-only context unless the user explicitly says the agent may edit that spine.
 - If the agent notices drift in a read-only spine, record a proposed cross-spine update in the bound spine's Open Questions, Planner Queue, or Handoff Journal. Include the target spine, proposed change, evidence, and suggested owner.
 - Do not update another spine just because the current work affects it. Create a GitHub issue, handoff note, or proposed update for that spine's planner.
@@ -75,12 +93,26 @@ Use parent or portfolio spines for rollups, dependencies, health, and cross-epic
 
 Default rule: **isolate execution, integrate frequently.**
 
-- Each ticket worker should use a separate branch or worktree for its assigned issue.
-- The shared integration line is `main` unless the bound spine declares another branch.
-- Merge completed, reviewed, ready-for-test work back to `main` frequently so new agents bootstrap from the freshest base.
+- Each ticket worker must use a dedicated branch for its assigned issue. Concurrent workers should use separate worktrees so each branch has isolated filesystem state.
+- Record the branch, base commit SHA, integration target, owner, and latest verified time at dispatch.
+- The shared integration line is protected `main` unless the bound spine declares another branch.
+- Merge small, reviewed work after required checks pass. Integrate frequently so new agents bootstrap from the freshest validated base.
 - Do not let long-lived worker branches become hidden project state. If work cannot merge yet, keep the GitHub issue and bound spine updated with blocker, branch, PR, and next action.
-- If a separate branch is not practical, use separate worktrees or clearly isolated commits, then merge or reconcile into `main` as soon as the work is ready for test.
-- Human test should normally happen from merged `main` or a named integration branch that is explicitly recorded in the spine.
+- If branch isolation is genuinely impossible, use clearly isolated commits and record the exception before editing shared state.
+- Human test should normally happen from merged `main`, a recorded integration branch, or an explicit PR preview. Record the tested commit and environment.
+
+Use these gates:
+
+- `review`: implementation is complete, the PR is open, and required automated checks pass.
+- `testing`: the exact commit is available in the named test surface and acceptance validation is in progress.
+- `done`: acceptance has passed, evidence is linked, and the spine reflects the durable result.
+
+## Human Gates And Recovery
+
+- Name human approval gates in the spine for product or acceptance changes, production deployment, destructive migrations, credentials or secrets, irreversible external actions, and any required experiential acceptance.
+- A blocker must name the decision, owner, evidence, and exact input required. Do not write only `human required`.
+- Make every assignment resumable: record stable owner identity, issue, branch, base and latest commit, last verified time, blocker, and next action.
+- When an assignment is stale or abandoned, the epic worker may mark it superseded and re-dispatch it. Preserve the old issue/branch history and record the takeover identity and starting commit.
 
 ## Role Protocols
 
@@ -108,6 +140,7 @@ Use when decomposing an epic, clarifying scope, or assigning next work.
 - Make dependencies explicit in the issue ledger and in issue bodies.
 - Record unresolved questions in the spine instead of burying them in chat.
 - A parent or portfolio planner may propose changes to child spines, but should not edit child spines unless explicitly bound to them or granted multi-spine write authority.
+- A planner may dispatch work while planning. After scope and acceptance are stable, the epic worker may decompose and dispatch additional tickets inside that accepted scope without becoming the product planner.
 
 #### Backlog And Dispatch
 
@@ -117,18 +150,19 @@ Use when the user asks to update backlog tickets, use GitHub issues as the board
 2. Create or update GitHub issues for missing, stale, or newly decomposed tickets. Each issue must link back to the bound spine.
 3. Mark dependencies and blockers before dispatch. Only tickets with no unresolved dependency may be launched in parallel.
 4. Select a parallel batch whose files, services, or acceptance criteria do not obviously conflict. If two tickets may edit the same area, sequence them or assign one owner.
-5. Dispatch each worker with: bound spine path, GitHub issue link, write-scope limits, required bootstrap reads, acceptance criteria, and expected handoff format.
-6. Record dispatched workers in the bound spine's Issue Ledger or Handoff Journal with owner/thread, issue, branch if known, and expected validation.
+5. Dispatch each worker with: bound spine, steward, assignment identity, GitHub issue, dedicated branch, base commit, integration target, write-scope limits, required reads, acceptance, human gates, and handoff format.
+6. Record dispatched workers in the bound spine's Issue Ledger or Handoff Journal with assignment identity, issue, branch, base commit, expected validation, and last verified time.
 7. Keep the GitHub issue board as the execution surface, but keep the spine as the coordinating memory and final acceptance source.
 
 ### Epic Worker
 
 Use when the user binds an agent to deliver an epic, for example "you are now the worker for Epic 2.5" or "own this goal until it is ready for me to test."
 
-- Own the delivery goal inside the scope already defined by the bound spine. Do not change product intent, acceptance, or cross-spine scope without planner/user input.
+- Act as the delivery lead for the bound epic: own the outcome, execution board, dispatch loop, integration state, and spine stewardship inside the accepted scope.
+- Do not change product intent, acceptance, or cross-spine scope without planner/user input.
 - Convert current spine state into GitHub issues when executable tickets are missing or too large.
 - Dispatch ticket workers or subagents on independent issues. Each dispatched subagent must write detailed progress into its assigned GitHub issue, not into the spine.
-- Assign each ticket worker a branch or worktree where practical, and keep merge status visible in the issue ledger.
+- Assign each ticket worker a dedicated branch and, for concurrent execution, a separate worktree. Record its base commit and keep merge status visible in the issue ledger.
 - Keep the bound spine clean and current: issue ledger, dispatch state, PR/branch links, validation evidence, blockers, and next action.
 - Loop until the epic is ready for human testing, ready for tester handoff, or blocked by a precise required human/planner decision.
 - If subagent work reveals divergence from the spine, record the divergence in the bound spine and route it to the planner instead of silently changing direction.
@@ -141,9 +175,9 @@ Use when implementing a ticket.
 - Continue until the issue is implemented and ready for testing, or until a precise blocker requires planner/user input.
 - Start from the issue row in the spine, then read the linked GitHub issue.
 - Confirm the target acceptance criteria and test expectations before editing code.
-- Work on a separate branch or worktree for the assigned issue unless explicitly told otherwise.
+- Work on the dedicated issue branch; use a separate worktree when running concurrently with other agents.
 - Keep the spine clean: link the GitHub issue, commits, PRs, logs, and detailed notes rather than copying them into the spine.
-- Update the issue ledger status and handoff journal when implementation is ready for testing.
+- Write progress and the final structured handoff to the issue. Ask the spine steward to reconcile the ledger and handoff journal unless the issue explicitly delegates those narrow spine sections.
 - Do not rewrite mission, non-goals, or acceptance criteria. If implementation reveals a scope problem, record it as a planner question in the bound spine.
 - Do not edit parent, sibling, or child spines while working a ticket unless that specific spine is the ticket's bound spine.
 - If the code, issue, and spine diverge, pause broad execution and raise the divergence in the issue and bound spine instead of silently choosing a new direction.
@@ -158,7 +192,8 @@ Use when validating a ticket, PR, or epic milestone.
 - If a failure implies a scope, architecture, product, or acceptance change, stop the fix loop, update the spine and issue, and return the decision to the planner.
 - Test against the acceptance criteria in the spine and the issue body.
 - Record exact commands, environments, screenshots, failures, and residual risk.
-- Mark pass/fail in the issue ledger and create follow-up issues for discovered gaps.
+- Record pass/fail in the issue, create follow-up issues for discovered gaps, and notify the spine steward to reconcile the ledger.
+- Record the exact commit, environment, and test surface. Send the result to the spine steward for reconciliation unless explicitly delegated the validation section.
 - Do not silently broaden acceptance criteria after implementation; return scope changes to the planner.
 
 ### Reviewer Or Observer
@@ -178,6 +213,8 @@ Use when asked to inspect, summarize, or advise.
 - Every row in the issue ledger should link to a GitHub issue unless it is explicitly marked `draft`.
 - Acceptance criteria belong in the spine at epic level and in issues at ticket level.
 - The current state section must be updated whenever the active phase, owner, blocker, or next action changes.
+- Name the active spine steward, assignment identities, last reconciled commit, integration target, and human gates.
+- Every active ticket must record owner, branch, base commit, latest verified time, and next action so another agent can take over.
 - The write-scope section must identify which spine is writable for the current agent/role and which linked spines are read-only.
 - Use absolute dates when recording events.
 
@@ -190,10 +227,13 @@ Current state: ...
 Bound role: ...
 Bound spine: ...
 Bound issue: ...
+Spine steward: ...
 Goal: ...
 Acceptance target: ...
 Read path followed: ...
 Active issues: ...
+Integration target and base: ...
+Human gates: ...
 Drift or blockers: ...
 Recommended next action: ...
 ```
@@ -210,10 +250,16 @@ Identity: Epic 0 worker | epic worker | ticket worker | tester | planner | revie
 Bound spine: <path or URL>
 GitHub issue: <URL>
 Role: Epic 0 worker | epic worker | ticket worker | tester | planner
-Write scope: edit only the bound spine sections needed for this issue; referenced spines are read-only unless explicitly listed.
+Spine steward: <task/thread/agent responsible for reconciling the spine>
+Assignment identity: <stable task/thread/agent/owner>
+Write scope: write detailed work to the issue; edit the spine only if you are its steward or a narrow section is explicitly delegated. Referenced spines are read-only unless listed.
+Branch: <dedicated branch>
+Base commit: <SHA>
+Integration target: <main or declared branch>
 Required reads: <bootstrap map links>
 Acceptance criteria: <issue and spine criteria>
-Handoff: update the issue, PR/branch link, validation evidence if any, and the bound spine handoff journal.
+Human gates: <named approvals or none>
+Handoff: update the issue with PR/branch, latest commit, validation evidence, blocker, and next action; notify the spine steward to reconcile durable state.
 ```
 
 For an Epic 0 worker that owns the project picture, use:
@@ -235,8 +281,9 @@ Identity: epic worker
 Bound spine: <path or URL>
 Goal: deliver this epic until it is ready for human test, tester handoff, or blocked by required input.
 Authority: create/update GitHub issues within existing scope, dispatch ticket workers, and update the bound spine; do not change acceptance or cross-spine scope without planner/user input.
+Steward rule: the epic worker is the active steward for the bound child spine; ticket workers and testers return structured issue handoffs unless explicitly delegated a narrow spine section.
 Subagent rule: each ticket worker writes deep detail into its assigned GitHub issue; the epic worker writes only clean state, links, blockers, and durable outcomes into the spine.
-Integration rule: ticket workers use separate branches/worktrees; merge ready-for-test work to main frequently so new agents start from the freshest integrated base.
+Integration rule: each ticket worker uses a dedicated branch and a separate worktree when concurrent; merge small reviewed changes after required checks pass so new agents start from the freshest validated base.
 ```
 
 ## Resources
@@ -244,3 +291,4 @@ Integration rule: ticket workers use separate branches/worktrees; merge ready-fo
 - Use `assets/epic-spine-template.md` when creating a new spine document.
 - Use `assets/github-issue-template.md` when drafting planner-created tickets.
 - Read `references/operating-model.md` when changing the workflow structure itself or when the existing spine is inconsistent.
+- Run `scripts/validate_spine.py <spine.md>` after creating or materially restructuring a spine. Use `--strict` for non-template project spines; this checks local structure and recorded evidence, not remote GitHub truth.
