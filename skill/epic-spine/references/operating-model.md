@@ -188,7 +188,7 @@ An epic worker may create and dispatch tickets inside already accepted scope. Th
 
 Use dedicated branches plus worktree isolation for parallel workers, and keep the integration line fresh.
 
-- **One ticket worker = one issue = one dedicated branch** by default.
+- **One ticket worker = one issue = one dedicated branch and worktree**. The worker's first action is `git worktree add ../wt-<ticket> -b <branch> <pinned-base>`; record the absolute path. The primary clone stays pinned to integration and read-only. Checkout/switch there is a branch-ransom defect.
 - Use branch names that identify the issue or role, for example `epic-2.4/c-3-checkout` or `issue-671-cloud-checkout`.
 - Use a separate worktree for each concurrent agent that needs independent filesystem state. A worktree normally checks out the dedicated issue branch; it does not replace the branch.
 - Record branch, worktree when used, base commit SHA, integration target, owner, and latest verified time at dispatch.
@@ -234,6 +234,12 @@ Declare which actions require human approval. At minimum, consider:
 - credentials, secrets, or privileged access;
 - irreversible external actions;
 - final experiential acceptance that automation cannot prove.
+
+When blocked, the thread's entire next message is `BLOCKED ON <HUMAN>: <one exact question + options + recommendation>` and the thread stops. Do not polish adjacent work while parked.
+
+## Sprint Dialect v2
+
+New sprint spines use bounded, observable, human-verifiable increments: exactly two DoD tiers (a 5–12 step live-browser SHIP journey and deferred HARDEN), PORT/DUPLICATE/BUILD markings after an all-repo/service inventory, 90-minute ticket budgets, 30-minute heartbeats, pinned per-wave bases, manager-owned final journey loops, pre-answered Decisions with absence-rules, and paste-ready dispatch prompts built from `assets/dispatch-prompt-preamble.md`. Existing v1 spines remain backward compatible; missing v2 contracts warn rather than invalidate them.
 
 A blocked handoff must name the decision, human owner, evidence, exact input required, and what can continue independently. Do not use `human required` as a complete blocker.
 
