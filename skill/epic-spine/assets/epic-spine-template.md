@@ -5,6 +5,11 @@ Created: YYYY-MM-DD
 Updated: YYYY-MM-DD
 Repository: <owner/repo or path>
 Primary document: <link or path to this file>
+Spine ID: <stable-id>
+Spine Type: root | branch
+Root spine: self | <root spine link>
+Parent spine: none | <direct parent spine link>
+Additional root rationale: n/a | <why this cannot be a branch of the canonical root>
 GitHub issues: <owner/repo/issues or "same repository">
 Integration branch: main
 Active spine steward: <stable task/thread/agent>
@@ -54,6 +59,20 @@ Stewardship transfer rule: record outgoing steward, incoming steward, absolute t
 | Validation evidence | What passed or failed for an exact commit in a named environment |
 | Parent / Epic 0 spine | Project direction, spine relationships, cross-epic health |
 
+## Spine Map
+
+Canonical lineage: `<root-spine-id> -> <optional intermediate spine ids> -> <this-spine-id>`
+
+List direct children only. A leaf spine may write `No child spines.` instead of keeping an empty table.
+
+| Spine ID | Relationship | Spine | Purpose | Status | Health / Blocker | Latest Evidence | Last Rolled Up | Next Action |
+|---|---|---|---|---|---|---|---|---|
+| <child-spine-id> | child | <path or URL> | <one-sentence owned ambition> | draft | <healthy or exact blocker> | <link or none> | YYYY-MM-DD HH:MM TZ | <one concrete action> |
+
+Cross-links that do not change canonical parentage:
+
+- <related sibling, roadmap, memory, architecture, or portfolio link and why it matters>
+
 ## Mission
 
 State the outcome in one paragraph. Write for a capable teammate who has not seen the chat history.
@@ -76,6 +95,15 @@ Integration target: main
 Fresh base commit: <SHA>
 Next action: <single next action>
 Blockers: <none or list>
+
+## Execution Cursor
+
+Last attempted: <most recent concrete action, or none yet>
+Result: <actual outcome plus evidence link, or not started>
+Execution status: not-started | ready | active | blocked | review | testing | done
+Waiting on: <person, decision, dependency, or nothing>
+Approved work: <work that may proceed without another planning turn, or none>
+Next action: <one exact resumable action>
 
 ## Role Goals
 
@@ -105,9 +133,12 @@ Keep this section high-signal. Link to GitHub issues, PRs, commits, logs, and de
 
 ## Decisions
 
-| Date | Decision | Rationale | Evidence |
-|---|---|---|---|
-| YYYY-MM-DD | <decision> | <why> | <link> |
+Use this as durable anti-repetition memory. For rejected or superseded approaches, state what was tried and keep deep investigation in the linked issue, PR, ADR, or source memory.
+
+| Date | Outcome | Decision / Attempt | Durable Summary | Evidence | Revisit When |
+|---|---|---|---|---|---|
+| YYYY-MM-DD | accepted | <decision> | <why this is now the operating choice> | <link> | n/a |
+| YYYY-MM-DD | rejected | <approach tried> | <why it was rejected> | <link> | <condition that would justify reconsideration, or never> |
 
 ## Issue Ledger
 
@@ -165,7 +196,11 @@ Stale assignment policy: <time or project-specific rule>
 ### YYYY-MM-DD - <role> - <summary>
 
 Context:
+Last attempted:
+Result:
 Next:
+Waiting on:
+Approved work:
 Risks:
 Assignment identity:
 Branch / latest commit:
@@ -181,6 +216,8 @@ Links:
 | Date | Target Spine | Proposed Change | Evidence | Suggested Owner | Status |
 |---|---|---|---|---|---|
 | YYYY-MM-DD | <path or URL> | <summary> | <link> | <owner> | proposed |
+
+Use `registration pending` when a new branch spine exists but the parent steward has not yet added its reciprocal Spine Map row. Do not describe that spine as connected until registration is complete.
 
 ## Appendix
 

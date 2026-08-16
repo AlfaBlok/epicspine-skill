@@ -9,7 +9,20 @@ description: EpicSpine / Epic Spine document-centric operating system for AI-ass
 
 Use an EpicSpine as the clean thread of intent, desire, context, fit, and state for a scoped body of work. Treat GitHub issues as executable tickets and deep working records for specific steps, not as the place where the full project memory lives.
 
-The document must let a new planner, worker, tester, or reviewer start from near-zero context, follow the listed knowledge graph, and understand the epic's goal, current state, decision history, active work, acceptance criteria, and validation evidence.
+The document must let a new planner, worker, tester, or reviewer start from near-zero context, follow the listed spine hierarchy and knowledge graph, and understand the epic's goal, current state, decision history, active work, acceptance criteria, and validation evidence.
+
+## Connected Spine Model
+
+Treat every EpicSpine as a node in a canonical ownership hierarchy:
+
+- Prefer one canonical root spine per repository or coherent project. Multiple roots are allowed only when they represent intentionally independent ambitions; record why each additional root cannot be a branch of the canonical root.
+- Every non-root spine has exactly one canonical parent and inherits exactly one root. Parentage may nest to any depth.
+- The canonical hierarchy is a rooted tree, or an explicitly justified forest when multiple roots exist. Cross-links may form a wider knowledge graph, but they do not change canonical parentage or rollup ownership.
+- Every spine declares a stable Spine ID, Spine Type, Root Spine, and Parent Spine. A parent lists each direct child in its Spine Map; a child links back to its parent and root.
+- A child owns its local mission, acceptance, execution state, backlog, decisions, and evidence. Its parent owns only the compact rollup, dependencies, health, and cross-child decisions.
+- Roll up direct children one level at a time. Do not copy descendant issue ledgers or deep history into ancestors.
+
+`AGENTS.md`, repository instructions, and launch prompts may route a cold start to the root spine. They must not duplicate live project state. The root spine is the canonical starting point; agents follow its active-branch links until reaching the spine bound to their work.
 
 ## Spine Versus Issues
 
@@ -65,14 +78,61 @@ Call the pattern **EpicSpine** in conversation. Use `epic-spine` for files, labe
 
 ## Workflow
 
-1. **Find the spine first.** If the user gives a document, read it before GitHub issues, PRs, or code. If no document exists and the user wants this workflow, create one from `assets/epic-spine-template.md`.
-2. **Establish write scope.** Identify the primary spine and its active steward. Treat referenced parent, child, or sibling spines as read-only unless the user explicitly grants write authority for those documents.
-3. **Establish role binding.** Identify whether this agent is Epic 0 worker, planner, epic worker, ticket worker, tester, reviewer, or observer. Apply that role's authority limits before taking action.
-4. **Build the bootstrap map.** Extract the goal, non-goals, acceptance criteria, current status, issue ledger, decision log, open questions, and knowledge graph links.
-5. **Follow only relevant links.** Read mandatory links first, then conditional links whose labels match the task. Do not expand the graph indiscriminately.
-6. **Reconcile execution state.** Inspect GitHub issues, PRs, branches, local code, and validation evidence only after the document has oriented you. Resolve each fact using the authority-by-artifact contract and flag unresolved drift.
-7. **Act in role.** Apply the Epic 0 worker, planner, epic worker, ticket worker, or tester protocol below.
-8. **Write back narrowly.** Write ticket detail and structured handoffs to the bound issue. If you are the steward, reconcile durable decisions, state, PR links, evidence, and handoffs into the bound spine. Escalate proposed changes to other spines instead of editing them.
+1. **Enter through the root.** Follow the repository's start-here pointer to the canonical root spine. If the user supplied a spine directly, verify its declared root and parent before treating it as bound.
+2. **Follow the active branch.** Read direct-child rollups and follow only the active/relevant branch until reaching the spine whose mission contains the requested work.
+3. **Create only when needed.** If no suitable spine exists, use the spine-creation protocol below and `assets/epic-spine-template.md`; do not create an orphan document.
+4. **Establish write scope.** Identify the bound spine and its active steward. Treat root, parent, child, and sibling spines as read-only unless the user explicitly grants write authority or creation includes an atomic parent registration.
+5. **Establish role binding.** Identify whether this agent is Epic 0 worker, planner, epic worker, ticket worker, tester, reviewer, or observer. Apply that role's authority limits before taking action.
+6. **Build the bootstrap map.** Extract hierarchy, mission, non-goals, acceptance, Current State, Execution Cursor, Issue Ledger, Decisions, open questions, and required links.
+7. **Reconcile execution state.** Inspect GitHub issues, PRs, branches, current code, and validation evidence only after the spine has oriented you. Resolve each fact using the authority-by-artifact contract and flag drift.
+8. **Check decision memory.** Before proposing a recurring approach, search Decisions in the bound spine and relevant ancestors for rejected or superseded paths, then follow their evidence links.
+9. **Act in role.** Continue from the Execution Cursor and apply the relevant role protocol.
+10. **Write back and roll up.** Update detailed work in the issue, the bound spine's durable state and cursor if steward, and a compact direct-child rollup in the parent through its steward.
+
+## Spine Creation And Registration
+
+Creating a spine is a relationship change, not just a file write:
+
+1. Search the existing Spine Maps and choose the narrowest parent whose mission contains the new work.
+2. Prefer branching under the canonical root. Create another root only when the ambition is intentionally independent, and record an Additional Root Rationale.
+3. Assign a stable Spine ID; declare `root` or `branch`; link the root and parent; name the initial steward, acceptance boundary, and integration target.
+4. Initialize Current State, Execution Cursor, Decisions, Issue Ledger, and Spine Map from the template.
+5. Register the new spine in the parent's Spine Map with purpose, status, health/blocker, latest evidence, last rollup time, and next action.
+6. Make the child-to-parent and parent-to-child links part of one reviewed change when write authority permits. Otherwise create the child as `draft`, record `registration pending`, and send an exact proposed update to the parent steward; do not present it as connected yet.
+7. Run `scripts/validate_spine.py --strict` on the new spine and `--graph` across the affected local spine family when possible.
+
+Do not create a sub-spine merely because a ticket is large. Create one when a durable ambition needs its own acceptance, steward, backlog, decision memory, and execution cursor.
+
+## Rollup Contract
+
+Each parent Spine Map contains one row per direct child. Reconcile that row whenever the child's phase, health, blocker, latest evidence, or next action changes.
+
+A rollup contains only:
+
+- child Spine ID and link;
+- one-sentence purpose;
+- phase/status;
+- health or exact blocker;
+- latest evidence;
+- absolute last-rollup time;
+- one next action.
+
+The child remains authoritative for detail. Parents aggregate direct children only; root-level health emerges through recursive one-level rollups. A parent must not mark a child `done` without the child's acceptance evidence.
+
+## Execution Cursor And Decision Memory
+
+Current State answers "where are we?" The Execution Cursor answers "what happened last and what should the next agent do?" Keep both current whenever execution stops, changes owner, or crosses a human gate.
+
+The cursor records:
+
+- last attempted action;
+- actual result and evidence;
+- current execution status;
+- what or whom it is waiting on;
+- approved work that may proceed without another planning turn;
+- the exact next action.
+
+Use Decisions as durable anti-repetition memory. Record accepted, rejected, and superseded approaches with a compact summary and a link to detail. A rejected entry must say what was tried, why it was rejected, its evidence, and the condition—if any—that would justify reconsidering it. Keep investigation detail in issues, PRs, ADRs, or source memories.
 
 ## Write Scope
 
@@ -88,6 +148,8 @@ Default rule: **read broadly, write narrowly.**
 - If a task genuinely requires editing multiple spines, state the requested write set before editing and keep each edit scoped to that spine's authority.
 
 Use parent or portfolio spines for rollups, dependencies, health, and cross-epic decisions. Keep child spines authoritative for their own implementation state, validation evidence, and ticket ledger.
+
+Normal rollup does not grant a parent steward authority to rewrite child detail. The child steward publishes the rollup or sends a structured proposal; the parent steward reconciles the parent row.
 
 ## Branch And Integration Discipline
 
@@ -213,6 +275,10 @@ Use when asked to inspect, summarize, or advise.
 - Every row in the issue ledger should link to a GitHub issue unless it is explicitly marked `draft`.
 - Acceptance criteria belong in the spine at epic level and in issues at ticket level.
 - The current state section must be updated whenever the active phase, owner, blocker, or next action changes.
+- The execution cursor must be updated whenever an execution cycle attempts work, stops, changes owner, or reaches a gate.
+- Every spine must declare its stable ID, type, root, and parent; every branch must be registered in its parent's Spine Map.
+- The Spine Map lists direct children only and must stay consistent with each child's declared parent.
+- Before reviving an approach, inspect rejected and superseded Decisions and record why conditions have changed.
 - Name the active spine steward, assignment identities, last reconciled commit, integration target, and human gates.
 - Every active ticket must record owner, branch, base commit, latest verified time, and next action so another agent can take over.
 - The write-scope section must identify which spine is writable for the current agent/role and which linked spines are read-only.
@@ -224,6 +290,7 @@ When orienting another agent or user, return this shape:
 
 ```markdown
 Current state: ...
+Spine lineage: <root -> ... -> bound spine>
 Bound role: ...
 Bound spine: ...
 Bound issue: ...
@@ -235,6 +302,9 @@ Active issues: ...
 Integration target and base: ...
 Human gates: ...
 Drift or blockers: ...
+Last attempted / result: ...
+Waiting on: ...
+Approved work: ...
 Recommended next action: ...
 ```
 
@@ -291,4 +361,4 @@ Integration rule: each ticket worker uses a dedicated branch and a separate work
 - Use `assets/epic-spine-template.md` when creating a new spine document.
 - Use `assets/github-issue-template.md` when drafting planner-created tickets.
 - Read `references/operating-model.md` when changing the workflow structure itself or when the existing spine is inconsistent.
-- Run `scripts/validate_spine.py <spine.md>` after creating or materially restructuring a spine. Use `--strict` for non-template project spines; this checks local structure and recorded evidence, not remote GitHub truth.
+- Run `scripts/validate_spine.py <spine.md>` after creating or materially restructuring a spine. Use `--strict` for non-template project spines. Pass the affected local spine files together with `--graph` to check parent/root links, reciprocal registration, cycles, and multiple-root policy. Validation checks recorded structure and evidence, not remote GitHub truth.
