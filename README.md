@@ -40,26 +40,35 @@ Epic 0 is the root concept and barebones operating context for the project. It h
 An **Epic 0 worker** is bound to that root spine. Their job is to read the child spines, keep the whole picture coherent, spin out new child EpicSpines, and bind other agents to those child spines.
 
 ```mermaid
-flowchart TD
-    E0["Epic 0 spine<br/>root intent, thrust, project state"]
-    EW0["Epic 0 worker<br/>keeps full picture"]
-    E23["Child EpicSpine<br/>Epic 2.3"]
-    E24["Child EpicSpine<br/>Epic 2.4"]
-    E25["Child EpicSpine<br/>Epic 2.5"]
-    W23["Epic worker<br/>delivers 2.3"]
-    W24["Epic worker<br/>delivers 2.4"]
-    W25["Epic worker<br/>delivers 2.5"]
+flowchart LR
+    subgraph Docs["EpicSpine documents<br/>durable project memory"]
+        direction TB
+        E0["Epic 0 spine<br/>root intent, thrust, project state"]
+        E23["Child EpicSpine<br/>Epic 2.3"]
+        E24["Child EpicSpine<br/>Epic 2.4"]
+        E25["Child EpicSpine<br/>Epic 2.5"]
 
-    EW0 --> E0
-    E0 --> E23
-    E0 --> E24
-    E0 --> E25
-    EW0 --> W23
-    EW0 --> W24
-    EW0 --> W25
-    W23 --> E23
-    W24 --> E24
-    W25 --> E25
+        E0 -->|defines child scope| E23
+        E0 -->|defines child scope| E24
+        E0 -->|defines child scope| E25
+    end
+
+    subgraph Workers["Workers<br/>temporary agents bound to documents"]
+        direction TB
+        EW0["Epic 0 worker<br/>keeps full picture"]
+        W23["Epic worker<br/>delivers 2.3"]
+        W24["Epic worker<br/>delivers 2.4"]
+        W25["Epic worker<br/>delivers 2.5"]
+
+        EW0 -->|binds worker| W23
+        EW0 -->|binds worker| W24
+        EW0 -->|binds worker| W25
+    end
+
+    EW0 -.->|stewards| E0
+    W23 -.->|works from / updates| E23
+    W24 -.->|works from / updates| E24
+    W25 -.->|works from / updates| E25
 ```
 
 ## Spine Versus GitHub Issues
@@ -87,6 +96,27 @@ Use GitHub issues for:
 - detailed validation notes.
 
 The compression rule: if a detail helps only the current ticket worker, keep it in the issue; if it changes how future agents understand the epic, summarize it in the spine.
+
+## The Book Companion
+
+Some projects also declare a **Book**: a durable, navigable HTML tree for the knowledge produced by the work.
+
+- The spine owns development: objectives, state, backlog, decisions, gates, and acceptance.
+- The Book owns understanding: insights, explanations, research, comparisons, conclusions, and—when useful—one canonical structured collection or shortlist.
+- The Book root stays shallow, chapters index durable domains, and leaves carry the substantive argument or result.
+- Every leaf links back to its chapter and root, and its chapter links down to it.
+
+The Book is opt-in per repository. Once its local contract is active, binding an agent to an EpicSpine also binds it as a Book author. Material research or user-facing synthesis then lands in an existing or new leaf by default; the user does not have to ask for the artifact separately. Quick answers, ticket logs, and transient status remain in chat or issues.
+
+The two systems run side by side:
+
+```mermaid
+flowchart LR
+    O["Objective"] --> I["Issue"] --> C["Code / data"] --> V["Validation"] --> S["Spine state"]
+    E["Evidence"] --> R["Registry delta<br/>when applicable"] --> L["Book leaf"] --> H["Chapter index"] --> B["Book root"]
+    S -.->|produces user knowledge| L
+    L -.->|reveals needed work| I
+```
 
 ```mermaid
 flowchart LR
@@ -234,9 +264,11 @@ skill/
     SKILL.md
     agents/openai.yaml
     assets/
+      book-companion-contract.md
       epic-spine-template.md
       github-issue-template.md
     references/
+      book-companion.md
       operating-model.md
     scripts/
       validate_spine.py

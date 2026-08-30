@@ -42,7 +42,35 @@ Do not treat one artifact as authoritative for every kind of truth:
 - Validation evidence is authoritative for what has been proved in a named environment against a named commit.
 - The Epic 0 spine is authoritative for project direction, child-spine relationships, and cross-epic health.
 
+When a repository declares an active Book companion:
+
+- The Book is authoritative for the navigable, user-facing body of accumulated knowledge and synthesis.
+- When present, its canonical registry is authoritative for the current structured collection or shortlist rendered by the Book.
+- Chapters organize domains and index their leaves; leaves own the substantive explanation, research, comparison, or conclusion for one bounded question.
+- Evidence remains authoritative for the underlying claims. A polished Book leaf does not outrank current code, data, source documents, or validation.
+
 The active spine steward reconciles contradictions. Never overwrite observable code or test evidence merely because the spine says something older.
+
+## Optional Book Companion
+
+The spine and the Book are complementary, not competing masters:
+
+- **Spine:** why and how the work is being developed—objectives, scope, execution state, backlog, decisions, gates, and validation.
+- **Book:** what has been learned or produced for the user—insights, explanations, research, comparisons, conclusions, and a current structured collection when one exists.
+
+Activate Book behavior only when repository instructions or the root spine declare a Book root and contract. Once active, binding an agent to any spine in that repository also binds it as a Book author by default; the user should not need to request a leaf separately. Existing role and write-scope limits still apply.
+
+For material research, option analysis, recommendation, reusable explanation, or substantial user-facing synthesis:
+
+1. Read the Book root and relevant chapter before answering.
+2. Update an existing leaf when it already owns the question; otherwise create one under the narrowest owning chapter.
+3. Add reciprocal navigation: root to chapter, chapter to leaf, and leaf back to chapter and root. Directly promote the leaf at the root only when the Book contract classifies it as current or decision-significant.
+4. Mutate the canonical registry only when the work changes the current structured collection, and only within declared write authority. Never maintain a second live shortlist in a chapter or leaf.
+5. Keep chat concise and link the durable leaf, stating the knowledge delta.
+
+Do not create a leaf for a quick answer, transient status, raw execution log, ticket-level debugging, or work with no durable user-facing knowledge. Do not create `v2`, `final`, or dated replacement roots; update stable nodes and use Git history. If the Book is not declared, continue with ordinary EpicSpine behavior rather than inventing one.
+
+Read `references/book-companion.md` when installing, repairing, validating, or materially extending a Book, or when deciding where a knowledge-producing result should land. Use `assets/book-companion-contract.md` to declare the local paths and permissions.
 
 ## Role Binding
 
@@ -84,10 +112,11 @@ Call the pattern **EpicSpine** in conversation. Use `epic-spine` for files, labe
 4. **Establish write scope.** Identify the bound spine and its active steward. Treat root, parent, child, and sibling spines as read-only unless the user explicitly grants write authority or creation includes an atomic parent registration.
 5. **Establish role binding.** Identify whether this agent is Epic 0 worker, planner, epic worker, ticket worker, tester, reviewer, or observer. Apply that role's authority limits before taking action.
 6. **Build the bootstrap map.** Extract hierarchy, mission, non-goals, acceptance, Current State, Execution Cursor, Issue Ledger, Decisions, open questions, and required links.
-7. **Reconcile execution state.** Inspect GitHub issues, PRs, branches, current code, and validation evidence only after the spine has oriented you. Resolve each fact using the authority-by-artifact contract and flag drift.
-8. **Check decision memory.** Before proposing a recurring approach, search Decisions in the bound spine and relevant ancestors for rejected or superseded paths, then follow their evidence links.
-9. **Act in role.** Continue from the Execution Cursor and apply the relevant role protocol.
-10. **Write back and roll up.** Update detailed work in the issue, the bound spine's durable state and cursor if steward, and a compact direct-child rollup in the parent through its steward.
+7. **Detect Book binding.** Read the repository's Book declaration, if active, then open the Book root and the chapter relevant to the task. Treat the binding as automatic; do not wait for a second user instruction.
+8. **Reconcile execution state.** Inspect GitHub issues, PRs, branches, current code, and validation evidence only after the spine has oriented you. Resolve each fact using the authority-by-artifact contract and flag drift.
+9. **Check durable memory.** Before proposing a recurring approach, search Decisions in the bound spine and relevant ancestors for rejected or superseded paths. If the Book is active, also search its chapters and leaves for an existing owner of the question.
+10. **Act in role.** Continue from the Execution Cursor and apply the relevant role protocol.
+11. **Write back and roll up.** Update detailed work in the issue, the bound spine's durable state and cursor if steward, and a compact direct-child rollup in the parent through its steward. Land durable user-facing knowledge in the Book leaf and owning chapter when the Book trigger applies.
 
 ## Spine Creation And Registration
 
@@ -282,6 +311,7 @@ Use when asked to inspect, summarize, or advise.
 - Name the active spine steward, assignment identities, last reconciled commit, integration target, and human gates.
 - Every active ticket must record owner, branch, base commit, latest verified time, and next action so another agent can take over.
 - The write-scope section must identify which spine is writable for the current agent/role and which linked spines are read-only.
+- When a Book companion is active, record the Book root, owning chapter or leaf, author scope, Book steward, canonical registry, and required validation in the task binding or spine bootstrap map.
 - Use absolute dates when recording events.
 
 ## Bootstrap Response
@@ -295,6 +325,7 @@ Bound role: ...
 Bound spine: ...
 Bound issue: ...
 Spine steward: ...
+Book binding: inactive | <root, chapter/leaf, Book steward, author scope>
 Goal: ...
 Acceptance target: ...
 Read path followed: ...
@@ -323,6 +354,7 @@ Role: Epic 0 worker | epic worker | ticket worker | tester | planner
 Spine steward: <task/thread/agent responsible for reconciling the spine>
 Assignment identity: <stable task/thread/agent/owner>
 Write scope: write detailed work to the issue; edit the spine only if you are its steward or a narrow section is explicitly delegated. Referenced spines are read-only unless listed.
+Book binding: inactive | <Book root; owning chapter/leaf; Book steward; author permissions; registry permissions; validation command>
 Branch: <dedicated branch>
 Base commit: <SHA>
 Integration target: <main or declared branch>
@@ -360,5 +392,7 @@ Integration rule: each ticket worker uses a dedicated branch and a separate work
 
 - Use `assets/epic-spine-template.md` when creating a new spine document.
 - Use `assets/github-issue-template.md` when drafting planner-created tickets.
+- Use `assets/book-companion-contract.md` when installing a Book declaration in repository instructions or a root spine.
 - Read `references/operating-model.md` when changing the workflow structure itself or when the existing spine is inconsistent.
+- Read `references/book-companion.md` when installing, repairing, validating, or materially extending an active Book companion.
 - Run `scripts/validate_spine.py <spine.md>` after creating or materially restructuring a spine. Use `--strict` for non-template project spines. Pass the affected local spine files together with `--graph` to check parent/root links, reciprocal registration, cycles, and multiple-root policy. Validation checks recorded structure and evidence, not remote GitHub truth.
