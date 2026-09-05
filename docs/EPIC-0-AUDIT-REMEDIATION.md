@@ -63,7 +63,7 @@ Result: Three implementation tickets integrated; #11 active; #12 and #14 queued.
 Execution status: active
 Waiting on: worker results
 Approved work: All six remediation tickets, issue comments, isolated branches, testing and review PR creation.
-Next action: Await #11, then dispatch #12; review #13 independently in parallel.
+Next action: Review #12 and dispatch onboarding #14; await independent #11 review.
 
 ## Bootstrap Map
 
@@ -88,8 +88,8 @@ Next action: Await #11, then dispatch #12; review #13 independently in parallel.
 | Issue | Role | Owner / Assignment | Title | Status | Depends On | PR/Branch | Base | Acceptance | Latest Evidence | Last Verified | Next Action |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | [#10](https://github.com/AlfaBlok/epicspine-skill/issues/10) | Ticket worker | /root/parser | Fix Markdown parsing so malformed rows and empty fields cannot bypass validation | testing | none | codex//root/parser | e909cc8ca703854e6e7b4459c0b962a937afae38 | Issue acceptance | 44140186bcd76218110c459a83a767920826fc24; 16 tests pass | 2026-09-06 | Await final integrated review |
-| [#11](https://github.com/AlfaBlok/epicspine-skill/issues/11) | Ticket worker | /root/parser | Separate dialect selection from strictness and add real v1/v2 compatibility fixtures | active | #10, #13 | codex/audit-dialect | 0381c809ed7a704c04dadb4fb7cd50344e15ac41 | Issue acceptance | Dependencies integrated at 0381c809ed7a704c04dadb4fb7cd50344e15ac41 | 2026-09-06 | Implement dialect and compatibility fixtures |
-| [#12](https://github.com/AlfaBlok/epicspine-skill/issues/12) | Ticket worker | audit-ledger | Validate non-draft issue references and ledger status vocabulary | ready | #11 | codex/audit-ledger | e909cc8ca703854e6e7b4459c0b962a937afae38 | Issue acceptance | Audit baseline | 2026-09-06 | Wait for dependencies |
+| [#11](https://github.com/AlfaBlok/epicspine-skill/issues/11) | Ticket worker | /root/parser | Separate dialect selection from strictness and add real v1/v2 compatibility fixtures | testing | #10, #13 | codex/audit-dialect | 0381c809ed7a704c04dadb4fb7cd50344e15ac41 | Issue acceptance | 8b2be0c020a0077ee95266f23c32cb0999ba9761; 26 tests pass | 2026-09-06 | Independent dialect review |
+| [#12](https://github.com/AlfaBlok/epicspine-skill/issues/12) | Ticket worker | /root/parser | Validate non-draft issue references and ledger status vocabulary | active | #11 | codex/audit-ledger | 0df5e291a2c069b864f1a91201dfe6ffcb7b3e40 | Issue acceptance | Audit baseline | 2026-09-06 | Implement local issue/status checks |
 | [#13](https://github.com/AlfaBlok/epicspine-skill/issues/13) | Ticket worker | /root/workflow | Scope acceptance to the delivery surface and bound reuse discovery | testing | none | codex//root/workflow | e909cc8ca703854e6e7b4459c0b962a937afae38 | Issue acceptance | 1146c8de0d9c9f70d910e867e4f37b29bd424681; worker checks pass | 2026-09-06 | Independent workflow review |
 | [#14](https://github.com/AlfaBlok/epicspine-skill/issues/14) | Ticket worker | audit-onboarding | Add a short installation quickstart and a completed runnable example | ready | #11, #12, #13 | codex/audit-onboarding | e909cc8ca703854e6e7b4459c0b962a937afae38 | Issue acceptance | Audit baseline | 2026-09-06 | Wait for dependencies |
 | [#15](https://github.com/AlfaBlok/epicspine-skill/issues/15) | Ticket worker | /root/ci | Run validator regression tests in GitHub Actions | testing | none | codex//root/ci | e909cc8ca703854e6e7b4459c0b962a937afae38 | Issue acceptance | 42e7e1438369c7e37fe431a549cf27f59a264317; hosted matrix passes | 2026-09-06 | Await final integrated matrix |
@@ -133,3 +133,7 @@ Use EpicSpine. Identity: ticket worker. Bound spine: this document (read-only). 
 ### 2026-09-06 — first wave integrated
 
 Integrated #10 (16 tests), #13 (scoped docs review), and #15 (hosted Python 3.10/3.14 pass). #11 assigned to /root/parser on codex/audit-dialect at 0381c809ed7a704c04dadb4fb7cd50344e15ac41. /root/ci independently reviews workflow without editing it. #12 and #14 remain dependency-queued.
+
+### 2026-09-06 — dialect integrated
+
+#11 integrated at 0df5e291a2c069b864f1a91201dfe6ffcb7b3e40 with 26 tests passing and strict graph validation of this spine passing in the worker check. #12 dispatched to /root/parser at that SHA. #13 reviewer findings were fixed in b1ce6d2 and independently resolved. /root/ci now reviews #11; #14 remains queued behind #12.
