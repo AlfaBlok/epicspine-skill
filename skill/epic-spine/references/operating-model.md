@@ -256,12 +256,12 @@ An epic worker may create and dispatch tickets inside already accepted scope. Th
 
 ## Branch, Worktree, And Integration Model
 
-Use dedicated branches plus worktree isolation for parallel workers, and keep the integration line fresh.
+Use dedicated branches and worktrees for every dispatched worker/tester, whether serial or parallel, and keep the integration line fresh.
 
-- **One ticket worker = one issue = one dedicated branch and worktree**. The worker's first action is `git worktree add ../wt-<ticket> -b <branch> <pinned-base>`; record the absolute path. The primary clone stays pinned to integration and read-only. Checkout/switch there is a branch-ransom defect.
+- **Every dispatched worker/tester uses one dedicated branch and worktree**. The worker's first action is `git worktree add ../wt-<ticket> -b <branch> <pinned-base>`; record the absolute path. The primary clone stays pinned to integration and read-only. Checkout/switch there is a branch-ransom defect.
 - Use branch names that identify the issue or role, for example `epic-2.4/c-3-checkout` or `issue-671-cloud-checkout`.
-- Use a separate worktree for each concurrent agent that needs independent filesystem state. A worktree normally checks out the dedicated issue branch; it does not replace the branch.
-- Record branch, worktree when used, base commit SHA, integration target, owner, and latest verified time at dispatch.
+- Create the separate worktree even for serial execution; it checks out the dedicated issue branch and does not replace that branch. If creation fails, report to the steward before editing; never fall back to the shared checkout.
+- Record branch, absolute worktree path, base commit SHA, integration target, owner, and latest verified time at dispatch.
 - Protected `main` is the default integration and deployment base unless the spine declares another branch.
 - Merge small work frequently after required review and automated checks pass. New agents should bootstrap from the freshest validated integration base, not a stale long-lived branch.
 - If work cannot merge, keep the issue ledger and GitHub issue explicit: branch, PR, blocker, owner, and next action.
@@ -343,11 +343,17 @@ Declare which actions require human approval. At minimum, consider:
 - irreversible external actions;
 - final experiential acceptance that automation cannot prove.
 
-When blocked, the thread's entire next message is `BLOCKED ON <HUMAN>: <one exact question + options + recommendation>` and the thread stops. Do not polish adjacent work while parked.
+When blocked, report `BLOCKED ON <owner>: <exact required input>` with evidence and stop dependent work. Use existing user authorization without asking again. Defaults and absence rules apply only to reversible choices inside approved scope; silence never supplies required approval or authorizes scope expansion. Record unresolved required input in Open Questions and Human Gates, and continue only independent authorized work.
 
 ## Sprint Dialect v2
 
-New sprint spines use bounded, observable, human-verifiable increments: exactly two DoD tiers (a 5–12 step live-browser SHIP journey and deferred HARDEN), PORT/DUPLICATE/BUILD markings after an all-repo/service inventory, 90-minute ticket budgets, 30-minute heartbeats, pinned per-wave bases, manager-owned final journey loops, pre-answered Decisions with absence-rules, and paste-ready dispatch prompts built from `assets/dispatch-prompt-preamble.md`. Existing v1 spines remain backward compatible; missing v2 contracts warn rather than invalidate them.
+New sprint spines use bounded, observable increments. Declare `Spine dialect: v2` and `Acceptance surface: browser|cli|library|infrastructure|documentation` (choose one value). Use the primary surface and explicitly list any additional surfaces required by acceptance. Undeclared spines default to v1; strict validation enforces the selected dialect without imposing v2 contracts on legacy spines.
+
+Use exactly two DoD tiers: a 5–12 step SHIP journey and deferred HARDEN. The epic worker personally executes the journey, dispatches a scoped fix at the first failure, prepares the updated surface, and restarts until a clean pass. Browser work requires a REAL browser on the LIVE deployment with per-step screenshots. CLI work records exact commands, inputs, exit codes and outputs; library work executes a consumer example and behavior checks; infrastructure work records authorized health/state probes; documentation work follows instructions and checks rendered artifacts, links and examples as applicable. Hand off exact commit, environment and evidence that the human can reproduce. Deploy only when required and authorized. Run appropriate checks and repeat when changes or failures warrant it.
+
+Search the current repository and explicitly named relevant repositories/services, with a default 15-minute search budget. Record scope, queries/paths, findings, elapsed time, and inaccessible or unsearched areas. Expand only for a concrete dependency within authorized scope; record any revised budget. At expiry, choose a justified method with uncertainty recorded, or escalate if the missing evidence blocks safe progress. Never infer absence outside the searched scope. `PORT from <repo/path>` moves an existing implementation; `DUPLICATE from <working unit>` copies a proven unit; `BUILD (no suitable source found in recorded scope)` records a bounded search outcome. Inspect sources before authoring. Adapt beyond imports/config when requirements require it, recording why and validating the adapted behavior. If reuse is unsuitable, record the reason rather than forcing a transplant or silently rebuilding. Mark every deliverable and ticket with its justified method.
+
+Retain 90-minute ticket budgets, 30-minute heartbeats, pinned per-wave bases, manager-owned final journey loops, pre-answered Decisions with safe absence rules, and paste-ready dispatch prompts from `assets/dispatch-prompt-preamble.md`. Use existing user authorization without asking again. Defaults and absence rules apply only to reversible choices inside approved scope; silence never supplies required approval or authorizes scope expansion. Record unresolved required input in Open Questions and Human Gates, and continue only independent authorized work.
 
 A blocked handoff must name the decision, human owner, evidence, exact input required, and what can continue independently. Do not use `human required` as a complete blocker.
 
@@ -357,7 +363,7 @@ Make assignments resumable. Every active issue should expose:
 
 - stable assignment identity and owner;
 - bound spine and active steward;
-- branch, worktree if used, base commit, and latest commit;
+- branch, absolute worktree path, base commit, and latest commit;
 - integration target and PR;
 - last verified absolute time;
 - blocker and exact next action.
