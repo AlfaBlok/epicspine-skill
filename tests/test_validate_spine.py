@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 import subprocess
 import sys
 import tempfile
@@ -350,29 +351,150 @@ validator = validate_spine
 
 
 class ValidatorCompatibilityTests(unittest.TestCase):
-    def test_v1_template_has_only_warnings_for_v2_rules(self):
-        result = validator.validate(ROOT / "skill/epic-spine/assets/epic-spine-template.md")
-        self.assertEqual([], result["errors"])
-        self.assertTrue(result["warnings"])
+    fixture_dir = ROOT / "tests/fixtures"
+    surface_evidence = {
+        "browser": "Evidence: real browser on live deployment; one screenshot per step.",
+        "cli": "Evidence: exact commands, inputs, exit codes and outputs.",
+        "library": "Evidence: runnable consumer example and behavior checks.",
+        "infrastructure": "Evidence: authorized health/state probes in the named environment.",
+        "documentation": "Evidence: follow instructions, inspect rendered artifacts, links and examples.",
+    }
 
-    def test_default_cli_keeps_v1_compatible_but_strict_promotes_warnings(self):
-        template = ROOT / "skill/epic-spine/assets/epic-spine-template.md"
-        default = subprocess.run([sys.executable, str(SCRIPT), str(template)], check=False)
-        strict = subprocess.run([sys.executable, str(SCRIPT), "--strict", str(template)], check=False)
-        self.assertEqual(0, default.returncode)
-        self.assertEqual(1, strict.returncode)
+    def source(self, dialect="v2"):
+        name = "sprint-v2.md" if dialect == "v2" else "legacy-v1.md"
+        return (self.fixture_dir / name).read_text()
+
+    def run_source(self, source, *arguments):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "fixture.md"
+            path.write_text(source, encoding="utf-8")
+            completed = subprocess.run(
+                [sys.executable, str(SCRIPT), "--json", *arguments, str(path)],
+                text=True, capture_output=True, check=False,
+            )
+            return completed.returncode, json.loads(completed.stdout)[0]
+
+    def test_populated_v1_and_v2_fixtures_pass_strict_cli(self):
+        for dialect in ("v1", "v2"):
+            with self.subTest(dialect=dialect):
+                code, result = self.run_source(self.source(dialect), "--strict")
+                self.assertEqual(0, code, result)
+                self.assertEqual([], result["errors"])
+                self.assertEqual([], result["warnings"])
+
+    def test_undeclared_legacy_defaults_to_v1_even_with_strict(self):
+        source = self.source("v1").replace("Spine dialect: v1\n", "")
+        code, result = self.run_source(source, "--strict", "--dialect", "auto")
+        self.assertEqual(0, code, result)
+        self.assertEqual([], result["warnings"])
+
+    def test_cli_override_precedes_supported_declaration(self):
+        source = self.source("v1")
+        code, result = self.run_source(source, "--dialect", "v2", "--strict")
+        self.assertEqual(1, code)
+        self.assertEqual([], result["errors"])
+        self.assertIn("v2 Definition Of Done should have SHIP and HARDEN tiers", result["warnings"])
+        self.assertFalse(any("unresolved field:" in message for message in result["warnings"]))
+        code, result = self.run_source(source.replace("Spine dialect: v1", "Spine dialect: v2"), "--dialect", "v1", "--strict")
+        self.assertEqual(0, code, result)
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "legacy.md"
+            path.write_text(source)
+            self.assertIn("v2 Definition Of Done should have SHIP and HARDEN tiers", validator.validate(path, dialect="v2")["warnings"])
+
+    def test_invalid_declared_dialect_cannot_be_hidden_by_override(self):
+        for value in ("v3", ""):
+            for override in ("auto", "v1", "v2"):
+                with self.subTest(value=value, override=override):
+                    source = self.source("v1").replace("Spine dialect: v1", f"Spine dialect: {value}")
+                    code, result = self.run_source(source, "--dialect", override)
+                    self.assertEqual(1, code)
+                    self.assertIn(f"unsupported Spine dialect: {value or '(empty)'}; expected v1 or v2", result["errors"])
+
+    def test_invalid_cli_override_is_usage_error(self):
+        completed = subprocess.run([sys.executable, str(SCRIPT), "--dialect", "v3", str(self.fixture_dir / "legacy-v1.md")], text=True, capture_output=True)
+        self.assertEqual(2, completed.returncode)
+        self.assertIn("invalid choice", completed.stderr)
+        result = validator.validate(self.fixture_dir / "legacy-v1.md", dialect="v3")
+        self.assertIn("unsupported dialect override: v3; expected auto, v1 or v2", result["errors"])
+
+    def test_missing_v2_contract_warns_and_strict_fails(self):
+        source = self.source().replace("HARDEN —", "Later —")
+        expected = "v2 Definition Of Done should have SHIP and HARDEN tiers"
+        for arguments, expected_code in (((), 0), (("--strict",), 1)):
+            code, result = self.run_source(source, *arguments)
+            self.assertEqual(expected_code, code)
+            self.assertEqual([], result["errors"])
+            self.assertEqual([expected], result["warnings"])
+
+    def test_each_surface_requires_its_own_evidence(self):
+        for surface, evidence in self.surface_evidence.items():
+            with self.subTest(surface=surface):
+                source = self.source().replace("Acceptance surface: cli", f"Acceptance surface: {surface}")
+                source = source.replace(self.surface_evidence["cli"], evidence)
+                code, result = self.run_source(source, "--strict")
+                self.assertEqual(0, code, result)
+                self.assertEqual([], result["warnings"])
+                code, result = self.run_source(source.replace(evidence, "Evidence: pending execution."), "--strict")
+                self.assertEqual(1, code)
+                self.assertEqual(1, len(result["warnings"]), result)
+                self.assertTrue(result["warnings"][0].startswith(f"v2 SHIP journey should state {surface} evidence:"), result)
+
+    def test_personal_execution_remains_required_for_every_surface(self):
+        for surface, evidence in self.surface_evidence.items():
+            source = self.source().replace("Acceptance surface: cli", f"Acceptance surface: {surface}")
+            source = source.replace(self.surface_evidence["cli"], evidence).replace("personally", "automatically")
+            code, result = self.run_source(source, "--strict")
+            self.assertEqual(1, code)
+            self.assertIn("v2 SHIP journey should state the personal execution contract", result["warnings"])
+
+    def test_unknown_and_missing_acceptance_surface(self):
+        for value in ("mobile", "cli | mobile", "cli | browser"):
+            source = self.source().replace("Acceptance surface: cli", f"Acceptance surface: {value}")
+            code, result = self.run_source(source)
+            self.assertEqual(1, code)
+            self.assertIn(f"unsupported Acceptance surface: {value}; expected browser, cli, library, infrastructure or documentation", result["errors"])
+        source = self.source().replace("Acceptance surface: cli\n", "")
+        code, result = self.run_source(source, "--strict")
+        self.assertEqual(1, code)
+        self.assertEqual(["v2 unresolved Acceptance surface: choose browser, cli, library, infrastructure or documentation"], result["warnings"])
+
+    def test_malformed_structure_fails_in_both_dialects(self):
+        for dialect in ("v1", "v2"):
+            source = self.source(dialect).replace("## Mission", "## Missing Mission")
+            code, result = self.run_source(source)
+            self.assertEqual(1, code)
+            self.assertIn("missing section: Mission", result["errors"])
+
+    def test_current_workflow_contracts_are_enforced(self):
+        cases = (
+            ("Search scope: current epicspine-skill repository only", "", "v2 discovery missing field: Search scope"),
+            ("record adaptations and validation", "record sources", "v2 Ticket-worker role should record reuse adaptations and validation"),
+            ("Choose safe reversible options within approved scope and journal uncertainty; required approvals remain gates.", "Choose anything automatically.", "v2 Decisions should constrain defaults to safe reversible choices within approved scope, journal uncertainty, and preserve gates"),
+            ("stop dependent work", "keep all work running", "v2 Human Gates should stop dependent work, allow only independent authorized work, and never treat silence as approval"),
+        )
+        for original, replacement, expected in cases:
+            with self.subTest(expected=expected):
+                code, result = self.run_source(self.source().replace(original, replacement), "--strict")
+                self.assertEqual(1, code)
+                self.assertEqual([expected], result["warnings"])
+
+    def test_template_warnings_are_placeholders_not_missing_contracts(self):
+        template = (ROOT / "skill/epic-spine/assets/epic-spine-template.md").read_text()
+        code, result = self.run_source(template)
+        self.assertEqual(0, code, result)
+        self.assertEqual([], result["errors"])
+        self.assertIn("unresolved field: Repository", result["warnings"])
+        self.assertIn("v2 unresolved Acceptance surface: choose browser, cli, library, infrastructure or documentation", result["warnings"])
+        self.assertTrue(all("unresolved" in message or message == "Updated still contains a template date" for message in result["warnings"]), result)
+        code, result = self.run_source(template, "--strict")
+        self.assertEqual(1, code)
 
     def test_superseded_redirect_warning(self):
-        source = (ROOT / "skill/epic-spine/assets/epic-spine-template.md").read_text()
-        source = source.replace("Status: draft | ready | active | pending — DISPATCH ONLY AFTER <condition> | CLOSED | ON HOLD | SUPERSEDED by <path> — do not execute from this document", "Status: SUPERSEDED")
-        with tempfile.NamedTemporaryFile("w", suffix=".md", delete=False) as handle:
-            handle.write(source)
-            path = Path(handle.name)
-        try:
-            result = validator.validate(path)
-            self.assertTrue(any("SUPERSEDED status" in warning for warning in result["warnings"]))
-        finally:
-            path.unlink()
+        source = self.source().replace("Status: ready", "Status: SUPERSEDED", 1)
+        code, result = self.run_source(source, "--strict")
+        self.assertEqual(1, code)
+        self.assertEqual(["SUPERSEDED status should name the replacement and say do not execute"], result["warnings"])
 
 
 if __name__ == "__main__":
