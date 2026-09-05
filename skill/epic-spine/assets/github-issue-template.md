@@ -9,8 +9,8 @@ Depends on: <issue links or none>
 Bound spine: <same as EpicSpine unless explicitly different>
 Dedicated branch: <branch name>
 Worktree: <absolute dedicated path>
-Spine dialect: v2
-Acceptance surface: <browser, cli, library, infrastructure, or documentation; match bound spine>
+Spine dialect: <inherit bound spine: v1 or v2; undeclared means v1>
+Acceptance surface: <inherit bound spine; if undeclared in v1, describe existing acceptance without changing it>
 Wave: <number>
 Method: PORT from <repo/path> | DUPLICATE from <working unit> | BUILD (no suitable source found in recorded scope)
 Budget: 90 min
