@@ -569,6 +569,27 @@ class ValidatorCompatibilityTests(unittest.TestCase):
                 self.assertEqual(1, code)
                 self.assertEqual([expected], result["warnings"])
 
+    def test_discovery_values_must_be_resolved_for_strict_v2(self):
+        original = self.source()
+        values = validator.parse_key_values(validator.parse_sections(original)["Architecture And Context"])
+        fields = ("Search scope", "Search budget", "Search evidence", "Method rationale")
+        for field in fields:
+            for unresolved in ("", "   ", "<fill this>", "tbd"):
+                with self.subTest(field=field, unresolved=unresolved):
+                    source = original.replace(f"{field}: {values[field]}", f"{field}: {unresolved}")
+                    code, result = self.run_source(source, "--strict")
+                    self.assertEqual(1, code)
+                    self.assertEqual([], result["errors"])
+                    self.assertEqual([f"v2 discovery unresolved field: {field}"], result["warnings"])
+        source = original
+        for field in fields:
+            source = source.replace(f"{field}: {values[field]}", f"{field}:")
+        code, result = self.run_source(source, "--strict")
+        self.assertEqual(1, code)
+        self.assertEqual([f"v2 discovery unresolved field: {field}" for field in fields], result["warnings"])
+        code, result = self.run_source(source, "--strict", "--dialect", "v1")
+        self.assertEqual(0, code, result)
+
     def test_template_warnings_are_placeholders_not_missing_contracts(self):
         template = (ROOT / "skill/epic-spine/assets/epic-spine-template.md").read_text()
         code, result = self.run_source(template)

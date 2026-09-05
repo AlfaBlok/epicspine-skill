@@ -328,9 +328,12 @@ def dialect_warnings(text: str, fields: dict[str, str], sections: dict[str, str]
     if not contains_all(decisions, "safe", "reversible", "approved scope", "journal", "gate"):
         warnings.append("v2 Decisions should constrain defaults to safe reversible choices within approved scope, journal uncertainty, and preserve gates")
     discovery = sections.get("Architecture And Context", "")
+    discovery_fields = parse_key_values(discovery)
     for field in ("Search scope", "Search budget", "Search evidence", "Method rationale"):
-        if field not in parse_key_values(discovery):
+        if field not in discovery_fields:
             warnings.append(f"v2 discovery missing field: {field}")
+        elif is_empty(discovery_fields[field]):
+            warnings.append(f"v2 discovery unresolved field: {field}")
 
     ledger = sections.get("Issue Ledger", "")
     header, rows = parse_table(ledger)
