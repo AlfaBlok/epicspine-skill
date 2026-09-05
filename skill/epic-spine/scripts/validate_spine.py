@@ -117,7 +117,7 @@ def normalize(value: str) -> str:
 
 
 def parse_sections(text: str) -> dict[str, str]:
-    matches = list(re.finditer(r"(?m)^## (.+?)\s*$", text))
+    matches = list(re.finditer(r"(?m)^## (.+?)[ \t]*$", text))
     sections: dict[str, str] = {}
     for index, match in enumerate(matches):
         end = matches[index + 1].start() if index + 1 < len(matches) else len(text)
@@ -128,8 +128,7 @@ def parse_sections(text: str) -> dict[str, str]:
 def parse_key_values(text: str) -> dict[str, str]:
     return {
         normalize(match.group(1)): normalize(match.group(2))
-        for match in re.finditer(r"(?m)^([A-Za-z][A-Za-z ]+):\s*(.*?)\s*$", text)
-        if normalize(match.group(2))
+        for match in re.finditer(r"(?m)^([A-Za-z][A-Za-z ]+):[ \t]*([^\r\n]*?)[ \t]*\r?$", text)
     }
 
 
@@ -139,19 +138,69 @@ def parse_fields(text: str) -> dict[str, str]:
     return parse_key_values(preamble)
 
 
-def parse_table(section: str) -> tuple[list[str], list[list[str]]]:
-    lines = [line.strip() for line in section.splitlines() if line.strip().startswith("|")]
-    if len(lines) < 2:
+def parse_table(
+    section: str,
+    *,
+    errors: list[str] | None = None,
+    line_offset: int = 0,
+    section_name: str = "table",
+) -> tuple[list[str], list[list[str]]]:
+    """Read one contiguous pipe table; optionally collect source-located errors.
+
+    The two-value return remains compatible with graph and dialect callers.
+    Contract sections contain one table, so a second block is rejected instead
+    of silently joining its headers and rows to the first table.
+    """
+    lines = section.splitlines()
+    starts = [i for i, line in enumerate(lines) if line.strip().startswith("|")]
+    if not starts:
         return [], []
 
-    def cells(line: str) -> list[str]:
-        return [normalize(cell) for cell in line.strip("|").split("|")]
+    def report(index: int, message: str) -> None:
+        if errors is not None:
+            errors.append(f"{section_name} line {line_offset + index + 1}: {message}")
 
-    header = cells(lines[0])
+    def cells(line: str) -> list[str]:
+        # Only unescaped pipes delimit cells, including the optional end pipe.
+        # An odd run of backslashes escapes a pipe; an even run does not.
+        parts: list[str] = []
+        cell: list[str] = []
+        backslashes = 0
+        for character in line.strip()[1:]:
+            if character == "|" and backslashes % 2 == 0:
+                parts.append(normalize("".join(cell)))
+                cell = []
+            else:
+                if character == "|":
+                    cell.pop()  # Remove the Markdown escape, retain literal pipe.
+                cell.append(character)
+            backslashes = backslashes + 1 if character == "\\" else 0
+        if cell or not line.rstrip().endswith("|") or backslashes:
+            parts.append(normalize("".join(cell)))
+        return parts
+
+    start = starts[0]
+    end = start + 1
+    while end < len(lines) and lines[end].strip().startswith("|"):
+        end += 1
+    for index in starts:
+        if index >= end and (index == 0 or not lines[index - 1].strip().startswith("|")):
+            report(index, "additional table block; keep the contract in one contiguous table")
+
+    header = cells(lines[start])
+    if start + 1 >= end:
+        report(start, "table is missing its separator row")
+        return header, []
+    separator = cells(lines[start + 1])
+    if len(separator) != len(header) or not all(re.fullmatch(r":?-{3,}:?", cell) for cell in separator):
+        report(start + 1, f"invalid table separator; expected {len(header)} cells of at least three hyphens with optional alignment colons")
+
     rows = []
-    for line in lines[2:]:
-        row = cells(line)
-        if len(row) == len(header):
+    for index in range(start + 2, end):
+        row = cells(lines[index])
+        if len(row) != len(header):
+            report(index, f"malformed table row: expected {len(header)} cells, found {len(row)}; escape literal pipes as \\|")
+        else:
             rows.append(row)
     return header, rows
 
@@ -302,6 +351,18 @@ def validate_local(path: Path) -> SpineDocument:
     text = path.read_text(encoding="utf-8")
     fields = parse_fields(text)
     sections = parse_sections(text)
+
+    # Validate the table syntax once, before semantic and graph readers reuse it.
+    for match in re.finditer(r"(?m)^## (.+?)[ \t]*$", text):
+        name = normalize(match.group(1))
+        if name in {"Spine Map", "Decisions", "Issue Ledger", "Human Gates"}:
+            content_start = match.end()
+            while content_start < len(text) and text[content_start].isspace():
+                content_start += 1
+            parse_table(
+                sections.get(name, ""), errors=errors,
+                line_offset=text.count("\n", 0, content_start), section_name=name,
+            )
 
     for field in REQUIRED_FIELDS:
         if field not in fields:
