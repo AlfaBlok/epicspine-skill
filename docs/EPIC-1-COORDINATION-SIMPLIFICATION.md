@@ -48,13 +48,13 @@ Phase: implementation
 Last verified: 2026-09-06
 Integration target: codex/coordination-simplification
 Fresh base commit: a8522464235db77d1eaca4dc03d9556d076e6bc7
-Next action: Dispatch #18; run independent private adoption repairs concurrently; serialize shared validator edits.
+Next action: Review #18 worker handoff, then dispatch #19 against the integrated state contract.
 Blockers: none for #18; later shared issues depend on the agreed state contract.
 
 ## Execution Cursor
 
-Last attempted: Rechecked backlog, source revisions and ongoing work; created isolated integration branch from the reviewed audit baseline.
-Result: PR #16 is open and tested; this delivery pins its exact revision without waiting for a merge.
+Last attempted: Dispatched #18 to /root/parser in an isolated checkout at 6f63d378e0ed8e8adffdda89039f8a0c16069909; approved compact-state schema direction with duplicate blocker/waiting fields consolidated.
+Result: Worker is implementing #18; draft stacked PR #22 collects this delivery. Independent review remains pending.
 Execution status: active
 Waiting on: worker handoffs
 Approved work: User-authorized backlog delivery through subagents, isolated branches, issue comments, reviews and PRs.
@@ -81,7 +81,7 @@ Next action: Review #18, then dispatch #19; freeze contracts before #20/#21.
 
 | Issue | Role | Owner / Assignment | Title | Status | Depends On | PR/Branch | Base | Acceptance | Latest Evidence | Last Verified | Next Action |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| [#18](https://github.com/AlfaBlok/epicspine-skill/issues/18) | Ticket worker | /root/parser | Compact authoritative state | ready | PR #16 pinned | codex/compact-state | a8522464235db77d1eaca4dc03d9556d076e6bc7 | #18 criteria | Audit baseline | 2026-09-06 | Dispatch |
+| [#18](https://github.com/AlfaBlok/epicspine-skill/issues/18) | Ticket worker | /root/parser | Compact authoritative state | active | PR #16 pinned | codex/compact-state | 6f63d378e0ed8e8adffdda89039f8a0c16069909 | #18 criteria | Worker dispatched; schema reviewed | 2026-09-06 | Review handoff |
 | [#19](https://github.com/AlfaBlok/epicspine-skill/issues/19) | Ticket worker | unassigned | Explicit ticket backends | ready | #18 schema freeze | codex/ticket-backends | a8522464235db77d1eaca4dc03d9556d076e6bc7 | #19 criteria | Audit baseline | 2026-09-06 | Wait for #18 |
 | [#20](https://github.com/AlfaBlok/epicspine-skill/issues/20) | Ticket worker | unassigned | Freshness-aware rollups | ready | #18, #19 | codex/execution-rollups | a8522464235db77d1eaca4dc03d9556d076e6bc7 | #20 criteria | Audit baseline | 2026-09-06 | Wait for contracts |
 | [#21](https://github.com/AlfaBlok/epicspine-skill/issues/21) | Ticket worker | unassigned | Structural strictness | ready | #18, #19 | codex/structural-validation | a8522464235db77d1eaca4dc03d9556d076e6bc7 | #21 criteria | Audit baseline | 2026-09-06 | Sequence shared edits |
