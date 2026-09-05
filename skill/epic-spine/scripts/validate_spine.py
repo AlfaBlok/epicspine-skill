@@ -9,7 +9,7 @@ import re
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from urllib.parse import unquote
+from urllib.parse import unquote, urlsplit
 
 
 REQUIRED_FIELDS = (
@@ -94,6 +94,7 @@ DIALECTS = {"v1", "v2"}
 ACCEPTANCE_SURFACES = {"browser", "cli", "library", "infrastructure", "documentation"}
 
 ACTIVE_STATUSES = {"active", "blocked", "review", "testing"}
+LEDGER_STATUSES = {"draft", "ready", "active", "blocked", "review", "testing", "done", "superseded", "deferred"}
 DECISION_OUTCOMES = {"accepted", "rejected", "superseded"}
 EMPTY_VALUES = {"", "-", "none", "n/a", "tbd", "<sha>", "<task/thread/agent>"}
 
@@ -220,6 +221,34 @@ def is_none(value: str) -> bool:
 def markdown_target(value: str) -> str | None:
     match = re.search(r"\[[^\]]+\]\(([^)]+)\)", value)
     return unquote(match.group(1)).split("#", 1)[0] if match else None
+
+
+def is_issue_reference(value: str) -> bool:
+    """Check a GitHub/Enterprise HTTPS issue route without contacting the host."""
+    target = normalize(value)
+    if target.startswith("["):
+        link = re.fullmatch(r"\[[^\]\n]+\]\((https://[^\s)]+)\)", target)
+        if not link:
+            return False
+        target = link.group(1)
+    if re.search(r"\s", target):
+        return False
+    try:
+        url = urlsplit(target)
+        hostname = url.hostname or ""
+        # Accessing port rejects malformed/out-of-range ports even without I/O.
+        if url.port == 0:
+            return False
+    except ValueError:
+        return False
+    if url.scheme != "https" or url.username is not None or url.password is not None:
+        return False
+    if not re.fullmatch(r"[A-Za-z0-9](?:[A-Za-z0-9.-]*[A-Za-z0-9])?", hostname):
+        return False
+    if any(not label or label.startswith("-") or label.endswith("-") for label in hostname.split(".")):
+        return False
+    route = re.fullmatch(r"/([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+)/issues/([1-9][0-9]*)/?", url.path)
+    return bool(route and route.group(1) not in {".", ".."} and route.group(2) not in {".", ".."})
 
 
 def resolve_local_link(source: Path, value: str) -> Path | None:
@@ -481,18 +510,28 @@ def validate_local(path: Path, *, dialect: str = "auto") -> SpineDocument:
             if column not in header:
                 errors.append(f"Issue Ledger missing column: {column}")
 
-        positions = {name: index for index, name in enumerate(header)}
-        active_fields = ("Issue", "Owner / Assignment", "Status", "PR/Branch", "Base", "Latest Evidence", "Last Verified", "Next Action")
-        if all(name in positions for name in active_fields):
-            for row_number, row in enumerate(rows, start=1):
-                status = row[positions["Status"]].lower()
-                issue = row[positions["Issue"]]
-                if status in ACTIVE_STATUSES:
-                    for column in ("Owner / Assignment", "PR/Branch", "Base", "Last Verified", "Next Action"):
-                        if is_empty(row[positions[column]]):
-                            errors.append(f"ledger row {row_number} ({issue}) is {status} but {column} is empty")
-                if status == "done" and is_empty(row[positions["Latest Evidence"]]):
-                    errors.append(f"ledger row {row_number} ({issue}) is done without evidence")
+        for row_number, row in enumerate(rows, start=1):
+            values = dict(zip(header, row))
+            status = values.get("Status", "").lower()
+            issue = values.get("Issue", "")
+            # Only a deliberately unassigned draft may carry a status placeholder.
+            # Placeholders elsewhere never exempt a real row from status/URL checks.
+            template_status = issue.lower() == "draft" and re.fullmatch(r"<[^<>]+>", status)
+            if "Status" in values and status not in LEDGER_STATUSES:
+                if template_status:
+                    warnings.append(f"ledger row {row_number} unresolved field: Status")
+                else:
+                    errors.append(f"ledger row {row_number} has invalid Status: {status or '(empty)'}")
+            if "Issue" in values:
+                draft_reference = issue.lower() == "draft" and (status == "draft" or template_status)
+                if not draft_reference and not is_issue_reference(issue):
+                    errors.append(f"ledger row {row_number} has invalid Issue: expected an HTTPS GitHub issue URL (draft is allowed only for draft rows)")
+            if status in ACTIVE_STATUSES:
+                for column in ("Owner / Assignment", "PR/Branch", "Base", "Last Verified", "Next Action"):
+                    if column in values and is_empty(values[column]):
+                        errors.append(f"ledger row {row_number} ({issue}) is {status} but {column} is empty")
+            if status == "done" and "Latest Evidence" in values and is_empty(values["Latest Evidence"]):
+                errors.append(f"ledger row {row_number} ({issue}) is done without evidence")
 
     if "YYYY-MM-DD" in fields.get("Updated", ""):
         warnings.append("Updated still contains a template date")
