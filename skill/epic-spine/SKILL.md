@@ -189,7 +189,7 @@ Default rule: **isolate execution, integrate frequently.**
 - The shared integration line is protected `main` unless the bound spine declares another branch.
 - Merge small, reviewed work after required checks pass. Integrate frequently so new agents bootstrap from the freshest validated base.
 - Do not let long-lived worker branches become hidden project state. If work cannot merge yet, keep the GitHub issue and bound spine updated with blocker, branch, PR, and next action.
-- If branch isolation is genuinely impossible, use clearly isolated commits and record the exception before editing shared state.
+- If worktree creation fails, report the blocker to the steward before editing; never fall back to editing the shared checkout.
 - Human test should normally happen from merged `main`, a recorded integration branch, or an explicit PR preview. Record the tested commit and environment.
 
 Use these gates:
@@ -200,7 +200,7 @@ Use these gates:
 
 ## Human Gates And Recovery
 
-- Name human approval gates in the spine for product or acceptance changes, production deployment, destructive migrations, credentials or secrets, irreversible external actions, and any required experiential acceptance.
+- Name applicable human approval gates in the spine for product or acceptance changes, production deployment, destructive migrations, credentials or secrets, irreversible external actions, and required experiential acceptance. Use existing user authorization without asking again. Defaults and absence rules apply only to reversible choices inside approved scope; silence never supplies required approval or authorizes scope expansion. Record unresolved required input in Open Questions and Human Gates, and continue only independent authorized work.
 - A blocker must name the decision, owner, evidence, and exact input required. Do not write only `human required`.
 - Make every assignment resumable: record stable owner identity, issue, branch, base and latest commit, last verified time, blocker, and next action.
 - When an assignment is stale or abandoned, the epic worker may mark it superseded and re-dispatch it. Preserve the old issue/branch history and record the takeover identity and starting commit.
@@ -232,7 +232,7 @@ Use when decomposing an epic, clarifying scope, or assigning next work.
 - Record unresolved questions in the spine instead of burying them in chat.
 - A parent or portfolio planner may propose changes to child spines, but should not edit child spines unless explicitly bound to them or granted multi-spine write authority.
 - A planner may dispatch work while planning. After scope and acceptance are stable, the epic worker may decompose and dispatch additional tickets inside that accepted scope without becoming the product planner.
-- Before authoring, inventory every repository and running service the human operates for working implementations of each deliverable. Mark every deliverable and ticket `PORT from <repo/path>`, `DUPLICATE from <working unit>`, or `BUILD (verified absent everywhere)`.
+- Before authoring, follow Port-First Authoring below: bounded relevant discovery, recorded evidence and uncertainty, and a justified PORT/DUPLICATE/BUILD method for each deliverable and ticket.
 - When a human is about to dispatch, produce a complete paste-ready prompt as a versioned spine artifact using `assets/dispatch-prompt-preamble.md`; include binding, mission, terminal state, Human Gates, and end with `Go.` Advice without the usable prompt is incomplete.
 
 #### Backlog And Dispatch
@@ -255,11 +255,11 @@ Use when the user binds an agent to deliver an epic, for example "you are now th
 - Do not change product intent, acceptance, or cross-spine scope without planner/user input.
 - Convert current spine state into GitHub issues when executable tickets are missing or too large.
 - Dispatch ticket workers or subagents on independent issues. Each dispatched subagent must write detailed progress into its assigned GitHub issue, not into the spine.
-- Assign each ticket worker a dedicated branch and, for concurrent execution, a separate worktree. Record its base commit and keep merge status visible in the issue ledger.
+- Assign each ticket worker a dedicated branch and separate worktree. Record its base commit and keep merge status visible in the issue ledger.
 - Keep the bound spine clean and current: issue ledger, dispatch state, PR/branch links, validation evidence, blockers, and next action.
 - Loop until the epic is ready for human testing, ready for tester handoff, or blocked by a precise required human/planner decision.
 - If subagent work reveals divergence from the spine, record the divergence in the bound spine and route it to the planner instead of silently changing direction.
-- Act as MANAGER: mint issues, dispatch disjoint waves, integrate frequently, deploy, and personally own the final SHIP journey loop. Stop only at SHIP, a named Human Gate, or budget expiry.
+- Act as MANAGER: mint issues, dispatch disjoint waves, integrate frequently, deploy when required and authorized, and personally own the final SHIP journey loop. Stop only at SHIP, a named Human Gate, or budget expiry.
 - Emit a heartbeat every 30 minutes: `lap/state | blocker | ETA`. Two consecutive ETA slips require stopping and reporting options.
 
 ### Ticket Worker
@@ -270,14 +270,14 @@ Use when implementing a ticket.
 - Continue until the issue is implemented and ready for testing, or until a precise blocker requires planner/user input.
 - Start from the issue row in the spine, then read the linked GitHub issue.
 - Confirm the target acceptance criteria and test expectations before editing code.
-- Work on the dedicated issue branch; use a separate worktree when running concurrently with other agents.
+- Work on the dedicated issue branch in its separate worktree, for serial as well as concurrent execution.
 - Keep the spine clean: link the GitHub issue, commits, PRs, logs, and detailed notes rather than copying them into the spine.
 - Write progress and the final structured handoff to the issue. Ask the spine steward to reconcile the ledger and handoff journal unless the issue explicitly delegates those narrow spine sections.
 - Do not rewrite mission, non-goals, or acceptance criteria. If implementation reveals a scope problem, record it as a planner question in the bound spine.
 - Do not edit parent, sibling, or child spines while working a ticket unless that specific spine is the ticket's bound spine.
 - If the code, issue, and spine diverge, pause broad execution and raise the divergence in the issue and bound spine instead of silently choosing a new direction.
 - First create the recorded worktree from the pinned base. Never switch the shared clone.
-- Inspect the marked PORT/DUPLICATE source before authoring. Move/copy proven code wholesale and adapt only imports/config; scratch-written duplication fails review. If an existing implementation is discovered during BUILD, stop building and transplant it.
+- Inspect the marked PORT/DUPLICATE source before authoring. Reuse suitable code, record adaptations needed by acceptance, and validate the result. If a source emerges during BUILD, assess its suitability and record the method decision before continuing.
 
 ### Tester
 
@@ -322,34 +322,34 @@ Use when asked to inspect, summarize, or advise.
 
 ## Sprint Dialect v2 — Bounded Human-Verifiable Delivery
 
-Use v2 for every newly authored sprint spine. Existing v1 spines remain readable and executable; the validator reports missing v2 contracts as warnings unless a repository explicitly opts into stricter policy. A v2 spine is a budget for one observable increment, not a wish list for a perfect end state.
+Use v2 for every newly authored sprint spine. Declare `Spine dialect: v2` and `Acceptance surface: browser|cli|library|infrastructure|documentation` (choose one value). Use the primary surface and explicitly list any additional surfaces required by acceptance. Existing v1 spines remain readable and executable. Undeclared spines default to v1; strict validation enforces the selected dialect, not an implicit upgrade. A v2 spine is a budget for one observable increment, not a wish list for a perfect end state.
 
 ### Journey-First SHIP And HARDEN
 
-- Definition Of Done has exactly two tiers. **SHIP** is one numbered customer journey of 5–12 steps on the LIVE deployment in a REAL browser. **HARDEN** lists everything deferred until the human approves SHIP.
-- The epic worker walks SHIP personally: walk → first breakage → fix exactly that → deploy → restart from step 1. Continue to one uninterrupted clean pass with one screenshot per step.
-- The terminal artifact is the test package: `I manually walked the full journey and it works. <URL> + screenshots. Now you test.` The human then walks the identical journey on the same live surface.
-- Never ask the human to click the unclicked. Every handed-off element must have been exercised by the worker in that same deployed build.
-- Unit/integration suites support the journey; they never replace it. Run a full suite at most once per frozen commit and never rerun it for docs-only movement. Worker and human validate one world, not parallel local/live surfaces.
+- Definition Of Done has exactly two tiers. **SHIP** is one numbered observable journey of 5–12 steps on the declared acceptance surface. **HARDEN** lists work deferred until the human approves SHIP.
+- The epic worker personally executes SHIP: run the journey → first failure → dispatch a scoped fix → prepare the updated surface → restart from step 1. Continue to one uninterrupted clean pass. Deploy only when the surface requires it and authorization covers it.
+- For `browser`, use a REAL browser on the LIVE deployment with one screenshot per step. For `cli`, record exact commands, inputs, exit codes and outputs. For `library`, execute a consumer example and relevant behavior checks. For `infrastructure`, record authorized health/state probes and results in the named environment. For `documentation`, follow the instructions and inspect rendered artifacts, links and examples as applicable. No browser deployment or screenshots are required solely for non-browser work.
+- Hand off a truthful test package: personally verified steps, exact commit, environment, commands/results or artifact checks, and remaining limits. Browser handoffs include the live URL and per-step screenshots. The human can reproduce the same journey against the same build or artifact. Never claim a step was exercised without doing it.
+- Run checks appropriate to the change; automated checks support observable acceptance. Repeat them when new changes, failures or unresolved concerns justify it. Documentation examples and validation instructions may need execution even when only documentation changed.
 
 ### Port-First Authoring
 
-- Before writing a spine, inventory all repositories and running services the human operates. Record relevant implementations and deployments.
-- Mark every SHIP deliverable and ledger row `PORT from <repo/path>`, `DUPLICATE from <working unit>`, or `BUILD (verified absent everywhere)`. Unmarked v2 work is invalid.
-- PORT means move code and adapt only imports/config. DUPLICATE means copy the proven unit wholesale. Scratch-building either is a review failure.
+- Search the current repository and explicitly named relevant repositories/services, with a default 15-minute search budget. Record scope, queries/paths, findings, elapsed time, and inaccessible or unsearched areas. Expand only for a concrete dependency within authorized scope; record any revised budget. At expiry, choose a justified method with uncertainty recorded, or escalate if the missing evidence blocks safe progress. Never infer absence outside the searched scope.
+- Mark every SHIP deliverable and ledger row PORT, DUPLICATE, or BUILD with the source or recorded search evidence. Unmarked v2 work is invalid.
+- `PORT from <repo/path>` moves an existing implementation; `DUPLICATE from <working unit>` copies a proven unit; `BUILD (no suitable source found in recorded scope)` records a bounded search outcome. Inspect sources before authoring. Adapt beyond imports/config when requirements require it, recording why and validating the adapted behavior. If reuse is unsuitable, record the reason rather than forcing a transplant or silently rebuilding.
 
 ### Pre-Answered Decisions And Traps
 
-- Decisions is a required, stable-ID table (`D1`…`Dn`) that pre-answers domains, sequencing, pricing, credentials, and likely manager choices. Credential rules name existing locations to read; never recreate or ask the human for what exists.
-- Every human input has an absence-rule. Close with: `Anything unanswered: simplest option, journal it, keep moving.` Healthy Open Questions says `None permitted`; turn questions into decisions with absence-rules.
+- Decisions is a required, stable-ID table (`D1`…`Dn`) that pre-answers domains, sequencing, pricing, credentials, and likely manager choices. Credential rules name existing authorized locations to read; reuse accessible credentials within existing authority and record any required access gate.
+- Pre-answer routine choices with safe defaults and journal the decision. Use existing user authorization without asking again. Defaults and absence rules apply only to reversible choices inside approved scope; silence never supplies required approval or authorizes scope expansion. Record unresolved required input in Open Questions and Human Gates, and continue only independent authorized work.
 - Carry newly discovered bug classes into the next sprint's Decisions table as a known-trap rule. Parent spines may declare a CANONICAL artifact with an owner and change rule.
 
 ### Bounded Observable Autonomy
 
 - Every ticket has a budget (90 minutes by default). At expiry, report state/blocker/options; the manager reassigns any ticket silent past budget.
 - Heartbeat every 30 minutes with exactly `lap/state | blocker | ETA`. Two consecutive ETA slips stop the thread and surface options.
-- The first ledger ticket delivers the earliest human-touchable deployed/running surface. Hardening runs behind the demo. The phrase `no human in the loop` is banned.
-- Human Gates name owner, trigger, exact input, and what may continue. When blocked, the worker's entire next message is `BLOCKED ON <HUMAN>: <one exact question + options + recommendation>` and that thread stops; adjacent polishing while parked is a defect.
+- The first ledger ticket delivers the earliest observable increment on the declared acceptance surface. Hardening runs behind the demo. The phrase `no human in the loop` is banned.
+- Human Gates name owner, trigger, exact input, and what may continue. When blocked, report `BLOCKED ON <owner>: <exact required input>` with evidence and stop dependent work. Continue only independent authorized work; do not treat elapsed time as approval.
 
 ### Pins, Waves, And Ceremony
 
@@ -434,7 +434,7 @@ Goal: deliver this epic until it is ready for human test, tester handoff, or blo
 Authority: create/update GitHub issues within existing scope, dispatch ticket workers, and update the bound spine; do not change acceptance or cross-spine scope without planner/user input.
 Steward rule: the epic worker is the active steward for the bound child spine; ticket workers and testers return structured issue handoffs unless explicitly delegated a narrow spine section.
 Subagent rule: each ticket worker writes deep detail into its assigned GitHub issue; the epic worker writes only clean state, links, blockers, and durable outcomes into the spine.
-Integration rule: each ticket worker uses a dedicated branch and a separate worktree when concurrent; merge small reviewed changes after required checks pass so new agents start from the freshest validated base.
+Integration rule: every dispatched worker/tester uses a dedicated branch and separate worktree; merge small reviewed changes after required checks pass so new agents start from the freshest validated base.
 ```
 
 ## Resources
