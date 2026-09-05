@@ -267,6 +267,83 @@ class ValidateSpineTests(unittest.TestCase):
             self.assertTrue(any("rejected but Evidence is empty" in error for error in document.errors))
 
 
+class MarkdownParserTests(unittest.TestCase):
+    def source(self) -> str:
+        return spine_text(spine_id="root", spine_type="root", root="self", parent="none")
+
+    def validate_source(self, source: str):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "root.md"
+            path.write_text(source, encoding="utf-8")
+            return validate_spine.validate_local(path)
+
+    def test_malformed_active_and_done_rows_fail_with_source_line(self):
+        for status in ("active", "done"):
+            for malformed in ("extra", "missing"):
+                source = self.source()
+                original = next(line for line in source.splitlines() if line.startswith("| draft | Planner"))
+                row = original.replace("| draft | Planner", "| #10 | Planner").replace("| draft | - |", f"| {status} | - |")
+                row = row + " extra |" if malformed == "extra" else row.rsplit("|", 2)[0] + "|"
+                source = source.replace(original, row)
+                line = source.splitlines().index(row) + 1
+                result = self.validate_source(source)
+                self.assertTrue(any(f"Issue Ledger line {line}: malformed table row" in error for error in result.errors), result.errors)
+
+    def test_short_row_and_empty_edge_cells_are_not_dropped(self):
+        errors = []
+        header, rows = validate_spine.parse_table("| A | B | C |\n|---|---|---|\n|| x ||\n| short |", errors=errors)
+        self.assertEqual(["A", "B", "C"], header)
+        self.assertEqual([["", "x", ""]], rows)
+        self.assertTrue(any("line 4" in error and "expected 3 cells, found 1" in error for error in errors))
+
+    def test_escaped_pipes_preserve_rows_and_semantic_checks(self):
+        source = self.source().replace("Validate graph", r"Validate graph \| parser")
+        self.assertEqual([], self.validate_source(source).errors)
+        source = source.replace("| draft | - |", "| done | - |")
+        self.assertTrue(any("done without evidence" in error for error in self.validate_source(source).errors))
+        header, rows = validate_spine.parse_table("| A | B |\n|:---|---:|\n| `left \\| right` | final \\|\n")
+        self.assertEqual(["A", "B"], header)
+        self.assertEqual([["left | right", "final |"]], rows)
+
+    def test_even_backslashes_do_not_escape_a_delimiter(self):
+        errors = []
+        _, rows = validate_spine.parse_table("| A | B |\n|---|---|\n| slash " + "\\" * 2 + "| value |", errors=errors)
+        self.assertEqual([["slash " + "\\" * 2, "value"]], rows)
+        self.assertEqual([], errors)
+
+    def test_invalid_or_missing_separator_fails(self):
+        for separator in ("| invalid |---|", "|---|", "|--|---|"):
+            with self.subTest(separator=separator):
+                errors = []
+                validate_spine.parse_table(f"| A | B |\n{separator}\n| x | y |", errors=errors)
+                self.assertTrue(any("line 2: invalid table separator" in error for error in errors))
+        errors = []
+        validate_spine.parse_table("| A | B |", errors=errors)
+        self.assertTrue(any("missing its separator row" in error for error in errors))
+        source = self.source().replace("|---|---|---|---|---|---|", "|bad|---|---|---|---|---|", 1)
+        self.assertTrue(any("Decisions line" in error and "invalid table separator" in error for error in self.validate_source(source).errors))
+
+    def test_separate_tables_are_not_combined(self):
+        errors = []
+        section = "| A | B |\n|---|---|\n| first | row |\n\nExplanation.\n\n| C | D |\n|---|---|\n| second | row |"
+        header, rows = validate_spine.parse_table(section, errors=errors)
+        self.assertEqual(["A", "B"], header)
+        self.assertEqual([["first", "row"]], rows)
+        self.assertTrue(any("line 7: additional table block" in error for error in errors))
+        source = self.source().replace("## Branch And Integration", "| Other | Table |\n|---|---|\n| done | - |\n\n## Branch And Integration")
+        self.assertTrue(any("Issue Ledger line" in error and "additional table block" in error for error in self.validate_source(source).errors))
+
+    def test_empty_fields_do_not_consume_the_following_line(self):
+        for newline in ("\n", "\r\n"):
+            text = newline.join(["Last attempted:  ", "Result: Retained result.", "Next action:", ""])
+            self.assertEqual({"Last attempted": "", "Result": "Retained result.", "Next action": ""}, validate_spine.parse_key_values(text))
+        source = self.source().replace("Last attempted: Created the fixture.", "Last attempted:")
+        result = self.validate_source(source)
+        self.assertIn("Execution Cursor unresolved field: Last attempted", result.warnings)
+        self.assertNotIn("Execution Cursor missing field: Result", result.errors)
+        self.assertEqual("Fixture is ready.", validate_spine.parse_key_values(result.sections["Execution Cursor"])["Result"])
+
+
 ROOT = Path(__file__).parents[1]
 SCRIPT = VALIDATOR_PATH
 validator = validate_spine
