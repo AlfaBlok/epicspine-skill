@@ -53,17 +53,17 @@ Phase: implementation
 Integration target: codex/audit-remediation
 Fresh base commit: e909cc8ca703854e6e7b4459c0b962a937afae38
 Dispatch condition: none for parser, workflow, CI; dependencies gate the remaining tickets.
-Next action: Review parser, workflow and CI worker handoffs; integrate accepted commits and re-pin dependent tickets.
+Next action: Review dialect implementation and independent workflow review; dispatch ledger validation next.
 Blockers: none
 
 ## Execution Cursor
 
-Last attempted: Created six GitHub remediation issues after checking for existing open work.
-Result: Issues #10–#15 cover all audit findings; no duplicates found.
+Last attempted: Integrated worker commits for #10, #13 and #15 and dispatched #11 from their combined revision.
+Result: Three implementation tickets integrated; #11 active; #12 and #14 queued. PR #16 collects delivery.
 Execution status: active
 Waiting on: worker results
 Approved work: All six remediation tickets, issue comments, isolated branches, testing and review PR creation.
-Next action: Await first-wave results and dispatch dialect after parser and workflow integration.
+Next action: Await #11, then dispatch #12; review #13 independently in parallel.
 
 ## Bootstrap Map
 
@@ -87,12 +87,12 @@ Next action: Await first-wave results and dispatch dialect after parser and work
 
 | Issue | Role | Owner / Assignment | Title | Status | Depends On | PR/Branch | Base | Acceptance | Latest Evidence | Last Verified | Next Action |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| [#10](https://github.com/AlfaBlok/epicspine-skill/issues/10) | Ticket worker | /root/parser | Fix Markdown parsing so malformed rows and empty fields cannot bypass validation | active | none | codex//root/parser | e909cc8ca703854e6e7b4459c0b962a937afae38 | Issue acceptance | Audit baseline | 2026-09-06 | Await worker handoff |
-| [#11](https://github.com/AlfaBlok/epicspine-skill/issues/11) | Ticket worker | audit-dialect | Separate dialect selection from strictness and add real v1/v2 compatibility fixtures | ready | #10, #13 | codex/audit-dialect | e909cc8ca703854e6e7b4459c0b962a937afae38 | Issue acceptance | Audit baseline | 2026-09-06 | Wait for dependencies |
+| [#10](https://github.com/AlfaBlok/epicspine-skill/issues/10) | Ticket worker | /root/parser | Fix Markdown parsing so malformed rows and empty fields cannot bypass validation | testing | none | codex//root/parser | e909cc8ca703854e6e7b4459c0b962a937afae38 | Issue acceptance | 44140186bcd76218110c459a83a767920826fc24; 16 tests pass | 2026-09-06 | Await final integrated review |
+| [#11](https://github.com/AlfaBlok/epicspine-skill/issues/11) | Ticket worker | /root/parser | Separate dialect selection from strictness and add real v1/v2 compatibility fixtures | active | #10, #13 | codex/audit-dialect | 0381c809ed7a704c04dadb4fb7cd50344e15ac41 | Issue acceptance | Dependencies integrated at 0381c809ed7a704c04dadb4fb7cd50344e15ac41 | 2026-09-06 | Implement dialect and compatibility fixtures |
 | [#12](https://github.com/AlfaBlok/epicspine-skill/issues/12) | Ticket worker | audit-ledger | Validate non-draft issue references and ledger status vocabulary | ready | #11 | codex/audit-ledger | e909cc8ca703854e6e7b4459c0b962a937afae38 | Issue acceptance | Audit baseline | 2026-09-06 | Wait for dependencies |
-| [#13](https://github.com/AlfaBlok/epicspine-skill/issues/13) | Ticket worker | /root/workflow | Scope acceptance to the delivery surface and bound reuse discovery | active | none | codex//root/workflow | e909cc8ca703854e6e7b4459c0b962a937afae38 | Issue acceptance | Audit baseline | 2026-09-06 | Await worker handoff |
+| [#13](https://github.com/AlfaBlok/epicspine-skill/issues/13) | Ticket worker | /root/workflow | Scope acceptance to the delivery surface and bound reuse discovery | testing | none | codex//root/workflow | e909cc8ca703854e6e7b4459c0b962a937afae38 | Issue acceptance | 1146c8de0d9c9f70d910e867e4f37b29bd424681; worker checks pass | 2026-09-06 | Independent workflow review |
 | [#14](https://github.com/AlfaBlok/epicspine-skill/issues/14) | Ticket worker | audit-onboarding | Add a short installation quickstart and a completed runnable example | ready | #11, #12, #13 | codex/audit-onboarding | e909cc8ca703854e6e7b4459c0b962a937afae38 | Issue acceptance | Audit baseline | 2026-09-06 | Wait for dependencies |
-| [#15](https://github.com/AlfaBlok/epicspine-skill/issues/15) | Ticket worker | /root/ci | Run validator regression tests in GitHub Actions | active | none | codex//root/ci | e909cc8ca703854e6e7b4459c0b962a937afae38 | Issue acceptance | Audit baseline | 2026-09-06 | Await worker handoff |
+| [#15](https://github.com/AlfaBlok/epicspine-skill/issues/15) | Ticket worker | /root/ci | Run validator regression tests in GitHub Actions | testing | none | codex//root/ci | e909cc8ca703854e6e7b4459c0b962a937afae38 | Issue acceptance | 42e7e1438369c7e37fe431a549cf27f59a264317; hosted matrix passes | 2026-09-06 | Await final integrated matrix |
 
 ## Branch And Integration
 
@@ -129,3 +129,7 @@ Use EpicSpine. Identity: ticket worker. Bound spine: this document (read-only). 
 ### 2026-09-06 — first wave dispatched
 
 /root/parser owns #10, /root/workflow owns #13 and /root/ci owns #15, each pinned to 88c3c0cf3cff02bc36a8c11234a27f2a7450a0c5. Dependent tickets #11, #12 and #14 remain queued.
+
+### 2026-09-06 — first wave integrated
+
+Integrated #10 (16 tests), #13 (scoped docs review), and #15 (hosted Python 3.10/3.14 pass). #11 assigned to /root/parser on codex/audit-dialect at 0381c809ed7a704c04dadb4fb7cd50344e15ac41. /root/ci independently reviews workflow without editing it. #12 and #14 remain dependency-queued.
