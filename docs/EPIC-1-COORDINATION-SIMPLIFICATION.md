@@ -48,8 +48,6 @@ Phase: implementation
 Last verified: 2026-09-06
 Integration target: codex/coordination-simplification
 Fresh base commit: a8522464235db77d1eaca4dc03d9556d076e6bc7
-Next action: Review #18 worker handoff, then dispatch #19 against the integrated state contract.
-Blockers: none for #18; later shared issues depend on the agreed state contract.
 
 ## Execution Cursor
 

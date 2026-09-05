@@ -57,7 +57,6 @@ Integration target: codex/audit-remediation
 Fresh base commit: df3908e568b12f10abb3182027f9c6f1a35d4699 (frozen implementation acceptance revision)
 Dispatch condition: all six tickets delivered; no queued implementation.
 Next action: Review PR #16; preserve tested implementation while awaiting merge decision.
-Blockers: none
 
 ## Execution Cursor
 
