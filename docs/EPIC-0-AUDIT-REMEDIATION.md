@@ -1,6 +1,6 @@
 # EPIC 0: Audit remediation
 
-Status: active
+Status: review
 Created: 2026-09-06
 Updated: 2026-09-06
 Repository: AlfaBlok/epicspine-skill
@@ -14,7 +14,7 @@ Spine dialect: v1
 Acceptance surface: cli
 Integration branch: codex/audit-remediation
 Active spine steward: /root delivery manager
-Last reconciled commit: e909cc8ca703854e6e7b4459c0b962a937afae38
+Last reconciled commit: df3908e568b12f10abb3182027f9c6f1a35d4699
 
 ## Role Bindings
 
@@ -38,32 +38,32 @@ Remediate the six audit work packages through subagents, preserving artifact aut
 
 ## Definition Of Done
 
-- [ ] Malformed Markdown rows cannot disappear from validation; empty values cannot consume following fields.
-- [ ] Explicit dialect selection preserves strict legacy compatibility and enforces the selected acceptance surface.
-- [ ] Non-draft issue references and ledger statuses are checked with regressions.
-- [ ] Workflow rules use bounded relevant discovery and surface-appropriate personal verification.
-- [ ] A complete example and quickstart validate locally; CI runs the regression suite.
-- [ ] Independent tester verifies the integrated commit; final PR and residual risks are reported.
+- [x] Malformed Markdown rows cannot disappear from validation; empty values cannot consume following fields.
+- [x] Explicit dialect selection preserves strict legacy compatibility and enforces the selected acceptance surface.
+- [x] Non-draft issue references and ledger statuses are checked with regressions.
+- [x] Workflow rules use bounded relevant discovery and surface-appropriate personal verification.
+- [x] A complete example and quickstart validate locally; CI runs the regression suite.
+- [x] Independent tester verifies the integrated commit; final PR and residual risks are reported.
 
 Acceptance is the local Python CLI and documentation package. No live product exists to deploy. Browser screenshots are not evidence for this repair. This scope follows the user's authorization to remediate the audited universal-browser requirement.
 
 ## Current State
 
-Phase: implementation
+Phase: review
 Integration target: codex/audit-remediation
-Fresh base commit: e909cc8ca703854e6e7b4459c0b962a937afae38
-Dispatch condition: none for parser, workflow, CI; dependencies gate the remaining tickets.
-Next action: Integrate onboarding and obtain final independent acceptance on the combined revision.
+Fresh base commit: df3908e568b12f10abb3182027f9c6f1a35d4699 (frozen implementation acceptance revision)
+Dispatch condition: all six tickets delivered; no queued implementation.
+Next action: Review PR #16; preserve tested implementation while awaiting merge decision.
 Blockers: none
 
 ## Execution Cursor
 
-Last attempted: Integrated #12 and the #11 empty-discovery correction; dispatched final implementation ticket #14.
-Result: Five implementation tickets integrated; #14 active; 34 tests pass in worker handoff. PR #16 collects delivery.
-Execution status: active
-Waiting on: worker results
-Approved work: All six remediation tickets, issue comments, isolated branches, testing and review PR creation.
-Next action: Review #14, then dispatch final independent validation.
+Last attempted: Independent tester exercised all six acceptance packages at the frozen implementation revision.
+Result: All six packages pass; 34 tests on Python 3.10 and 3.14, strict CLI checks, sandbox install checks and hosted CI pass.
+Execution status: review
+Waiting on: PR review and merge decision; no implementation blockers
+Approved work: Review followup and coordination within existing remediation scope; manager remains available.
+Next action: Review PR #16; preserve tested implementation while awaiting merge decision.
 
 ## Bootstrap Map
 
@@ -87,12 +87,12 @@ Next action: Review #14, then dispatch final independent validation.
 
 | Issue | Role | Owner / Assignment | Title | Status | Depends On | PR/Branch | Base | Acceptance | Latest Evidence | Last Verified | Next Action |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| [#10](https://github.com/AlfaBlok/epicspine-skill/issues/10) | Ticket worker | /root/parser | Fix Markdown parsing so malformed rows and empty fields cannot bypass validation | testing | none | codex//root/parser | e909cc8ca703854e6e7b4459c0b962a937afae38 | Issue acceptance | 44140186bcd76218110c459a83a767920826fc24; 16 tests pass | 2026-09-06 | Await final integrated review |
-| [#11](https://github.com/AlfaBlok/epicspine-skill/issues/11) | Ticket worker | /root/parser | Separate dialect selection from strictness and add real v1/v2 compatibility fixtures | testing | #10, #13 | codex/audit-dialect | 0381c809ed7a704c04dadb4fb7cd50344e15ac41 | Issue acceptance | 037df9817c87721e924b5145d8fc284b01a740ff; 34 tests pass | 2026-09-06 | Final integrated acceptance |
-| [#12](https://github.com/AlfaBlok/epicspine-skill/issues/12) | Ticket worker | /root/parser | Validate non-draft issue references and ledger status vocabulary | testing | #11 | codex/audit-ledger | 0df5e291a2c069b864f1a91201dfe6ffcb7b3e40 | Issue acceptance | 55642bc0622a336a20693c4675bbe09d1a1a9f08; 33 tests pass | 2026-09-06 | Independent ledger review |
-| [#13](https://github.com/AlfaBlok/epicspine-skill/issues/13) | Ticket worker | /root/workflow | Scope acceptance to the delivery surface and bound reuse discovery | testing | none | codex//root/workflow | e909cc8ca703854e6e7b4459c0b962a937afae38 | Issue acceptance | 1146c8de0d9c9f70d910e867e4f37b29bd424681; worker checks pass | 2026-09-06 | Independent workflow review |
-| [#14](https://github.com/AlfaBlok/epicspine-skill/issues/14) | Ticket worker | /root/workflow | Add a short installation quickstart and a completed runnable example | active | #11, #12, #13 | codex/audit-onboarding | d6a6d026430bab11430986a9258f85844564f8b4 | Issue acceptance | Audit baseline | 2026-09-06 | Deliver verified quickstart and example |
-| [#15](https://github.com/AlfaBlok/epicspine-skill/issues/15) | Ticket worker | /root/ci | Run validator regression tests in GitHub Actions | testing | none | codex//root/ci | e909cc8ca703854e6e7b4459c0b962a937afae38 | Issue acceptance | 42e7e1438369c7e37fe431a549cf27f59a264317; hosted matrix passes | 2026-09-06 | Await final integrated matrix |
+| [#10](https://github.com/AlfaBlok/epicspine-skill/issues/10) | Ticket worker | /root/parser | Fix Markdown parsing so malformed rows and empty fields cannot bypass validation | review | none | [PR #16](https://github.com/AlfaBlok/epicspine-skill/pull/16); codex/audit-parser | 88c3c0cf3cff02bc36a8c11234a27f2a7450a0c5 | Issue acceptance | 44140186; independent acceptance PASS at df3908e | 2026-09-06 | Merge review; closes on PR merge |
+| [#11](https://github.com/AlfaBlok/epicspine-skill/issues/11) | Ticket worker | /root/parser | Separate dialect selection from strictness and add real v1/v2 compatibility fixtures | review | #10, #13 | [PR #16](https://github.com/AlfaBlok/epicspine-skill/pull/16); codex/audit-dialect | 0381c809ed7a704c04dadb4fb7cd50344e15ac41 | Issue acceptance | 037df981; independent acceptance PASS at df3908e | 2026-09-06 | Merge review; closes on PR merge |
+| [#12](https://github.com/AlfaBlok/epicspine-skill/issues/12) | Ticket worker | /root/parser | Validate non-draft issue references and ledger status vocabulary | review | #11 | [PR #16](https://github.com/AlfaBlok/epicspine-skill/pull/16); codex/audit-ledger | 0df5e291a2c069b864f1a91201dfe6ffcb7b3e40 | Issue acceptance | 55642bc0; independent acceptance PASS at df3908e | 2026-09-06 | Merge review; closes on PR merge |
+| [#13](https://github.com/AlfaBlok/epicspine-skill/issues/13) | Ticket worker | /root/workflow | Scope acceptance to the delivery surface and bound reuse discovery | review | none | [PR #16](https://github.com/AlfaBlok/epicspine-skill/pull/16); codex/audit-workflow | 88c3c0cf3cff02bc36a8c11234a27f2a7450a0c5 | Issue acceptance | b1ce6d23; independent acceptance PASS at df3908e | 2026-09-06 | Merge review; closes on PR merge |
+| [#14](https://github.com/AlfaBlok/epicspine-skill/issues/14) | Ticket worker | /root/workflow | Add a short installation quickstart and a completed runnable example | review | #11, #12, #13 | [PR #16](https://github.com/AlfaBlok/epicspine-skill/pull/16); codex/audit-onboarding | d6a6d026430bab11430986a9258f85844564f8b4 | Issue acceptance | bfbc2617; independent acceptance PASS at df3908e | 2026-09-06 | Merge review; closes on PR merge |
+| [#15](https://github.com/AlfaBlok/epicspine-skill/issues/15) | Ticket worker | /root/ci | Run validator regression tests in GitHub Actions | review | none | [PR #16](https://github.com/AlfaBlok/epicspine-skill/pull/16); codex/audit-ci | 88c3c0cf3cff02bc36a8c11234a27f2a7450a0c5 | Issue acceptance | 42e7e143; independent acceptance PASS at df3908e | 2026-09-06 | Merge review; closes on PR merge |
 
 ## Branch And Integration
 
@@ -108,7 +108,17 @@ Each ticket has a 90-minute budget and records assignment, branch, base, worktre
 
 ## Validation Evidence
 
-Baseline at e909cc8: python3 -B -m unittest discover -s tests -v passes nine tests. Audit probes demonstrate malformed row skipping, empty-field swallowing and unchecked issue references. The initial coordination spine has no structural errors under --graph. Current --strict fails on unconditional v2 warnings (known #11); revalidate after dialect repair. Final validation is pending worker commits and independent review.
+Frozen implementation revision: `df3908e568b12f10abb3182027f9c6f1a35d4699`. Independent tester /root/ci reports all six acceptance packages pass; detailed evidence is posted to [PR #16](https://github.com/AlfaBlok/epicspine-skill/pull/16).
+
+- Python 3.10.17 and 3.14.0: `python -B -m unittest discover -s tests -v` — 34/34 pass on each.
+- Example, v1/v2 fixtures and coordination spine: separate `--strict --graph` runs — all OK. Manager also personally ran strict example/spine/fixture validation successfully.
+- README install snippet in a temporary child HOME: all nine skill files copied byte-identically; a second install exits 1 and preserves an existing customized tree.
+- README/example local links resolve; exact documented commands succeed.
+- [GitHub push matrix](https://github.com/AlfaBlok/epicspine-skill/actions/runs/33997806296) and [PR matrix](https://github.com/AlfaBlok/epicspine-skill/actions/runs/33997807966) pass on Python 3.10 and 3.14.
+
+The original nine-test baseline passed despite the audit gaps. The former unconditional v2 warnings are resolved by #11; strict v1 validation now passes. The final coordination-only reconciliation is validated separately without changing the tested implementation.
+
+Residual limits: validation checks recorded structure and uses keyword heuristics for some prose contracts; it does not prove execution or verify remote issue existence. Contract sections require one contiguous pipe-led Markdown table. The original checkout and installed skill remain unchanged; PR merge and installed-skill rollout are separate steps.
 
 ## Handoff Journal
 
@@ -141,3 +151,7 @@ Integrated #10 (16 tests), #13 (scoped docs review), and #15 (hosted Python 3.10
 ### 2026-09-06 — validator repairs integrated, onboarding dispatched
 
 #12 and #11 discovery correction integrated at d6a6d026430bab11430986a9258f85844564f8b4; worker reports 34 tests passing. #14 assigned to /root/workflow on codex/audit-onboarding at that SHA. /root/ci reviews the last validator changes before final combined verification. All six tickets have now been dispatched.
+
+### 2026-09-06 — independent acceptance complete
+
+All six issue packages pass at df3908e. Reviewer findings were routed to subagents and fixed before acceptance. Manager corrected stale coordination branch/base pointers and validation text; no manager implementation changes were made. PR #16 is the reviewable deliverable, with issues kept open until merge.
