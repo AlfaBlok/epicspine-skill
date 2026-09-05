@@ -283,7 +283,7 @@ class MarkdownParserTests(unittest.TestCase):
             for malformed in ("extra", "missing"):
                 source = self.source()
                 original = next(line for line in source.splitlines() if line.startswith("| draft | Planner"))
-                row = original.replace("| draft | Planner", "| #10 | Planner").replace("| draft | - |", f"| {status} | - |")
+                row = original.replace("| draft | Planner", "| https://github.com/example/repo/issues/10 | Planner").replace("| draft | - |", f"| {status} | - |")
                 row = row + " extra |" if malformed == "extra" else row.rsplit("|", 2)[0] + "|"
                 source = source.replace(original, row)
                 line = source.splitlines().index(row) + 1
@@ -300,7 +300,7 @@ class MarkdownParserTests(unittest.TestCase):
     def test_escaped_pipes_preserve_rows_and_semantic_checks(self):
         source = self.source().replace("Validate graph", r"Validate graph \| parser")
         self.assertEqual([], self.validate_source(source).errors)
-        source = source.replace("| draft | - |", "| done | - |")
+        source = source.replace("| draft | Planner", "| https://github.com/example/repo/issues/10 | Planner").replace("| draft | - |", "| done | - |")
         self.assertTrue(any("done without evidence" in error for error in self.validate_source(source).errors))
         header, rows = validate_spine.parse_table("| A | B |\n|:---|---:|\n| `left \\| right` | final \\|\n")
         self.assertEqual(["A", "B"], header)
@@ -343,6 +343,96 @@ class MarkdownParserTests(unittest.TestCase):
         self.assertIn("Execution Cursor unresolved field: Last attempted", result.warnings)
         self.assertNotIn("Execution Cursor missing field: Result", result.errors)
         self.assertEqual("Fixture is ready.", validate_spine.parse_key_values(result.sections["Execution Cursor"])["Result"])
+
+
+class LedgerValidationTests(unittest.TestCase):
+    issue = "https://github.com/example/repo/issues/12"
+
+    def document(self, *, issue=None, status="active", changes=None):
+        source = spine_text(spine_id="root", spine_type="root", root="self", parent="none")
+        original = next(line for line in source.splitlines() if line.startswith("| draft | Planner"))
+        header, _ = validate_spine.parse_table(validate_spine.parse_sections(source)["Issue Ledger"])
+        values = {
+            "Issue": self.issue if issue is None else issue,
+            "Role": "Ticket worker", "Owner / Assignment": "worker-12",
+            "Title": "Validate command", "Status": status, "Depends On": "none",
+            "PR/Branch": "codex/issue-12", "Base": "abc1234",
+            "Acceptance": "Tests pass", "Latest Evidence": "Regression suite passed",
+            "Last Verified": "2026-09-06", "Next Action": "Manager review",
+        }
+        values.update(changes or {})
+        row = "| " + " | ".join(values[name] for name in header) + " |"
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "root.md"
+            path.write_text(source.replace(original, row), encoding="utf-8")
+            return validate_spine.validate_local(path)
+
+    def test_all_documented_statuses_accept_concrete_issue(self):
+        for status in ("draft", "ready", "active", "blocked", "review", "testing", "done", "superseded", "deferred"):
+            with self.subTest(status=status):
+                self.assertEqual([], self.document(status=status).errors)
+        self.assertEqual([], self.document(status="ACTIVE").errors)
+
+    def test_bare_markdown_and_enterprise_issue_urls(self):
+        for issue in (
+            self.issue,
+            f"[#12]({self.issue})",
+            self.issue + "#issuecomment-123",
+            self.issue + "/?view=compact",
+            "https://git.example.internal/team/repo_name/issues/123",
+            "[Enterprise issue](https://git.example.internal:8443/team/repo.name/issues/123)",
+        ):
+            with self.subTest(issue=issue):
+                self.assertEqual([], self.document(issue=issue).errors)
+
+    def test_invalid_issue_references_fail(self):
+        invalid = (
+            "not-a-github-issue", "#12", "", "none", "draft", "<issue URL>",
+            "https://github.com/example/repo/pull/12",
+            "https://github.com/example/repo/issues", "https://github.com/example/repo/issues/",
+            "https://github.com/example/repo/issues/twelve", "https://github.com/example/repo/issues/0",
+            "https://github.com/example/repo/issues/-1", "https://github.com/example/repo/issues/12/extra",
+            "http://github.com/example/repo/issues/12", "https:///example/repo/issues/12",
+            "https://user:password@github.com/example/repo/issues/12",
+            "https://github..com/example/repo/issues/12", "https://github.com:99999/example/repo/issues/12",
+            "https://github.com/../repo/issues/12", "https://github.com/example/../issues/12",
+            f"See {self.issue}", f"[#12]({self.issue}) trailing text",
+            "[#12](https://github.com/example/repo/pull/12)",
+        )
+        for issue in invalid:
+            with self.subTest(issue=issue):
+                result = self.document(issue=issue)
+                self.assertTrue(any("has invalid Issue:" in error for error in result.errors), result.errors)
+
+    def test_non_draft_statuses_cannot_use_draft_reference(self):
+        for status in ("ready", "active", "blocked", "review", "testing", "done", "superseded", "deferred"):
+            with self.subTest(status=status):
+                self.assertTrue(any("has invalid Issue:" in error for error in self.document(issue="draft", status=status).errors))
+        self.assertEqual([], self.document(issue="draft", status="draft").errors)
+
+    def test_unknown_statuses_and_real_row_placeholders_fail(self):
+        for status in ("", "unknown", "closed", "in progress", "<status>", "active/done"):
+            with self.subTest(status=status):
+                result = self.document(status=status)
+                self.assertTrue(any("has invalid Status:" in error for error in result.errors), result.errors)
+        result = self.document(issue="not-an-issue", status="active", changes={"Title": "<title>"})
+        self.assertTrue(any("has invalid Issue:" in error for error in result.errors))
+
+    def test_deliberate_draft_template_status_warns(self):
+        result = self.document(issue="draft", status="<status>")
+        self.assertEqual([], result.errors)
+        self.assertIn("ledger row 1 unresolved field: Status", result.warnings)
+        result = self.document(issue="draft", status="unknown")
+        self.assertTrue(any("has invalid Status:" in error for error in result.errors))
+
+    def test_existing_active_metadata_and_done_evidence_checks_remain(self):
+        for column in ("Owner / Assignment", "PR/Branch", "Base", "Last Verified", "Next Action"):
+            for status in ("active", "blocked", "review", "testing"):
+                with self.subTest(column=column, status=status):
+                    result = self.document(status=status, changes={column: ""})
+                    self.assertIn(f"ledger row 1 ({self.issue}) is {status} but {column} is empty", result.errors)
+        result = self.document(status="done", changes={"Latest Evidence": ""})
+        self.assertIn(f"ledger row 1 ({self.issue}) is done without evidence", result.errors)
 
 
 ROOT = Path(__file__).parents[1]
@@ -478,6 +568,27 @@ class ValidatorCompatibilityTests(unittest.TestCase):
                 code, result = self.run_source(self.source().replace(original, replacement), "--strict")
                 self.assertEqual(1, code)
                 self.assertEqual([expected], result["warnings"])
+
+    def test_discovery_values_must_be_resolved_for_strict_v2(self):
+        original = self.source()
+        values = validator.parse_key_values(validator.parse_sections(original)["Architecture And Context"])
+        fields = ("Search scope", "Search budget", "Search evidence", "Method rationale")
+        for field in fields:
+            for unresolved in ("", "   ", "<fill this>", "tbd"):
+                with self.subTest(field=field, unresolved=unresolved):
+                    source = original.replace(f"{field}: {values[field]}", f"{field}: {unresolved}")
+                    code, result = self.run_source(source, "--strict")
+                    self.assertEqual(1, code)
+                    self.assertEqual([], result["errors"])
+                    self.assertEqual([f"v2 discovery unresolved field: {field}"], result["warnings"])
+        source = original
+        for field in fields:
+            source = source.replace(f"{field}: {values[field]}", f"{field}:")
+        code, result = self.run_source(source, "--strict")
+        self.assertEqual(1, code)
+        self.assertEqual([f"v2 discovery unresolved field: {field}" for field in fields], result["warnings"])
+        code, result = self.run_source(source, "--strict", "--dialect", "v1")
+        self.assertEqual(0, code, result)
 
     def test_template_warnings_are_placeholders_not_missing_contracts(self):
         template = (ROOT / "skill/epic-spine/assets/epic-spine-template.md").read_text()
