@@ -4,8 +4,8 @@ Status: ready
 Created: 2026-08-16
 Updated: 2026-08-16
 Repository: example/repo
-Primary document: legacy-v1.md
-Spine ID: legacy-v1
+Primary document: legacy-migration.md
+Spine ID: synthetic-migration
 Spine Type: root
 Spine dialect: v1
 Root spine: self
@@ -40,6 +40,10 @@ No child spines.
 
 Prove the connected-spine contract.
 
+## Non-Goals
+
+No remote changes or deployment.
+
 ## Definition Of Done
 
 - [ ] Graph validation passes.
@@ -47,6 +51,7 @@ Prove the connected-spine contract.
 ## Current State
 
 Phase: implementation
+Last verified: 2026-09-06T14:00:00Z
 Next action: Run validation.
 
 ## Execution Cursor
@@ -66,7 +71,7 @@ Read this document.
 
 | Date | Outcome | Decision / Attempt | Durable Summary | Evidence | Revisit When |
 |---|---|---|---|---|---|
-| 2026-08-16 | accepted | Use the connected hierarchy | It gives every branch one owner. | issue-1 | n/a |
+| 2026-08-16 | rejected | Use the connected hierarchy | This standalone example needs no hierarchy. | [H-001](#draft-review) | When child ownership becomes real |
 
 ## Issue Ledger
 
@@ -92,7 +97,13 @@ Fixture assembled for automated validator acceptance; no product execution is cl
 
 ## Handoff Journal
 
-Fixture assembled for automated validator acceptance; no product execution is claimed.
+### Draft review
+
+Historical synthetic handoff with ID H-001. Evidence: [original acceptance](#definition-of-done), [relative source](legacy-v1.md), and [issue](https://github.com/example/repo/issues/1).
+
+<a id="old-evidence"></a>
+
+This evidence marker must remain reachable from old links.
 
 ## Open Questions
 

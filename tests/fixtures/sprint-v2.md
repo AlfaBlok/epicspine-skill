@@ -64,14 +64,14 @@ Phase: planning
 Fresh base commit: abc1234
 Pinned-base rule: pinned; no rebases until the journey passes.
 Dispatch condition: none
-Next action: Execute the fixture journey.
+Next action: Run validation.
 Blockers: none
 
 ## Execution Cursor
 
 Last attempted: Created the fixture.
 Result: Fixture is ready.
-Execution status: active
+Execution status: ready
 Waiting on: nothing
 Approved work: Run all validation tests.
 Next action: Run validation.

@@ -66,7 +66,7 @@ Phase: planning
 Fresh base commit: d6a6d026430bab11430986a9258f85844564f8b4
 Pinned-base rule: pinned; no rebases until the journey passes.
 Dispatch condition: none
-Next action: Execute the example journey only when explicitly assigned.
+Next action: Run the first documented CLI command.
 Blockers: none
 
 ## Execution Cursor

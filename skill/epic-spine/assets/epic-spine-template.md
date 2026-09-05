@@ -1,5 +1,10 @@
 # EPIC: <name>
 
+<!-- Full legacy profile. Prefer compact-spine-template.md for small active epics;
+keep overlapping Current State and Execution Cursor facts consistent until migration. -->
+
+Spine profile: full
+
 Status: draft | ready | active | pending — DISPATCH ONLY AFTER <condition> | CLOSED | ON HOLD | SUPERSEDED by <path> — do not execute from this document
 Created: YYYY-MM-DD
 Updated: YYYY-MM-DD
