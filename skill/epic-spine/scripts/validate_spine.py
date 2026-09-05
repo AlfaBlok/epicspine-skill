@@ -90,6 +90,9 @@ REQUIRED_LEDGER_COLUMNS = (
     "Next Action",
 )
 
+DIALECTS = {"v1", "v2"}
+ACCEPTANCE_SURFACES = {"browser", "cli", "library", "infrastructure", "documentation"}
+
 ACTIVE_STATUSES = {"active", "blocked", "review", "testing"}
 DECISION_OUTCOMES = {"accepted", "rejected", "superseded"}
 EMPTY_VALUES = {"", "-", "none", "n/a", "tbd", "<sha>", "<task/thread/agent>"}
@@ -243,24 +246,33 @@ def contains_all(value: str, *terms: str) -> bool:
 
 
 def dialect_warnings(text: str, fields: dict[str, str], sections: dict[str, str]) -> list[str]:
-    """Return additive v2 guidance; never invalidate a legacy v1 spine by default."""
+    """Check the selected v2 contract; strict mode promotes these diagnostics."""
     warnings: list[str] = []
     dod = sections.get("Definition Of Done", "")
     if not (re.search(r"(?im)^\s*SHIP\b", dod) and re.search(r"(?im)^\s*HARDEN\b", dod)):
-        warnings.append("v2 Definition Of Done should have SHIP and HARDEN tiers; flat v1 checklists remain supported")
+        warnings.append("v2 Definition Of Done should have SHIP and HARDEN tiers")
     else:
         ship = re.split(r"(?im)^\s*HARDEN\b", dod, maxsplit=1)[0]
         steps = re.findall(r"(?m)^\s*-\s*\[[ xX]\]\s*(\d+)\.", ship)
         if not 5 <= len(steps) <= 12:
             warnings.append("v2 SHIP journey should contain 5-12 numbered checkbox steps")
         for label, terms in (
-            ("real browser and live deployment", ("real browser", "live")),
-            ("first-breakage fix/deploy/restart loop", ("first breakage", "deploy", "step 1")),
-            ("per-step screenshots", ("screenshot", "step")),
-            ("test-package handoff", ("manually walked", "now you test")),
+            ("personal execution", ("personally",)),
+            ("first-failure repair/restart loop", ("first failure", "dispatch", "restart", "step 1")),
+            ("reproducible test-package handoff", ("test package", "exact commit", "environment", "limits")),
         ):
             if not contains_all(ship, *terms):
                 warnings.append(f"v2 SHIP journey should state the {label} contract")
+        surface = normalize(fields.get("Acceptance surface", "")).lower()
+        surface_terms = {
+            "browser": ("real browser", "live", "screenshot", "step"),
+            "cli": ("commands", "inputs", "exit codes", "outputs"),
+            "library": ("consumer example", "behavior checks"),
+            "infrastructure": ("authorized", "probes", "environment"),
+            "documentation": ("instructions", "rendered", "links", "examples"),
+        }
+        if surface in surface_terms and not contains_all(ship, *surface_terms[surface]):
+            warnings.append(f"v2 SHIP journey should state {surface} evidence: {', '.join(surface_terms[surface])}")
         for number, line in re.findall(r"(?m)^\s*-\s*\[[ xX]\]\s*(\d+)\.\s*(.+)$", ship):
             if "test package" not in line.lower() and not re.search(r"\b(PORT|DUPLICATE|BUILD)\b", line, re.I):
                 warnings.append(f"v2 SHIP step {number} lacks PORT/DUPLICATE/BUILD marking")
@@ -270,8 +282,8 @@ def dialect_warnings(text: str, fields: dict[str, str], sections: dict[str, str]
         warnings.append("v2 Epic-worker role should contain the manager mandate")
     if not (contains_all(roles, "Ticket worker", "FIRST ACTION", "git worktree add") and re.search(r"never .*?(checkout|switch)|never (checkout|switch)", roles, re.I | re.S)):
         warnings.append("v2 Ticket-worker role should require worktree first action and ban shared-clone checkout/switch")
-    if not ("Ticket worker" in roles and re.search(r"PORT/DUPLICATE.*fail|scratch.*duplicat.*fail", roles, re.I | re.S)):
-        warnings.append("v2 Ticket-worker role should make scratch duplication fail review")
+    if not contains_all(roles, "PORT/DUPLICATE", "adaptation", "validation"):
+        warnings.append("v2 Ticket-worker role should record reuse adaptations and validation")
 
     current = sections.get("Current State", "")
     if not contains_all(current, "base", "pinned", "no rebase"):
@@ -284,8 +296,12 @@ def dialect_warnings(text: str, fields: dict[str, str], sections: dict[str, str]
         warnings.append("SUPERSEDED status should name the replacement and say do not execute")
 
     decisions = sections.get("Decisions", "")
-    if not contains_all(decisions, "anything unanswered", "simplest option", "journal", "keep moving"):
-        warnings.append("v2 Decisions should include the simplest-option/journal/keep-moving catch-all")
+    if not contains_all(decisions, "safe", "reversible", "approved scope", "journal", "gate"):
+        warnings.append("v2 Decisions should constrain defaults to safe reversible choices within approved scope, journal uncertainty, and preserve gates")
+    discovery = sections.get("Architecture And Context", "")
+    for field in ("Search scope", "Search budget", "Search evidence", "Method rationale"):
+        if field not in parse_key_values(discovery):
+            warnings.append(f"v2 discovery missing field: {field}")
 
     ledger = sections.get("Issue Ledger", "")
     header, rows = parse_table(ledger)
@@ -308,22 +324,20 @@ def dialect_warnings(text: str, fields: dict[str, str], sections: dict[str, str]
                 if column in pos and is_empty(row[pos[column]]):
                     warnings.append(f"v2 ledger row {n} has no {column}")
         first = " ".join(rows[0][pos[name]] for name in ("Title", "Acceptance") if name in pos)
-        if not re.search(r"touchable|deploy|running|open|URL|login|script|demo|journey step", first, re.I):
+        if not re.search(r"touchable|observable|deploy|running|open|URL|login|script|demo|journey step|consumer|render|probe|command", first, re.I):
             warnings.append("v2 first ledger ticket should be the earliest human-touchable milestone")
 
     gates = sections.get("Human Gates", "")
     gate_header, gate_rows = parse_table(gates)
-    for required in ("Gate", "Human Owner", "Trigger", "Exact Approval / Input Required"):
+    for required in ("Gate", "Human Owner", "Trigger", "Exact Approval / Input Required", "What May Continue"):
         if required not in gate_header:
             warnings.append(f"v2 Human Gates should include column: {required}")
-    if not ("BLOCKED ON" in gates and re.search(r"entire (next )?(message|status)", gates, re.I)):
-        warnings.append("v2 Human Gates should state the entire-message BLOCKED ON protocol")
+    if not contains_all(gates, "BLOCKED ON", "stop dependent work", "independent authorized work", "silence", "approval"):
+        warnings.append("v2 Human Gates should stop dependent work, allow only independent authorized work, and never treat silence as approval")
 
     recovery = sections.get("Recovery And Takeover", "")
     if not contains_all(recovery, "manager reassigns", "silent past", "budget"):
         warnings.append("v2 Recovery should reassign tickets silent past budget")
-    if "none permitted" not in sections.get("Open Questions", "").lower():
-        warnings.append("v2 Open Questions healthy state is: None permitted")
 
     whole = text.lower()
     if not ("30 min" in whole and "lap/state | blocker | eta" in whole and "two consecutive eta" in whole):
@@ -342,7 +356,7 @@ def dialect_warnings(text: str, fields: dict[str, str], sections: dict[str, str]
     return warnings
 
 
-def validate_local(path: Path) -> SpineDocument:
+def validate_local(path: Path, *, dialect: str = "auto") -> SpineDocument:
     errors: list[str] = []
     warnings: list[str] = []
     if not path.is_file():
@@ -351,6 +365,23 @@ def validate_local(path: Path) -> SpineDocument:
     text = path.read_text(encoding="utf-8")
     fields = parse_fields(text)
     sections = parse_sections(text)
+
+    # A supported CLI selection overrides the declaration; it cannot conceal an
+    # invalid declaration. Missing declarations select legacy v1 in auto mode.
+    if dialect not in DIALECTS | {"auto"}:
+        errors.append(f"unsupported dialect override: {dialect}; expected auto, v1 or v2")
+    declared_dialect = normalize(fields.get("Spine dialect", "")).lower()
+    if "Spine dialect" in fields and declared_dialect not in DIALECTS:
+        errors.append(f"unsupported Spine dialect: {declared_dialect or '(empty)'}; expected v1 or v2")
+    selected_dialect = (declared_dialect or "v1") if dialect == "auto" else dialect
+    if selected_dialect == "v2":
+        surface = normalize(fields.get("Acceptance surface", "")).lower()
+        template_choices = [part.strip() for part in surface.split("|")]
+        is_surface_template = len(template_choices) == len(ACCEPTANCE_SURFACES) and set(template_choices) == ACCEPTANCE_SURFACES
+        if not surface or is_empty(surface) or is_surface_template:
+            warnings.append("v2 unresolved Acceptance surface: choose browser, cli, library, infrastructure or documentation")
+        elif surface not in ACCEPTANCE_SURFACES:
+            errors.append(f"unsupported Acceptance surface: {surface}; expected browser, cli, library, infrastructure or documentation")
 
     # Validate the table syntax once, before semantic and graph readers reuse it.
     for match in re.finditer(r"(?m)^## (.+?)[ \t]*$", text):
@@ -466,7 +497,8 @@ def validate_local(path: Path) -> SpineDocument:
     if "YYYY-MM-DD" in fields.get("Updated", ""):
         warnings.append("Updated still contains a template date")
 
-    warnings.extend(dialect_warnings(text, fields, sections))
+    if selected_dialect == "v2":
+        warnings.extend(dialect_warnings(text, fields, sections))
 
     return SpineDocument(path.resolve(), fields, sections, errors, warnings)
 
@@ -572,15 +604,17 @@ def result_for(doc: SpineDocument) -> dict[str, object]:
     return {"path": str(doc.path), "errors": doc.errors, "warnings": doc.warnings}
 
 
-def validate(path: Path) -> dict[str, object]:
+def validate(path: Path, *, dialect: str = "auto") -> dict[str, object]:
     """Validate one spine and return the legacy dictionary result shape."""
-    return result_for(validate_local(path))
+    return result_for(validate_local(path, dialect=dialect))
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("paths", nargs="+", type=Path)
-    parser.add_argument("--strict", action="store_true", help="Treat warnings as failures")
+    parser.add_argument("--strict", action="store_true", help="Treat selected-dialect and unresolved-field warnings as failures")
+    parser.add_argument("--dialect", choices=("auto", "v1", "v2"), default="auto",
+                        help="Override a supported Spine dialect declaration; auto uses the declaration or defaults to v1")
     parser.add_argument(
         "--graph",
         action="store_true",
@@ -589,7 +623,7 @@ def main() -> int:
     parser.add_argument("--json", action="store_true", help="Emit machine-readable results")
     args = parser.parse_args()
 
-    documents = [validate_local(path) for path in args.paths]
+    documents = [validate_local(path, dialect=args.dialect) for path in args.paths]
     if args.graph:
         validate_graph(documents)
 
