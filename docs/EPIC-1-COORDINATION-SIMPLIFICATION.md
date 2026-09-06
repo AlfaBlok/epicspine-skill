@@ -39,7 +39,7 @@ Reduce duplicated current state and manual synchronization while preserving evid
 - [x] One authoritative current-state block with compatible legacy conflict detection and a compact active profile.
 - [x] Explicit GitHub and local ticket references without competing mutable ledgers.
 - [x] Deterministic direct-child rollup checks/previews, truthful freshness and authority-aware apply/proposal behavior.
-- [ ] Strict validation rejects objective defects and unresolved required data; prose guidance remains advisory.
+- [x] Strict validation rejects objective defects and unresolved required data; prose guidance remains advisory.
 - [ ] Synthetic examples, focused regression suite, independent review and reviewable PR pass on a named revision.
 
 ## Current State
@@ -51,12 +51,12 @@ Fresh base commit: a8522464235db77d1eaca4dc03d9556d076e6bc7
 
 ## Execution Cursor
 
-Last attempted: Integrated independently accepted #20 at b4967e82ac20cc2dba285034e7665fc9334863cc; dispatched independent #21 review at 340575ac994f2237d036c99d48a2a9477c2cfc45.
-Result: Integrated 73-test suite passes. #20 accepted; #21 candidate reports 70 tests on its own base and remains under independent review.
+Last attempted: Integrated #21 correction at 465d27c901f350a7d9402994c121473f12ad427c and dispatched final independent combined acceptance.
+Result: All 85 combined tests and strict manager graph pass. Superseded wording is advisory; conflicting state and missing evidence remain failures.
 Execution status: active
-Waiting on: #21 superseded-wording correction
+Waiting on: final combined acceptance and hosted CI
 Approved work: User-authorized backlog delivery through subagents, isolated branches, issue comments, reviews and PRs.
-Next action: Verify #21 focused correction, then integrate and perform final combined acceptance.
+Next action: Record final acceptance and hand off PR #22 for review; no main merge or installed rollout.
 
 ## Bootstrap Map
 
@@ -82,7 +82,7 @@ Next action: Verify #21 focused correction, then integrate and perform final com
 | [#18](https://github.com/AlfaBlok/epicspine-skill/issues/18) | Ticket worker | /root/parser | Compact authoritative state | review | PR #16 pinned | codex/compact-state | 6f63d378e0ed8e8adffdda89039f8a0c16069909 | #18 criteria | 17b2a8 accepted; integrated 48 tests pass | 2026-09-06 | PR #22 review |
 | [#19](https://github.com/AlfaBlok/epicspine-skill/issues/19) | Ticket worker | /root/parser | Explicit ticket backends | review | #18 candidate pinned; review pending | codex/ticket-backends | 6512dce8c202ff9bc79730adc2f83ec8e5835ddd | #19 criteria | 54c44e1 accepted; integrated 60 tests pass | 2026-09-06 | PR #22 review |
 | [#20](https://github.com/AlfaBlok/epicspine-skill/issues/20) | Ticket worker | /root/parser | Freshness-aware rollups | review | #19 candidate pinned; review pending | codex/execution-rollups | 89b3c1477a2419281c5733f7e3e7cbccf4e0e620 | #20 criteria | fe6a638 independently accepted; integrated 73 tests pass | 2026-09-06 | PR #22 review |
-| [#21](https://github.com/AlfaBlok/epicspine-skill/issues/21) | Ticket worker | /root/workflow | Structural strictness | review | #18, #19 accepted | codex/structural-validation | 54c44e163190857264198153ba725b5c4365d932 | #21 criteria | 340575a reviewed; one phrase-dependent P2 returned | 2026-09-06 | /root/workflow correction |
+| [#21](https://github.com/AlfaBlok/epicspine-skill/issues/21) | Ticket worker | /root/workflow | Structural strictness | review | #18, #19 accepted | codex/structural-validation | 54c44e163190857264198153ba725b5c4365d932 | #21 criteria | 5d840a3 corrected; integrated 85 tests pass | 2026-09-06 | Final combined review |
 
 ## Branch And Integration
 
@@ -121,3 +121,7 @@ Dispatch contract: role ticket worker; this spine read-only; bound issue defines
 ### 2026-09-06 — final shared review finding
 
 Independent #21 review found one P2: equivalent superseded wording still fails strict through a literal-phrase check classified as required data. Returned to implementer. Candidate 70 tests and disposable combined 83 tests pass; generated no-blocker rollups pass strict graph. Acceptance awaits focused correction.
+
+### 2026-09-06 — all implementations integrated
+
+Final implementation revision 465d27c901f350a7d9402994c121473f12ad427c passes 85 combined tests and strict manager graph. Independent combined review and current hosted CI remain before final handoff.
