@@ -464,7 +464,8 @@ def read_tickets(path: Path, fields: dict[str, str], sections: dict[str, str]) -
                 if is_empty(ticket_fields.get(label, "")):
                     ticket_errors.append(f"local ticket {reference} missing or unresolved field: {label}")
                 preamble = re.split(r"(?m)^## ", text, maxsplit=1)[0]
-                if len(re.findall(rf"(?m)^{re.escape(label)}:", preamble)) > 1:
+                labels = [normalize(match.group(1)) for match in re.finditer(r"(?m)^([A-Za-z][A-Za-z ]+):", preamble)]
+                if labels.count(label) > 1:
                     ticket_errors.append(f"local ticket {reference} has duplicate field: {label}")
             identity = ticket_fields.get("Ticket ID", "")
             if not re.fullmatch(r"[A-Za-z][A-Za-z0-9_.-]*", identity):
