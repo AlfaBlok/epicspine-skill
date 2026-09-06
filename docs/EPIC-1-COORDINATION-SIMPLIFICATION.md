@@ -36,7 +36,7 @@ Reduce duplicated current state and manual synchronization while preserving evid
 
 ## Definition Of Done
 
-- [ ] One authoritative current-state block with compatible legacy conflict detection and a compact active profile.
+- [x] One authoritative current-state block with compatible legacy conflict detection and a compact active profile.
 - [ ] Explicit GitHub and local ticket references without competing mutable ledgers.
 - [ ] Deterministic direct-child rollup checks/previews, truthful freshness and authority-aware apply/proposal behavior.
 - [ ] Strict validation rejects objective defects and unresolved required data; prose guidance remains advisory.
@@ -51,12 +51,12 @@ Fresh base commit: a8522464235db77d1eaca4dc03d9556d076e6bc7
 
 ## Execution Cursor
 
-Last attempted: Received #18 candidate 6512dce8c202ff9bc79730adc2f83ec8e5835ddd and queued independent review; dispatched #19 against that exact candidate.
-Result: #18 worker reports 46 tests passing; independent acceptance remains pending. #19 may proceed against the pinned contract and must absorb review corrections.
+Last attempted: Integrated independently reviewed #18 plus manager-verified navigation corrections at fe91d3be962c6a0087097c364ae083a0d1f52ac4; dispatched #19 review, #20 implementation against its pinned candidate.
+Result: Integrated 48-test suite and strict manager graph pass. #19 candidate 89b3c1477a2419281c5733f7e3e7cbccf4e0e620 reports 60 tests; independent acceptance pending.
 Execution status: active
-Waiting on: worker handoffs
+Waiting on: #19 review and #20 handoff
 Approved work: User-authorized backlog delivery through subagents, isolated branches, issue comments, reviews and PRs.
-Next action: Independently review #18; review #19 handoff before dispatching #20/#21.
+Next action: Integrate accepted #19; review #20; dispatch #21 after shared APIs settle.
 
 ## Bootstrap Map
 
@@ -79,9 +79,9 @@ Next action: Independently review #18; review #19 handoff before dispatching #20
 
 | Issue | Role | Owner / Assignment | Title | Status | Depends On | PR/Branch | Base | Acceptance | Latest Evidence | Last Verified | Next Action |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| [#18](https://github.com/AlfaBlok/epicspine-skill/issues/18) | Ticket worker | /root/parser | Compact authoritative state | review | PR #16 pinned | codex/compact-state | 6f63d378e0ed8e8adffdda89039f8a0c16069909 | #18 criteria | 6512dce; 46 worker tests pass | 2026-09-06 | Independent review |
-| [#19](https://github.com/AlfaBlok/epicspine-skill/issues/19) | Ticket worker | /root/parser | Explicit ticket backends | active | #18 candidate pinned; review pending | codex/ticket-backends | 6512dce8c202ff9bc79730adc2f83ec8e5835ddd | #19 criteria | Assigned isolated worker | 2026-09-06 | Review handoff |
-| [#20](https://github.com/AlfaBlok/epicspine-skill/issues/20) | Ticket worker | unassigned | Freshness-aware rollups | ready | #18, #19 | codex/execution-rollups | a8522464235db77d1eaca4dc03d9556d076e6bc7 | #20 criteria | Audit baseline | 2026-09-06 | Wait for contracts |
+| [#18](https://github.com/AlfaBlok/epicspine-skill/issues/18) | Ticket worker | /root/parser | Compact authoritative state | review | PR #16 pinned | codex/compact-state | 6f63d378e0ed8e8adffdda89039f8a0c16069909 | #18 criteria | 17b2a8 accepted; integrated 48 tests pass | 2026-09-06 | PR #22 review |
+| [#19](https://github.com/AlfaBlok/epicspine-skill/issues/19) | Ticket worker | /root/parser | Explicit ticket backends | review | #18 candidate pinned; review pending | codex/ticket-backends | 6512dce8c202ff9bc79730adc2f83ec8e5835ddd | #19 criteria | 89b3c14; 60 worker tests pass | 2026-09-06 | /root/workflow independent review |
+| [#20](https://github.com/AlfaBlok/epicspine-skill/issues/20) | Ticket worker | /root/parser | Freshness-aware rollups | active | #19 candidate pinned; review pending | codex/execution-rollups | 89b3c1477a2419281c5733f7e3e7cbccf4e0e620 | #20 criteria | Isolated dispatch; consumer API frozen | 2026-09-06 | Review handoff |
 | [#21](https://github.com/AlfaBlok/epicspine-skill/issues/21) | Ticket worker | unassigned | Structural strictness | ready | #18, #19 | codex/structural-validation | a8522464235db77d1eaca4dc03d9556d076e6bc7 | #21 criteria | Audit baseline | 2026-09-06 | Sequence shared edits |
 
 ## Branch And Integration
@@ -98,7 +98,7 @@ Each issue records exact owner, base, worktree, latest commit, checks, blocker a
 
 ## Validation Evidence
 
-Baseline: PR #16 has independent 34-test passes on Python 3.10 and 3.14, strict example/fixture/spine validation, and hosted CI. New implementation is pending.
+Baseline: PR #16 has independent 34-test passes on Python 3.10 and 3.14, strict example/fixture/spine validation, and hosted CI. #18 integrated at fe91d3be962c6a0087097c364ae083a0d1f52ac4: 48 tests and strict manager graph pass after independent review corrections. #19/#20 acceptance pending.
 
 ## Handoff Journal
 
