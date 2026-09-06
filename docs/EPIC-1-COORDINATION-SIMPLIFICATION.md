@@ -37,7 +37,7 @@ Reduce duplicated current state and manual synchronization while preserving evid
 ## Definition Of Done
 
 - [x] One authoritative current-state block with compatible legacy conflict detection and a compact active profile.
-- [ ] Explicit GitHub and local ticket references without competing mutable ledgers.
+- [x] Explicit GitHub and local ticket references without competing mutable ledgers.
 - [ ] Deterministic direct-child rollup checks/previews, truthful freshness and authority-aware apply/proposal behavior.
 - [ ] Strict validation rejects objective defects and unresolved required data; prose guidance remains advisory.
 - [ ] Synthetic examples, focused regression suite, independent review and reviewable PR pass on a named revision.
@@ -51,12 +51,12 @@ Fresh base commit: a8522464235db77d1eaca4dc03d9556d076e6bc7
 
 ## Execution Cursor
 
-Last attempted: Integrated independently reviewed #18 plus manager-verified navigation corrections at fe91d3be962c6a0087097c364ae083a0d1f52ac4; dispatched #19 review, #20 implementation against its pinned candidate.
-Result: Integrated 48-test suite and strict manager graph pass. #19 candidate 89b3c1477a2419281c5733f7e3e7cbccf4e0e620 reports 60 tests; independent acceptance pending.
+Last attempted: Resumed after worker usage interruption; integrated #19 correction and backend implementation at 8b9502e5f86f6d27c1f47e93381d2a83162fb007; resumed #20 and dispatched #21 plus independent #20 review.
+Result: Integrated 60-test suite passes. #19 duplicate-field review finding corrected. #20 saved work resumed at 398632b; candidate acceptance pending.
 Execution status: active
-Waiting on: #19 review and #20 handoff
+Waiting on: #20 handoff/review and #21 implementation
 Approved work: User-authorized backlog delivery through subagents, isolated branches, issue comments, reviews and PRs.
-Next action: Integrate accepted #19; review #20; dispatch #21 after shared APIs settle.
+Next action: Review and integrate #20/#21 when accepted; keep consumer API changes coordinated.
 
 ## Bootstrap Map
 
@@ -80,9 +80,9 @@ Next action: Integrate accepted #19; review #20; dispatch #21 after shared APIs 
 | Issue | Role | Owner / Assignment | Title | Status | Depends On | PR/Branch | Base | Acceptance | Latest Evidence | Last Verified | Next Action |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | [#18](https://github.com/AlfaBlok/epicspine-skill/issues/18) | Ticket worker | /root/parser | Compact authoritative state | review | PR #16 pinned | codex/compact-state | 6f63d378e0ed8e8adffdda89039f8a0c16069909 | #18 criteria | 17b2a8 accepted; integrated 48 tests pass | 2026-09-06 | PR #22 review |
-| [#19](https://github.com/AlfaBlok/epicspine-skill/issues/19) | Ticket worker | /root/parser | Explicit ticket backends | review | #18 candidate pinned; review pending | codex/ticket-backends | 6512dce8c202ff9bc79730adc2f83ec8e5835ddd | #19 criteria | 89b3c14; 60 worker tests pass | 2026-09-06 | /root/workflow independent review |
-| [#20](https://github.com/AlfaBlok/epicspine-skill/issues/20) | Ticket worker | /root/parser | Freshness-aware rollups | active | #19 candidate pinned; review pending | codex/execution-rollups | 89b3c1477a2419281c5733f7e3e7cbccf4e0e620 | #20 criteria | Isolated dispatch; consumer API frozen | 2026-09-06 | Review handoff |
-| [#21](https://github.com/AlfaBlok/epicspine-skill/issues/21) | Ticket worker | unassigned | Structural strictness | ready | #18, #19 | codex/structural-validation | a8522464235db77d1eaca4dc03d9556d076e6bc7 | #21 criteria | Audit baseline | 2026-09-06 | Sequence shared edits |
+| [#19](https://github.com/AlfaBlok/epicspine-skill/issues/19) | Ticket worker | /root/parser | Explicit ticket backends | review | #18 candidate pinned; review pending | codex/ticket-backends | 6512dce8c202ff9bc79730adc2f83ec8e5835ddd | #19 criteria | 54c44e1 accepted; integrated 60 tests pass | 2026-09-06 | PR #22 review |
+| [#20](https://github.com/AlfaBlok/epicspine-skill/issues/20) | Ticket worker | /root/parser | Freshness-aware rollups | active | #19 candidate pinned; review pending | codex/execution-rollups | 89b3c1477a2419281c5733f7e3e7cbccf4e0e620 | #20 criteria | Resumed saved work; /root/ci reviewer | 2026-09-06 | Review handoff |
+| [#21](https://github.com/AlfaBlok/epicspine-skill/issues/21) | Ticket worker | /root/workflow | Structural strictness | active | #18, #19 accepted | codex/structural-validation | 54c44e163190857264198153ba725b5c4365d932 | #21 criteria | Isolated dispatch; validator ownership | 2026-09-06 | Review handoff |
 
 ## Branch And Integration
 
@@ -113,3 +113,7 @@ None blocking the first wave. Contract choices remain bounded by issue acceptanc
 ## Appendix
 
 Dispatch contract: role ticket worker; this spine read-only; bound issue defines scope; exact base and branch recorded at assignment; dedicated writable checkout; post progress and final tested SHA to issue; manager integrates and independent reviewer verifies. No implementation by manager. Go.
+
+### 2026-09-06 — resumed delivery
+
+#19 integrated at 8b9502e5f86f6d27c1f47e93381d2a83162fb007; 60 tests pass. Reused existing workers after usage interruption. #20 owns new rollup files; #21 owns validator diagnostics and explicit no-blocker compatibility.
