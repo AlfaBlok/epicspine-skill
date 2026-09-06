@@ -1,6 +1,7 @@
 # EPIC: <name>
 
 Spine profile: compact
+Ticket backend: github
 Spine dialect: v1
 Repository: <owner/repo>
 Primary document: <path to this file>
