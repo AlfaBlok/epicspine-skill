@@ -242,6 +242,8 @@ Do not use tester self-fix for product decisions, broad refactors, architecture 
 
 ## GitHub Issue Board Flow
 
+GitHub is the default backend. Explicit `Ticket backend: local` instead binds a bounded `Ticket root` and a reference/dependency-only ledger; each local ticket file owns its stable ID, status, owner and evidence. Do not synchronize a second mutable status table. The [ticket backend contract](ticket-backends.md) defines paths, uncertainty and the normalized reader API. The GitHub-specific flow below applies to github mode; use the same authority and handoff discipline with the declared local files in local mode.
+
 Use GitHub issues as the board for executable work. The spine remains the authoritative coordination record for the epic.
 
 Default location contract:

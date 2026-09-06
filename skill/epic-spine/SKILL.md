@@ -7,7 +7,7 @@ description: EpicSpine / Epic Spine document-centric operating system for AI-ass
 
 ## Overview
 
-Use an EpicSpine as the clean thread of intent, desire, context, fit, and state for a scoped body of work. Treat GitHub issues as executable tickets and deep working records for specific steps, not as the place where the full project memory lives.
+Use an EpicSpine as the clean thread of intent, desire, context, fit, and state for a scoped body of work. Treat the declared ticket backend as the execution board for specific steps, not as the place where the full project memory lives. GitHub remains the default; an explicit local backend uses authoritative ticket files.
 
 The document must let a new planner, worker, tester, or reviewer start from near-zero context, follow the listed spine hierarchy and knowledge graph, and understand the epic's goal, current state, decision history, active work, acceptance criteria, and validation evidence.
 
@@ -36,6 +36,8 @@ Treat every EpicSpine as a node in a canonical ownership hierarchy:
 
 ## Spine Versus Issues
 
+Declare `Ticket backend: github|local` (omission defaults to github). GitHub mode retains the existing offline URL/status checks and clearly unverified ledger snapshots. Local mode declares `Ticket root`, uses a reference/dependency-only Issue Ledger, and puts Ticket ID, Status, Owner and Evidence in each authoritative ticket file. Never maintain both a mutable local ticket and copied status cells in its spine. Read `references/ticket-backends.md` for path boundaries, normalized records and verification semantics. No backend choice implies remote access, record migration or new read authority.
+
 - The spine explains why the work exists, what outcome is desired, how the pieces fit together, what the current state is, and where a new agent should go next.
 - GitHub issues explain the detailed work for one concrete step: code paths, blockers, implementation notes, logs, review comments, and ticket-level validation.
 - Keep the spine clean. Prefer compact state, decisions, links, and evidence over long debugging transcripts or code-level detail.
@@ -47,7 +49,7 @@ Treat every EpicSpine as a node in a canonical ownership hierarchy:
 Do not treat one artifact as authoritative for every kind of truth:
 
 - The EpicSpine is authoritative for intent, scope, epic acceptance, dependencies, decisions, and rollup state.
-- The GitHub issue is authoritative for detailed execution state of one ticket.
+- The declared backend record (GitHub issue or local ticket file) is authoritative for detailed execution state of one ticket; offline GitHub ledger values remain unverified snapshots.
 - The branch, pull request, and code are authoritative for the implementation that actually exists.
 - Validation evidence is authoritative for what has been proved in a named environment against a named commit.
 - The Epic 0 spine is authoritative for project direction, child-spine relationships, and cross-epic health.

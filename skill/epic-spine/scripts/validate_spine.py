@@ -124,6 +124,7 @@ class SpineDocument:
     warnings: list[str]
     state: dict[str, str] = field(default_factory=dict)
     state_sources: dict[str, list[str]] = field(default_factory=dict)
+    tickets: list[dict[str, str]] = field(default_factory=list)
 
     @property
     def spine_id(self) -> str:
@@ -353,6 +354,153 @@ def table_rows(section: str) -> list[dict[str, str]]:
     return [dict(zip(header, row)) for row in rows]
 
 
+def read_tickets(path: Path, fields: dict[str, str], sections: dict[str, str]) -> tuple[list[dict[str, str]], list[str]]:
+    """Read authoritative local files or explicitly unverified GitHub snapshots.
+
+    Local identity is scoped to this board. Duplicate identities are excluded
+    rather than choosing one source. Callers must inspect all returned errors.
+    """
+    backend = normalize(fields.get("Ticket backend", "github")).lower()
+    errors: list[str] = []
+    tickets: list[dict[str, str]] = []
+    if backend not in {"github", "local"}:
+        return [], [f"unsupported Ticket backend: {backend or '(empty)'}; expected github or local"]
+    header, rows = parse_table(sections.get("Issue Ledger", ""))
+    if backend == "github":
+        for number, row in enumerate(rows, 1):
+            values = dict(zip(header, row))
+            issue = values.get("Issue", "")
+            status = values.get("Status", "").lower()
+            template_status = issue.lower() == "draft" and re.fullmatch(r"<[^<>]+>", status)
+            if status not in LEDGER_STATUSES and not template_status:
+                errors.append(f"ledger row {number} has invalid Status: {status or '(empty)'}")
+            if issue.lower() == "draft" and (status == "draft" or template_status):
+                continue
+            if not is_issue_reference(issue):
+                errors.append(f"ledger row {number} has invalid Issue: expected an HTTPS GitHub issue URL (draft is allowed only for draft rows)")
+                continue
+            if status not in LEDGER_STATUSES:
+                continue
+            parsed = urlsplit(markdown_target(issue) or normalize(issue))
+            location = f"https://{parsed.netloc.lower()}{parsed.path.rstrip('/')}"
+            tickets.append({
+                "identity": "github:" + location.lower(), "location": location,
+                "status": values.get("Status", "").lower(),
+                "owner": values.get("Owner / Assignment", ""),
+                "evidence": values.get("Latest Evidence", ""), "waiting_on": values.get("Waiting on", ""), "backend": backend,
+                "verification": "unverified", "freshness": "unknown", "source_revision": "",
+                "declared_verified_at": values.get("Last Verified", ""),
+            })
+    else:
+        source_dir = path.resolve().parent
+        checkout = next((parent for parent in (source_dir, *source_dir.parents) if (parent / ".git").exists()), source_dir)
+        permitted = fields.get("Ticket permitted root", "")
+        if permitted:
+            if not Path(permitted).is_absolute() or is_empty(permitted):
+                return [], ["Ticket permitted root must be an explicit absolute directory"]
+            try:
+                checkout = Path(permitted).resolve()
+            except (OSError, ValueError, RuntimeError):
+                return [], ["Ticket permitted root is invalid or inaccessible"]
+            if checkout == Path(checkout.anchor):
+                return [], ["Ticket permitted root must be bounded below the filesystem root"]
+        root_value = fields.get("Ticket root", "")
+        if is_empty(root_value):
+            return [], ["local ticket backend requires a resolved Ticket root"]
+        try:
+            root = (source_dir / root_value).resolve()
+        except (OSError, ValueError, RuntimeError):
+            return [], ["Ticket root is invalid or inaccessible"]
+        if not root.is_relative_to(checkout):
+            return [], ["Ticket root escapes the checkout; declare a bounded absolute Ticket permitted root for authorized external files"]
+        if not root.is_dir():
+            return [], [f"Ticket root is not an existing directory: {root}"]
+        required = ("Ticket", "Depends On")
+        for column in required:
+            if column not in header:
+                errors.append(f"local Issue Ledger missing column: {column}")
+        extra = set(header) - set(required)
+        if extra:
+            errors.append("local Issue Ledger is references/dependencies only; remove duplicated fields: " + ", ".join(sorted(extra)))
+        for number, row in enumerate(rows, 1):
+            values = dict(zip(header, row))
+            reference = values.get("Ticket", "")
+            target = reference
+            if target.startswith("["):
+                match = re.fullmatch(r"\[[^\]\n]+\]\(([^\s)]+)\)", target)
+                target = match.group(1) if match else ""
+            try:
+                parsed = urlsplit(target)
+            except ValueError:
+                errors.append(f"local ledger row {number} has malformed Ticket reference")
+                continue
+            if not target or is_empty(target) or parsed.scheme or parsed.netloc or parsed.query or parsed.fragment:
+                errors.append(f"local ledger row {number} has unresolved Ticket reference: use a relative Markdown file path without query/fragment")
+                continue
+            local_path = Path(unquote(parsed.path))
+            if local_path.is_absolute():
+                errors.append(f"local ledger row {number} requires a relative Ticket path")
+                continue
+            try:
+                ticket_path = (source_dir / local_path).resolve()
+            except (OSError, ValueError, RuntimeError):
+                errors.append(f"local ledger row {number} has invalid or inaccessible Ticket path")
+                continue
+            if not ticket_path.is_relative_to(root):
+                errors.append(f"local ledger row {number} Ticket escapes Ticket root: {reference}")
+                continue
+            if ticket_path.suffix.lower() not in {".md", ".markdown"} or not ticket_path.is_file():
+                errors.append(f"local ledger row {number} Ticket file is missing or not Markdown: {reference}")
+                continue
+            try:
+                content = ticket_path.read_bytes()
+                text = content.decode("utf-8")
+            except (OSError, UnicodeError) as error:
+                errors.append(f"local ticket could not be read: {ticket_path}: {error}")
+                continue
+            ticket_fields = parse_fields(text)
+            ticket_errors = []
+            for label in ("Ticket ID", "Status", "Owner", "Evidence"):
+                if is_empty(ticket_fields.get(label, "")):
+                    ticket_errors.append(f"local ticket {reference} missing or unresolved field: {label}")
+                preamble = re.split(r"(?m)^## ", text, maxsplit=1)[0]
+                labels = [normalize(match.group(1)) for match in re.finditer(r"(?m)^([A-Za-z][A-Za-z ]+):", preamble)]
+                if labels.count(label) > 1:
+                    ticket_errors.append(f"local ticket {reference} has duplicate field: {label}")
+            identity = ticket_fields.get("Ticket ID", "")
+            if not re.fullmatch(r"[A-Za-z][A-Za-z0-9_.-]*", identity):
+                ticket_errors.append(f"local ticket {reference} has invalid Ticket ID: {identity or '(empty)'}")
+            status = ticket_fields.get("Status", "").lower()
+            if status not in LEDGER_STATUSES:
+                ticket_errors.append(f"local ticket {reference} has invalid Status: {status or '(empty)'}")
+            if ticket_errors:
+                errors.extend(error for error in ticket_errors if error not in errors)
+                continue
+            tickets.append({
+                "identity": "local:" + identity, "location": str(ticket_path),
+                "status": status, "owner": ticket_fields["Owner"], "evidence": ticket_fields["Evidence"],
+                "waiting_on": ticket_fields.get("Waiting on", ""),
+                "backend": backend, "verification": "local-read", "freshness": "unknown",
+                "source_revision": "sha256:" + hashlib.sha256(content).hexdigest(),
+                "declared_verified_at": ticket_fields.get("Verified at", ""),
+            })
+        identities = {ticket["identity"][len("local:"):] for ticket in tickets}
+        for number, row in enumerate(rows, 1):
+            depends = dict(zip(header, row)).get("Depends On", "")
+            if depends.lower() in {"none", "-", "n/a"}:
+                continue
+            for identity in (value.strip() for value in depends.split(",")):
+                if identity not in identities:
+                    errors.append(f"local ledger row {number} unresolved dependency Ticket ID: {identity or '(empty)'}")
+    seen: dict[str, list[str]] = {}
+    for ticket in tickets:
+        seen.setdefault(ticket["identity"], []).append(ticket["location"])
+    duplicates = {identity for identity, locations in seen.items() if len(locations) > 1}
+    for identity in sorted(duplicates):
+        errors.append(f"duplicate ticket identity {identity}: " + ", ".join(seen[identity]))
+    return [ticket for ticket in tickets if ticket["identity"] not in duplicates], errors
+
+
 def contains_all(value: str, *terms: str) -> bool:
     lowered = value.lower()
     return all(term.lower() in lowered for term in terms)
@@ -478,7 +626,8 @@ def is_history_snapshot(path: Path) -> bool:
     return bool(match and path.is_file() and hashlib.sha256(path.read_bytes()).hexdigest().startswith(match.group(1)))
 
 
-def validate_local(path: Path, *, dialect: str = "auto") -> SpineDocument:
+def validate_local(path: Path, *, dialect: str = "auto", ticket_source: Path | None = None) -> SpineDocument:
+    """Validate a document; ticket_source preserves path context in migration previews."""
     errors: list[str] = []
     warnings: list[str] = []
     if not path.is_file():
@@ -606,11 +755,12 @@ def validate_local(path: Path, *, dialect: str = "auto") -> SpineDocument:
                         if column in decision_positions and is_empty(row[decision_positions[column]]):
                             errors.append(f"decision row {row_number} is {outcome} but {column} is empty")
 
+    backend = normalize(fields.get("Ticket backend", "github")).lower()
     ledger = sections.get("Issue Ledger", "")
     header, rows = parse_table(ledger)
     if not header:
         errors.append("Issue Ledger has no Markdown table")
-    else:
+    elif backend == "github":
         for column in REQUIRED_LEDGER_COLUMNS:
             if column not in header:
                 errors.append(f"Issue Ledger missing column: {column}")
@@ -638,16 +788,21 @@ def validate_local(path: Path, *, dialect: str = "auto") -> SpineDocument:
             if status == "done" and "Latest Evidence" in values and is_empty(values["Latest Evidence"]):
                 errors.append(f"ledger row {row_number} ({issue}) is done without evidence")
 
+    tickets, ticket_errors = read_tickets(ticket_source or path, fields, sections)
+    errors.extend(ticket_errors)
+
     if "YYYY-MM-DD" in fields.get("Updated", ""):
         warnings.append("Updated still contains a template date")
 
     if selected_dialect == "v2":
         guidance = dialect_warnings(text, fields, sections)
+        if backend == "local":
+            guidance = [message for message in guidance if not message.startswith(("v2 Issue Ledger", "v2 ledger", "v2 first ledger"))]
         if compact:
             guidance = [message for message in guidance if message.startswith(("v2 SHIP", "v2 Definition Of Done"))]
         warnings.extend(guidance)
 
-    return SpineDocument(path.resolve(), fields, sections, errors, warnings, state, state_sources)
+    return SpineDocument(path.resolve(), fields, sections, errors, warnings, state, state_sources, tickets)
 
 
 def validate_graph(documents: list[SpineDocument]) -> None:

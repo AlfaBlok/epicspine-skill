@@ -4,6 +4,7 @@
 keep overlapping Current State and Execution Cursor facts consistent until migration. -->
 
 Spine profile: full
+Ticket backend: github
 
 Status: draft | ready | active | pending — DISPATCH ONLY AFTER <condition> | CLOSED | ON HOLD | SUPERSEDED by <path> — do not execute from this document
 Created: YYYY-MM-DD

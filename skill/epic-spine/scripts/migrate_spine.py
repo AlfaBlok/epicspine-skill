@@ -104,7 +104,7 @@ def plan_migration(source: Path) -> MigrationPlan:
     with tempfile.TemporaryDirectory(prefix="epicspine-migration-check-") as tmp:
         candidate = Path(tmp) / source.name
         candidate.write_text(revised, encoding="utf-8")
-        result = validate_local(candidate)
+        result = validate_local(candidate, ticket_source=source)
         if result.errors:
             raise ValueError("proposed compact document is invalid:\n" + "\n".join(result.errors))
     return MigrationPlan(source, source_sha, original, revised, archive)

@@ -2,7 +2,7 @@
 
 Choose `Spine profile: compact` for a small active epic. Absent profile or explicit `full` retains the legacy required fields/sections. Profile controls document size; `Spine dialect: v1|v2` separately controls the acceptance workflow. Compact v1 requires no sprint boilerplate. Compact v2 retains its surface declaration and SHIP/HARDEN acceptance; full-profile staffing/discovery/heartbeat prose is not mandatory compact content.
 
-The compact active document contains Mission, Non-Goals, Current State, Definition Of Done, Issue Ledger (active work and dependencies), and Decisions. Retain rejected/superseded decisions and evidence. Add Human Gates, Write Scope, recovery, hierarchy and Book details only when applicable. Existing ticket-reference validation is unchanged. Use the [compact template](../assets/compact-spine-template.md).
+The compact active document contains Mission, Non-Goals, Current State, Definition Of Done, Issue Ledger (active work and dependencies), and Decisions. Retain rejected/superseded decisions and evidence. Add Human Gates, Write Scope, recovery, hierarchy and Book details only when applicable. Ticket references follow the explicitly selected [backend contract](ticket-backends.md); GitHub remains the default. Local mode uses a reference/dependency-only ledger with mutable facts in authoritative ticket files. Use the [compact template](../assets/compact-spine-template.md).
 
 ## One authoritative state
 
