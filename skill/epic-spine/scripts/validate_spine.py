@@ -127,6 +127,15 @@ class SpineDocument:
     tickets: list[dict[str, str]] = field(default_factory=list)
 
     @property
+    def diagnostics(self) -> list[dict[str, object]]:
+        # Compute after graph validation too; preserve mutable legacy lists.
+        return [classify_diagnostic(message, error=True) for message in self.errors] + [
+            classify_diagnostic(message, error=False) for message in self.warnings]
+
+    def fails(self, *, strict: bool = False) -> bool:
+        return bool(self.errors) or (strict and any(d["category"] == "required-data" for d in self.diagnostics))
+
+    @property
     def spine_id(self) -> str:
         return normalize(self.fields.get("Spine ID", ""))
 
@@ -501,22 +510,96 @@ def read_tickets(path: Path, fields: dict[str, str], sections: dict[str, str]) -
     return [ticket for ticket in tickets if ticket["identity"] not in duplicates], errors
 
 
+def classify_diagnostic(message: str, *, error: bool) -> dict[str, object]:
+    """Stable rule families; prose is not an execution or structural proof."""
+    lower = message.lower()
+    required = any(term in lower for term in ("unresolved", "missing field:", "is empty", "without evidence", "required acceptance", "required evidence"))
+    required = required or lower == "updated still contains a template date"
+    required = required or lower.startswith(("v2 discovery missing", "v2 human gates should include column", "v2 issue ledger should include", "v2 definition of done should have", "superseded status should"))
+    required = required or bool(re.match(r"v2 ledger row \d+ has no ", lower))
+    if error:
+        category = "required-data" if required else "structural"
+    else:
+        category = "required-data" if required else "advisory"
+    if "required acceptance" in lower:
+        rule = "ES-D-ACCEPTANCE"
+    elif "required evidence" in lower:
+        rule = "ES-D-EVIDENCE"
+    elif category == "advisory":
+        rule = "ES-A-PROSE"
+    elif category == "required-data":
+        rule = "ES-D-REQUIRED"
+    elif any(word in lower for word in ("table", "column", "separator", "malformed table")):
+        rule = "ES-S-TABLE"
+    elif any(word in lower for word in ("ticket", "ledger row", "issue ledger")):
+        rule = "ES-S-TICKET"
+    elif any(word in lower for word in ("dialect", "profile", "acceptance surface")):
+        rule = "ES-S-DIALECT"
+    elif any(word in lower for word in ("conflicting state", "duplicate state", "competing compact")):
+        rule = "ES-S-STATE"
+    elif any(word in lower for word in ("parent", "root", "child", "graph", "spine id", "spine type")):
+        rule = "ES-S-GRAPH"
+    else:
+        rule = "ES-S-CONTRACT"
+    return {"rule_id": rule, "category": category, "severity": "error" if error else "warning",
+            "message": message, "fails_strict": error or category == "required-data"}
+
+
+def acceptance_warnings(fields: dict[str, str], sections: dict[str, str]) -> list[str]:
+    """Check declared acceptance data, not preferred phrasing or journey length.
+
+    Explicit surface-qualified methods accept free prose. Legacy Evidence lines
+    and evidence-producing steps use a small compatibility vocabulary, not the
+    old conjunction of mandatory phrases. Human review still assesses adequacy.
+    """
+    dod = sections.get("Definition Of Done", "")
+    ship = re.split(r"(?im)^\s*HARDEN\b", dod, maxsplit=1)[0]
+    data = parse_key_values(ship)
+    checks = re.findall(r"(?m)^\s*-\s*\[[ xX]\]\s*(?:\d+\.\s*)?(.+)$", ship)
+    outcome = data.get("Acceptance outcome", "")
+    warnings = []
+    resolved_outcome = not is_empty(outcome) if "Acceptance outcome" in data else any(
+        not is_empty(item) and not item.lower().startswith("test package:") for item in checks)
+    if not resolved_outcome:
+        warnings.append("v2 required acceptance: declare a resolved observable outcome or acceptance checkbox")
+    surface = normalize(fields.get("Acceptance surface", "")).lower()
+    if surface not in ACCEPTANCE_SURFACES:
+        return warnings
+    method = data.get("Evidence method", "")
+    qualified = re.fullmatch(r"(browser|cli|library|infrastructure|documentation):\s*(.+)", method, re.I)
+    if "Evidence method" in data:
+        valid = bool(qualified and qualified[1].lower() == surface and not is_empty(qualified[2]))
+    else:
+        # Compatibility with the documented v2 Evidence declaration and older
+        # inline journeys. This does not require exact words, order, or a count.
+        evidence = data.get("Evidence", "")
+        patterns = {
+            "browser": r"browser|screenshot|screen capture|playwright|selenium",
+            "cli": r"command|terminal|stdout|stderr|exit (?:code|status)|shell",
+            "library": r"consumer|import|unit test|behavior(?:al)? (?:check|test)|api test",
+            "infrastructure": r"probe|health check|telemetry|deployment test|service check",
+            "documentation": r"render|link check|walkthrough|follow.*instruction|example",
+        }
+        candidates = [evidence] if "Evidence" in data else [line for line in checks if not line.lower().startswith("test package:") and re.search(r"evidence|capture|record|verify|check|inspect", line, re.I)]
+        valid = any(not is_empty(value) and re.search(patterns[surface], value, re.I) for value in candidates)
+    if not valid:
+        warnings.append(f"v2 required evidence: declare a resolved {surface} evidence method (Evidence method: {surface}: <how results are observed and recorded>)")
+    return warnings
+
+
 def contains_all(value: str, *terms: str) -> bool:
     lowered = value.lower()
     return all(term.lower() in lowered for term in terms)
 
 
 def dialect_warnings(text: str, fields: dict[str, str], sections: dict[str, str]) -> list[str]:
-    """Check the selected v2 contract; strict mode promotes these diagnostics."""
+    """Optional prose guidance; required data is classified separately."""
     warnings: list[str] = []
     dod = sections.get("Definition Of Done", "")
     if not (re.search(r"(?im)^\s*SHIP\b", dod) and re.search(r"(?im)^\s*HARDEN\b", dod)):
         warnings.append("v2 Definition Of Done should have SHIP and HARDEN tiers")
     else:
         ship = re.split(r"(?im)^\s*HARDEN\b", dod, maxsplit=1)[0]
-        steps = re.findall(r"(?m)^\s*-\s*\[[ xX]\]\s*(\d+)\.", ship)
-        if not 5 <= len(steps) <= 12:
-            warnings.append("v2 SHIP journey should contain 5-12 numbered checkbox steps")
         for label, terms in (
             ("personal execution", ("personally",)),
             ("first-failure repair/restart loop", ("first failure", "dispatch", "restart", "step 1")),
@@ -524,16 +607,6 @@ def dialect_warnings(text: str, fields: dict[str, str], sections: dict[str, str]
         ):
             if not contains_all(ship, *terms):
                 warnings.append(f"v2 SHIP journey should state the {label} contract")
-        surface = normalize(fields.get("Acceptance surface", "")).lower()
-        surface_terms = {
-            "browser": ("real browser", "live", "screenshot", "step"),
-            "cli": ("commands", "inputs", "exit codes", "outputs"),
-            "library": ("consumer example", "behavior checks"),
-            "infrastructure": ("authorized", "probes", "environment"),
-            "documentation": ("instructions", "rendered", "links", "examples"),
-        }
-        if surface in surface_terms and not contains_all(ship, *surface_terms[surface]):
-            warnings.append(f"v2 SHIP journey should state {surface} evidence: {', '.join(surface_terms[surface])}")
         for number, line in re.findall(r"(?m)^\s*-\s*\[[ xX]\]\s*(\d+)\.\s*(.+)$", ship):
             if "test package" not in line.lower() and not re.search(r"\b(PORT|DUPLICATE|BUILD)\b", line, re.I):
                 warnings.append(f"v2 SHIP step {number} lacks PORT/DUPLICATE/BUILD marking")
@@ -688,6 +761,10 @@ def validate_local(path: Path, *, dialect: str = "auto", ticket_source: Path | N
         if section not in sections:
             errors.append(f"missing section: {section}")
 
+    for name in ("Mission", "Definition Of Done", *(() if compact else ("Validation Evidence",))):
+        if name in sections and is_empty(sections[name]):
+            warnings.append(f"unresolved required section: {name}")
+
     spine_type = normalize(fields.get("Spine Type", "")).lower()
     root_spine = normalize(fields.get("Root spine", "")).lower()
     parent_spine = normalize(fields.get("Parent spine", "")).lower()
@@ -730,7 +807,7 @@ def validate_local(path: Path, *, dialect: str = "auto", ticket_source: Path | N
                 if relationship and relationship != "child" and not relationship.startswith("<"):
                     errors.append(f"Spine Map row {row_number} Relationship must be child")
                 for column in ("Spine ID", "Spine", "Purpose", "Status", "Health / Blocker", "Last Rolled Up", "Next Action"):
-                    if column in values and is_empty(values[column]):
+                    if column in values and is_empty(values[column]) and not (column == "Health / Blocker" and normalize(values[column]).lower() in {"none", "no blocker", "no blockers", "nothing", "n/a", "-"}):
                         warnings.append(f"Spine Map row {row_number} unresolved field: {column}")
 
     decisions = sections.get("Decisions", "")
@@ -801,6 +878,7 @@ def validate_local(path: Path, *, dialect: str = "auto", ticket_source: Path | N
         if compact:
             guidance = [message for message in guidance if message.startswith(("v2 SHIP", "v2 Definition Of Done"))]
         warnings.extend(guidance)
+        warnings.extend(acceptance_warnings(fields, sections))
 
     return SpineDocument(path.resolve(), fields, sections, errors, warnings, state, state_sources, tickets)
 
@@ -905,18 +983,18 @@ def validate_graph(documents: list[SpineDocument]) -> None:
 
 
 def result_for(doc: SpineDocument) -> dict[str, object]:
-    return {"path": str(doc.path), "errors": doc.errors, "warnings": doc.warnings}
+    return {"path": str(doc.path), "errors": doc.errors, "warnings": doc.warnings, "diagnostics": doc.diagnostics}
 
 
 def validate(path: Path, *, dialect: str = "auto") -> dict[str, object]:
-    """Validate one spine and return the legacy dictionary result shape."""
+    """Validate one spine; retain legacy keys and add classified diagnostics."""
     return result_for(validate_local(path, dialect=dialect))
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("paths", nargs="+", type=Path)
-    parser.add_argument("--strict", action="store_true", help="Treat selected-dialect and unresolved-field warnings as failures")
+    parser.add_argument("--strict", action="store_true", help="Fail structural defects and unresolved required data; prose advice does not fail")
     parser.add_argument("--dialect", choices=("auto", "v1", "v2"), default="auto",
                         help="Override a supported Spine dialect declaration; auto uses the declaration or defaults to v1")
     parser.add_argument(
@@ -933,8 +1011,8 @@ def main() -> int:
 
     results = [result_for(doc) for doc in documents]
     exit_code = 0
-    for result in results:
-        if result["errors"] or (args.strict and result["warnings"]):
+    for document in documents:
+        if document.fails(strict=args.strict):
             exit_code = 1
 
     if args.json:
@@ -942,10 +1020,8 @@ def main() -> int:
     else:
         for result in results:
             print(result["path"])
-            for error in result["errors"]:
-                print(f"  ERROR: {error}")
-            for warning in result["warnings"]:
-                print(f"  WARN: {warning}")
+            for diagnostic in result["diagnostics"]:
+                print(f"  {diagnostic['severity'].upper()} [{diagnostic['rule_id']} / {diagnostic['category']}]: {diagnostic['message']}")
             if not result["errors"] and not result["warnings"]:
                 print("  OK")
 
