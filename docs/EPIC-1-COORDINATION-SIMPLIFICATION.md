@@ -38,7 +38,7 @@ Reduce duplicated current state and manual synchronization while preserving evid
 
 - [x] One authoritative current-state block with compatible legacy conflict detection and a compact active profile.
 - [x] Explicit GitHub and local ticket references without competing mutable ledgers.
-- [ ] Deterministic direct-child rollup checks/previews, truthful freshness and authority-aware apply/proposal behavior.
+- [x] Deterministic direct-child rollup checks/previews, truthful freshness and authority-aware apply/proposal behavior.
 - [ ] Strict validation rejects objective defects and unresolved required data; prose guidance remains advisory.
 - [ ] Synthetic examples, focused regression suite, independent review and reviewable PR pass on a named revision.
 
@@ -51,12 +51,12 @@ Fresh base commit: a8522464235db77d1eaca4dc03d9556d076e6bc7
 
 ## Execution Cursor
 
-Last attempted: Resumed after worker usage interruption; integrated #19 correction and backend implementation at 8b9502e5f86f6d27c1f47e93381d2a83162fb007; resumed #20 and dispatched #21 plus independent #20 review.
-Result: Integrated 60-test suite passes. #19 duplicate-field review finding corrected. #20 saved work resumed at 398632b; candidate acceptance pending.
+Last attempted: Integrated independently accepted #20 at b4967e82ac20cc2dba285034e7665fc9334863cc; dispatched independent #21 review at 340575ac994f2237d036c99d48a2a9477c2cfc45.
+Result: Integrated 73-test suite passes. #20 accepted; #21 candidate reports 70 tests on its own base and remains under independent review.
 Execution status: active
-Waiting on: #20 handoff/review and #21 implementation
+Waiting on: #21 independent review
 Approved work: User-authorized backlog delivery through subagents, isolated branches, issue comments, reviews and PRs.
-Next action: Review and integrate #20/#21 when accepted; keep consumer API changes coordinated.
+Next action: Integrate accepted #21 and verify combined diagnostics/rollup behavior before PR handoff.
 
 ## Bootstrap Map
 
@@ -81,8 +81,8 @@ Next action: Review and integrate #20/#21 when accepted; keep consumer API chang
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | [#18](https://github.com/AlfaBlok/epicspine-skill/issues/18) | Ticket worker | /root/parser | Compact authoritative state | review | PR #16 pinned | codex/compact-state | 6f63d378e0ed8e8adffdda89039f8a0c16069909 | #18 criteria | 17b2a8 accepted; integrated 48 tests pass | 2026-09-06 | PR #22 review |
 | [#19](https://github.com/AlfaBlok/epicspine-skill/issues/19) | Ticket worker | /root/parser | Explicit ticket backends | review | #18 candidate pinned; review pending | codex/ticket-backends | 6512dce8c202ff9bc79730adc2f83ec8e5835ddd | #19 criteria | 54c44e1 accepted; integrated 60 tests pass | 2026-09-06 | PR #22 review |
-| [#20](https://github.com/AlfaBlok/epicspine-skill/issues/20) | Ticket worker | /root/parser | Freshness-aware rollups | active | #19 candidate pinned; review pending | codex/execution-rollups | 89b3c1477a2419281c5733f7e3e7cbccf4e0e620 | #20 criteria | Resumed saved work; /root/ci reviewer | 2026-09-06 | Review handoff |
-| [#21](https://github.com/AlfaBlok/epicspine-skill/issues/21) | Ticket worker | /root/workflow | Structural strictness | active | #18, #19 accepted | codex/structural-validation | 54c44e163190857264198153ba725b5c4365d932 | #21 criteria | Isolated dispatch; validator ownership | 2026-09-06 | Review handoff |
+| [#20](https://github.com/AlfaBlok/epicspine-skill/issues/20) | Ticket worker | /root/parser | Freshness-aware rollups | review | #19 candidate pinned; review pending | codex/execution-rollups | 89b3c1477a2419281c5733f7e3e7cbccf4e0e620 | #20 criteria | fe6a638 independently accepted; integrated 73 tests pass | 2026-09-06 | PR #22 review |
+| [#21](https://github.com/AlfaBlok/epicspine-skill/issues/21) | Ticket worker | /root/workflow | Structural strictness | review | #18, #19 accepted | codex/structural-validation | 54c44e163190857264198153ba725b5c4365d932 | #21 criteria | 340575a; 70 worker tests pass | 2026-09-06 | /root/parser independent review |
 
 ## Branch And Integration
 
@@ -98,7 +98,7 @@ Each issue records exact owner, base, worktree, latest commit, checks, blocker a
 
 ## Validation Evidence
 
-Baseline: PR #16 has independent 34-test passes on Python 3.10 and 3.14, strict example/fixture/spine validation, and hosted CI. #18 integrated at fe91d3be962c6a0087097c364ae083a0d1f52ac4: 48 tests and strict manager graph pass after independent review corrections. #19/#20 acceptance pending.
+Baseline: PR #16 has independent 34-test passes on Python 3.10 and 3.14, strict example/fixture/spine validation, and hosted CI. #18 integrated at fe91d3be962c6a0087097c364ae083a0d1f52ac4: 48 tests and strict manager graph pass after independent review corrections. #19/#20 accepted and integrated; #21 acceptance pending.
 
 ## Handoff Journal
 
