@@ -108,6 +108,8 @@ class TicketBackendTests(unittest.TestCase):
             ("Owner: example-researcher", "Owner: <owner>", "unresolved field: Owner"),
             ("Evidence: [Protocol draft](../protocol.md#protocol-draft)", "Evidence:", "unresolved field: Evidence"),
             ("Status: ready", "Status: ready\nStatus: done", "duplicate field: Status"),
+            ("Status: ready", "Status: ready\nStatus : done", "duplicate field: Status"),
+            ("Owner: example-researcher", "Owner: example-researcher\nOwner : another-worker", "duplicate field: Owner"),
         ):
             with self.subTest(expected=expected), tempfile.TemporaryDirectory() as tmp:
                 source = self.setup_local(Path(tmp))
