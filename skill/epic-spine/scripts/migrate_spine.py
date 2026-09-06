@@ -41,6 +41,14 @@ def plan_migration(source: Path) -> MigrationPlan:
         raise ValueError("migration requires a full/legacy source; compact input is already migrated")
     if document.errors:
         raise ValueError("source must be reconciled before migration:\n" + "\n".join(document.errors))
+    # Reference definitions can serve retained content from an archived section.
+    # Without a complete Markdown reference resolver, refuse rather than sever
+    # that dependency or guess renderer-specific heading fragments.
+    if re.search(r"(?m)^[ \t]{0,3}\[[^\]\r\n]+\]:", text):
+        raise ValueError("Markdown reference definitions require manual migration to preserve retained reference links")
+    heading_texts = re.findall(r"(?m)^#{1,6} (.+?)[ \t]*\r?$", text)
+    if any("[" in heading or "]" in heading for heading in heading_texts):
+        raise ValueError("heading link/reference markup requires manual migration to preserve rendered fragments")
     headings = list(re.finditer(r"(?m)^## (.+?)[ \t]*\r?$", text))
     names = [normalize(match.group(1)) for match in headings]
     if len(names) != len(set(names)):

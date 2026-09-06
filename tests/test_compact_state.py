@@ -166,6 +166,27 @@ class MigrationTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "ambiguous heading anchors"):
                 migration.plan_migration(path)
 
+    def test_heading_link_markup_is_refused_without_changing_source(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            source = Path(tmp) / "source.md"
+            original = self.fixture.read_text().replace("### Draft review", "### [Draft review](legacy-v1.md)")
+            source.write_text(original)
+            with self.assertRaisesRegex(ValueError, "heading link/reference markup requires manual migration"):
+                migration.plan_migration(source)
+            self.assertEqual(original, source.read_text())
+            self.assertEqual([source], list(Path(tmp).iterdir()))
+
+    def test_reference_definitions_in_archived_sections_are_refused(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            source = Path(tmp) / "source.md"
+            original = self.fixture.read_text().replace("- [ ] Graph validation passes.", "- [ ] Read [review evidence][proof].")
+            original = original.replace("## Handoff Journal", "## Handoff Journal\n\n[proof]: https://github.com/example/repo/issues/1")
+            source.write_text(original)
+            with self.assertRaisesRegex(ValueError, "Markdown reference definitions require manual migration"):
+                migration.plan_migration(source)
+            self.assertEqual(original, source.read_text())
+            self.assertEqual([source], list(Path(tmp).iterdir()))
+
     def test_apply_requires_reviewed_hash_and_refuses_stale_source_or_archive_clobber(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = self.setup_source(Path(tmp))
