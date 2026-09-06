@@ -296,6 +296,10 @@ Planners dispatch the initial plan. Epic workers may dispatch or re-dispatch par
 
 ## Execution Cursor
 
+For a compact active spine, `Current State` is the single authoritative resume point. Required labels and the normalized API are in [Compact state](compact-state.md). Use one `Waiting on` value for the actual blocker/wait, with explicit `none` when clear; Phase is optional. Role queues and handoff summaries link to state or are labeled generated projections. Completed handoffs move to linked historical records; preserve rejected decisions, source evidence and stable navigation.
+
+The following two-section shape describes legacy full spines. Keep overlaps consistent while awaiting a steward-reviewed migration; the validator reports disagreements instead of choosing a source.
+
 Current State is the compact phase snapshot. The Execution Cursor is the durable resume point for the next execution cycle. Update it whenever work is attempted, execution stops, ownership changes, or a gate is reached.
 
 The cursor must answer:
@@ -385,7 +389,7 @@ An EpicSpine is healthy when:
 - The spine declares a stable ID, type, root, and parent; every branch is reciprocally registered by its direct parent.
 - The canonical hierarchy has no cycles or orphans; additional roots are explicitly justified.
 - Direct-child rollups expose current status, health/blocker, evidence, last-rollup time, and next action without copying child detail.
-- The Execution Cursor makes the last attempt, actual result, waiting condition, approved work, and next action unambiguous.
+- The authoritative Current State (or reconciled legacy Execution Cursor) makes owner, last attempt/result/evidence, waiting condition, approved work, next action and verified revision/time unambiguous.
 - The issue ledger and GitHub issue state agree, or drift is explicitly flagged.
 - The write-scope boundary is explicit enough that an agent knows what it may edit.
 - Exactly one active steward is named for each writable spine.
@@ -455,7 +459,7 @@ Use this compression rule: if a detail helps only the current ticket worker, kee
 
 Use a three-pass update:
 
-1. Update local execution truth: Current State, Execution Cursor, Issue Ledger, Validation Evidence.
+1. Update local execution truth once in Current State, plus issue and acceptance evidence. Legacy full spines must keep overlapping cursor facts consistent until a reviewed migration.
 2. Append durable history: Decisions, Handoff Journal, Open Questions.
 3. Publish the compact child rollup to the parent steward when phase, health, blocker, evidence, or next action changed.
 

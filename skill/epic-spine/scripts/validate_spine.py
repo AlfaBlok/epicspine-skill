@@ -4,10 +4,11 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import sys
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
@@ -90,6 +91,21 @@ REQUIRED_LEDGER_COLUMNS = (
     "Next Action",
 )
 
+COMPACT_FIELDS = ("Repository", "Primary document", "Spine ID", "Integration branch")
+COMPACT_SECTIONS = ("Mission", "Non-Goals", "Current State", "Definition Of Done", "Issue Ledger", "Decisions")
+STATE_FIELDS = {
+    "Owner": "owner", "Status": "status", "Last attempted": "last_attempted",
+    "Result": "result", "Evidence": "evidence", "Waiting on": "waiting_on",
+    "Approved work": "approved_work", "Next action": "next_action",
+    "Source revision": "source_revision", "Verified at": "verified_at",
+}
+STATE_ALIASES = {
+    **{label.lower(): key for label, key in STATE_FIELDS.items()},
+    "phase": "phase", "execution status": "status", "active spine steward": "owner",
+    "blocker": "waiting_on", "blockers": "waiting_on", "latest evidence": "evidence",
+    "last reconciled commit": "source_revision", "last verified": "verified_at",
+}
+
 DIALECTS = {"v1", "v2"}
 ACCEPTANCE_SURFACES = {"browser", "cli", "library", "infrastructure", "documentation"}
 
@@ -106,6 +122,8 @@ class SpineDocument:
     sections: dict[str, str]
     errors: list[str]
     warnings: list[str]
+    state: dict[str, str] = field(default_factory=dict)
+    state_sources: dict[str, list[str]] = field(default_factory=dict)
 
     @property
     def spine_id(self) -> str:
@@ -140,6 +158,72 @@ def parse_fields(text: str) -> dict[str, str]:
     first_section = re.search(r"(?m)^## ", text)
     preamble = text[: first_section.start()] if first_section else text
     return parse_key_values(preamble)
+
+
+def read_state(text: str, *, compact: bool = False) -> tuple[dict[str, str], dict[str, list[str]], list[str]]:
+    """Normalize execution facts without selecting a winner for contradictions.
+
+    Values are single-line strings; provenance is source section/label/line.
+    Conflicting keys are omitted from the returned state and reported as errors.
+    This API is shared with migration and execution-only rollup consumers.
+    """
+    candidates: dict[str, list[tuple[str, str]]] = {}
+    errors: list[str] = []
+    section = "preamble"
+    section_counts: dict[str, int] = {}
+    for number, line in enumerate(text.splitlines(), 1):
+        heading = re.fullmatch(r"## (.+?)[ \t]*", line)
+        if heading:
+            section = normalize(heading.group(1))
+            section_counts[section] = section_counts.get(section, 0) + 1
+            continue
+        if section not in {"preamble", "Current State", "Execution Cursor"}:
+            continue
+        match = re.fullmatch(r"([A-Za-z][A-Za-z ]+):[ \t]*(.*)", line)
+        if not match:
+            continue
+        label, value = normalize(match.group(1)), normalize(match.group(2))
+        key = STATE_ALIASES.get(label.lower())
+        if key is None:
+            continue
+        source = f"{section} / {label} (line {number})"
+        if compact and section != "Current State":
+            errors.append(f"competing compact state: {source}; author facts only in Current State")
+        candidates.setdefault(key, []).append((value, source))
+    for name in ("Current State", "Execution Cursor"):
+        if section_counts.get(name, 0) > 1:
+            errors.append(f"duplicate state section: {name}")
+    state: dict[str, str] = {}
+    sources: dict[str, list[str]] = {}
+    for key, entries in candidates.items():
+        sources[key] = [source for _, source in entries]
+        def comparable(value: str) -> str:
+            if key == "waiting_on" and value.lower() in {"none", "nothing", "n/a", "-", "no blockers"}:
+                return "none"
+            return value.lower() if key == "status" else value
+        # Legacy templates remain usable, but unresolved placeholders never
+        # supply a trustworthy value to migration or rollup consumers.
+        resolved = [(value, source) for value, source in entries if value and not value.startswith("<") and not (key == "status" and value.lower().startswith("draft | ready | active"))]
+        distinct = {comparable(value) for value, _ in resolved}
+        if len(distinct) > 1:
+            details = "; ".join(f"{source} = {value!r}" for value, source in resolved)
+            errors.append(f"conflicting state {key}: {details}; reconcile explicitly before migration or rollup")
+            continue
+        if resolved:
+            state[key] = comparable(resolved[0][0]) if key in {"waiting_on", "status"} else resolved[0][0]
+        elif entries:
+            state[key] = entries[0][0]
+    if compact:
+        for label, key in STATE_FIELDS.items():
+            if key not in candidates:
+                errors.append(f"Current State missing field: {label}")
+            elif key in state:
+                value = state[key]
+                if is_empty(value) and not (key in {"waiting_on", "approved_work"} and value.lower() in {"none", "nothing", "n/a", "-"}):
+                    errors.append(f"Current State unresolved field: {label}")
+        if state.get("status") and state["status"] not in LEDGER_STATUSES:
+            errors.append(f"Current State invalid Status: {state['status']}")
+    return state, sources, errors
 
 
 def parse_table(
@@ -388,15 +472,30 @@ def dialect_warnings(text: str, fields: dict[str, str], sections: dict[str, str]
     return warnings
 
 
+def is_history_snapshot(path: Path) -> bool:
+    """Recognize byte-exact migration archives; inventory must exclude these."""
+    match = re.search(r"\.history-([0-9a-f]{12})\.(?:md|markdown)$", path.name)
+    return bool(match and path.is_file() and hashlib.sha256(path.read_bytes()).hexdigest().startswith(match.group(1)))
+
+
 def validate_local(path: Path, *, dialect: str = "auto") -> SpineDocument:
     errors: list[str] = []
     warnings: list[str] = []
     if not path.is_file():
         return SpineDocument(path, {}, {}, ["file not found"], [])
 
+    if is_history_snapshot(path):
+        return SpineDocument(path.resolve(), {}, {}, ["historical snapshot is not an active spine; exclude it from active/graph inventory"], [])
+
     text = path.read_text(encoding="utf-8")
     fields = parse_fields(text)
     sections = parse_sections(text)
+    profile = normalize(fields.get("Spine profile", "full")).lower()
+    compact = profile == "compact"
+    if profile not in {"full", "compact"}:
+        errors.append(f"unsupported Spine profile: {profile}; expected full or compact")
+    state, state_sources, state_errors = read_state(text, compact=compact)
+    errors.extend(state_errors)
 
     # A supported CLI selection overrides the declaration; it cannot conceal an
     # invalid declaration. Missing declarations select legacy v1 in auto mode.
@@ -427,13 +526,16 @@ def validate_local(path: Path, *, dialect: str = "auto") -> SpineDocument:
                 line_offset=text.count("\n", 0, content_start), section_name=name,
             )
 
-    for field in REQUIRED_FIELDS:
+    required_fields = COMPACT_FIELDS if compact else REQUIRED_FIELDS
+    if compact and any(name in fields for name in ("Spine Type", "Root spine", "Parent spine")):
+        required_fields += ("Spine Type", "Root spine", "Parent spine", "Additional root rationale")
+    for field in required_fields:
         if field not in fields:
             errors.append(f"missing field: {field}")
         elif is_empty(fields[field]) and field not in {"Parent spine", "Additional root rationale"}:
             warnings.append(f"unresolved field: {field}")
 
-    for section in REQUIRED_SECTIONS:
+    for section in (COMPACT_SECTIONS if compact else REQUIRED_SECTIONS):
         if section not in sections:
             errors.append(f"missing section: {section}")
 
@@ -458,13 +560,13 @@ def validate_local(path: Path, *, dialect: str = "auto") -> SpineDocument:
             warnings.append("branch Parent spine should be a Markdown link for navigation and graph validation")
 
     cursor = parse_key_values(sections.get("Execution Cursor", ""))
-    for field in REQUIRED_CURSOR_FIELDS:
+    for field in (() if compact else REQUIRED_CURSOR_FIELDS):
         if field not in cursor:
             errors.append(f"Execution Cursor missing field: {field}")
         elif is_empty(cursor[field]):
             warnings.append(f"Execution Cursor unresolved field: {field}")
 
-    spine_map = sections.get("Spine Map", "")
+    spine_map = sections.get("Spine Map", "No child spines." if compact else "")
     if "No child spines." not in spine_map:
         header, rows = parse_table(spine_map)
         if not header:
@@ -540,9 +642,12 @@ def validate_local(path: Path, *, dialect: str = "auto") -> SpineDocument:
         warnings.append("Updated still contains a template date")
 
     if selected_dialect == "v2":
-        warnings.extend(dialect_warnings(text, fields, sections))
+        guidance = dialect_warnings(text, fields, sections)
+        if compact:
+            guidance = [message for message in guidance if message.startswith(("v2 SHIP", "v2 Definition Of Done"))]
+        warnings.extend(guidance)
 
-    return SpineDocument(path.resolve(), fields, sections, errors, warnings)
+    return SpineDocument(path.resolve(), fields, sections, errors, warnings, state, state_sources)
 
 
 def validate_graph(documents: list[SpineDocument]) -> None:
@@ -550,6 +655,8 @@ def validate_graph(documents: list[SpineDocument]) -> None:
     by_path = {doc.path: doc for doc in existing}
     by_id: dict[str, SpineDocument] = {}
     for doc in existing:
+        if doc.fields.get("Spine profile", "").lower() == "compact" and not doc.spine_type:
+            doc.errors.append("graph validation requires explicit hierarchy fields for compact spines; lineage is undeclared")
         if is_empty(doc.spine_id):
             continue
         if doc.spine_id in by_id:
