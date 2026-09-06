@@ -48,7 +48,8 @@ Give a new contributor one local, reproducible CLI journey for reading a populat
 ## Definition Of Done
 
 SHIP — the manager personally executes this CLI journey: run → first failure → dispatch a scoped fix → prepare the updated surface → restart from step 1 until one uninterrupted clean pass.
-Evidence: exact commands, inputs, exit codes and outputs.
+Acceptance outcome: The documented validator commands return their expected results.
+Evidence method: cli: Save the invocation, supplied fixture, return status and terminal transcript.
 
 - [ ] 1. Run `python3 skill/epic-spine/scripts/validate_spine.py --help`; expect usage text and exit code 0 — PORT from the existing validator.
 - [ ] 2. Run `python3 skill/epic-spine/scripts/validate_spine.py --strict examples/EPIC-0-CLI-EXAMPLE.md`; expect `OK` and exit code 0 — PORT from the existing local validation command.
@@ -66,7 +67,7 @@ Phase: planning
 Fresh base commit: d6a6d026430bab11430986a9258f85844564f8b4
 Pinned-base rule: pinned; no rebases until the journey passes.
 Dispatch condition: none
-Next action: Execute the example journey only when explicitly assigned.
+Next action: Run the first documented CLI command.
 Blockers: none
 
 ## Execution Cursor

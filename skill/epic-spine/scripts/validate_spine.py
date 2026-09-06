@@ -4,10 +4,11 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import sys
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
@@ -90,6 +91,21 @@ REQUIRED_LEDGER_COLUMNS = (
     "Next Action",
 )
 
+COMPACT_FIELDS = ("Repository", "Primary document", "Spine ID", "Integration branch")
+COMPACT_SECTIONS = ("Mission", "Non-Goals", "Current State", "Definition Of Done", "Issue Ledger", "Decisions")
+STATE_FIELDS = {
+    "Owner": "owner", "Status": "status", "Last attempted": "last_attempted",
+    "Result": "result", "Evidence": "evidence", "Waiting on": "waiting_on",
+    "Approved work": "approved_work", "Next action": "next_action",
+    "Source revision": "source_revision", "Verified at": "verified_at",
+}
+STATE_ALIASES = {
+    **{label.lower(): key for label, key in STATE_FIELDS.items()},
+    "phase": "phase", "execution status": "status", "active spine steward": "owner",
+    "blocker": "waiting_on", "blockers": "waiting_on", "latest evidence": "evidence",
+    "last reconciled commit": "source_revision", "last verified": "verified_at",
+}
+
 DIALECTS = {"v1", "v2"}
 ACCEPTANCE_SURFACES = {"browser", "cli", "library", "infrastructure", "documentation"}
 
@@ -106,6 +122,18 @@ class SpineDocument:
     sections: dict[str, str]
     errors: list[str]
     warnings: list[str]
+    state: dict[str, str] = field(default_factory=dict)
+    state_sources: dict[str, list[str]] = field(default_factory=dict)
+    tickets: list[dict[str, str]] = field(default_factory=list)
+
+    @property
+    def diagnostics(self) -> list[dict[str, object]]:
+        # Compute after graph validation too; preserve mutable legacy lists.
+        return [classify_diagnostic(message, error=True) for message in self.errors] + [
+            classify_diagnostic(message, error=False) for message in self.warnings]
+
+    def fails(self, *, strict: bool = False) -> bool:
+        return bool(self.errors) or (strict and any(d["category"] == "required-data" for d in self.diagnostics))
 
     @property
     def spine_id(self) -> str:
@@ -140,6 +168,72 @@ def parse_fields(text: str) -> dict[str, str]:
     first_section = re.search(r"(?m)^## ", text)
     preamble = text[: first_section.start()] if first_section else text
     return parse_key_values(preamble)
+
+
+def read_state(text: str, *, compact: bool = False) -> tuple[dict[str, str], dict[str, list[str]], list[str]]:
+    """Normalize execution facts without selecting a winner for contradictions.
+
+    Values are single-line strings; provenance is source section/label/line.
+    Conflicting keys are omitted from the returned state and reported as errors.
+    This API is shared with migration and execution-only rollup consumers.
+    """
+    candidates: dict[str, list[tuple[str, str]]] = {}
+    errors: list[str] = []
+    section = "preamble"
+    section_counts: dict[str, int] = {}
+    for number, line in enumerate(text.splitlines(), 1):
+        heading = re.fullmatch(r"## (.+?)[ \t]*", line)
+        if heading:
+            section = normalize(heading.group(1))
+            section_counts[section] = section_counts.get(section, 0) + 1
+            continue
+        if section not in {"preamble", "Current State", "Execution Cursor"}:
+            continue
+        match = re.fullmatch(r"([A-Za-z][A-Za-z ]+):[ \t]*(.*)", line)
+        if not match:
+            continue
+        label, value = normalize(match.group(1)), normalize(match.group(2))
+        key = STATE_ALIASES.get(label.lower())
+        if key is None:
+            continue
+        source = f"{section} / {label} (line {number})"
+        if compact and section != "Current State":
+            errors.append(f"competing compact state: {source}; author facts only in Current State")
+        candidates.setdefault(key, []).append((value, source))
+    for name in ("Current State", "Execution Cursor"):
+        if section_counts.get(name, 0) > 1:
+            errors.append(f"duplicate state section: {name}")
+    state: dict[str, str] = {}
+    sources: dict[str, list[str]] = {}
+    for key, entries in candidates.items():
+        sources[key] = [source for _, source in entries]
+        def comparable(value: str) -> str:
+            if key == "waiting_on" and value.lower() in {"none", "nothing", "n/a", "-", "no blockers"}:
+                return "none"
+            return value.lower() if key == "status" else value
+        # Legacy templates remain usable, but unresolved placeholders never
+        # supply a trustworthy value to migration or rollup consumers.
+        resolved = [(value, source) for value, source in entries if value and not value.startswith("<") and not (key == "status" and value.lower().startswith("draft | ready | active"))]
+        distinct = {comparable(value) for value, _ in resolved}
+        if len(distinct) > 1:
+            details = "; ".join(f"{source} = {value!r}" for value, source in resolved)
+            errors.append(f"conflicting state {key}: {details}; reconcile explicitly before migration or rollup")
+            continue
+        if resolved:
+            state[key] = comparable(resolved[0][0]) if key in {"waiting_on", "status"} else resolved[0][0]
+        elif entries:
+            state[key] = entries[0][0]
+    if compact:
+        for label, key in STATE_FIELDS.items():
+            if key not in candidates:
+                errors.append(f"Current State missing field: {label}")
+            elif key in state:
+                value = state[key]
+                if is_empty(value) and not (key in {"waiting_on", "approved_work"} and value.lower() in {"none", "nothing", "n/a", "-"}):
+                    errors.append(f"Current State unresolved field: {label}")
+        if state.get("status") and state["status"] not in LEDGER_STATUSES:
+            errors.append(f"Current State invalid Status: {state['status']}")
+    return state, sources, errors
 
 
 def parse_table(
@@ -269,22 +363,243 @@ def table_rows(section: str) -> list[dict[str, str]]:
     return [dict(zip(header, row)) for row in rows]
 
 
+def read_tickets(path: Path, fields: dict[str, str], sections: dict[str, str]) -> tuple[list[dict[str, str]], list[str]]:
+    """Read authoritative local files or explicitly unverified GitHub snapshots.
+
+    Local identity is scoped to this board. Duplicate identities are excluded
+    rather than choosing one source. Callers must inspect all returned errors.
+    """
+    backend = normalize(fields.get("Ticket backend", "github")).lower()
+    errors: list[str] = []
+    tickets: list[dict[str, str]] = []
+    if backend not in {"github", "local"}:
+        return [], [f"unsupported Ticket backend: {backend or '(empty)'}; expected github or local"]
+    header, rows = parse_table(sections.get("Issue Ledger", ""))
+    if backend == "github":
+        for number, row in enumerate(rows, 1):
+            values = dict(zip(header, row))
+            issue = values.get("Issue", "")
+            status = values.get("Status", "").lower()
+            template_status = issue.lower() == "draft" and re.fullmatch(r"<[^<>]+>", status)
+            if status not in LEDGER_STATUSES and not template_status:
+                errors.append(f"ledger row {number} has invalid Status: {status or '(empty)'}")
+            if issue.lower() == "draft" and (status == "draft" or template_status):
+                continue
+            if not is_issue_reference(issue):
+                errors.append(f"ledger row {number} has invalid Issue: expected an HTTPS GitHub issue URL (draft is allowed only for draft rows)")
+                continue
+            if status not in LEDGER_STATUSES:
+                continue
+            parsed = urlsplit(markdown_target(issue) or normalize(issue))
+            location = f"https://{parsed.netloc.lower()}{parsed.path.rstrip('/')}"
+            tickets.append({
+                "identity": "github:" + location.lower(), "location": location,
+                "status": values.get("Status", "").lower(),
+                "owner": values.get("Owner / Assignment", ""),
+                "evidence": values.get("Latest Evidence", ""), "waiting_on": values.get("Waiting on", ""), "backend": backend,
+                "verification": "unverified", "freshness": "unknown", "source_revision": "",
+                "declared_verified_at": values.get("Last Verified", ""),
+            })
+    else:
+        source_dir = path.resolve().parent
+        checkout = next((parent for parent in (source_dir, *source_dir.parents) if (parent / ".git").exists()), source_dir)
+        permitted = fields.get("Ticket permitted root", "")
+        if permitted:
+            if not Path(permitted).is_absolute() or is_empty(permitted):
+                return [], ["Ticket permitted root must be an explicit absolute directory"]
+            try:
+                checkout = Path(permitted).resolve()
+            except (OSError, ValueError, RuntimeError):
+                return [], ["Ticket permitted root is invalid or inaccessible"]
+            if checkout == Path(checkout.anchor):
+                return [], ["Ticket permitted root must be bounded below the filesystem root"]
+        root_value = fields.get("Ticket root", "")
+        if is_empty(root_value):
+            return [], ["local ticket backend requires a resolved Ticket root"]
+        try:
+            root = (source_dir / root_value).resolve()
+        except (OSError, ValueError, RuntimeError):
+            return [], ["Ticket root is invalid or inaccessible"]
+        if not root.is_relative_to(checkout):
+            return [], ["Ticket root escapes the checkout; declare a bounded absolute Ticket permitted root for authorized external files"]
+        if not root.is_dir():
+            return [], [f"Ticket root is not an existing directory: {root}"]
+        required = ("Ticket", "Depends On")
+        for column in required:
+            if column not in header:
+                errors.append(f"local Issue Ledger missing column: {column}")
+        extra = set(header) - set(required)
+        if extra:
+            errors.append("local Issue Ledger is references/dependencies only; remove duplicated fields: " + ", ".join(sorted(extra)))
+        for number, row in enumerate(rows, 1):
+            values = dict(zip(header, row))
+            reference = values.get("Ticket", "")
+            target = reference
+            if target.startswith("["):
+                match = re.fullmatch(r"\[[^\]\n]+\]\(([^\s)]+)\)", target)
+                target = match.group(1) if match else ""
+            try:
+                parsed = urlsplit(target)
+            except ValueError:
+                errors.append(f"local ledger row {number} has malformed Ticket reference")
+                continue
+            if not target or is_empty(target) or parsed.scheme or parsed.netloc or parsed.query or parsed.fragment:
+                errors.append(f"local ledger row {number} has unresolved Ticket reference: use a relative Markdown file path without query/fragment")
+                continue
+            local_path = Path(unquote(parsed.path))
+            if local_path.is_absolute():
+                errors.append(f"local ledger row {number} requires a relative Ticket path")
+                continue
+            try:
+                ticket_path = (source_dir / local_path).resolve()
+            except (OSError, ValueError, RuntimeError):
+                errors.append(f"local ledger row {number} has invalid or inaccessible Ticket path")
+                continue
+            if not ticket_path.is_relative_to(root):
+                errors.append(f"local ledger row {number} Ticket escapes Ticket root: {reference}")
+                continue
+            if ticket_path.suffix.lower() not in {".md", ".markdown"} or not ticket_path.is_file():
+                errors.append(f"local ledger row {number} Ticket file is missing or not Markdown: {reference}")
+                continue
+            try:
+                content = ticket_path.read_bytes()
+                text = content.decode("utf-8")
+            except (OSError, UnicodeError) as error:
+                errors.append(f"local ticket could not be read: {ticket_path}: {error}")
+                continue
+            ticket_fields = parse_fields(text)
+            ticket_errors = []
+            for label in ("Ticket ID", "Status", "Owner", "Evidence"):
+                if is_empty(ticket_fields.get(label, "")):
+                    ticket_errors.append(f"local ticket {reference} missing or unresolved field: {label}")
+                preamble = re.split(r"(?m)^## ", text, maxsplit=1)[0]
+                labels = [normalize(match.group(1)) for match in re.finditer(r"(?m)^([A-Za-z][A-Za-z ]+):", preamble)]
+                if labels.count(label) > 1:
+                    ticket_errors.append(f"local ticket {reference} has duplicate field: {label}")
+            identity = ticket_fields.get("Ticket ID", "")
+            if not re.fullmatch(r"[A-Za-z][A-Za-z0-9_.-]*", identity):
+                ticket_errors.append(f"local ticket {reference} has invalid Ticket ID: {identity or '(empty)'}")
+            status = ticket_fields.get("Status", "").lower()
+            if status not in LEDGER_STATUSES:
+                ticket_errors.append(f"local ticket {reference} has invalid Status: {status or '(empty)'}")
+            if ticket_errors:
+                errors.extend(error for error in ticket_errors if error not in errors)
+                continue
+            tickets.append({
+                "identity": "local:" + identity, "location": str(ticket_path),
+                "status": status, "owner": ticket_fields["Owner"], "evidence": ticket_fields["Evidence"],
+                "waiting_on": ticket_fields.get("Waiting on", ""),
+                "backend": backend, "verification": "local-read", "freshness": "unknown",
+                "source_revision": "sha256:" + hashlib.sha256(content).hexdigest(),
+                "declared_verified_at": ticket_fields.get("Verified at", ""),
+            })
+        identities = {ticket["identity"][len("local:"):] for ticket in tickets}
+        for number, row in enumerate(rows, 1):
+            depends = dict(zip(header, row)).get("Depends On", "")
+            if depends.lower() in {"none", "-", "n/a"}:
+                continue
+            for identity in (value.strip() for value in depends.split(",")):
+                if identity not in identities:
+                    errors.append(f"local ledger row {number} unresolved dependency Ticket ID: {identity or '(empty)'}")
+    seen: dict[str, list[str]] = {}
+    for ticket in tickets:
+        seen.setdefault(ticket["identity"], []).append(ticket["location"])
+    duplicates = {identity for identity, locations in seen.items() if len(locations) > 1}
+    for identity in sorted(duplicates):
+        errors.append(f"duplicate ticket identity {identity}: " + ", ".join(seen[identity]))
+    return [ticket for ticket in tickets if ticket["identity"] not in duplicates], errors
+
+
+def classify_diagnostic(message: str, *, error: bool) -> dict[str, object]:
+    """Stable rule families; prose is not an execution or structural proof."""
+    lower = message.lower()
+    required = any(term in lower for term in ("unresolved", "missing field:", "is empty", "without evidence", "required acceptance", "required evidence"))
+    required = required or lower == "updated still contains a template date"
+    required = required or lower.startswith(("v2 discovery missing", "v2 human gates should include column", "v2 issue ledger should include", "v2 definition of done should have"))
+    required = required or bool(re.match(r"v2 ledger row \d+ has no ", lower))
+    if error:
+        category = "required-data" if required else "structural"
+    else:
+        category = "required-data" if required else "advisory"
+    if "required acceptance" in lower:
+        rule = "ES-D-ACCEPTANCE"
+    elif "required evidence" in lower:
+        rule = "ES-D-EVIDENCE"
+    elif category == "advisory":
+        rule = "ES-A-PROSE"
+    elif category == "required-data":
+        rule = "ES-D-REQUIRED"
+    elif any(word in lower for word in ("table", "column", "separator", "malformed table")):
+        rule = "ES-S-TABLE"
+    elif any(word in lower for word in ("ticket", "ledger row", "issue ledger")):
+        rule = "ES-S-TICKET"
+    elif any(word in lower for word in ("dialect", "profile", "acceptance surface")):
+        rule = "ES-S-DIALECT"
+    elif any(word in lower for word in ("conflicting state", "duplicate state", "competing compact")):
+        rule = "ES-S-STATE"
+    elif any(word in lower for word in ("parent", "root", "child", "graph", "spine id", "spine type")):
+        rule = "ES-S-GRAPH"
+    else:
+        rule = "ES-S-CONTRACT"
+    return {"rule_id": rule, "category": category, "severity": "error" if error else "warning",
+            "message": message, "fails_strict": error or category == "required-data"}
+
+
+def acceptance_warnings(fields: dict[str, str], sections: dict[str, str]) -> list[str]:
+    """Check declared acceptance data, not preferred phrasing or journey length.
+
+    Explicit surface-qualified methods accept free prose. Legacy Evidence lines
+    and evidence-producing steps use a small compatibility vocabulary, not the
+    old conjunction of mandatory phrases. Human review still assesses adequacy.
+    """
+    dod = sections.get("Definition Of Done", "")
+    ship = re.split(r"(?im)^\s*HARDEN\b", dod, maxsplit=1)[0]
+    data = parse_key_values(ship)
+    checks = re.findall(r"(?m)^\s*-\s*\[[ xX]\]\s*(?:\d+\.\s*)?(.+)$", ship)
+    outcome = data.get("Acceptance outcome", "")
+    warnings = []
+    resolved_outcome = not is_empty(outcome) if "Acceptance outcome" in data else any(
+        not is_empty(item) and not item.lower().startswith("test package:") for item in checks)
+    if not resolved_outcome:
+        warnings.append("v2 required acceptance: declare a resolved observable outcome or acceptance checkbox")
+    surface = normalize(fields.get("Acceptance surface", "")).lower()
+    if surface not in ACCEPTANCE_SURFACES:
+        return warnings
+    method = data.get("Evidence method", "")
+    qualified = re.fullmatch(r"(browser|cli|library|infrastructure|documentation):\s*(.+)", method, re.I)
+    if "Evidence method" in data:
+        valid = bool(qualified and qualified[1].lower() == surface and not is_empty(qualified[2]))
+    else:
+        # Compatibility with the documented v2 Evidence declaration and older
+        # inline journeys. This does not require exact words, order, or a count.
+        evidence = data.get("Evidence", "")
+        patterns = {
+            "browser": r"browser|screenshot|screen capture|playwright|selenium",
+            "cli": r"command|terminal|stdout|stderr|exit (?:code|status)|shell",
+            "library": r"consumer|import|unit test|behavior(?:al)? (?:check|test)|api test",
+            "infrastructure": r"probe|health check|telemetry|deployment test|service check",
+            "documentation": r"render|link check|walkthrough|follow.*instruction|example",
+        }
+        candidates = [evidence] if "Evidence" in data else [line for line in checks if not line.lower().startswith("test package:") and re.search(r"evidence|capture|record|verify|check|inspect", line, re.I)]
+        valid = any(not is_empty(value) and re.search(patterns[surface], value, re.I) for value in candidates)
+    if not valid:
+        warnings.append(f"v2 required evidence: declare a resolved {surface} evidence method (Evidence method: {surface}: <how results are observed and recorded>)")
+    return warnings
+
+
 def contains_all(value: str, *terms: str) -> bool:
     lowered = value.lower()
     return all(term.lower() in lowered for term in terms)
 
 
 def dialect_warnings(text: str, fields: dict[str, str], sections: dict[str, str]) -> list[str]:
-    """Check the selected v2 contract; strict mode promotes these diagnostics."""
+    """Optional prose guidance; required data is classified separately."""
     warnings: list[str] = []
     dod = sections.get("Definition Of Done", "")
     if not (re.search(r"(?im)^\s*SHIP\b", dod) and re.search(r"(?im)^\s*HARDEN\b", dod)):
         warnings.append("v2 Definition Of Done should have SHIP and HARDEN tiers")
     else:
         ship = re.split(r"(?im)^\s*HARDEN\b", dod, maxsplit=1)[0]
-        steps = re.findall(r"(?m)^\s*-\s*\[[ xX]\]\s*(\d+)\.", ship)
-        if not 5 <= len(steps) <= 12:
-            warnings.append("v2 SHIP journey should contain 5-12 numbered checkbox steps")
         for label, terms in (
             ("personal execution", ("personally",)),
             ("first-failure repair/restart loop", ("first failure", "dispatch", "restart", "step 1")),
@@ -292,16 +607,6 @@ def dialect_warnings(text: str, fields: dict[str, str], sections: dict[str, str]
         ):
             if not contains_all(ship, *terms):
                 warnings.append(f"v2 SHIP journey should state the {label} contract")
-        surface = normalize(fields.get("Acceptance surface", "")).lower()
-        surface_terms = {
-            "browser": ("real browser", "live", "screenshot", "step"),
-            "cli": ("commands", "inputs", "exit codes", "outputs"),
-            "library": ("consumer example", "behavior checks"),
-            "infrastructure": ("authorized", "probes", "environment"),
-            "documentation": ("instructions", "rendered", "links", "examples"),
-        }
-        if surface in surface_terms and not contains_all(ship, *surface_terms[surface]):
-            warnings.append(f"v2 SHIP journey should state {surface} evidence: {', '.join(surface_terms[surface])}")
         for number, line in re.findall(r"(?m)^\s*-\s*\[[ xX]\]\s*(\d+)\.\s*(.+)$", ship):
             if "test package" not in line.lower() and not re.search(r"\b(PORT|DUPLICATE|BUILD)\b", line, re.I):
                 warnings.append(f"v2 SHIP step {number} lacks PORT/DUPLICATE/BUILD marking")
@@ -388,15 +693,31 @@ def dialect_warnings(text: str, fields: dict[str, str], sections: dict[str, str]
     return warnings
 
 
-def validate_local(path: Path, *, dialect: str = "auto") -> SpineDocument:
+def is_history_snapshot(path: Path) -> bool:
+    """Recognize byte-exact migration archives; inventory must exclude these."""
+    match = re.search(r"\.history-([0-9a-f]{12})\.(?:md|markdown)$", path.name)
+    return bool(match and path.is_file() and hashlib.sha256(path.read_bytes()).hexdigest().startswith(match.group(1)))
+
+
+def validate_local(path: Path, *, dialect: str = "auto", ticket_source: Path | None = None) -> SpineDocument:
+    """Validate a document; ticket_source preserves path context in migration previews."""
     errors: list[str] = []
     warnings: list[str] = []
     if not path.is_file():
         return SpineDocument(path, {}, {}, ["file not found"], [])
 
+    if is_history_snapshot(path):
+        return SpineDocument(path.resolve(), {}, {}, ["historical snapshot is not an active spine; exclude it from active/graph inventory"], [])
+
     text = path.read_text(encoding="utf-8")
     fields = parse_fields(text)
     sections = parse_sections(text)
+    profile = normalize(fields.get("Spine profile", "full")).lower()
+    compact = profile == "compact"
+    if profile not in {"full", "compact"}:
+        errors.append(f"unsupported Spine profile: {profile}; expected full or compact")
+    state, state_sources, state_errors = read_state(text, compact=compact)
+    errors.extend(state_errors)
 
     # A supported CLI selection overrides the declaration; it cannot conceal an
     # invalid declaration. Missing declarations select legacy v1 in auto mode.
@@ -427,15 +748,22 @@ def validate_local(path: Path, *, dialect: str = "auto") -> SpineDocument:
                 line_offset=text.count("\n", 0, content_start), section_name=name,
             )
 
-    for field in REQUIRED_FIELDS:
+    required_fields = COMPACT_FIELDS if compact else REQUIRED_FIELDS
+    if compact and any(name in fields for name in ("Spine Type", "Root spine", "Parent spine")):
+        required_fields += ("Spine Type", "Root spine", "Parent spine", "Additional root rationale")
+    for field in required_fields:
         if field not in fields:
             errors.append(f"missing field: {field}")
         elif is_empty(fields[field]) and field not in {"Parent spine", "Additional root rationale"}:
             warnings.append(f"unresolved field: {field}")
 
-    for section in REQUIRED_SECTIONS:
+    for section in (COMPACT_SECTIONS if compact else REQUIRED_SECTIONS):
         if section not in sections:
             errors.append(f"missing section: {section}")
+
+    for name in ("Mission", "Definition Of Done", *(() if compact else ("Validation Evidence",))):
+        if name in sections and is_empty(sections[name]):
+            warnings.append(f"unresolved required section: {name}")
 
     spine_type = normalize(fields.get("Spine Type", "")).lower()
     root_spine = normalize(fields.get("Root spine", "")).lower()
@@ -458,13 +786,13 @@ def validate_local(path: Path, *, dialect: str = "auto") -> SpineDocument:
             warnings.append("branch Parent spine should be a Markdown link for navigation and graph validation")
 
     cursor = parse_key_values(sections.get("Execution Cursor", ""))
-    for field in REQUIRED_CURSOR_FIELDS:
+    for field in (() if compact else REQUIRED_CURSOR_FIELDS):
         if field not in cursor:
             errors.append(f"Execution Cursor missing field: {field}")
         elif is_empty(cursor[field]):
             warnings.append(f"Execution Cursor unresolved field: {field}")
 
-    spine_map = sections.get("Spine Map", "")
+    spine_map = sections.get("Spine Map", "No child spines." if compact else "")
     if "No child spines." not in spine_map:
         header, rows = parse_table(spine_map)
         if not header:
@@ -479,7 +807,7 @@ def validate_local(path: Path, *, dialect: str = "auto") -> SpineDocument:
                 if relationship and relationship != "child" and not relationship.startswith("<"):
                     errors.append(f"Spine Map row {row_number} Relationship must be child")
                 for column in ("Spine ID", "Spine", "Purpose", "Status", "Health / Blocker", "Last Rolled Up", "Next Action"):
-                    if column in values and is_empty(values[column]):
+                    if column in values and is_empty(values[column]) and not (column == "Health / Blocker" and normalize(values[column]).lower() in {"none", "no blocker", "no blockers", "nothing", "n/a", "-"}):
                         warnings.append(f"Spine Map row {row_number} unresolved field: {column}")
 
     decisions = sections.get("Decisions", "")
@@ -504,11 +832,12 @@ def validate_local(path: Path, *, dialect: str = "auto") -> SpineDocument:
                         if column in decision_positions and is_empty(row[decision_positions[column]]):
                             errors.append(f"decision row {row_number} is {outcome} but {column} is empty")
 
+    backend = normalize(fields.get("Ticket backend", "github")).lower()
     ledger = sections.get("Issue Ledger", "")
     header, rows = parse_table(ledger)
     if not header:
         errors.append("Issue Ledger has no Markdown table")
-    else:
+    elif backend == "github":
         for column in REQUIRED_LEDGER_COLUMNS:
             if column not in header:
                 errors.append(f"Issue Ledger missing column: {column}")
@@ -536,13 +865,22 @@ def validate_local(path: Path, *, dialect: str = "auto") -> SpineDocument:
             if status == "done" and "Latest Evidence" in values and is_empty(values["Latest Evidence"]):
                 errors.append(f"ledger row {row_number} ({issue}) is done without evidence")
 
+    tickets, ticket_errors = read_tickets(ticket_source or path, fields, sections)
+    errors.extend(ticket_errors)
+
     if "YYYY-MM-DD" in fields.get("Updated", ""):
         warnings.append("Updated still contains a template date")
 
     if selected_dialect == "v2":
-        warnings.extend(dialect_warnings(text, fields, sections))
+        guidance = dialect_warnings(text, fields, sections)
+        if backend == "local":
+            guidance = [message for message in guidance if not message.startswith(("v2 Issue Ledger", "v2 ledger", "v2 first ledger"))]
+        if compact:
+            guidance = [message for message in guidance if message.startswith(("v2 SHIP", "v2 Definition Of Done"))]
+        warnings.extend(guidance)
+        warnings.extend(acceptance_warnings(fields, sections))
 
-    return SpineDocument(path.resolve(), fields, sections, errors, warnings)
+    return SpineDocument(path.resolve(), fields, sections, errors, warnings, state, state_sources, tickets)
 
 
 def validate_graph(documents: list[SpineDocument]) -> None:
@@ -550,6 +888,8 @@ def validate_graph(documents: list[SpineDocument]) -> None:
     by_path = {doc.path: doc for doc in existing}
     by_id: dict[str, SpineDocument] = {}
     for doc in existing:
+        if doc.fields.get("Spine profile", "").lower() == "compact" and not doc.spine_type:
+            doc.errors.append("graph validation requires explicit hierarchy fields for compact spines; lineage is undeclared")
         if is_empty(doc.spine_id):
             continue
         if doc.spine_id in by_id:
@@ -643,18 +983,18 @@ def validate_graph(documents: list[SpineDocument]) -> None:
 
 
 def result_for(doc: SpineDocument) -> dict[str, object]:
-    return {"path": str(doc.path), "errors": doc.errors, "warnings": doc.warnings}
+    return {"path": str(doc.path), "errors": doc.errors, "warnings": doc.warnings, "diagnostics": doc.diagnostics}
 
 
 def validate(path: Path, *, dialect: str = "auto") -> dict[str, object]:
-    """Validate one spine and return the legacy dictionary result shape."""
+    """Validate one spine; retain legacy keys and add classified diagnostics."""
     return result_for(validate_local(path, dialect=dialect))
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("paths", nargs="+", type=Path)
-    parser.add_argument("--strict", action="store_true", help="Treat selected-dialect and unresolved-field warnings as failures")
+    parser.add_argument("--strict", action="store_true", help="Fail structural defects and unresolved required data; prose advice does not fail")
     parser.add_argument("--dialect", choices=("auto", "v1", "v2"), default="auto",
                         help="Override a supported Spine dialect declaration; auto uses the declaration or defaults to v1")
     parser.add_argument(
@@ -671,8 +1011,8 @@ def main() -> int:
 
     results = [result_for(doc) for doc in documents]
     exit_code = 0
-    for result in results:
-        if result["errors"] or (args.strict and result["warnings"]):
+    for document in documents:
+        if document.fails(strict=args.strict):
             exit_code = 1
 
     if args.json:
@@ -680,10 +1020,8 @@ def main() -> int:
     else:
         for result in results:
             print(result["path"])
-            for error in result["errors"]:
-                print(f"  ERROR: {error}")
-            for warning in result["warnings"]:
-                print(f"  WARN: {warning}")
+            for diagnostic in result["diagnostics"]:
+                print(f"  {diagnostic['severity'].upper()} [{diagnostic['rule_id']} / {diagnostic['category']}]: {diagnostic['message']}")
             if not result["errors"] and not result["warnings"]:
                 print("  OK")
 
