@@ -8,6 +8,7 @@ import unittest
 from unittest.mock import patch
 
 from test_validate_spine import validate_spine as validator
+from test_compact_state import migration
 
 ROOT = Path(__file__).parents[1]
 
@@ -56,11 +57,24 @@ class TicketBackendTests(unittest.TestCase):
         self.assertEqual("", record["source_revision"])
         self.assertEqual("2026-08-16 12:00 UTC", record["declared_verified_at"])
 
+    def test_direct_github_reader_does_not_silently_skip_invalid_references(self):
+        source = ROOT / "examples/EPIC-GITHUB-TICKETS.md"
+        original = source.read_text()
+        for old, new, expected in (
+            ("https://github.com/example/repo/issues/1", "not-an-issue", "invalid Issue"),
+            ("| ready | none |", "| unknown | none |", "invalid Status"),
+        ):
+            text = original.replace(old, new)
+            records, errors = validator.read_tickets(source, validator.parse_fields(text), validator.parse_sections(text))
+            self.assertEqual([], records)
+            self.assertTrue(any(expected in error for error in errors), errors)
+
     def test_unknown_backend_and_missing_root_are_diagnosed(self):
         for original, replacement, expected in (
             ("Ticket backend: local", "Ticket backend: other", "unsupported Ticket backend"),
             ("Ticket root: tickets", "Ticket root:", "requires a resolved Ticket root"),
             ("Ticket root: tickets", "Ticket root: missing", "not an existing directory"),
+            ("Ticket root: tickets", "Ticket root: \x00", "invalid or inaccessible"),
         ):
             with tempfile.TemporaryDirectory() as tmp:
                 source = self.setup_local(Path(tmp))
@@ -133,6 +147,33 @@ class TicketBackendTests(unittest.TestCase):
             source.write_text(source.read_text().replace(str(moved), "/"))
             result = validator.validate_local(source)
             self.assertTrue(any("bounded below the filesystem root" in error for error in result.errors))
+
+    def test_checkout_boundary_allows_sibling_ticket_folder(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp)
+            (folder / ".git").mkdir()
+            source = self.setup_local(folder)
+            moved = folder / "tickets"
+            shutil.move(source.parent / "tickets", moved)
+            source.write_text(source.read_text().replace("Ticket root: tickets", "Ticket root: ../tickets").replace("(tickets/", "(../tickets/"))
+            self.assertEqual([], validator.validate_local(source).errors)
+
+    def test_local_backend_migration_preserves_original_reference_context(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            source = self.setup_local(Path(tmp))
+            local_sections = validator.parse_sections(source.read_text())
+            full = (ROOT / "tests/fixtures/legacy-migration.md").read_text()
+            full = full.replace("Spine dialect: v1", "Spine dialect: v1\nTicket backend: local\nTicket root: tickets")
+            old_ledger = validator.parse_sections(full)["Issue Ledger"]
+            source.write_text(full.replace(old_ledger, local_sections["Issue Ledger"]))
+            original_records = validator.validate_local(source).tickets
+            plan = migration.plan_migration(source)
+            self.assertFalse(plan.archive.exists())
+            migration.apply_migration(plan, plan.source_sha256)
+            result = validator.validate_local(source)
+            self.assertEqual([], result.errors)
+            self.assertEqual(original_records, result.tickets)
+            self.assertIn("Ticket backend: local", source.read_text())
 
     def test_reference_traversal_and_symlink_escapes_fail(self):
         with tempfile.TemporaryDirectory() as tmp:

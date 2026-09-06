@@ -59,7 +59,7 @@ The synthetic `examples/local-research/EPIC-LOCAL-RESEARCH.md` demonstrates the 
 
 ## Normalized reader API
 
-`validate_local(path).tickets` is a list of dictionaries. `read_tickets(path, fields, sections)` returns `(tickets, errors)` for adapters. Consumers must inspect all validation errors before using any records.
+`validate_local(path).tickets` is a list of dictionaries. `read_tickets(path, fields, sections)` returns `(tickets, errors)` for reference/record adapters. Use `validate_local` when full spine and ledger-shape validation is required. Consumers must inspect all validation errors before using any records. Migration previews preserve the original ticket path context while validating their temporary candidate; changing document profile does not relocate or migrate ticket authority.
 
 | Key | Meaning |
 |---|---|

@@ -367,10 +367,19 @@ def read_tickets(path: Path, fields: dict[str, str], sections: dict[str, str]) -
         return [], [f"unsupported Ticket backend: {backend or '(empty)'}; expected github or local"]
     header, rows = parse_table(sections.get("Issue Ledger", ""))
     if backend == "github":
-        for row in rows:
+        for number, row in enumerate(rows, 1):
             values = dict(zip(header, row))
             issue = values.get("Issue", "")
+            status = values.get("Status", "").lower()
+            template_status = issue.lower() == "draft" and re.fullmatch(r"<[^<>]+>", status)
+            if status not in LEDGER_STATUSES and not template_status:
+                errors.append(f"ledger row {number} has invalid Status: {status or '(empty)'}")
+            if issue.lower() == "draft" and (status == "draft" or template_status):
+                continue
             if not is_issue_reference(issue):
+                errors.append(f"ledger row {number} has invalid Issue: expected an HTTPS GitHub issue URL (draft is allowed only for draft rows)")
+                continue
+            if status not in LEDGER_STATUSES:
                 continue
             parsed = urlsplit(markdown_target(issue) or normalize(issue))
             location = f"https://{parsed.netloc.lower()}{parsed.path.rstrip('/')}"
@@ -389,13 +398,19 @@ def read_tickets(path: Path, fields: dict[str, str], sections: dict[str, str]) -
         if permitted:
             if not Path(permitted).is_absolute() or is_empty(permitted):
                 return [], ["Ticket permitted root must be an explicit absolute directory"]
-            checkout = Path(permitted).resolve()
+            try:
+                checkout = Path(permitted).resolve()
+            except (OSError, ValueError, RuntimeError):
+                return [], ["Ticket permitted root is invalid or inaccessible"]
             if checkout == Path(checkout.anchor):
                 return [], ["Ticket permitted root must be bounded below the filesystem root"]
         root_value = fields.get("Ticket root", "")
         if is_empty(root_value):
             return [], ["local ticket backend requires a resolved Ticket root"]
-        root = (source_dir / root_value).resolve()
+        try:
+            root = (source_dir / root_value).resolve()
+        except (OSError, ValueError, RuntimeError):
+            return [], ["Ticket root is invalid or inaccessible"]
         if not root.is_relative_to(checkout):
             return [], ["Ticket root escapes the checkout; declare a bounded absolute Ticket permitted root for authorized external files"]
         if not root.is_dir():
@@ -458,7 +473,7 @@ def read_tickets(path: Path, fields: dict[str, str], sections: dict[str, str]) -
             if status not in LEDGER_STATUSES:
                 ticket_errors.append(f"local ticket {reference} has invalid Status: {status or '(empty)'}")
             if ticket_errors:
-                errors.extend(ticket_errors)
+                errors.extend(error for error in ticket_errors if error not in errors)
                 continue
             tickets.append({
                 "identity": "local:" + identity, "location": str(ticket_path),
@@ -610,7 +625,8 @@ def is_history_snapshot(path: Path) -> bool:
     return bool(match and path.is_file() and hashlib.sha256(path.read_bytes()).hexdigest().startswith(match.group(1)))
 
 
-def validate_local(path: Path, *, dialect: str = "auto") -> SpineDocument:
+def validate_local(path: Path, *, dialect: str = "auto", ticket_source: Path | None = None) -> SpineDocument:
+    """Validate a document; ticket_source preserves path context in migration previews."""
     errors: list[str] = []
     warnings: list[str] = []
     if not path.is_file():
@@ -771,7 +787,7 @@ def validate_local(path: Path, *, dialect: str = "auto") -> SpineDocument:
             if status == "done" and "Latest Evidence" in values and is_empty(values["Latest Evidence"]):
                 errors.append(f"ledger row {row_number} ({issue}) is done without evidence")
 
-    tickets, ticket_errors = read_tickets(path, fields, sections)
+    tickets, ticket_errors = read_tickets(ticket_source or path, fields, sections)
     errors.extend(ticket_errors)
 
     if "YYYY-MM-DD" in fields.get("Updated", ""):
