@@ -1,6 +1,6 @@
 # EPIC: Compact state and trustworthy rollups
 
-Status: active
+Status: review
 Updated: 2026-09-06
 Repository: AlfaBlok/epicspine-skill
 Primary document: docs/EPIC-1-COORDINATION-SIMPLIFICATION.md
@@ -12,7 +12,7 @@ Additional root rationale: n/a
 Spine dialect: v1
 Integration branch: codex/coordination-simplification
 Active spine steward: /root delivery manager
-Last reconciled commit: a8522464235db77d1eaca4dc03d9556d076e6bc7
+Last reconciled commit: 465d27c901f350a7d9402994c121473f12ad427c
 
 ## Role Bindings
 
@@ -40,23 +40,23 @@ Reduce duplicated current state and manual synchronization while preserving evid
 - [x] Explicit GitHub and local ticket references without competing mutable ledgers.
 - [x] Deterministic direct-child rollup checks/previews, truthful freshness and authority-aware apply/proposal behavior.
 - [x] Strict validation rejects objective defects and unresolved required data; prose guidance remains advisory.
-- [ ] Synthetic examples, focused regression suite, independent review and reviewable PR pass on a named revision.
+- [x] Synthetic examples, focused regression suite, independent review and reviewable PR pass on a named revision.
 
 ## Current State
 
-Phase: implementation
+Phase: review
 Last verified: 2026-09-06
 Integration target: codex/coordination-simplification
 Fresh base commit: a8522464235db77d1eaca4dc03d9556d076e6bc7
 
 ## Execution Cursor
 
-Last attempted: Integrated #21 correction at 465d27c901f350a7d9402994c121473f12ad427c and dispatched final independent combined acceptance.
-Result: All 85 combined tests and strict manager graph pass. Superseded wording is advisory; conflicting state and missing evidence remain failures.
-Execution status: active
-Waiting on: final combined acceptance and hosted CI
+Last attempted: Completed independent combined acceptance at implementation revision 465d27c901f350a7d9402994c121473f12ad427c; hosted CI passes at coordination revision 619bf815e5f230d61f4780c6b39cb01e19c36f58.
+Result: 85 combined tests pass; independent Python 3.10/3.14 CLI, no-op, ancestor invalidation and strict graph checks accepted. All implementation review findings resolved.
+Execution status: review
+Waiting on: PR review and merge decision
 Approved work: User-authorized backlog delivery through subagents, isolated branches, issue comments, reviews and PRs.
-Next action: Record final acceptance and hand off PR #22 for review; no main merge or installed rollout.
+Next action: Review stacked PR #22 after prerequisite PR #16; main merge and installed-skill rollout remain separate actions.
 
 ## Bootstrap Map
 
@@ -82,7 +82,7 @@ Next action: Record final acceptance and hand off PR #22 for review; no main mer
 | [#18](https://github.com/AlfaBlok/epicspine-skill/issues/18) | Ticket worker | /root/parser | Compact authoritative state | review | PR #16 pinned | codex/compact-state | 6f63d378e0ed8e8adffdda89039f8a0c16069909 | #18 criteria | 17b2a8 accepted; integrated 48 tests pass | 2026-09-06 | PR #22 review |
 | [#19](https://github.com/AlfaBlok/epicspine-skill/issues/19) | Ticket worker | /root/parser | Explicit ticket backends | review | #18 candidate pinned; review pending | codex/ticket-backends | 6512dce8c202ff9bc79730adc2f83ec8e5835ddd | #19 criteria | 54c44e1 accepted; integrated 60 tests pass | 2026-09-06 | PR #22 review |
 | [#20](https://github.com/AlfaBlok/epicspine-skill/issues/20) | Ticket worker | /root/parser | Freshness-aware rollups | review | #19 candidate pinned; review pending | codex/execution-rollups | 89b3c1477a2419281c5733f7e3e7cbccf4e0e620 | #20 criteria | fe6a638 independently accepted; integrated 73 tests pass | 2026-09-06 | PR #22 review |
-| [#21](https://github.com/AlfaBlok/epicspine-skill/issues/21) | Ticket worker | /root/workflow | Structural strictness | review | #18, #19 accepted | codex/structural-validation | 54c44e163190857264198153ba725b5c4365d932 | #21 criteria | 5d840a3 corrected; integrated 85 tests pass | 2026-09-06 | Final combined review |
+| [#21](https://github.com/AlfaBlok/epicspine-skill/issues/21) | Ticket worker | /root/workflow | Structural strictness | review | #18, #19 accepted | codex/structural-validation | 54c44e163190857264198153ba725b5c4365d932 | #21 criteria | 5d840a3 accepted; combined 85 tests and cross-version review pass | 2026-09-06 | PR #22 review |
 
 ## Branch And Integration
 
@@ -98,7 +98,7 @@ Each issue records exact owner, base, worktree, latest commit, checks, blocker a
 
 ## Validation Evidence
 
-Baseline: PR #16 has independent 34-test passes on Python 3.10 and 3.14, strict example/fixture/spine validation, and hosted CI. #18 integrated at fe91d3be962c6a0087097c364ae083a0d1f52ac4: 48 tests and strict manager graph pass after independent review corrections. #19/#20 accepted and integrated; #21 acceptance pending.
+Baseline: PR #16 has independent 34-test passes on Python 3.10 and 3.14, strict example/fixture/spine validation, and hosted CI. #18 integrated at fe91d3be962c6a0087097c364ae083a0d1f52ac4: 48 tests and strict manager graph pass after independent review corrections. #19/#20 accepted and integrated; #21 accepted; no implementation work remains.
 
 ## Handoff Journal
 
@@ -125,3 +125,7 @@ Independent #21 review found one P2: equivalent superseded wording still fails s
 ### 2026-09-06 — all implementations integrated
 
 Final implementation revision 465d27c901f350a7d9402994c121473f12ad427c passes 85 combined tests and strict manager graph. Independent combined review and current hosted CI remain before final handoff.
+
+### 2026-09-06 — delivery accepted for review
+
+Independent combined acceptance: https://github.com/AlfaBlok/epicspine-skill/pull/22#issuecomment-5559402424. Implementation revision 465d27c901f350a7d9402994c121473f12ad427c; 85 tests plus independent Python 3.10/3.14 focused and CLI checks pass. Hosted push/PR CI passed at 619bf815e5f230d61f4780c6b39cb01e19c36f58. Remaining changes are coordination-only. All issue18–21 implementation is accepted; issues stay open through PR merge. Delivery follow-up pauses once the final coordination commit CI passes.
