@@ -528,14 +528,15 @@ class ValidatorCompatibilityTests(unittest.TestCase):
                 code, result = self.run_source(source.replace(evidence, "Evidence: pending execution."), "--strict")
                 self.assertEqual(1, code)
                 self.assertEqual(1, len(result["warnings"]), result)
-                self.assertTrue(result["warnings"][0].startswith(f"v2 SHIP journey should state {surface} evidence:"), result)
+                self.assertTrue(result["warnings"][0].startswith(f"v2 required evidence: declare a resolved {surface} evidence method"), result)
 
-    def test_personal_execution_remains_required_for_every_surface(self):
+    def test_personal_execution_wording_is_advisory_for_every_surface(self):
         for surface, evidence in self.surface_evidence.items():
             source = self.source().replace("Acceptance surface: cli", f"Acceptance surface: {surface}")
-            source = source.replace(self.surface_evidence["cli"], evidence).replace("personally", "automatically")
+            source = source.replace(self.surface_evidence["cli"], evidence).replace("personally", "through direct human observation")
             code, result = self.run_source(source, "--strict")
-            self.assertEqual(1, code)
+            self.assertEqual(0, code)
+            self.assertTrue(any(d["category"] == "advisory" for d in result["diagnostics"]))
             self.assertIn("v2 SHIP journey should state the personal execution contract", result["warnings"])
 
     def test_unknown_and_missing_acceptance_surface(self):
@@ -566,7 +567,7 @@ class ValidatorCompatibilityTests(unittest.TestCase):
         for original, replacement, expected in cases:
             with self.subTest(expected=expected):
                 code, result = self.run_source(self.source().replace(original, replacement), "--strict")
-                self.assertEqual(1, code)
+                self.assertEqual(1 if "missing field" in expected else 0, code)
                 self.assertEqual([expected], result["warnings"])
 
     def test_discovery_values_must_be_resolved_for_strict_v2(self):
@@ -597,14 +598,15 @@ class ValidatorCompatibilityTests(unittest.TestCase):
         self.assertEqual([], result["errors"])
         self.assertIn("unresolved field: Repository", result["warnings"])
         self.assertIn("v2 unresolved Acceptance surface: choose browser, cli, library, infrastructure or documentation", result["warnings"])
-        self.assertTrue(all("unresolved" in message or message == "Updated still contains a template date" for message in result["warnings"]), result)
+        self.assertTrue(all("unresolved" in message or "required acceptance" in message or message == "Updated still contains a template date" for message in result["warnings"]), result)
         code, result = self.run_source(template, "--strict")
         self.assertEqual(1, code)
 
     def test_superseded_redirect_warning(self):
         source = self.source().replace("Status: ready", "Status: SUPERSEDED", 1).replace("Execution status: ready", "Execution status: SUPERSEDED")
         code, result = self.run_source(source, "--strict")
-        self.assertEqual(1, code)
+        self.assertEqual(0, code)
+        self.assertEqual("advisory", result["diagnostics"][0]["category"])
         self.assertEqual(["SUPERSEDED status should name the replacement and say do not execute"], result["warnings"])
 
 
