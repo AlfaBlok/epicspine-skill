@@ -605,7 +605,8 @@ class ValidatorCompatibilityTests(unittest.TestCase):
     def test_superseded_redirect_warning(self):
         source = self.source().replace("Status: ready", "Status: SUPERSEDED", 1).replace("Execution status: ready", "Execution status: SUPERSEDED")
         code, result = self.run_source(source, "--strict")
-        self.assertEqual(1, code)
+        self.assertEqual(0, code)
+        self.assertEqual("advisory", result["diagnostics"][0]["category"])
         self.assertEqual(["SUPERSEDED status should name the replacement and say do not execute"], result["warnings"])
 
 

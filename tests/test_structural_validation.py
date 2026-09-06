@@ -104,6 +104,33 @@ class StructuralValidationTests(unittest.TestCase):
             self.assertTrue(any(d['rule_id'] == 'ES-S-GRAPH' for d in v.result_for(doc)['diagnostics']))
             self.assertTrue(doc.fails())
 
+    def test_equivalent_superseded_prose_does_not_decide_strict_validity(self):
+        for declaration in (
+            'SUPERSEDED by replacement.md; do not execute',
+            'SUPERSEDED; replacement: replacement.md; execution prohibited',
+        ):
+            source = self.source().replace('Status: ready', f'Status: {declaration}', 1).replace(
+                'Execution status: ready', f'Execution status: {declaration}')
+            doc = self.document(source)
+            self.assertFalse(doc.fails(strict=True), doc.diagnostics)
+            self.assertFalse(doc.errors)
+            self.assertTrue(all(d['category'] == 'advisory' for d in doc.diagnostics))
+
+    def test_superseded_advice_does_not_hide_state_conflicts_or_missing_data(self):
+        declaration = 'SUPERSEDED; replacement: replacement.md; execution prohibited'
+        source = self.source().replace('Status: ready', f'Status: {declaration}', 1).replace(
+            'Execution status: ready', f'Execution status: {declaration}')
+        conflict = self.document(source.replace(f'Execution status: {declaration}', 'Execution status: active'))
+        self.assertTrue(conflict.fails())
+        self.assertTrue(any(d['rule_id'] == 'ES-S-STATE' for d in conflict.diagnostics))
+        for old, replacement in (
+            ('Repository: example/repo', 'Repository: <repo>'),
+            ('Evidence: exact commands, inputs, exit codes and outputs.', 'Evidence: <method>'),
+        ):
+            doc = self.document(source.replace(old, replacement))
+            self.assertTrue(doc.fails(strict=True))
+            self.assertTrue(any(d['category'] == 'required-data' and d['fails_strict'] for d in doc.diagnostics))
+
     def test_cli_json_keeps_legacy_keys_and_reports_advisory_without_failure(self):
         source = self.source('compact')
         with tempfile.TemporaryDirectory() as tmp:
