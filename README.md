@@ -4,6 +4,8 @@ EpicSpine is a document-centered operating system for AI-assisted software deliv
 
 The core idea is simple: every serious body of work gets a living epic document that preserves the intent, context, current state, acceptance target, issue ledger, decisions, and handoffs. GitHub issues remain the execution board, while the spine remains authoritative for intent and coordination.
 
+This repository is the single development home for the skill. Any other copy of `skill/epic-spine/` is a snapshot; read [SYNC.md](SYNC.md) before editing one.
+
 ## Get Started
 
 From this checkout's root, use Python 3.10+; no Python packages are required. Copy the **complete** skill into your user skills directory. This refuses an existing destination rather than overwriting it:
