@@ -4,10 +4,11 @@ Status: ready
 Created: 2026-08-16
 Updated: 2026-08-16
 Repository: example/repo
-Primary document: legacy-v1.md
-Spine ID: legacy-v1
+Primary document: EPIC-GITHUB-TICKETS.md
+Spine ID: synthetic-github-tickets
 Spine Type: root
 Spine dialect: v1
+Ticket backend: github
 Root spine: self
 Parent spine: none
 Additional root rationale: n/a
@@ -38,7 +39,7 @@ No child spines.
 
 ## Mission
 
-Prove the connected-spine contract.
+Demonstrate the existing GitHub ticket backend using a synthetic offline issue snapshot. URL structure is checked; no issue existence or remote status is verified.
 
 ## Definition Of Done
 

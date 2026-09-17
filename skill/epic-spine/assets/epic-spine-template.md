@@ -1,5 +1,11 @@
 # EPIC: <name>
 
+<!-- Full legacy profile. Prefer compact-spine-template.md for small active epics;
+keep overlapping Current State and Execution Cursor facts consistent until migration. -->
+
+Spine profile: full
+Ticket backend: github
+
 Status: draft | ready | active | pending — DISPATCH ONLY AFTER <condition> | CLOSED | ON HOLD | SUPERSEDED by <path> — do not execute from this document
 Created: YYYY-MM-DD
 Updated: YYYY-MM-DD
@@ -81,7 +87,12 @@ State the outcome in one paragraph. Write for a capable teammate who has not see
 
 ## Definition Of Done
 
-SHIP — one observable journey of 5–12 steps on the declared Acceptance surface (choose one header value). The epic worker personally executes it: run → first failure → dispatch a scoped fix → prepare the updated surface → restart from step 1, until one uninterrupted clean pass. Deploy only when required and authorized.
+<!-- See ../references/structural-validation.md for strict data checks and advisory prose. -->
+
+SHIP — one observable journey with as many steps as the outcome requires on the declared Acceptance surface (choose one header value). The epic worker personally executes it: run → first failure → dispatch a scoped fix → prepare the updated surface → restart from step 1, until one uninterrupted clean pass. Deploy only when required and authorized.
+
+Acceptance outcome: <observable result>
+Evidence method: <selected surface>: <how the result will be exercised and recorded>
 
 Evidence by surface: browser requires a REAL browser on the LIVE deployment and one screenshot per step; cli requires exact commands, inputs, exit codes and outputs; library requires a runnable consumer example and behavior checks; infrastructure requires authorized health/state probes in the named environment; documentation requires following instructions and checking rendered artifacts, links and examples as applicable. Run appropriate checks and repeat when changes or failures warrant it.
 

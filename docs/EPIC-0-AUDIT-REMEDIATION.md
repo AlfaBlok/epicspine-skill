@@ -30,7 +30,10 @@ This spine owns scope, dependencies and rollup state. GitHub issues own ticket d
 
 ## Spine Map
 
-No child spines.
+| Spine ID | Relationship | Spine | Purpose | Status | Health / Blocker | Latest Evidence | Last Rolled Up | Next Action |
+|---|---|---|---|---|---|---|---|---|
+| epicspine-coordination-simplification | child | [Coordination simplification](EPIC-1-COORDINATION-SIMPLIFICATION.md) | Reduce state duplication and automate trustworthy execution rollups | active | First wave authorized | Issue #17 | 2026-09-06 | Follow child for current delivery |
+
 
 ## Mission
 
@@ -54,7 +57,6 @@ Integration target: codex/audit-remediation
 Fresh base commit: df3908e568b12f10abb3182027f9c6f1a35d4699 (frozen implementation acceptance revision)
 Dispatch condition: all six tickets delivered; no queued implementation.
 Next action: Review PR #16; preserve tested implementation while awaiting merge decision.
-Blockers: none
 
 ## Execution Cursor
 
@@ -155,3 +157,7 @@ Integrated #10 (16 tests), #13 (scoped docs review), and #15 (hosted Python 3.10
 ### 2026-09-06 — independent acceptance complete
 
 All six issue packages pass at df3908e. Reviewer findings were routed to subagents and fixed before acceptance. Manager corrected stale coordination branch/base pointers and validation text; no manager implementation changes were made. PR #16 is the reviewable deliverable, with issues kept open until merge.
+
+### 2026-09-06 — simplification followup registered
+
+The original audit repair remains accepted at a852246. User authorized followup backlog delivery; its separate child owns current simplification work and issue #17. This registration does not reopen the completed audit acceptance.

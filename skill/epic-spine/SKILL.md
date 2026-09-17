@@ -7,9 +7,19 @@ description: EpicSpine / Epic Spine document-centric operating system for AI-ass
 
 ## Overview
 
-Use an EpicSpine as the clean thread of intent, desire, context, fit, and state for a scoped body of work. Treat GitHub issues as executable tickets and deep working records for specific steps, not as the place where the full project memory lives.
+Use an EpicSpine as the clean thread of intent, desire, context, fit, and state for a scoped body of work. Treat the declared ticket backend as the execution board for specific steps, not as the place where the full project memory lives. GitHub remains the default; an explicit local backend uses authoritative ticket files.
 
 The document must let a new planner, worker, tester, or reviewer start from near-zero context, follow the listed spine hierarchy and knowledge graph, and understand the epic's goal, current state, decision history, active work, acceptance criteria, and validation evidence.
+
+## Active Profile And State
+
+Use `assets/compact-spine-template.md` for a small active epic. Declare `Spine profile: compact`; keep one authoritative `Current State` with owner, status, last action/result/evidence, one waiting/blocker condition, approved work, exact next action, and verified source revision/time. Phase is optional context. Do not author another cursor, role queue or handoff summary containing competing current facts; use links or explicitly generated projections.
+
+The compact profile requires Mission, Non-Goals, Current State, Definition Of Done, Issue Ledger and Decisions. Add hierarchy, recovery, write-scope gates and Book details when applicable. Stable ID, repository, document path and integration branch remain required. A standalone compact spine makes no hierarchy claim; `--graph` requires explicit lineage fields before it can validate connection.
+
+Absent `Spine profile` or `Spine profile: full` retains legacy requirements. Legacy Current State/Execution Cursor documents remain readable; contradictory aliases produce source-located conflicts, never an inferred winner. Reconcile meaning as the steward before migration. Keep completed handoffs in linked history while preserving rejected decisions, evidence, IDs and old fragments. See `references/compact-state.md` for the normalized state API, conservative migration preview and history rules.
+
+Profile and dialect are separate: compact v1 is a small structural contract; opt into v2 for its SHIP/HARDEN acceptance. The full template remains available for existing v1/v2 workflows and explicit legacy compatibility.
 
 ## Connected Spine Model
 
@@ -18,13 +28,15 @@ Treat every EpicSpine as a node in a canonical ownership hierarchy:
 - Prefer one canonical root spine per repository or coherent project. Multiple roots are allowed only when they represent intentionally independent ambitions; record why each additional root cannot be a branch of the canonical root.
 - Every non-root spine has exactly one canonical parent and inherits exactly one root. Parentage may nest to any depth.
 - The canonical hierarchy is a rooted tree, or an explicitly justified forest when multiple roots exist. Cross-links may form a wider knowledge graph, but they do not change canonical parentage or rollup ownership.
-- Every spine declares a stable Spine ID, Spine Type, Root Spine, and Parent Spine. A parent lists each direct child in its Spine Map; a child links back to its parent and root.
+- Every spine declares a stable Spine ID. Connected spines additionally declare Spine Type, Root Spine, and Parent Spine. A parent lists each direct child in its Spine Map; a child links back to its parent and root.
 - A child owns its local mission, acceptance, execution state, backlog, decisions, and evidence. Its parent owns only the compact rollup, dependencies, health, and cross-child decisions.
 - Roll up direct children one level at a time. Do not copy descendant issue ledgers or deep history into ancestors.
 
 `AGENTS.md`, repository instructions, and launch prompts may route a cold start to the root spine. They must not duplicate live project state. The root spine is the canonical starting point; agents follow its active-branch links until reaching the spine bound to their work.
 
 ## Spine Versus Issues
+
+Declare `Ticket backend: github|local` (omission defaults to github). GitHub mode retains the existing offline URL/status checks and clearly unverified ledger snapshots. Local mode declares `Ticket root`, uses a reference/dependency-only Issue Ledger, and puts Ticket ID, Status, Owner and Evidence in each authoritative ticket file. Never maintain both a mutable local ticket and copied status cells in its spine. Read `references/ticket-backends.md` for path boundaries, normalized records and verification semantics. No backend choice implies remote access, record migration or new read authority.
 
 - The spine explains why the work exists, what outcome is desired, how the pieces fit together, what the current state is, and where a new agent should go next.
 - GitHub issues explain the detailed work for one concrete step: code paths, blockers, implementation notes, logs, review comments, and ticket-level validation.
@@ -37,7 +49,7 @@ Treat every EpicSpine as a node in a canonical ownership hierarchy:
 Do not treat one artifact as authoritative for every kind of truth:
 
 - The EpicSpine is authoritative for intent, scope, epic acceptance, dependencies, decisions, and rollup state.
-- The GitHub issue is authoritative for detailed execution state of one ticket.
+- The declared backend record (GitHub issue or local ticket file) is authoritative for detailed execution state of one ticket; offline GitHub ledger values remain unverified snapshots.
 - The branch, pull request, and code are authoritative for the implementation that actually exists.
 - Validation evidence is authoritative for what has been proved in a named environment against a named commit.
 - The Epic 0 spine is authoritative for project direction, child-spine relationships, and cross-epic health.
@@ -108,14 +120,14 @@ Call the pattern **EpicSpine** in conversation. Use `epic-spine` for files, labe
 
 1. **Enter through the root.** Follow the repository's start-here pointer to the canonical root spine. If the user supplied a spine directly, verify its declared root and parent before treating it as bound.
 2. **Follow the active branch.** Read direct-child rollups and follow only the active/relevant branch until reaching the spine whose mission contains the requested work.
-3. **Create only when needed.** If no suitable spine exists, use the spine-creation protocol below and `assets/epic-spine-template.md`; do not create an orphan document.
+3. **Create only when needed.** If no suitable spine exists, use the spine-creation protocol below and `assets/compact-spine-template.md` (or the explicit full legacy template when needed); do not create an orphan document.
 4. **Establish write scope.** Identify the bound spine and its active steward. Treat root, parent, child, and sibling spines as read-only unless the user explicitly grants write authority or creation includes an atomic parent registration.
 5. **Establish role binding.** Identify whether this agent is Epic 0 worker, planner, epic worker, ticket worker, tester, reviewer, or observer. Apply that role's authority limits before taking action.
-6. **Build the bootstrap map.** Extract hierarchy, mission, non-goals, acceptance, Current State, Execution Cursor, Issue Ledger, Decisions, open questions, and required links.
+6. **Build the bootstrap map.** Extract mission, non-goals, acceptance, the authoritative Current State, Issue Ledger, Decisions and required links; read hierarchy and legacy cursor only when present.
 7. **Detect Book binding.** Read the repository's Book declaration, if active, then open the Book root and the chapter relevant to the task. Treat the binding as automatic; do not wait for a second user instruction.
 8. **Reconcile execution state.** Inspect GitHub issues, PRs, branches, current code, and validation evidence only after the spine has oriented you. Resolve each fact using the authority-by-artifact contract and flag drift.
 9. **Check durable memory.** Before proposing a recurring approach, search Decisions in the bound spine and relevant ancestors for rejected or superseded paths. If the Book is active, also search its chapters and leaves for an existing owner of the question.
-10. **Act in role.** Continue from the Execution Cursor and apply the relevant role protocol.
+10. **Act in role.** Continue from the authoritative state (or reconciled legacy cursor) and apply the relevant role protocol.
 11. **Write back and roll up.** Update detailed work in the issue, the bound spine's durable state and cursor if steward, and a compact direct-child rollup in the parent through its steward. Land durable user-facing knowledge in the Book leaf and owning chapter when the Book trigger applies.
 
 ## Spine Creation And Registration
@@ -125,7 +137,7 @@ Creating a spine is a relationship change, not just a file write:
 1. Search the existing Spine Maps and choose the narrowest parent whose mission contains the new work.
 2. Prefer branching under the canonical root. Create another root only when the ambition is intentionally independent, and record an Additional Root Rationale.
 3. Assign a stable Spine ID; declare `root` or `branch`; link the root and parent; name the initial steward, acceptance boundary, and integration target.
-4. Initialize Current State, Execution Cursor, Decisions, Issue Ledger, and Spine Map from the template.
+4. Initialize one Current State, Decisions and Issue Ledger from the compact template; add Spine Map for direct children. Do not add a competing live cursor.
 5. Register the new spine in the parent's Spine Map with purpose, status, health/blocker, latest evidence, last rollup time, and next action.
 6. Make the child-to-parent and parent-to-child links part of one reviewed change when write authority permits. Otherwise create the child as `draft`, record `registration pending`, and send an exact proposed update to the parent steward; do not present it as connected yet.
 7. Run `scripts/validate_spine.py --strict` on the new spine and `--graph` across the affected local spine family when possible.
@@ -150,7 +162,7 @@ The child remains authoritative for detail. Parents aggregate direct children on
 
 ## Execution Cursor And Decision Memory
 
-Current State answers "where are we?" The Execution Cursor answers "what happened last and what should the next agent do?" Keep both current whenever execution stops, changes owner, or crosses a human gate.
+Current State is the authoritative resume point for compact spines. Update it whenever execution stops, changes owner, or crosses a human gate. An Execution Cursor in a legacy full spine remains supported; overlapping facts must agree until the steward reviews a migration. New handoffs and queues link to state or carry generated projections rather than independently authored copies.
 
 The cursor records:
 
@@ -322,7 +334,7 @@ Use when asked to inspect, summarize, or advise.
 
 ## Sprint Dialect v2 — Bounded Human-Verifiable Delivery
 
-Use v2 for every newly authored sprint spine. Declare `Spine dialect: v2` and `Acceptance surface: browser|cli|library|infrastructure|documentation` (choose one value). Use the primary surface and explicitly list any additional surfaces required by acceptance. Existing v1 spines remain readable and executable. Undeclared spines default to v1; strict validation enforces the selected dialect, not an implicit upgrade. A v2 spine is a budget for one observable increment, not a wish list for a perfect end state.
+Use v2 when authoring a sprint with the SHIP/HARDEN workflow; a small compact epic may choose v1 explicitly. Declare `Spine dialect: v2` and `Acceptance surface: browser|cli|library|infrastructure|documentation` (choose one value). Use the primary surface and explicitly list any additional surfaces required by acceptance. Existing v1 spines remain readable and executable. Undeclared spines default to v1; strict validation enforces the selected dialect, not an implicit upgrade. A v2 spine is a budget for one observable increment, not a wish list for a perfect end state.
 
 ### Journey-First SHIP And HARDEN
 
