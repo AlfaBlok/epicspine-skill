@@ -19,12 +19,12 @@ Skill updates: auto
 
 Owner: /root delivery manager
 Status: active
-Last attempted: 2026-10-09 worker B landed (a868281, L-9..L-11; rebased over worker C 7d617c2); post-adoption smoke P1 pass, P3 pass, P4 pass, P2 REGRESSED (asked which typo instead of dispatching). No post-adoption tag. Prior: cold-start test passed on the default worker: a fresh agent bound via AGENTS.md -> root spine -> SKILL.md, named the default profile, and found the Default Behaviors card.
+Last attempted: 2026-10-09 worker B landed (a868281, L-9..L-11; rebased over worker C 7d617c2); post-adoption smoke P1 pass, P3 pass, P4 pass, P2 asked which typo (accepted as L-9 behavior; test rewrite in flight). No post-adoption tag yet. Prior: cold-start test passed on the default worker: a fresh agent bound via AGENTS.md -> root spine -> SKILL.md, named the default profile, and found the Default Behaviors card.
 Result: all four agreed steps landed; main at e48e6fd; 120 tests, agents_block check, strict validation, manifest and skill status all green.
 Evidence: [main @ e48e6fd](https://github.com/AlfaBlok/epicspine-skill/commit/e48e6fd) and [CI runs](https://github.com/AlfaBlok/epicspine-skill/actions)
 Waiting on: none
 Approved work: comparison adoption (L-9..L-11) behind checkpoint tags and behavior regression tests.
-Next action: user decides how to resolve the P2 regression (L-9 over-asks on discoverable facts); tag checkpoint/post-adoption only after smoke 4/4.
+Next action: worker rewrites SMOKE.md P2 as a fully specified edit; re-run P2 dry run; tag checkpoint/post-adoption only after smoke 4/4.
 Source revision: e48e6fd
 Verified at: 2026-10-09
 Last sweep: 2026-10-09, main clean
@@ -71,7 +71,7 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 | draft | Ticket worker | /root delivery manager | Centralize installed skill: hub + harness symlinks + pin SOURCE | draft | none | n/a | main | ~/.agents/skills/epic-spine real copy; Claude/OpenCode/Codex symlink to it; skill_update status fresh | 2026-10-09 | done |
 | draft | Ticket worker | /root delivery manager | Cold-start test: fresh agent per provider binds and dispatches | draft | none | n/a | main | passed on opencode_2/deepseek-v4.1-flash: bound as delivery manager, named the default profile, card present, no dead ends | 2026-10-09 | done |
 | draft | Ticket worker | worker A (default profile) | Default-behavior contract tests + SMOKE.md baseline | draft | none | wt/behavior-tests | b620d50 | integrated on 3108192; 125 tests green; mutation check fails as intended; smoke baseline P1 pass, P2 pass, P3 provisional pass (dry run stopped at first read; tighten preamble) | 2026-10-09 | done |
-| draft | Ticket worker | worker B (default profile) | Adopt L-9..L-11 doctrine + extend tests/smoke | draft | worker A | wt/adopt-l9-l11 | 3108192 | integrated on a868281 (rebased over 7d617c2); 136 tests, strict validate, block check, manifest green; smoke P1/P3/P4 pass, P2 regressed | 2026-10-09 | resolve P2 |
+| draft | Ticket worker | worker B (default profile) | Adopt L-9..L-11 doctrine + extend tests/smoke | draft | worker A | wt/adopt-l9-l11 | 3108192 | integrated on a868281 (rebased over 7d617c2); 136 tests, strict validate, block check, manifest green; smoke P1/P3/P4 pass, P2 asked first (accepted, test being rewritten) | 2026-10-09 | rewrite P2, re-run |
 | draft | Ticket worker | worker C (default profile) | Shortlist-by-default: JSON + generated sortable/filterable HTML as the default deliverable when a shortlist is key (port from abnb_agent SHORTLIST_STANDARD, check idea_scraper) | draft | none (SKILL.md/MANIFEST merge serialized after B) | wt/shortlist-default | 5fffe5a | dispatched | 2026-10-09 | verify diff + tests + served demo URL, ff-merge after B |
 | draft | Ticket worker | worker D (default profile) | Shortlist template: table-first compact layout (user feedback on demo page) | draft | worker C | wt/shortlist-table-first | a868281 | integrated (ff-only, 7781d8e); 137 tests + strict validate + agents_block + manifest green; screenshot reviewed; demo re-served 200; worktree removed; installed skill upgraded | 2026-10-09 | done |
 
@@ -89,6 +89,7 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 | 2026-10-09 | accepted | No unrequested model changes | Every subagent, reviewers included, uses the default profile unless the user asks; fresh context gives review independence. | user decision 2026-10-09 | User names another model |
 | 2026-10-09 | accepted | Serialize MANIFEST-changing merges | One writer per spine and one MANIFEST merge at a time: agents-block landed first, kernel rebases second; the second merge regenerates MANIFEST. | thread collision a0380f46 vs 441c3c64 | Two branches touch MANIFEST |
 | 2026-10-09 | accepted | Comparison adoption fork | Adopt L-9 (resolve decisions before dispatch), L-10 (ready frontier), L-11 (two-axis verification) in our own words from the Pocock/poteto comparison. Guarded by tags checkpoint/pre-adoption (b620d50) and checkpoint/post-adoption, plus contract tests and a dry-run smoke test. Revert = `git revert b620d50..HEAD`, then re-sync the installed skill; never reset public main. | user decision 2026-10-09; thread a0380f46 | Smoke or contract tests regress |
+| 2026-10-09 | accepted | L-9 asks on missing details | L-9 stays as written: when an instruction leaves out a detail, the agent asks one clear question with a recommendation before dispatching. The P2 smoke prompt was a bad test (an unspecified typo), not a rule regression; P2 is rewritten as a fully specified edit and the ask-first behavior stays covered by P4. | user decision 2026-10-09 | Over-asking becomes a recurring complaint |
 
 ## Spine Map
 
