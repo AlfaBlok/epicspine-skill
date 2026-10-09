@@ -6,7 +6,9 @@ Spine dialect: v1
 Repository: <owner/repo>
 Primary document: <path to this file>
 Spine ID: <stable-id>
-Integration branch: <branch>
+Integration branch: main
+Integration policy: main-direct
+<!-- Optional: main-direct (default) or pr-approval. The delivery manager merges verified work to the integration branch itself under ../references/git-doctrine.md. -->
 Dispatch profile: default
 <!-- Optional: overrides merge field by field over the built-in default; `template:<name>` is reserved and not yet defined. See ../references/roles-and-dispatch.md. -->
 

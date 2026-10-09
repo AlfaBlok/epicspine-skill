@@ -481,6 +481,15 @@ class ValidatorCompatibilityTests(unittest.TestCase):
                 self.assertEqual([], result["errors"])
                 self.assertEqual([], result["warnings"])
 
+    def test_optional_integration_policy_line_still_validates_strict(self):
+        for value in ("main-direct", "pr-approval"):
+            with self.subTest(value=value):
+                source = self.source().replace("Spine dialect: v2", f"Spine dialect: v2\nIntegration policy: {value}")
+                code, result = self.run_source(source, "--strict")
+                self.assertEqual(0, code, result)
+                self.assertEqual([], result["errors"])
+                self.assertEqual([], result["warnings"])
+
     def test_undeclared_legacy_defaults_to_v1_even_with_strict(self):
         source = self.source("v1").replace("Spine dialect: v1\n", "")
         code, result = self.run_source(source, "--strict", "--dialect", "auto")

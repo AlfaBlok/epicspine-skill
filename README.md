@@ -130,6 +130,14 @@ When the user says nothing, workers dispatch through T3 `delegate_task` on the O
 
 Read [roles-and-dispatch.md](skill/epic-spine/references/roles-and-dispatch.md) for the two base roles, the dispatch profile, resolution order, and binding prompts.
 
+## Git Doctrine
+
+Stay in `main`. The primary checkout always sits on a clean `main` and is never used to edit, so the repository stays rollback-able with a plain `git revert`.
+
+Workers make a short-lived local worktree branch (`git worktree add ../wt-<task> -b wt/<task> main`), commit, and hand off the branch, commits, and evidence; they do not push or open a PR by default. Once the work passes the repository's checks, the delivery manager rebases it on `main` if needed, merges it to `main` itself (`git merge --ff-only`), refreshes any generated artefacts, pushes, and tests it in `main`. After every integration there is exactly one branch, one worktree, and a clean status.
+
+Read [git-doctrine.md](skill/epic-spine/references/git-doctrine.md) for the worker and integration flows, the rollback rule, parallel dispatch, and the `Integration policy` override.
+
 ## Learnings
 
 The spine also carries a short, navigable memory of how this repo should be worked with.

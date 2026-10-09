@@ -214,19 +214,19 @@ Normal rollup does not grant a parent steward authority to rewrite child detail.
 
 ## Branch And Integration Discipline
 
-Default rule: **isolate execution, integrate frequently.**
+Default rule: **stay in `main`; isolate execution, integrate frequently.** See `references/git-doctrine.md` for the full flow.
 
-- **FIRST ACTION:** every dispatched worker/tester creates its dedicated worktree with `git worktree add ../wt-<ticket> -b <branch> <pinned-base>` and works only there. Record the absolute path. The primary/shared clone remains pinned to the integration branch and is read-only; `git checkout`/`git switch` there is a branch-ransom defect equal to editing another agent's spine.
+- **FIRST ACTION:** every dispatched worker/tester creates its dedicated worktree with `git worktree add ../wt-<task> -b wt/<task> main` — a local branch, with no remote branch by default — and works only there. Record the absolute path. The primary checkout always sits on a clean `main` and is read-only; `git checkout`/`git switch` there is a branch-ransom defect equal to editing another agent's spine.
 - Record the branch, base commit SHA, integration target, owner, and latest verified time at dispatch.
-- The shared integration line is protected `main` unless the bound spine declares another branch.
-- Merge small, reviewed work after required checks pass. Integrate frequently so new agents bootstrap from the freshest validated base.
-- Do not let long-lived worker branches become hidden project state. If work cannot merge yet, keep the GitHub issue and bound spine updated with blocker, branch, PR, and next action.
+- One integration line, `main`; test in `main`.
+- The delivery manager integrates verified work to `main` itself under `references/git-doctrine.md`; user approval is required only under `Integration policy: pr-approval` or a per-task reservation. Integrate frequently so new agents bootstrap from the freshest validated base.
+- Keep worker branches short-lived; do not let them become hidden project state. If work cannot merge yet, keep the GitHub issue and bound spine updated with blocker, local branch, commits, and next action.
 - If worktree creation fails, report the blocker to the steward before editing; never fall back to editing the shared checkout.
-- Human test should normally happen from merged `main`, a recorded integration branch, or an explicit PR preview. Record the tested commit and environment.
+- Human test happens from merged `main`, or from a recorded integration branch when one is declared. Record the tested commit and environment.
 
 Use these gates:
 
-- `review`: implementation is complete, the PR is open, and required automated checks pass.
+- `review`: implementation is complete, the local branch is handed off, and required automated checks pass.
 - `testing`: the exact commit is available in the named test surface and acceptance validation is in progress.
 - `done`: acceptance has passed, evidence is linked, and the spine reflects the durable result.
 
@@ -281,7 +281,7 @@ Use when the user asks to update backlog tickets, use GitHub issues as the board
 2. Create or update GitHub issues for missing, stale, or newly decomposed tickets. Each issue must link back to the bound spine.
 3. Mark dependencies and blockers before dispatch. Only tickets with no unresolved dependency may be launched in parallel.
 4. Select a parallel batch whose files, services, or acceptance criteria do not obviously conflict. If two tickets may edit the same area, sequence them or assign one owner.
-5. Dispatch each worker with: bound spine, steward, assignment identity, GitHub issue, dedicated branch, base commit, integration target, write-scope limits, required reads, acceptance, human gates, and handoff format.
+5. Dispatch each worker with: bound spine, steward, assignment identity, GitHub issue, local worktree branch (`wt/<task>`), base commit, integration target, write-scope limits, required reads, acceptance, human gates, and handoff format.
 6. Record dispatched workers in the bound spine's Issue Ledger or Handoff Journal with assignment identity, issue, branch, base commit, expected validation, and last verified time.
 7. Keep the GitHub issue board as the execution surface, but keep the spine as the coordinating memory and final acceptance source.
 
@@ -293,8 +293,8 @@ Use when the user binds an agent to deliver an epic, for example "you are now th
 - Do not change product intent, acceptance, or cross-spine scope without planner/user input.
 - Convert current spine state into GitHub issues when executable tickets are missing or too large.
 - Dispatch ticket workers or subagents on independent issues. Each dispatched subagent must write detailed progress into its assigned GitHub issue, not into the spine.
-- Assign each ticket worker a dedicated branch and separate worktree. Record its base commit and keep merge status visible in the issue ledger.
-- Keep the bound spine clean and current: issue ledger, dispatch state, PR/branch links, validation evidence, blockers, and next action.
+- Assign each ticket worker a separate worktree and local branch (`wt/<task>`). Record its base commit and keep integration status visible in the issue ledger.
+- Keep the bound spine clean and current: issue ledger, dispatch state, branch/commit links, validation evidence, blockers, and next action.
 - Loop until the epic is ready for human testing, ready for tester handoff, or blocked by a precise required human/planner decision.
 - If subagent work reveals divergence from the spine, record the divergence in the bound spine and route it to the planner instead of silently changing direction.
 - Act as MANAGER: mint issues, dispatch disjoint waves, integrate frequently, deploy when required and authorized, and personally own the final SHIP journey loop. Stop only at SHIP, a named Human Gate, or budget expiry.
@@ -308,7 +308,7 @@ Use when implementing a ticket.
 - Continue until the issue is implemented and ready for testing, or until a precise blocker requires planner/user input.
 - Start from the issue row in the spine, then read the linked GitHub issue.
 - Confirm the target acceptance criteria and test expectations before editing code.
-- Work on the dedicated issue branch in its separate worktree, for serial as well as concurrent execution.
+- Work on the local worktree branch (`wt/<task>`) in its separate worktree, for serial as well as concurrent execution.
 - Keep the spine clean: link the GitHub issue, commits, PRs, logs, and detailed notes rather than copying them into the spine.
 - Write progress and the final structured handoff to the issue. Ask the spine steward to reconcile the ledger and handoff journal unless the issue explicitly delegates those narrow spine sections.
 - Do not rewrite mission, non-goals, or acceptance criteria. If implementation reveals a scope problem, record it as a planner question in the bound spine.
@@ -442,13 +442,13 @@ Spine steward: <task/thread/agent responsible for reconciling the spine>
 Assignment identity: <stable task/thread/agent/owner>
 Write scope: write detailed work to the issue; edit the spine only if you are its steward or a narrow section is explicitly delegated. Referenced spines are read-only unless listed.
 Book binding: inactive | <Book root; owning chapter/leaf; Book steward; author permissions; registry permissions; validation command>
-Branch: <dedicated branch>
+Branch: wt/<task> (local; no push or PR by default)
 Base commit: <SHA>
 Integration target: <main or declared branch>
 Required reads: <bootstrap map links>
 Acceptance criteria: <issue and spine criteria>
 Human gates: <named approvals or none>
-Handoff: update the issue with PR/branch, latest commit, validation evidence, blocker, and next action; notify the spine steward to reconcile durable state.
+Handoff: update the issue with branch, commits, validation evidence, blocker, and next action; notify the spine steward to reconcile durable state.
 ```
 
 For an Epic 0 worker that owns the project picture, use:
@@ -472,7 +472,7 @@ Goal: deliver this epic until it is ready for human test, tester handoff, or blo
 Authority: create/update GitHub issues within existing scope, dispatch ticket workers, and update the bound spine; do not change acceptance or cross-spine scope without planner/user input.
 Steward rule: the epic worker is the active steward for the bound child spine; ticket workers and testers return structured issue handoffs unless explicitly delegated a narrow spine section.
 Subagent rule: each ticket worker writes deep detail into its assigned GitHub issue; the epic worker writes only clean state, links, blockers, and durable outcomes into the spine.
-Integration rule: every dispatched worker/tester uses a dedicated branch and separate worktree; merge small reviewed changes after required checks pass so new agents start from the freshest validated base.
+Integration rule: every dispatched worker/tester uses a local `wt/<task>` branch and separate worktree, then the delivery manager integrates verified work to `main` under `references/git-doctrine.md` so new agents start from the freshest validated base.
 ```
 
 ## Resources
@@ -483,6 +483,7 @@ Integration rule: every dispatched worker/tester uses a dedicated branch and sep
 - Start every paste-ready worker prompt with `assets/dispatch-prompt-preamble.md` and store the completed prompt in the spine appendix.
 - Read `references/operating-model.md` when changing the workflow structure itself or when the existing spine is inconsistent.
 - Read `references/roles-and-dispatch.md` to bind an agent as delivery manager or worker and to resolve the mechanism, provider, model, reasoning, isolation, parallelism, and review profile.
+- Read `references/git-doctrine.md` before creating a worktree, committing, integrating, or rolling back; it is the authority for keeping the repository on clean `main`.
 - Read `references/learnings.md` when recording, proposing, navigating, or pruning operating learnings.
 - Read `references/hygiene.md` when checking worktree/branch hygiene or dispatching a sweep; brief the sweep worker with `assets/sweep-brief.md`.
 - Read `references/skill-update.md` when checking skill freshness or upgrading; run `scripts/skill_update.py status|upgrade`.
