@@ -63,8 +63,8 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 
 | Issue | Role | Owner / Assignment | Title | Status | Depends On | PR/Branch | Base | Latest Evidence | Last Verified | Next Action |
 |---|---|---|---|---|---|---|---|---|---|---|
-| draft | Ticket worker | /root delivery manager | Always-on AGENTS.md block + installer + CI check | done | none | wt/agents-block | 1993233 | 02d7a88, 115 tests + block + manifest green; worktree ../wt-agents-block remains | 2026-10-09 | integrated; remove ../wt-agents-block worktree |
-| draft | Ticket worker | /root/kernel (thread 441c3c64) | Lean SKILL.md kernel + Default Behaviors card + CI line budgets | done | none | wt/kernel | main | d547410, 120 tests + agents_block check + strict validate + manifest green | 2026-10-09 | integrated; remove wt/kernel |
+| draft | Ticket worker | /root delivery manager | Always-on AGENTS.md block + installer + CI check | draft | none | wt/agents-block | 1993233 | integrated on 02d7a88; 115 tests + block + manifest green; worktree ../wt-agents-block remains | 2026-10-09 | remove ../wt-agents-block worktree |
+| draft | Ticket worker | /root/kernel (thread 441c3c64) | Lean SKILL.md kernel + Default Behaviors card + CI line budgets | draft | none | wt/kernel | main | integrated on d547410; 120 tests + agents_block check + strict validate + manifest green | 2026-10-09 | remove wt/kernel worktree and branch |
 | draft | Ticket worker | /root delivery manager | Re-sync installed skill: resolve shared symlink, pin SOURCE | draft | none | wt/sync | main | not started | 2026-10-09 | dispatch now (kernel landed, MANIFEST frozen) |
 | draft | Ticket worker | /root delivery manager | Cold-start test: fresh agent per provider binds and dispatches | draft | re-sync | wt/coldstart | main | not started | 2026-10-09 | dispatch after re-sync |
 
