@@ -63,9 +63,9 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 
 | Issue | Role | Owner / Assignment | Title | Status | Depends On | PR/Branch | Base | Latest Evidence | Last Verified | Next Action |
 |---|---|---|---|---|---|---|---|---|---|---|
-| draft | Ticket worker | /root delivery manager | Always-on AGENTS.md block + installer + CI check | done | none | wt/agents-block | 1993233 | 02d7a88, 115 tests green, block+manifest OK | 2026-10-09 | integrated; worktree removed |
-| draft | Ticket worker | /root/kernel (thread 441c3c64) | Lean SKILL.md kernel + Default Behaviors card + CI line budgets | in flight | none | wt/kernel | main | rebase pending, MANIFEST stale | 2026-10-09 | rebase on 02d7a88, regenerate MANIFEST, integrate |
-| draft | Ticket worker | /root delivery manager | Re-sync installed skill: resolve shared symlink, pin SOURCE | blocked | kernel | wt/sync | main | not started | 2026-10-09 | dispatch after kernel lands and MANIFEST frozen |
+| draft | Ticket worker | /root delivery manager | Always-on AGENTS.md block + installer + CI check | draft | none | wt/agents-block | 1993233 | 02d7a88 landed; 115 tests + block + manifest green | 2026-10-09 | done: integrated on 02d7a88, worktree removed |
+| draft | Ticket worker | /root/kernel (thread 441c3c64) | Lean SKILL.md kernel + Default Behaviors card + CI line budgets | draft | none | wt/kernel | main | rebase pending, MANIFEST stale | 2026-10-09 | rebase on 02d7a88, regenerate MANIFEST, integrate |
+| draft | Ticket worker | /root delivery manager | Re-sync installed skill: resolve shared symlink, pin SOURCE | draft | kernel | wt/sync | main | not started | 2026-10-09 | dispatch after kernel lands and MANIFEST frozen |
 | draft | Ticket worker | /root delivery manager | Cold-start test: fresh agent per provider binds and dispatches | draft | re-sync | wt/coldstart | main | not started | 2026-10-09 | dispatch after re-sync |
 
 ## Decisions
