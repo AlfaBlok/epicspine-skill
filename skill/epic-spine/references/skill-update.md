@@ -1,8 +1,12 @@
 # Skill self-update
 
-**Upgrade = ask your agent "upgrade epic-spine", or run `python3 <skill-dir>/scripts/skill_update.py upgrade`.**
+**Upgrade = ask your agent "upgrade epic-spine" (or "update my epic-spine skill"), or run `python3 <skill-dir>/scripts/skill_update.py upgrade`.**
 
 `<skill-dir>` is the installed skill directory (for example `~/.agents/skills/epic-spine`). The script is stdlib-only, Python 3.10+, and finds the directory from its own location.
+
+## Central install (one copy, many harnesses)
+
+Harnesses do not share a skills folder. To run one copy everywhere, keep the real copy in a hub (for example `~/.agents/skills/epic-spine`) and symlink each harness's entry to it; upgrade the hub itself, and the symlinks follow. A plain per-harness copy works the same way.
 
 ## Status words
 

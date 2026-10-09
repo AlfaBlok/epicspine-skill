@@ -37,7 +37,7 @@ EXISTING_BUDGETS = {
     "references/learnings.md": 70,
     "references/operating-model.md": 497,
     "references/roles-and-dispatch.md": 100,
-    "references/skill-update.md": 50,
+    "references/skill-update.md": 55,  # +5: central-install note, 2026-10-09
     "references/structural-validation.md": 60,
     "references/ticket-backends.md": 80,
     "assets/book-companion-contract.md": 25,
