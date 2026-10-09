@@ -54,9 +54,9 @@ Fresh base commit: a8522464235db77d1eaca4dc03d9556d076e6bc7
 Last attempted: Completed independent combined acceptance at implementation revision 465d27c901f350a7d9402994c121473f12ad427c; hosted CI passes at coordination revision 619bf815e5f230d61f4780c6b39cb01e19c36f58.
 Result: 85 combined tests pass; independent Python 3.10/3.14 CLI, no-op, ancestor invalidation and strict graph checks accepted. All implementation review findings resolved.
 Execution status: done
-Waiting on: PR review and merge decision
+Waiting on: nothing; delivery merged (PR #22)
 Approved work: User-authorized backlog delivery through subagents, isolated branches, issue comments, reviews and PRs.
-Next action: Review stacked PR #22 after prerequisite PR #16; main merge and installed-skill rollout remain separate actions.
+Next action: none; closed by user decision 2026-10-09. Reopen only if delivery scope resumes.
 
 ## Bootstrap Map
 

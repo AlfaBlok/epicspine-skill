@@ -56,16 +56,16 @@ Phase: review
 Integration target: codex/audit-remediation
 Fresh base commit: df3908e568b12f10abb3182027f9c6f1a35d4699 (frozen implementation acceptance revision)
 Dispatch condition: all six tickets delivered; no queued implementation.
-Next action: Review PR #16; preserve tested implementation while awaiting merge decision.
+Next action: none; closed by user decision 2026-10-09. Reopen only if delivery scope resumes.
 
 ## Execution Cursor
 
 Last attempted: Independent tester exercised all six acceptance packages at the frozen implementation revision.
 Result: All six packages pass; 34 tests on Python 3.10 and 3.14, strict CLI checks, sandbox install checks and hosted CI pass.
 Execution status: done
-Waiting on: PR review and merge decision; no implementation blockers
+Waiting on: nothing; delivery merged (PR #16)
 Approved work: Review followup and coordination within existing remediation scope; manager remains available.
-Next action: Review PR #16; preserve tested implementation while awaiting merge decision.
+Next action: none; closed by user decision 2026-10-09. Reopen only if delivery scope resumes.
 
 ## Bootstrap Map
 
