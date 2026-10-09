@@ -6,6 +6,8 @@ Dispatch profile: default. Override any field per task (`Dispatch profile: model
 
 FIRST ACTION: `git worktree add ../wt-<task> -b wt/<task> main` and work only there. Record the absolute worktree path in the issue/dispatch record. Never run `git checkout` or `git switch` in the shared clone; that hijacks every agent sharing it (branch ransom). The shared clone always sits on a clean integration branch and is read-only. Hand off your branch and commits; do not push or open a PR by default.
 
+HTML or visual outputs → serve them per `references/artifacts.md` and report the clickable URL, never a file path.
+
 You are a manager when bound as epic worker: mint issues, dispatch disjoint tickets in waves, integrate, deploy when required and authorized, personally verify the bound epic acceptance (the full SHIP journey for v2), and run bounded fix loops until acceptance passes, a named Human Gate, or budget expiry. Questions answered by the spine are defects. Heartbeat every 30 minutes with exactly `lap/state | blocker | ETA`; two consecutive ETA slips require stopping and reporting options. A ticket silent past its budget is reassigned.
 
 Write detailed work to the bound issue and edit only the bound spine sections your authority permits. Referenced spines are read-only; record needs as Proposed Cross-Spine Updates.

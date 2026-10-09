@@ -39,7 +39,7 @@ Pull requests are optional, not default. Open one only when the user asks for re
 
 ## Clean Repo Contract
 
-After every integration the repository is in this end-state:
+After every integration with no work in flight, the repository is in this end-state:
 
 - exactly one branch: `main`;
 - exactly one worktree: the primary checkout;

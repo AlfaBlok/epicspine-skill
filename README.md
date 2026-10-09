@@ -6,6 +6,12 @@ The core idea is simple: every serious body of work gets a living epic document 
 
 This repository is the single development home for the skill. Any other copy of `skill/epic-spine/` is a snapshot; read [SYNC.md](SYNC.md) before editing one.
 
+## Defaults
+
+The kernel's **Default Behaviors** card (`skill/epic-spine/SKILL.md`) is the automatic default for every task: bind a base role; the manager coordinates and never implements; stay in `main` with worker `wt/<task>` worktrees; read the root `Operating Learnings` **Always** and report `Learnings in force:`; run `scripts/skill_update.py status` at bind (`Skill updates: auto`); remove a worker's worktree and branch after integrating and sweep when stale; serve HTML/visual artifacts as `127.0.0.1` URLs. Read it in full before any task; you or the root spine may override it.
+
+Per-topic detail and pointers live in the references: [roles-and-dispatch](skill/epic-spine/references/roles-and-dispatch.md) · [role-protocols](skill/epic-spine/references/role-protocols.md) · [git-doctrine](skill/epic-spine/references/git-doctrine.md) · [learnings](skill/epic-spine/references/learnings.md) · [hygiene](skill/epic-spine/references/hygiene.md) · [artifacts](skill/epic-spine/references/artifacts.md).
+
 ## Get Started
 
 From this checkout's root, use Python 3.10+; no Python packages are required. Copy the **complete** skill into your user skills directory. This refuses an existing destination rather than overwriting it:
@@ -121,31 +127,6 @@ flowchart LR
     W24 -.->|works from / updates| E24
     W25 -.->|works from / updates| E25
 ```
-
-## Roles And Dispatch
-
-You speak to the **delivery manager**: it owns the outcome, dispatches **workers**, verifies their output against the repository, PR, and CI, integrates, and reports. The delivery manager does not implement; workers do. A worker is bound to exactly one task, works in its own worktree, and hands off.
-
-When the user says nothing, workers dispatch through T3 `delegate_task` on the OpenCode provider instance that offers `opencode-go/deepseek-v4.1-flash` (DeepSeek V4.1 Flash) at high reasoning. Override any field per task in plain words, for example "use a cheaper model for this one" or "run those two in parallel"; only the stated fields change. Named templates (`Dispatch profile: template:<name>`) will bundle settings later; until then an unknown template stops and asks.
-
-Read [roles-and-dispatch.md](skill/epic-spine/references/roles-and-dispatch.md) for the two base roles, the dispatch profile, resolution order, and binding prompts.
-
-## Git Doctrine
-
-Stay in `main`. The primary checkout always sits on a clean `main` and is never used to edit, so the repository stays rollback-able with a plain `git revert`.
-
-Workers make a short-lived local worktree branch (`git worktree add ../wt-<task> -b wt/<task> main`), commit, and hand off the branch, commits, and evidence; they do not push or open a PR by default. Once the work passes the repository's checks, the delivery manager rebases it on `main` if needed, merges it to `main` itself (`git merge --ff-only`), refreshes any generated artefacts, pushes, and tests it in `main`. After every integration there is exactly one branch, one worktree, and a clean status.
-
-Read [git-doctrine.md](skill/epic-spine/references/git-doctrine.md) for the worker and integration flows, the rollback rule, parallel dispatch, and the `Integration policy` override.
-
-## Learnings
-
-The spine also carries a short, navigable memory of how this repo should be worked with.
-
-- One line per learning: `L-<n> | applies when | the rule | why | confirmed YYYY-MM-DD`.
-- Depth is scope: root **Always** (every task) plus a **Scoped index**; branch spines hold their own.
-- Agents read root Always at bind, follow only matching scoped pointers, and report `Learnings in force:`.
-- Agents propose; only the spine steward writes. See [learnings.md](skill/epic-spine/references/learnings.md).
 
 ## Spine Versus GitHub Issues
 
@@ -311,10 +292,6 @@ The integration gates are precise:
 - `review`: implementation complete, PR open, required automated checks passing;
 - `testing`: the exact commit is available in a named test surface and acceptance validation is in progress;
 - `done`: acceptance passed, evidence linked, residual risk recorded, and the spine reconciled.
-
-## Hygiene
-
-Worktrees cost disk, so cleanup is normal operations, not a separate chore. The delivery manager removes a worker's worktree and local branch as soon as it integrates the work, and dispatches a cheap **sweep** worker as backstop to reclaim this repo's merged, clean worktrees and branches and to report anything needing a decision. The manager records one `Last sweep: YYYY-MM-DD, <result>` line in the root spine and sweeps again when it is absent or older than 7 days. A sweep never forces, never rewrites history, and never touches `main`. See [hygiene.md](skill/epic-spine/references/hygiene.md).
 
 ## Human Gates And Recovery
 

@@ -43,3 +43,5 @@ Remove in this order: `git worktree remove <path>`, then `git branch -d <branch>
 Write one line to the root spine: `Last sweep: YYYY-MM-DD, <result in ≤ 10 words>` (absent means never). A sweep returns one summary line (date, N worktrees + M branches removed, MB reclaimed from `du -sk` before/after) plus the kept / needs-decision list with reasons.
 
 Tell the user only when something needs their decision or more than 100 MB was reclaimed; otherwise the record line is enough.
+
+A sweep also stops any local artifact server the manager or a worker started for a finished task (see `references/artifacts.md`).

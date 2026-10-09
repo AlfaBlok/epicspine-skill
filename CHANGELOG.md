@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased — lean kernel
+
+- Splits `SKILL.md` into a ≤ 150-line kernel — Overview, a 9-rule **Default Behaviors** card, Bind Path, a load-on-demand table, and spine document minimums — and moves every removed section verbatim into `references/spine-model.md`, `references/spine-creation.md`, `references/role-protocols.md`, `references/dispatch-prompts.md`, and `references/sprint-dialect-v2.md`. A cold agent now reads the kernel (491→65 lines, 7,134→687 words) and loads deeper references only when a task triggers them.
+- Adds `references/artifacts.md`: serve HTML/visual artifacts from `127.0.0.1` and report a verified clickable `http://127.0.0.1:<port>/<file>` URL, never a file path or `file://`; workers hand back `url`/`port`/`pid`/`directory` and the manager relays the link.
+- Adds `tests/test_budgets.py`: CI line budgets for `SKILL.md` (≤ 150), new references (≤ 200), pre-existing files (a rounded ratchet that may be lowered but raised only with a recorded reason), example `Operating Learnings` **Always** blocks (≤ 12), and a no-orphan check that `SKILL.md` links every skill file.
+- README gains a short `Defaults` pointer to the kernel card instead of repeating the detail. `references/git-doctrine.md` Clean Repo Contract now applies "with no work in flight"; `assets/dispatch-prompt-preamble.md` flags HTML outputs as served URLs; `references/hygiene.md` notes a sweep stops artifact servers.
+
 ## Unreleased — skill self-update and freshness
 
 - Adds `scripts/skill_update.py` (stdlib-only): `status` reports `fresh`/`stale`/`unpinned`/`unknown`/`linked` from a `<skill-dir>.SOURCE` pin, using one network check per window (default 7 days, no clone); `upgrade --yes` shallow-clones, verifies the tree byte-for-byte against `MANIFEST.sha256`, swaps atomically with one `.bak`, and rewrites the pin.
