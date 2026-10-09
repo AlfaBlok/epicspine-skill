@@ -48,3 +48,4 @@ Fill one row per run.
 | Date | Commit | P1 | P2 | P3 | P4 | Notes |
 |---|---|---|---|---|---|---|
 | 2026-10-09 | 3108192 | pass | pass | provisional (dry run stopped at first read) | n/a (not yet defined) | baseline before L-9..L-11 |
+| 2026-10-09 | a868281 | pass | FAIL (asked which typo; did not dispatch) | pass | pass | post-adoption; P2 regression, README typo existence unverified (no spellchecker) |
