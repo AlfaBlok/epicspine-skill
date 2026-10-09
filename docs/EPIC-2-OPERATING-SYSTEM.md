@@ -44,7 +44,7 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 
 - L-1 | any task | Keep everything lean: shortest correct text/code; delete before adding | user core value | confirmed 2026-10-09
 - L-2 | any task | Delivery manager coordinates and never implements; dispatch workers | user doctrine | confirmed 2026-10-09
-- L-3 | dispatching | Default workers: T3 delegate_task, OpenCode opencode-go/deepseek-v4.1-flash, reasoning high; user overrides per task | user default | confirmed 2026-10-09
+- L-3 | dispatching | Default workers, reviewers and researchers: T3 delegate_task, OpenCode opencode-go/deepseek-v4.1-flash, reasoning high; never pick another model unless the user asks; independence comes from fresh context | user rule; manager broke it 2026-10-09 | confirmed 2026-10-09
 - L-4 | integrating | Stay in main; manager merges verified work ff-only, tests in main, reverts on red | user should never merge | confirmed 2026-10-09
 - L-5 | HTML output | Serve on http://127.0.0.1:<port>/ and report that link, never a file path | clickable, recognised | confirmed 2026-10-09
 - L-6 | binding | First reply names role and `Learnings in force:`; propose new learnings sparingly | user wants quick bind | confirmed 2026-10-09
@@ -77,6 +77,7 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 | 2026-10-09 | accepted | Skill updates auto | `Skill updates: auto` is the default; upgrade between tasks. | user decision 2026-10-09 | User prefers manual |
 | 2026-10-09 | accepted | EPIC-0 and EPIC-1 closed | Both prior epics are done children of this root; their content is preserved. | user decision 2026-10-09 | Delivery scope resumes |
 | 2026-10-09 | accepted | Root wiring | This compact spine is the single root; EPIC-0 and EPIC-1 are its direct children. | user decision 2026-10-09 | Hierarchy needs re-scoping |
+| 2026-10-09 | accepted | No unrequested model changes | Every subagent, reviewers included, uses the default profile unless the user asks; fresh context gives review independence. | user decision 2026-10-09 | User names another model |
 
 ## Spine Map
 
