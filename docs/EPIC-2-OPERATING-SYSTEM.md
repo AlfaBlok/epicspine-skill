@@ -19,16 +19,16 @@ Skill updates: auto
 
 Owner: /root delivery manager
 Status: active
-Last attempted: 2026-10-09 landed roles+dispatch profile, git doctrine, operating learnings, hygiene sweep, skill self-update and freshness.
-Result: repo self-managed; CI green on main at 5a9241c.
-Evidence: [main @ 5a9241c](https://github.com/AlfaBlok/epicspine-skill/commit/5a9241c) and [CI runs](https://github.com/AlfaBlok/epicspine-skill/actions)
-Waiting on: none
-Approved work: lean SKILL.md kernel, then re-sync installed copies of the skill.
-Next action: land the lean SKILL.md kernel + Default Behaviors card + CI line budgets in wt/kernel, then re-sync installed copies.
-Source revision: 5a9241c
+Last attempted: 2026-10-09 landed the always-on AGENTS.md block, installer and CI check (wt/agents-block) onto main.
+Result: repo self-managed; main fast-forwarded to 02d7a88; 115 tests, agents_block check and manifest all green.
+Evidence: [main @ 02d7a88](https://github.com/AlfaBlok/epicspine-skill/commit/02d7a88) and [CI runs](https://github.com/AlfaBlok/epicspine-skill/actions)
+Waiting on: thread 441c3c64 to rebase and land wt/kernel (lean SKILL.md + Default Behaviors card).
+Approved work: lean SKILL.md kernel; then re-sync the installed skill; then the cold-start test.
+Next action: after wt/kernel lands and MANIFEST is frozen, dispatch the installed-skill re-sync (resolve the shared symlink deliberately, pin SOURCE); then the cold-start test.
+Source revision: 02d7a88
 Verified at: 2026-10-09
 Last sweep: 2026-10-09, main clean
-EpicSpine skill: 2026.10.09 @ 5a9241c, checked 2026-10-09
+EpicSpine skill: 2026.10.09 @ 02d7a88, checked 2026-10-09
 
 ## Mission
 
@@ -63,8 +63,10 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 
 | Issue | Role | Owner / Assignment | Title | Status | Depends On | PR/Branch | Base | Latest Evidence | Last Verified | Next Action |
 |---|---|---|---|---|---|---|---|---|---|---|
-| draft | Ticket worker | /root/kernel | Lean SKILL.md kernel + Default Behaviors card + CI line budgets | draft | none | wt/kernel | 5a9241c | in flight | 2026-10-09 | integrate when green |
-| draft | Ticket worker | /root delivery manager | Re-sync installed copies of the skill | draft | kernel | wt/sync | main | not started | 2026-10-09 | dispatch after kernel lands |
+| draft | Ticket worker | /root delivery manager | Always-on AGENTS.md block + installer + CI check | done | none | wt/agents-block | 1993233 | 02d7a88, 115 tests green, block+manifest OK | 2026-10-09 | integrated; worktree removed |
+| draft | Ticket worker | /root/kernel (thread 441c3c64) | Lean SKILL.md kernel + Default Behaviors card + CI line budgets | in flight | none | wt/kernel | main | rebase pending, MANIFEST stale | 2026-10-09 | rebase on 02d7a88, regenerate MANIFEST, integrate |
+| draft | Ticket worker | /root delivery manager | Re-sync installed skill: resolve shared symlink, pin SOURCE | blocked | kernel | wt/sync | main | not started | 2026-10-09 | dispatch after kernel lands and MANIFEST frozen |
+| draft | Ticket worker | /root delivery manager | Cold-start test: fresh agent per provider binds and dispatches | draft | re-sync | wt/coldstart | main | not started | 2026-10-09 | dispatch after re-sync |
 
 ## Decisions
 
@@ -78,6 +80,7 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 | 2026-10-09 | accepted | EPIC-0 and EPIC-1 closed | Both prior epics are done children of this root; their content is preserved. | user decision 2026-10-09 | Delivery scope resumes |
 | 2026-10-09 | accepted | Root wiring | This compact spine is the single root; EPIC-0 and EPIC-1 are its direct children. | user decision 2026-10-09 | Hierarchy needs re-scoping |
 | 2026-10-09 | accepted | No unrequested model changes | Every subagent, reviewers included, uses the default profile unless the user asks; fresh context gives review independence. | user decision 2026-10-09 | User names another model |
+| 2026-10-09 | accepted | Serialize MANIFEST-changing merges | One writer per spine and one MANIFEST merge at a time: agents-block landed first, kernel rebases second; the second merge regenerates MANIFEST. | thread collision a0380f46 vs 441c3c64 | Two branches touch MANIFEST |
 
 ## Spine Map
 
