@@ -31,6 +31,12 @@ Verified at: <absolute time with timezone>
 
 <explicit scope exclusions>
 
+## Operating Learnings
+
+Optional. One line per learning: `L-<n> | applies when | the rule, imperative | why (≤ 8 words) | confirmed YYYY-MM-DD`. Keep only what applies to this spine; scoped entries point to the branch spine that owns them. Root spines also keep an **Always** list (≤ 12 lines) and a **Scoped index**. See ../references/learnings.md.
+
+- L-1 | <applies when> | <imperative rule> | <why, ≤ 8 words> | confirmed YYYY-MM-DD
+
 ## Definition Of Done
 
 - [ ] <observable acceptance and evidence required>

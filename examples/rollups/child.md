@@ -32,6 +32,12 @@ Demonstrate one-level execution projections and descendant freshness. This graph
 
 No deployment, remote ticket mutation, semantic parent decision or installed-skill change.
 
+## Operating Learnings
+
+One scoped learning for work inside this branch. One line per learning: `L-<n> | applies when | the rule, imperative | why (≤ 8 words) | confirmed YYYY-MM-DD`.
+
+- L-1 | editing or running the rollup/projection tools | prove a preview is read-only before applying it | projections can mutate state | confirmed 2026-09-06
+
 ## Definition Of Done
 
 - [ ] Run `python3 skill/epic-spine/scripts/validate_spine.py --strict examples/EPIC-COMPACT-EXAMPLE.md` from the package root and record the exit code against the tested revision.

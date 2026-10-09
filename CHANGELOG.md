@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased — operating learnings
+
+- Adds **operating learnings**: one-line rules (`L-<n> | applies when | rule | why | confirmed date`) stored in the spine tree so a newly bound agent reads only what its task needs.
+- Depth is scope: a root `## Operating Learnings` holds **Always** (read in full at bind, ≤ 12 lines) plus a **Scoped index** pointing to the branch spine or leaf that owns each scoped rule; branch spines hold their own.
+- Agents report `Learnings in force:` at bind, may propose a learning (never write silently), and hand candidates back as `Learning candidates:`; only the spine steward writes, promotes, or prunes.
+- Adds `references/learnings.md` and `## Operating Learnings` sections to both spine templates and the CLI/rollup examples.
+
 ## Unreleased — roles and dispatch profile
 
 - Adds two base roles: **delivery manager** (dispatches workers, verifies their output, integrates, keeps spine/issue state, and reports; never implements) and **worker** (exactly one task, own worktree, structured handoff). Existing identities remain valid as specific remits under those roles.

@@ -41,6 +41,21 @@ This spine owns illustrative intent and rollup state. Issues own execution detai
 
 No child spines.
 
+## Operating Learnings
+
+Root learnings for this example. Read **Always** at bind; match the task against **Scoped index**; follow only matching pointers. One line per learning: `L-<n> | applies when | the rule, imperative | why (≤ 8 words) | confirmed YYYY-MM-DD`. See the [learnings reference](../skill/epic-spine/references/learnings.md).
+
+**Always** (every task; read in full at bind; hard cap 12 lines):
+
+- L-1 | any change | run `python3 -B -m unittest discover -s tests` before handoff | regressions block integration | confirmed 2026-09-06
+- L-2 | every commit | end the message with the Co-Authored-By trailer | provenance is required | confirmed 2026-09-06
+
+**Scoped index** (one row per scoped learning; follow only when the trigger matches):
+
+| Applies when | Learning lives in |
+|---|---|
+| touching rollup or projection tooling | [rollup branch example](rollups/child.md) |
+
 ## Mission
 
 Give a new contributor one local, reproducible CLI journey for reading a populated spine, validating it, and running the package regression suite. All commands below run from the repository root with Python 3.10+ and no additional dependencies.

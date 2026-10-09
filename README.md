@@ -120,6 +120,15 @@ When the user says nothing, workers dispatch through T3 `delegate_task` on the O
 
 Read [roles-and-dispatch.md](skill/epic-spine/references/roles-and-dispatch.md) for the two base roles, the dispatch profile, resolution order, and binding prompts.
 
+## Learnings
+
+The spine also carries a short, navigable memory of how this repo should be worked with.
+
+- One line per learning: `L-<n> | applies when | the rule | why | confirmed YYYY-MM-DD`.
+- Depth is scope: root **Always** (every task) plus a **Scoped index**; branch spines hold their own.
+- Agents read root Always at bind, follow only matching scoped pointers, and report `Learnings in force:`.
+- Agents propose; only the spine steward writes. See [learnings.md](skill/epic-spine/references/learnings.md).
+
 ## Spine Versus GitHub Issues
 
 The spine is the clean thread of intent, desire, context, fit, and state.

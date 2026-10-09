@@ -84,6 +84,14 @@ Do not create a leaf for a quick answer, transient status, raw execution log, ti
 
 Read `references/book-companion.md` when installing, repairing, validating, or materially extending a Book, or when deciding where a knowledge-producing result should land. Use `assets/book-companion-contract.md` to declare the local paths and permissions.
 
+## Operating Learnings
+
+A spine carries short operating rules as one line each: `L-<n> | applies when | the rule, imperative | why (≤ 8 words) | confirmed YYYY-MM-DD`. Depth is scope: a root `## Operating Learnings` holds **Always** (every task; read in full at bind; ≤ 12 lines) plus a **Scoped index** pointing to the child spine or leaf that owns each scoped rule; a branch spine holds its own learnings for work inside it.
+
+Navigation: read root Always, match the task against the scoped triggers, follow only matching pointers, and descend until no deeper match. Never read learnings for non-matching branches. Precedence: the user's instruction > deeper (more specific) learning > shallower learning; a newer line supersedes an older one.
+
+A newly bound agent's FIRST reply states `Learnings in force:` (≤ 5 lines, no recital of non-matching rules). An agent may PROPOSE a learning at the END of a reply (`Propose learning (<scope: root | branch X>): <one-line rule> — record it?`), at most one per reply and none in consecutive replies; only the spine steward WRITES, after the user agrees, at the broadest correct scope. Workers return `Learning candidates:` in their handoff. Confirm scoped rules in 2+ sibling branches to propose promotion; propose pruning after 180 unconfirmed days, never auto-delete. See `references/learnings.md`.
+
 ## Role Binding
 
 An agent must know its bound role before it acts. Treat a prompt like "you are now a worker for Epic 2.4" as a role-binding instruction.
@@ -128,7 +136,7 @@ Call the pattern **EpicSpine** in conversation. Use `epic-spine` for files, labe
 6. **Build the bootstrap map.** Extract mission, non-goals, acceptance, the authoritative Current State, Issue Ledger, Decisions and required links; read hierarchy and legacy cursor only when present.
 7. **Detect Book binding.** Read the repository's Book declaration, if active, then open the Book root and the chapter relevant to the task. Treat the binding as automatic; do not wait for a second user instruction.
 8. **Reconcile execution state.** Inspect GitHub issues, PRs, branches, current code, and validation evidence only after the spine has oriented you. Resolve each fact using the authority-by-artifact contract and flag drift.
-9. **Check durable memory.** Before proposing a recurring approach, search Decisions in the bound spine and relevant ancestors for rejected or superseded paths. If the Book is active, also search its chapters and leaves for an existing owner of the question.
+9. **Check durable memory.** Before proposing a recurring approach, search Decisions in the bound spine and relevant ancestors for rejected or superseded paths. Read the root `Operating Learnings` **Always** list and follow the **Scoped index** triggers that match this task. If the Book is active, also search its chapters and leaves for an existing owner of the question.
 10. **Act in role.** Continue from the authoritative state (or reconciled legacy cursor) and apply the relevant role protocol.
 11. **Write back and roll up.** Update detailed work in the issue, the bound spine's durable state and cursor if steward, and a compact direct-child rollup in the parent through its steward. Land durable user-facing knowledge in the Book leaf and owning chapter when the Book trigger applies.
 

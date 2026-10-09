@@ -112,6 +112,20 @@ HARDEN — explicitly deferred until the human approves SHIP:
 
 - <explicitly out of scope>
 
+## Operating Learnings
+
+Read **Always** at bind; match the task against **Scoped index**; follow only matching pointers. One line per learning: `L-<n> | applies when | the rule, imperative | why (≤ 8 words) | confirmed YYYY-MM-DD`. See ../references/learnings.md.
+
+**Always** (every task; read in full at bind; hard cap 12 lines):
+
+- L-1 | <applies when> | <imperative rule> | <why, ≤ 8 words> | confirmed YYYY-MM-DD
+
+**Scoped index** (one row per scoped learning; points to the child spine or leaf that owns it):
+
+| Applies when | Learning lives in |
+|---|---|
+| <trigger> | [<child spine or leaf>](<path>) |
+
 ## Current State
 
 Phase: planning | implementation | testing | blocked | complete
