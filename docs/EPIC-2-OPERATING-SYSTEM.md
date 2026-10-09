@@ -19,16 +19,16 @@ Skill updates: auto
 
 Owner: /root delivery manager
 Status: active
-Last attempted: 2026-10-09 landed the always-on AGENTS.md block, installer and CI check (wt/agents-block) onto main.
-Result: repo self-managed; main fast-forwarded to 02d7a88; 115 tests, agents_block check and manifest all green.
-Evidence: [main @ 02d7a88](https://github.com/AlfaBlok/epicspine-skill/commit/02d7a88) and [CI runs](https://github.com/AlfaBlok/epicspine-skill/actions)
-Waiting on: thread 441c3c64 to rebase and land wt/kernel (lean SKILL.md + Default Behaviors card).
-Approved work: lean SKILL.md kernel; then re-sync the installed skill; then the cold-start test.
-Next action: after wt/kernel lands and MANIFEST is frozen, dispatch the installed-skill re-sync (resolve the shared symlink deliberately, pin SOURCE); then the cold-start test.
-Source revision: 02d7a88
+Last attempted: 2026-10-09 landed the lean SKILL.md kernel + Default Behaviors card + CI line budgets (wt/kernel), after the always-on AGENTS.md block.
+Result: repo self-managed; main fast-forwarded to d547410; 120 tests, agents_block check, strict spine validation and manifest all green.
+Evidence: [main @ d547410](https://github.com/AlfaBlok/epicspine-skill/commit/d547410) and [CI runs](https://github.com/AlfaBlok/epicspine-skill/actions)
+Waiting on: none
+Approved work: re-sync the installed skill; then the cold-start test.
+Next action: dispatch the installed-skill re-sync (resolve the shared ~/.claude symlink deliberately, pin SOURCE); then the cold-start test.
+Source revision: d547410
 Verified at: 2026-10-09
 Last sweep: 2026-10-09, main clean
-EpicSpine skill: 2026.10.09 @ 02d7a88, checked 2026-10-09
+EpicSpine skill: 2026.10.09 @ d547410 source; installed copy stale, re-sync pending, checked 2026-10-09
 
 ## Mission
 
@@ -63,9 +63,9 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 
 | Issue | Role | Owner / Assignment | Title | Status | Depends On | PR/Branch | Base | Latest Evidence | Last Verified | Next Action |
 |---|---|---|---|---|---|---|---|---|---|---|
-| draft | Ticket worker | /root delivery manager | Always-on AGENTS.md block + installer + CI check | draft | none | wt/agents-block | 1993233 | 02d7a88 landed; 115 tests + block + manifest green | 2026-10-09 | done: integrated on 02d7a88, worktree removed |
-| draft | Ticket worker | /root/kernel (thread 441c3c64) | Lean SKILL.md kernel + Default Behaviors card + CI line budgets | draft | none | wt/kernel | main | rebase pending, MANIFEST stale | 2026-10-09 | rebase on 02d7a88, regenerate MANIFEST, integrate |
-| draft | Ticket worker | /root delivery manager | Re-sync installed skill: resolve shared symlink, pin SOURCE | draft | kernel | wt/sync | main | not started | 2026-10-09 | dispatch after kernel lands and MANIFEST frozen |
+| draft | Ticket worker | /root delivery manager | Always-on AGENTS.md block + installer + CI check | done | none | wt/agents-block | 1993233 | 02d7a88, 115 tests + block + manifest green; worktree ../wt-agents-block remains | 2026-10-09 | integrated; remove ../wt-agents-block worktree |
+| draft | Ticket worker | /root/kernel (thread 441c3c64) | Lean SKILL.md kernel + Default Behaviors card + CI line budgets | done | none | wt/kernel | main | d547410, 120 tests + agents_block check + strict validate + manifest green | 2026-10-09 | integrated; remove wt/kernel |
+| draft | Ticket worker | /root delivery manager | Re-sync installed skill: resolve shared symlink, pin SOURCE | draft | none | wt/sync | main | not started | 2026-10-09 | dispatch now (kernel landed, MANIFEST frozen) |
 | draft | Ticket worker | /root delivery manager | Cold-start test: fresh agent per provider binds and dispatches | draft | re-sync | wt/coldstart | main | not started | 2026-10-09 | dispatch after re-sync |
 
 ## Decisions
