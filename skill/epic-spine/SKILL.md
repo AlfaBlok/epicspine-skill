@@ -58,6 +58,7 @@ Binding fields, one compact line: role | bound spine | bound issue | steward | h
 | Serving HTML/visual artifacts | `references/artifacts.md` |
 | Repairing a spine or changing the workflow itself | `references/operating-model.md` |
 | Any worker dispatch | `assets/dispatch-prompt-preamble.md` |
+| Always-on AGENTS.md block (installed in any repo) | `assets/agents-block.md`, `scripts/agents_block.py` |
 
 ## Spine Document Minimums
 
