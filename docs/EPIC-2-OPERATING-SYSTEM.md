@@ -19,16 +19,16 @@ Skill updates: auto
 
 Owner: /root delivery manager
 Status: active
-Last attempted: 2026-10-09 centralized the installed skill: one real copy at ~/.agents/skills/epic-spine, all harnesses (Claude, OpenCode, Codex) symlinked to it, SOURCE pinned; skill docs updated.
-Result: repo self-managed; main at adabd9f; 120 tests, strict spine validation, manifest and skill status all green.
-Evidence: [main @ adabd9f](https://github.com/AlfaBlok/epicspine-skill/commit/adabd9f) and [CI runs](https://github.com/AlfaBlok/epicspine-skill/actions)
+Last attempted: 2026-10-09 cold-start test passed on the default worker: a fresh agent bound via AGENTS.md -> root spine -> SKILL.md, named the default profile, and found the Default Behaviors card.
+Result: all four agreed steps landed; main at e48e6fd; 120 tests, agents_block check, strict validation, manifest and skill status all green.
+Evidence: [main @ e48e6fd](https://github.com/AlfaBlok/epicspine-skill/commit/e48e6fd) and [CI runs](https://github.com/AlfaBlok/epicspine-skill/actions)
 Waiting on: none
-Approved work: the cold-start test.
-Next action: dispatch the cold-start test (fresh agent per provider binds and dispatches from the hub).
-Source revision: adabd9f
+Approved work: none.
+Next action: idle; reopen the ledger to start new work.
+Source revision: e48e6fd
 Verified at: 2026-10-09
 Last sweep: 2026-10-09, main clean
-EpicSpine skill: 2026.10.09 @ adabd9f; installed hub fresh (cached), checked 2026-10-09
+EpicSpine skill: 2026.10.09 @ e48e6fd; installed hub fresh, checked 2026-10-09
 
 ## Mission
 
@@ -66,7 +66,7 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 | draft | Ticket worker | /root delivery manager | Always-on AGENTS.md block + installer + CI check | draft | none | wt/agents-block | 1993233 | integrated on 02d7a88; 115 tests + block + manifest green; worktree removed | 2026-10-09 | done |
 | draft | Ticket worker | /root/kernel (thread 441c3c64) | Lean SKILL.md kernel + Default Behaviors card + CI line budgets | draft | none | wt/kernel | main | integrated on d547410; 120 tests + agents_block check + strict validate + manifest green | 2026-10-09 | done |
 | draft | Ticket worker | /root delivery manager | Centralize installed skill: hub + harness symlinks + pin SOURCE | draft | none | n/a | main | ~/.agents/skills/epic-spine real copy; Claude/OpenCode/Codex symlink to it; skill_update status fresh | 2026-10-09 | done |
-| draft | Ticket worker | /root delivery manager | Cold-start test: fresh agent per provider binds and dispatches | draft | none | wt/coldstart | main | not started | 2026-10-09 | dispatch next |
+| draft | Ticket worker | /root delivery manager | Cold-start test: fresh agent per provider binds and dispatches | draft | none | n/a | main | passed on opencode_2/deepseek-v4.1-flash: bound as delivery manager, named the default profile, card present, no dead ends | 2026-10-09 | done |
 
 ## Decisions
 
