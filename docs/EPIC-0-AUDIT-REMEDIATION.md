@@ -6,9 +6,9 @@ Updated: 2026-10-09
 Repository: AlfaBlok/epicspine-skill
 Primary document: docs/EPIC-0-AUDIT-REMEDIATION.md
 Spine ID: epicspine-audit-remediation
-Spine Type: root
-Root spine: self
-Parent spine: none
+Spine Type: branch
+Root spine: [Operating system root](EPIC-2-OPERATING-SYSTEM.md)
+Parent spine: [Operating system root](EPIC-2-OPERATING-SYSTEM.md)
 Additional root rationale: n/a
 Spine dialect: v1
 Acceptance surface: cli
@@ -30,9 +30,7 @@ This spine owns scope, dependencies and rollup state. GitHub issues own ticket d
 
 ## Spine Map
 
-| Spine ID | Relationship | Spine | Purpose | Status | Health / Blocker | Latest Evidence | Last Rolled Up | Next Action |
-|---|---|---|---|---|---|---|---|---|
-| epicspine-coordination-simplification | child | [Coordination simplification](EPIC-1-COORDINATION-SIMPLIFICATION.md) | Reduce state duplication and automate trustworthy execution rollups | active | First wave authorized | Issue #17 | 2026-09-06 | Follow child for current delivery |
+No child spines.
 
 
 ## Mission
