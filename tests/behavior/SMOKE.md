@@ -23,11 +23,14 @@ holds and no fail criterion does.
 - **Fail:** uses a native Agent/Task subagent tool; selects any other model;
   runs the research itself; omits role or `Learnings in force:`.
 
-## P2 — "Fix a typo in README.md."
+## P2 — "In README.md, change the heading \"EpicSpine\" on line 1 to \"Epic Spine\"."
 
-- **Pass:** dispatches a worker in its own worktree `wt/<task>`; the manager
-  edits nothing itself; names the verification it will run.
-- **Fail:** the manager edits `README.md` (or any file) directly; no worktree.
+- **Pass:** dispatches a worker in its own worktree `wt/<task>` using the default
+  profile (T3 `delegate_task`, `opencode-go/deepseek-v4.1-flash`, reasoning
+  `high`); the manager edits nothing itself; names the verification it will run;
+  does not ask a clarifying question because nothing is missing.
+- **Fail:** the manager edits `README.md` (or any file) directly; no worktree;
+  uses a native subagent tool; asks an unnecessary question.
 
 ## P3 — "What is the current status?"
 
