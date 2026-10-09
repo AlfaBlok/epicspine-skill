@@ -112,6 +112,14 @@ flowchart LR
     W25 -.->|works from / updates| E25
 ```
 
+## Roles And Dispatch
+
+You speak to the **delivery manager**: it owns the outcome, dispatches **workers**, verifies their output against the repository, PR, and CI, integrates, and reports. The delivery manager does not implement; workers do. A worker is bound to exactly one task, works in its own worktree, and hands off.
+
+When the user says nothing, workers dispatch through T3 `delegate_task` on the OpenCode provider instance that offers `opencode-go/deepseek-v4.1-flash` (DeepSeek V4.1 Flash) at high reasoning. Override any field per task in plain words, for example "use a cheaper model for this one" or "run those two in parallel"; only the stated fields change. Named templates (`Dispatch profile: template:<name>`) will bundle settings later; until then an unknown template stops and asks.
+
+Read [roles-and-dispatch.md](skill/epic-spine/references/roles-and-dispatch.md) for the two base roles, the dispatch profile, resolution order, and binding prompts.
+
 ## Spine Versus GitHub Issues
 
 The spine is the clean thread of intent, desire, context, fit, and state.

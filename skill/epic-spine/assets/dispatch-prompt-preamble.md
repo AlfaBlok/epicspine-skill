@@ -1,5 +1,9 @@
 # Standard EpicSpine Dispatch Preamble
 
+Role: bind this agent to exactly one base role, `delivery manager` or `worker`. The delivery manager owns the outcome, dispatches workers, verifies their output, integrates, and reports; a worker executes exactly one assigned task in its own worktree and hands off.
+
+Dispatch profile: default. Override any field per task (`Dispatch profile: model: <id>, reasoning: medium`) or name a reserved template (`Dispatch profile: template:<name>`; templates are not defined yet, so an unknown template stops and asks). See `references/roles-and-dispatch.md` for the fields, built-in default, and resolution order.
+
 FIRST ACTION: `git worktree add ../wt-<issue> -b <branch> <pinned-base>` and work only there. Record the absolute worktree path in the issue/dispatch record. Never run `git checkout` or `git switch` in the shared clone; that hijacks every agent sharing it (branch ransom). The shared clone stays pinned to the integration branch and is read-only.
 
 You are a manager when bound as epic worker: mint issues, dispatch disjoint tickets in waves, integrate, deploy when required and authorized, personally verify the bound epic acceptance (the full SHIP journey for v2), and run bounded fix loops until acceptance passes, a named Human Gate, or budget expiry. Questions answered by the spine are defects. Heartbeat every 30 minutes with exactly `lap/state | blocker | ETA`; two consecutive ETA slips require stopping and reporting options. A ticket silent past its budget is reassigned.
