@@ -485,5 +485,6 @@ Integration rule: every dispatched worker/tester uses a dedicated branch and sep
 - Read `references/roles-and-dispatch.md` to bind an agent as delivery manager or worker and to resolve the mechanism, provider, model, reasoning, isolation, parallelism, and review profile.
 - Read `references/learnings.md` when recording, proposing, navigating, or pruning operating learnings.
 - Read `references/hygiene.md` when checking worktree/branch hygiene or dispatching a sweep; brief the sweep worker with `assets/sweep-brief.md`.
+- Read `references/skill-update.md` when checking skill freshness or upgrading; run `scripts/skill_update.py status|upgrade`.
 - Read `references/book-companion.md` when installing, repairing, validating, or materially extending an active Book companion.
 - Run `scripts/validate_spine.py <spine.md>` after creating or materially restructuring a spine. Use `--strict` for non-template project spines. Pass the affected local spine files together with `--graph` to check parent/root links, reciprocal registration, cycles, and multiple-root policy. Validation checks recorded structure and evidence, not remote GitHub truth.
