@@ -88,6 +88,8 @@ Read `references/book-companion.md` when installing, repairing, validating, or m
 
 An agent must know its bound role before it acts. Treat a prompt like "you are now a worker for Epic 2.4" as a role-binding instruction.
 
+Every agent binds to one of two base roles: **delivery manager** (owns the outcome, dispatches workers, verifies their output, integrates, keeps spine/issue state, and reports) or **worker** (executes exactly one dispatched task in its own worktree and hands off). Existing identities remain valid as specific remits under these roles. Read `references/roles-and-dispatch.md` for the mapping, the dispatch profile, and copy-paste binding prompts.
+
 Role binding has seven parts:
 
 - **Identity:** Epic 0 worker, planner, epic worker, ticket worker, tester, reviewer, or observer.
@@ -456,5 +458,6 @@ Integration rule: every dispatched worker/tester uses a dedicated branch and sep
 - Use `assets/book-companion-contract.md` when installing a Book declaration in repository instructions or a root spine.
 - Start every paste-ready worker prompt with `assets/dispatch-prompt-preamble.md` and store the completed prompt in the spine appendix.
 - Read `references/operating-model.md` when changing the workflow structure itself or when the existing spine is inconsistent.
+- Read `references/roles-and-dispatch.md` to bind an agent as delivery manager or worker and to resolve the mechanism, provider, model, reasoning, isolation, parallelism, and review profile.
 - Read `references/book-companion.md` when installing, repairing, validating, or materially extending an active Book companion.
 - Run `scripts/validate_spine.py <spine.md>` after creating or materially restructuring a spine. Use `--strict` for non-template project spines. Pass the affected local spine files together with `--graph` to check parent/root links, reciprocal registration, cycles, and multiple-root policy. Validation checks recorded structure and evidence, not remote GitHub truth.

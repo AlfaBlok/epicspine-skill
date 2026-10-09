@@ -7,6 +7,8 @@ Repository: <owner/repo>
 Primary document: <path to this file>
 Spine ID: <stable-id>
 Integration branch: <branch>
+Dispatch profile: default
+<!-- Optional: overrides merge field by field over the built-in default; `template:<name>` is reserved and not yet defined. See ../references/roles-and-dispatch.md. -->
 
 ## Current State
 

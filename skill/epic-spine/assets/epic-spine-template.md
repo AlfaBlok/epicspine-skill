@@ -5,6 +5,8 @@ keep overlapping Current State and Execution Cursor facts consistent until migra
 
 Spine profile: full
 Ticket backend: github
+Dispatch profile: default
+<!-- Optional: default dispatches workers via T3 delegate_task on the OpenCode provider instance offering the built-in model, reasoning high. Override per task or name a reserved template: template:<name>. See ../references/roles-and-dispatch.md. -->
 
 Status: draft | ready | active | pending — DISPATCH ONLY AFTER <condition> | CLOSED | ON HOLD | SUPERSEDED by <path> — do not execute from this document
 Created: YYYY-MM-DD
