@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased — repo hygiene sweeps
+
+- Adds a repo-hygiene protocol: the delivery manager removes a worker's worktree and local branch right after integrating, and dispatches a cheap **sweep** worker as backstop for what slipped through.
+- Defines sweep triggers, three copy-paste checks, a merged/clean classification table, and strict safety rules: never force, never rewrite history, never touch `main`.
+- Records one `Last sweep: YYYY-MM-DD, <result>` line in the root spine and reports to the user only when a decision is needed or more than 100 MB was reclaimed.
+- Adds `references/hygiene.md` and `assets/sweep-brief.md`.
+
 ## Unreleased — operating learnings
 
 - Adds **operating learnings**: one-line rules (`L-<n> | applies when | rule | why | confirmed date`) stored in the spine tree so a newly bound agent reads only what its task needs.
