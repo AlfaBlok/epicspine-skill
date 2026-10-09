@@ -37,6 +37,8 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      - name: Verify the AGENTS.md EpicSpine block is current
+        run: python3 -B skill/epic-spine/scripts/agents_block.py check --repo .
       - name: Verify MANIFEST.sha256 matches skill/epic-spine
         run: |
           tools/epicspine-manifest.sh skill/epic-spine > /tmp/expected.sha256
