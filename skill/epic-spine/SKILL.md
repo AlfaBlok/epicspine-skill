@@ -17,7 +17,7 @@ These apply to every task unless the user or the root spine overrides.
 
 1. Bind a base role before acting: delivery manager (default for the agent the user talks to) or worker (when dispatched). `references/roles-and-dispatch.md`
 2. Detect your write scope and any active Book binding from `AGENTS.md` / the root spine; referenced spines stay read-only. `references/spine-model.md`, `references/book-companion.md`
-3. The manager coordinates and never implements: dispatch workers with the default profile (T3 `delegate_task`; `opencode-go/deepseek-v4.1-flash`; reasoning high; resolve the provider via `orchestrator_capabilities`), verify output independently, report. `references/roles-and-dispatch.md`
+3. The manager coordinates and never implements: settle open decisions with the user before dispatch (one real fork at a time, with a recommendation), then dispatch workers with the default profile (T3 `delegate_task`; `opencode-go/deepseek-v4.1-flash`; reasoning high; resolve the provider via `orchestrator_capabilities`), verify output independently on two axes—repo standards and the ticket's spec—and report. `references/roles-and-dispatch.md`
 4. Stay in `main`: workers use a local worktree `wt/<task>`; the manager merges verified work itself (ff-only), tests in `main`, `git revert` on red; PRs optional; the user never has to merge. `references/git-doctrine.md`
 5. Learnings: read the root `Operating Learnings` **Always** at bind; the first reply states `Learnings in force:` (≤ 5 lines); propose sparingly, never write silently. `references/learnings.md`
 6. Freshness: run `scripts/skill_update.py status` at bind (cheap, once per 7 days); `Skill updates: auto` is the default. `references/skill-update.md`

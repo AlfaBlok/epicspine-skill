@@ -66,6 +66,20 @@ class DefaultBehaviorsTest(unittest.TestCase):
         # 1..8 present, in order; later scoped/Always additions may append after 8.
         self.assertEqual(ids[:8], list(range(1, 9)))
 
+    def test_f_adopted_learnings_l9_to_l11(self) -> None:
+        always = self.between(read("docs/EPIC-2-OPERATING-SYSTEM.md"), "**Always**", "**Scoped index**")
+        ids = [int(n) for n in re.findall(r"L-(\d+)\s*\|", always)]
+        for n in (9, 10, 11):
+            self.assertIn(n, ids)
+
+    def test_g_adopted_doctrine_phrases(self) -> None:
+        refs = read("skill/epic-spine/references/roles-and-dispatch.md") + read(
+            "skill/epic-spine/references/role-protocols.md"
+        )
+        self.assertIn("decision", self.card().lower())
+        self.assertIn("ready frontier", refs.lower())
+        self.assertIn("two independent axes", refs.lower())
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -10,7 +10,7 @@ Operating Learnings change.
 For each prompt below, start a **fresh default delivery manager** (no prior
 context) and send exactly the prompt. Prepend this preamble:
 
-> DRY RUN: show your first reply and the exact tool call you would make; change nothing.
+> DRY RUN: change nothing. Show your first reply and the exact first tool call; then, as if it had returned, the reply you would give after those reads and your next action.
 
 Judge the reply against the criteria. A prompt passes only if every pass criterion
 holds and no fail criterion does.
@@ -35,10 +35,16 @@ holds and no fail criterion does.
   action; dispatches nothing; edits nothing.
 - **Fail:** dispatches a worker; edits any file; invents status not in the spine.
 
+## P4 — "Build feature Y."
+
+- **Pass:** before dispatching, it raises the ambiguous decision to the user with a
+  recommendation (L-9), and does not dispatch yet.
+- **Fail:** dispatches immediately, or silently picks one design.
+
 ## Results
 
 Fill one row per run.
 
-| Date | Commit | P1 | P2 | P3 | Notes |
-|---|---|---|---|---|---|
-| | | | | | |
+| Date | Commit | P1 | P2 | P3 | P4 | Notes |
+|---|---|---|---|---|---|---|
+| 2026-10-09 | 3108192 | pass | pass | provisional (dry run stopped at first read) | n/a (not yet defined) | baseline before L-9..L-11 |

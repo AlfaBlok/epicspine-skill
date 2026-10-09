@@ -32,6 +32,12 @@ EpicSpine agents should work toward a terminal state, not merely perform one pas
 - Stop and ask only when the next step requires user/planner judgment, credentials, production-risk approval, cross-spine authority, or a scope/acceptance change.
 - When stopping, update the bound issue with the exact terminal state, evidence, and next required decision, then reconcile the spine if you are its steward or notify the steward.
 
+## Decision Intake
+
+Before dispatch, settle what can be settled. The agent resolves facts itself: read the repository, run the commands, inspect the diff. The user makes decisions, not the agent. Record each resolved decision in the bound spine's Decisions table so it survives the thread.
+
+This refines the stop-and-ask rule above; it does not widen it. Ask only about a real fork — a genuine choice with more than one defensible outcome — one at a time, each with a recommendation. Settle everything else and move on.
+
 ## Branch And Integration Discipline
 
 Default rule: **stay in `main`; isolate execution, integrate frequently.** See `references/git-doctrine.md` for the full flow.

@@ -22,8 +22,6 @@ Read this when launching an agent or harness, choosing how to dispatch work, or 
 
 ## Mapping To Existing Identities
 
-Nothing is removed. The base role states what the agent is for; the identity names the specific remit.
-
 | Existing identity | Base role | Remit |
 |---|---|---|
 | Epic 0 worker, planner, epic worker | delivery manager | The coordination and delivery authority in the Role Protocols. |
@@ -55,9 +53,7 @@ A dispatch profile is the per-task set of dispatch choices:
 | Runtime mode | inherited from the manager |
 | Isolation | worktree-first |
 | Parallelism | disjoint waves only; sequence tasks that may touch the same files |
-| Review | manager verifies against the repository, branch, and checks, then integrates to `main` under `references/git-doctrine.md` |
-
-Provider-instance ids are environment-specific. Never hard-code one as the default; resolve the instance that offers the model.
+| Review | manager verifies on two axes (repo standards and the spec) against the repository, branch, and checks, then integrates to `main` under `references/git-doctrine.md` |
 
 ## Resolution Order
 
@@ -67,13 +63,17 @@ Highest wins, merged field by field; only the stated fields change:
 2. Repository declaration: a `Dispatch profile:` line in the root spine or `AGENTS.md`.
 3. The built-in default above.
 
+## Ready Frontier
+
+Launch only the ready frontier: tickets whose `Depends On` blockers are done and whose write surfaces are disjoint from every in-flight worker. Sequence the rest.
+
 ## Failure Rule
 
 If T3 delegation is unavailable, or the profile's model is missing from the live catalog, stop and say so, then propose a concrete substitute. Never silently substitute, and never silently implement the work yourself.
 
 ## Manager Verification
 
-Verify worker output against the repository, branch/diff, and checks independently — not the worker's summary alone. The manager integrates verified work to the declared integration branch itself under `references/git-doctrine.md`. Approval is required only when the repo declares `Integration policy: pr-approval` or the user reserves it for a task. Link any PR the manager opens.
+Verify worker output against the repository, branch/diff, and checks independently — not the worker's summary alone. Check two independent axes: repo standards (tests, validators, conventions, lean) and the spec (the ticket's acceptance). The manager integrates verified work to the declared integration branch itself under `references/git-doctrine.md`. Approval is required only when the repo declares `Integration policy: pr-approval` or the user reserves it for a task. Link any PR the manager opens.
 
 ## Templates (Reserved)
 
