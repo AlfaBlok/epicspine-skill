@@ -56,6 +56,7 @@ Binding fields, one compact line: role | bound spine | bound issue | steward | h
 | Skill freshness and upgrades | `references/skill-update.md`, `scripts/skill_update.py` |
 | Book companion | `references/book-companion.md`, `assets/book-companion-contract.md` |
 | Serving HTML/visual artifacts | `references/artifacts.md` |
+| A shortlist / selection of candidates is a key deliverable | `references/shortlists.md`, `scripts/build_shortlist.py`, `assets/shortlist.template.html`, `assets/shortlist-sample.json` |
 | Repairing a spine or changing the workflow itself | `references/operating-model.md` |
 | Any worker dispatch | `assets/dispatch-prompt-preamble.md` |
 | Always-on AGENTS.md block (installed in any repo) | `assets/agents-block.md`, `scripts/agents_block.py` |
