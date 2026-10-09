@@ -1,7 +1,7 @@
 # EPIC: Compact state and trustworthy rollups
 
-Status: review
-Updated: 2026-09-06
+Status: done
+Updated: 2026-10-09
 Repository: AlfaBlok/epicspine-skill
 Primary document: docs/EPIC-1-COORDINATION-SIMPLIFICATION.md
 Spine ID: epicspine-coordination-simplification
@@ -53,7 +53,7 @@ Fresh base commit: a8522464235db77d1eaca4dc03d9556d076e6bc7
 
 Last attempted: Completed independent combined acceptance at implementation revision 465d27c901f350a7d9402994c121473f12ad427c; hosted CI passes at coordination revision 619bf815e5f230d61f4780c6b39cb01e19c36f58.
 Result: 85 combined tests pass; independent Python 3.10/3.14 CLI, no-op, ancestor invalidation and strict graph checks accepted. All implementation review findings resolved.
-Execution status: review
+Execution status: done
 Waiting on: PR review and merge decision
 Approved work: User-authorized backlog delivery through subagents, isolated branches, issue comments, reviews and PRs.
 Next action: Review stacked PR #22 after prerequisite PR #16; main merge and installed-skill rollout remain separate actions.
@@ -74,6 +74,7 @@ Next action: Review stacked PR #22 after prerequisite PR #16; main merge and ins
 | 2026-09-06 | accepted | Shared-file serialization | #18 then #19; #20 and #21 sequence unless clean file ownership is established. | Shared parser/validator surfaces | Worker handoff proves disjointness |
 | 2026-09-06 | accepted | Backward compatibility | Existing spines remain readable; ambiguous state requires explicit reconciliation. | #18 acceptance | User authorizes migration |
 | 2026-09-06 | accepted | Knowledge is steward-owned | Tooling may project execution facts, never infer preferences, verdicts or permission. | #20 acceptance | No automatic expansion |
+| 2026-10-09 | accepted | Mark spine done | User decision 2026-10-09: implementation accepted and merged (PR #22); this living document remains usable for reference; merged codex/* branches pruned. | PR #22 | Delivery scope resumes |
 
 ## Issue Ledger
 
@@ -129,3 +130,7 @@ Final implementation revision 465d27c901f350a7d9402994c121473f12ad427c passes 85
 ### 2026-09-06 — delivery accepted for review
 
 Independent combined acceptance: https://github.com/AlfaBlok/epicspine-skill/pull/22#issuecomment-5559402424. Implementation revision 465d27c901f350a7d9402994c121473f12ad427c; 85 tests plus independent Python 3.10/3.14 focused and CLI checks pass. Hosted push/PR CI passed at 619bf815e5f230d61f4780c6b39cb01e19c36f58. Remaining changes are coordination-only. All issue18–21 implementation is accepted; issues stay open through PR merge. Delivery follow-up pauses once the final coordination commit CI passes.
+
+### 2026-10-09 — marked done
+
+By user decision on 2026-10-09 this spine is done: implementation was accepted and merged (PR #22) and the merged codex/* branches have been pruned. The document stays live but usable for reference only.

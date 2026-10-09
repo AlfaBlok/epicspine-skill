@@ -1,8 +1,8 @@
 # EPIC 0: Audit remediation
 
-Status: review
+Status: done
 Created: 2026-09-06
-Updated: 2026-09-06
+Updated: 2026-10-09
 Repository: AlfaBlok/epicspine-skill
 Primary document: docs/EPIC-0-AUDIT-REMEDIATION.md
 Spine ID: epicspine-audit-remediation
@@ -62,7 +62,7 @@ Next action: Review PR #16; preserve tested implementation while awaiting merge 
 
 Last attempted: Independent tester exercised all six acceptance packages at the frozen implementation revision.
 Result: All six packages pass; 34 tests on Python 3.10 and 3.14, strict CLI checks, sandbox install checks and hosted CI pass.
-Execution status: review
+Execution status: done
 Waiting on: PR review and merge decision; no implementation blockers
 Approved work: Review followup and coordination within existing remediation scope; manager remains available.
 Next action: Review PR #16; preserve tested implementation while awaiting merge decision.
@@ -84,6 +84,7 @@ Next action: Review PR #16; preserve tested implementation while awaiting merge 
 | 2026-09-06 | accepted | Serial code ownership | Parser then dialect then ledger; workflow and CI run independently. | Shared validator and test files | Ownership can be separated |
 | 2026-09-06 | accepted | Dialect contract | Spine dialect v1/v2; --dialect auto/v1/v2; undeclared defaults to v1. Acceptance surface browser/cli/library/infrastructure/documentation. | Issue #11 | Regression evidence requires revision |
 | 2026-09-06 | accepted | Review boundary | Produce reviewed integration PR; no production deployment or installed-skill update. | Approved remediation scope | User requests rollout |
+| 2026-10-09 | accepted | Mark spine done | User decision 2026-10-09: implementation accepted and merged (PR #16); this living document remains usable for reference; merged codex/* branches pruned. | PR #16 | Delivery scope resumes |
 
 ## Issue Ledger
 
@@ -161,3 +162,7 @@ All six issue packages pass at df3908e. Reviewer findings were routed to subagen
 ### 2026-09-06 — simplification followup registered
 
 The original audit repair remains accepted at a852246. User authorized followup backlog delivery; its separate child owns current simplification work and issue #17. This registration does not reopen the completed audit acceptance.
+
+### 2026-10-09 — marked done
+
+By user decision on 2026-10-09 this spine is done: implementation was accepted and merged (PR #16) and the merged codex/* branches have been pruned. The document stays live but usable for reference only.
