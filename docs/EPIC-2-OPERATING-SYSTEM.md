@@ -19,12 +19,12 @@ Skill updates: auto
 
 Owner: /root delivery manager
 Status: active
-Last attempted: 2026-10-09 dispatched worker C (shortlist-by-default leaf) alongside worker B; worker A landed (3108192), baseline smoke 3/3. Prior: cold-start test passed on the default worker: a fresh agent bound via AGENTS.md -> root spine -> SKILL.md, named the default profile, and found the Default Behaviors card.
+Last attempted: 2026-10-09 worker C landed (7d617c2, shortlist-by-default; 134 tests green, installed skill upgraded); worker B still in flight; worker A landed (3108192), baseline smoke 3/3. Prior: cold-start test passed on the default worker: a fresh agent bound via AGENTS.md -> root spine -> SKILL.md, named the default profile, and found the Default Behaviors card.
 Result: all four agreed steps landed; main at e48e6fd; 120 tests, agents_block check, strict validation, manifest and skill status all green.
 Evidence: [main @ e48e6fd](https://github.com/AlfaBlok/epicspine-skill/commit/e48e6fd) and [CI runs](https://github.com/AlfaBlok/epicspine-skill/actions)
 Waiting on: none
 Approved work: comparison adoption (L-9..L-11) behind checkpoint tags and behavior regression tests.
-Next action: verify and integrate worker B (L-9..L-11) then worker C (shortlist-by-default; rebase, regenerate MANIFEST), then run the 4-prompt smoke.
+Next action: verify and integrate worker B (L-9..L-11; rebase on 7d617c2, regenerate MANIFEST), then run the 4-prompt smoke.
 Source revision: e48e6fd
 Verified at: 2026-10-09
 Last sweep: 2026-10-09, main clean
