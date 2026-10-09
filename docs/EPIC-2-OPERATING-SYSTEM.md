@@ -19,16 +19,16 @@ Skill updates: auto
 
 Owner: /root delivery manager
 Status: active
-Last attempted: 2026-10-09 landed the lean SKILL.md kernel + Default Behaviors card + CI line budgets (wt/kernel), after the always-on AGENTS.md block.
-Result: repo self-managed; main fast-forwarded to d547410; 120 tests, agents_block check, strict spine validation and manifest all green.
-Evidence: [main @ d547410](https://github.com/AlfaBlok/epicspine-skill/commit/d547410) and [CI runs](https://github.com/AlfaBlok/epicspine-skill/actions)
+Last attempted: 2026-10-09 centralized the installed skill: one real copy at ~/.agents/skills/epic-spine, all harnesses (Claude, OpenCode, Codex) symlinked to it, SOURCE pinned; skill docs updated.
+Result: repo self-managed; main at adabd9f; 120 tests, strict spine validation, manifest and skill status all green.
+Evidence: [main @ adabd9f](https://github.com/AlfaBlok/epicspine-skill/commit/adabd9f) and [CI runs](https://github.com/AlfaBlok/epicspine-skill/actions)
 Waiting on: none
-Approved work: re-sync the installed skill; then the cold-start test.
-Next action: dispatch the installed-skill re-sync (resolve the shared ~/.claude symlink deliberately, pin SOURCE); then the cold-start test.
-Source revision: d547410
+Approved work: the cold-start test.
+Next action: dispatch the cold-start test (fresh agent per provider binds and dispatches from the hub).
+Source revision: adabd9f
 Verified at: 2026-10-09
 Last sweep: 2026-10-09, main clean
-EpicSpine skill: 2026.10.09 @ d547410 source; installed copy stale, re-sync pending, checked 2026-10-09
+EpicSpine skill: 2026.10.09 @ adabd9f; installed hub fresh (cached), checked 2026-10-09
 
 ## Mission
 
@@ -63,10 +63,10 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 
 | Issue | Role | Owner / Assignment | Title | Status | Depends On | PR/Branch | Base | Latest Evidence | Last Verified | Next Action |
 |---|---|---|---|---|---|---|---|---|---|---|
-| draft | Ticket worker | /root delivery manager | Always-on AGENTS.md block + installer + CI check | draft | none | wt/agents-block | 1993233 | integrated on 02d7a88; 115 tests + block + manifest green; worktree ../wt-agents-block remains | 2026-10-09 | remove ../wt-agents-block worktree |
-| draft | Ticket worker | /root/kernel (thread 441c3c64) | Lean SKILL.md kernel + Default Behaviors card + CI line budgets | draft | none | wt/kernel | main | integrated on d547410; 120 tests + agents_block check + strict validate + manifest green | 2026-10-09 | remove wt/kernel worktree and branch |
-| draft | Ticket worker | /root delivery manager | Re-sync installed skill: resolve shared symlink, pin SOURCE | draft | none | wt/sync | main | not started | 2026-10-09 | dispatch now (kernel landed, MANIFEST frozen) |
-| draft | Ticket worker | /root delivery manager | Cold-start test: fresh agent per provider binds and dispatches | draft | re-sync | wt/coldstart | main | not started | 2026-10-09 | dispatch after re-sync |
+| draft | Ticket worker | /root delivery manager | Always-on AGENTS.md block + installer + CI check | draft | none | wt/agents-block | 1993233 | integrated on 02d7a88; 115 tests + block + manifest green; worktree removed | 2026-10-09 | done |
+| draft | Ticket worker | /root/kernel (thread 441c3c64) | Lean SKILL.md kernel + Default Behaviors card + CI line budgets | draft | none | wt/kernel | main | integrated on d547410; 120 tests + agents_block check + strict validate + manifest green | 2026-10-09 | done |
+| draft | Ticket worker | /root delivery manager | Centralize installed skill: hub + harness symlinks + pin SOURCE | draft | none | n/a | main | ~/.agents/skills/epic-spine real copy; Claude/OpenCode/Codex symlink to it; skill_update status fresh | 2026-10-09 | done |
+| draft | Ticket worker | /root delivery manager | Cold-start test: fresh agent per provider binds and dispatches | draft | none | wt/coldstart | main | not started | 2026-10-09 | dispatch next |
 
 ## Decisions
 
