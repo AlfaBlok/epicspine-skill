@@ -7,26 +7,28 @@
 <style>
 :root{color-scheme:dark;--bg:#10151c;--panel:#181f29;--panel2:#212b37;--line:#303b49;--text:#edf2f7;--muted:#9aa8b8;--blue:#63b3ed;--green:#68d7a5;--amber:#f6bd60;--red:#ff8179;--purple:#c59cff;--candidate:#6b7684;--shortlisted:#63b3ed;--contacted:#f6bd60;--chosen:#68d7a5;--rejected:#ff8179}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-.wrap{padding:24px;max-width:1400px;margin:0 auto}
-h1{font-size:26px;margin:0 0 3px;letter-spacing:-.5px}.subtitle{color:var(--muted);font-weight:600}
-.top{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap}
-.badge-lock{border:1px solid #34507a;background:#16263c;color:var(--blue);border-radius:999px;padding:8px 13px;font-weight:750;white-space:nowrap;font-size:12px}
-.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin:16px 0}
-.metric{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:13px}.metric strong{display:block;font-size:23px}.metric span{color:var(--muted);font-weight:600;font-size:12px}
-.criteria,.note{border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:12px 16px;margin-bottom:12px}
-.criteria h2{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin:0 0 6px}
-.criteria ul{margin:0;padding-left:18px}.note{color:var(--muted)}.note strong{color:var(--amber)}
-.controls{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;border-top:1px solid var(--line);padding:14px 0 12px}
-.control label{display:block;color:var(--muted);font-size:11px;font-weight:700;margin-bottom:4px}
-.control input,.control select{height:36px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--text);padding:0 10px;min-width:150px}
-.control.check{display:flex;align-items:center;gap:6px;height:36px;color:var(--muted);font-weight:700;cursor:pointer}
-.control.check input{width:17px;height:17px;min-width:0;padding:0;margin:0;flex:none}
-.legend{color:var(--muted);font-size:12px;margin:8px 0}.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin:0 4px 0 12px}.dot:first-child{margin-left:0}
+.wrap{padding:14px 20px 28px;max-width:1400px;margin:0 auto}
+.top{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+h1{font-size:19px;margin:0;letter-spacing:-.3px}
+.subtitle{color:var(--muted);font-weight:600;font-size:13px}
+.badge-lock{border:1px solid #34507a;background:#16263c;color:var(--blue);border-radius:999px;padding:3px 10px;font-weight:750;font-size:11px;white-space:nowrap}
+.controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:8px 0;margin:10px 0}
+.control{display:flex;align-items:center;gap:6px}
+.control label{color:var(--muted);font-size:11px;font-weight:700;white-space:nowrap}
+.control input,.control select{height:30px;border:1px solid var(--line);border-radius:7px;background:var(--panel);color:var(--text);padding:0 8px;font-size:13px}
+.control input{min-width:210px}
+.control.check{color:var(--muted);font-weight:700;cursor:pointer}
+.control.check input{width:16px;height:16px;min-width:0;padding:0;margin:0;flex:none}
+.chips{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.chip{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:3px 9px;font-size:11px;color:var(--muted);white-space:nowrap}
+.chip b{color:var(--text)}
+.legend{color:var(--muted);font-size:12px;margin:0 0 6px}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin:0 4px 0 12px}.dot:first-child{margin-left:0}
 .d-candidate{background:var(--candidate)}.d-shortlisted{background:var(--shortlisted)}.d-contacted{background:var(--contacted)}.d-chosen{background:var(--chosen)}.d-rejected{background:var(--rejected)}
-.tablebox{border:1px solid var(--line);border-radius:12px;overflow:auto;max-height:76vh;background:var(--panel);margin-top:10px}
-table{border-collapse:collapse;width:100%;min-width:900px}
-th{position:sticky;top:0;z-index:2;background:var(--panel2);color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.4px;text-align:left;padding:10px;white-space:nowrap}
-th[data-sort]{cursor:pointer}td{padding:12px 10px;border-top:1px solid var(--line);vertical-align:top}
+.tablebox{border:1px solid var(--line);border-radius:10px;background:var(--panel);margin-bottom:14px}
+table{border-collapse:separate;border-spacing:0;width:100%;min-width:900px}
+th{position:sticky;top:0;z-index:2;background:var(--panel2);color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.4px;text-align:left;padding:8px 10px;white-space:nowrap}
+th[data-sort]{cursor:pointer}td{padding:8px 10px;border-top:1px solid var(--line);vertical-align:top}
 a{color:var(--blue);font-weight:750;text-decoration:none}a:hover{text-decoration:underline}
 .name{min-width:230px;max-width:300px}.small{color:var(--muted);font-size:12px;margin-top:3px}
 .price,.score{font-size:15px;font-weight:800;white-space:nowrap}.rating{font-weight:800;white-space:nowrap}.muted{color:var(--muted)}
@@ -37,25 +39,28 @@ a{color:var(--blue);font-weight:750;text-decoration:none}a:hover{text-decoration
 .tag{display:inline-block;background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:2px 6px;margin:0 4px 4px 0;font-size:11px;color:#c9d3df}
 .ev{max-width:320px;font-size:12px;color:#c9d3df;margin-bottom:5px}.ev .etype{color:var(--purple);font-weight:700}
 .risk{color:var(--amber);font-size:12px;max-width:230px;margin-bottom:3px}
-.footer{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;color:var(--muted);font-size:12px;margin-top:12px}.footer code{color:#c9d3df}
+.criteria,.note{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:10px 14px;margin:0 0 10px}
+.criteria h2{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin:0 0 6px}
+.criteria ul{margin:0;padding-left:18px}.note{color:var(--muted)}.note strong{color:var(--amber)}
+.footer{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;color:var(--muted);font-size:12px;margin:0 0 14px}.footer code{color:#c9d3df}
 </style>
 </head>
 <body>
 <main class="wrap">
-<div class="top"><div><h1>{{TITLE}}</h1><div class="subtitle" id="subtitle"></div></div><div class="badge-lock">{{BADGE}}</div></div>
-<section class="metrics" id="metrics"></section>
-<section class="criteria"><h2>Criteria</h2><ul id="criteria"></ul></section>
+<div class="top"><h1>{{TITLE}}</h1><span class="subtitle" id="subtitle"></span><span class="badge-lock">{{BADGE}}</span></div>
 <section class="controls">
 <div class="control"><label for="status">Status</label><select id="status"><option value="all">All statuses</option></select></div>
 <div class="control"><label for="area">Area</label><select id="area"><option value="all">Any area</option></select></div>
 <div class="control"><label for="tag">Tag</label><select id="tag"><option value="all">Any tag</option></select></div>
 <div class="control"><label for="search">Search</label><input id="search" placeholder="Name, area, tag, evidence, note"></div>
 <label class="control check" for="starredOnly"><input type="checkbox" id="starredOnly"><span id="starredLabel">★ Starred only</span></label>
+<div class="chips" id="metrics"></div>
 </section>
-<div id="notes"></div>
 <div class="legend"><span class="dot d-candidate"></span>Candidate <span class="dot d-shortlisted"></span>Shortlisted <span class="dot d-contacted"></span>Contacted <span class="dot d-chosen"></span>Chosen <span class="dot d-rejected"></span>Rejected</div>
 <div class="tablebox"><table><thead><tr id="slhead"></tr></thead><tbody id="slbody"></tbody></table></div>
 <div class="footer"><span>{{FOOTER}}</span><span id="count"></span></div>
+<section class="criteria"><h2>Criteria</h2><ul id="criteria"></ul></section>
+<div id="notes"></div>
 </main>
 <script>
 const SL={{SHORTLIST_JSON}};
@@ -142,10 +147,10 @@ if(n)statusSel.insertAdjacentHTML('beforeend','<option value="'+s+'">'+STATUS[s]
 [...new Set(items.flatMap((r)=>r._tags))].sort().forEach((t)=>tagSel.insertAdjacentHTML('beforeend','<option value="'+esc(t)+'">'+esc(t)+'</option>'));
 
 q('subtitle').textContent=SL.subtitle||'';
-q('metrics').innerHTML=[['Items',items.length],['Shortlisted',items.filter((r)=>r._status==='shortlisted').length],
-['Chosen',items.filter((r)=>r._status==='chosen').length],['Rejected',items.filter((r)=>r._status==='rejected').length],
-['★ Starred',items.filter((r)=>r.starred).length]]
-.map(([l,n])=>'<div class="metric"><strong>'+n+'</strong><span>'+esc(l)+'</span></div>').join('');
+q('metrics').innerHTML=[['items',items.length],['shortlisted',items.filter((r)=>r._status==='shortlisted').length],
+['chosen',items.filter((r)=>r._status==='chosen').length],['rejected',items.filter((r)=>r._status==='rejected').length],
+['★ starred',items.filter((r)=>r.starred).length]]
+.map(([l,n])=>'<span class="chip"><b>'+n+'</b> '+esc(l)+'</span>').join('');
 q('criteria').innerHTML=list(SL.criteria).map((c)=>'<li>'+esc(c)+'</li>').join('');
 q('notes').innerHTML=list(SL.notes).map((n)=>'<div class="note">'+esc(n)+'</div>').join('');
 

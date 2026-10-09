@@ -90,6 +90,11 @@ class ShortlistBuilderTest(unittest.TestCase):
         with self.assertRaises(build_shortlist.ShortlistError):
             self.build(data)
 
+    def test_table_precedes_criteria_section(self) -> None:
+        # The page leads with the table; criteria must move below it.
+        html = self.build(load_sample())
+        self.assertLess(html.index('id="slbody"'), html.index('id="criteria"'))
+
 
 class ShortlistTemplateTest(unittest.TestCase):
     def test_template_works_offline_no_network_references(self) -> None:
