@@ -14,10 +14,10 @@ Classify with plain git, then act only on what is safe:
 - **merged + clean** (`git merge-base --is-ancestor <branch> main` exits 0 and `git status --porcelain` is empty in the worktree) → `git worktree remove <path>`, `git branch -d <branch>`.
 - **dirty, unmerged, or ACTIVE** → keep; report the reason. Never delete or force.
 - Remote branch: delete only if merged and its name starts with `wt/`; report all others.
-- Orphan `wt-*` directory not registered with git: report path and size; delete only if empty.
+- Orphan directory (not in `git worktree list` and `git -C <dir> rev-parse --git-common-dir` equals this repo's common dir): report path and size; delete only if empty.
 - Primary checkout: report only.
 
-Finish with `git worktree prune` and `git fetch --prune`. Measure `du -sk` of sibling `wt-*` before and after. Never rewrite history, force-push, use `git branch -D`, or touch `main`.
+Finish with `git worktree prune` and `git fetch --prune`. Measure `du -sk` of this repo's worktrees (from `git worktree list`, primary excluded) before and after. Never rewrite history, force-push, use `git branch -D`, or touch `main`.
 
 Output:
 

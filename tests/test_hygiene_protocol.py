@@ -28,6 +28,27 @@ def is_clean(worktree):
     return git(worktree, "status", "--porcelain").stdout.strip() == ""
 
 
+# The documented scoped measurement: this repo's worktrees only, primary skipped.
+DOCUMENTED_SIZE_CMD = (
+    "git worktree list --porcelain | sed -n 's/^worktree //p' "
+    "| tail -n +2 | xargs -I{} du -sk {} 2>/dev/null"
+)
+
+
+def documented_sizes(repo):
+    """Run the documented one-liner; returns its stdout (paths + sizes, or empty)."""
+    return subprocess.run(
+        DOCUMENTED_SIZE_CMD, cwd=repo, shell=True, capture_output=True, text=True
+    ).stdout
+
+
+def common_git_dir(repo):
+    """Resolved common git dir; an orphan of this repo shares this repo's."""
+    out = git(repo, "rev-parse", "--git-common-dir").stdout.strip()
+    path = Path(out)
+    return (path if path.is_absolute() else repo / path).resolve()
+
+
 class HygieneProtocolTests(unittest.TestCase):
     def setUp(self):
         self.tmp = Path(tempfile.mkdtemp(prefix="epicspine-hygiene-"))
@@ -90,12 +111,42 @@ class HygieneProtocolTests(unittest.TestCase):
             git(self.repo, "worktree", "remove", str(dirty), check=False).returncode, 0
         )
 
-    def test_disk_check_covers_sibling_worktrees(self):
-        self.worktree("one")
-        measured = subprocess.run(
-            ["du", "-sk", "wt-one"], cwd=self.tmp, capture_output=True, text=True
-        ).stdout.strip()
-        self.assertTrue(measured.endswith("wt-one"))
+    def test_disk_check_covers_this_repos_worktrees(self):
+        mine = self.worktree("one")
+        measured = documented_sizes(self.repo)
+        self.assertIn(str(mine.resolve()), measured)
+
+    def test_scope_excludes_foreign_repo_worktrees(self):
+        mine = self.worktree("mine")
+
+        # A second, unrelated repo with its own worktree in the same parent.
+        other = self.tmp / "other"
+        other.mkdir()
+        git(other, "init", "-b", "main")
+        git(other, "config", "user.email", "test@example.com")
+        git(other, "config", "user.name", "Other Test")
+        (other / "README.md").write_text("other\n")
+        git(other, "add", "README.md")
+        git(other, "commit", "-m", "base")
+        foreign = self.tmp / "wt-foreign"
+        git(other, "worktree", "add", "-b", "wt/foreign", str(foreign), "main")
+
+        # Documented size command measures this repo's worktree, never the foreign one.
+        measured = documented_sizes(self.repo)
+        self.assertIn(str(mine.resolve()), measured)
+        self.assertNotIn(str(foreign.resolve()), measured)
+
+        # Orphan rule: only unregistered *and* sharing this repo's common git dir.
+        self.assertNotIn(str(foreign.resolve()), git(self.repo, "worktree", "list").stdout)
+        self.assertNotEqual(common_git_dir(foreign), common_git_dir(self.repo))
+
+        # A stale worktree of this repo that git no longer lists still resolves to
+        # this repo's common dir, so the documented orphan rule does include it.
+        orphan = self.worktree("orphan")
+        (orphan / "later.txt").write_text("later\n")
+        (self.repo / ".git" / "worktrees" / "wt-orphan" / "gitdir").unlink()
+        self.assertNotIn(str(orphan.resolve()), git(self.repo, "worktree", "list").stdout)
+        self.assertEqual(common_git_dir(orphan), common_git_dir(self.repo))
 
 
 if __name__ == "__main__":

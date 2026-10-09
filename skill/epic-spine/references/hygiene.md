@@ -10,7 +10,7 @@ The manager checks at bind and at end of each task. Dispatch when any trigger ho
 
 - `Last sweep` is absent or older than 7 days.
 - More than one worktree, or more than one local branch besides `main`.
-- Sibling `wt-*` directories exceed 500 MB total.
+- This repo's worktrees (paths from `git worktree list`, primary checkout excluded) exceed 500 MB total.
 - The user asks.
 
 Never sweep while integrating; pass the sweep the list of ACTIVE worktrees to skip.
@@ -18,7 +18,7 @@ Never sweep while integrating; pass the sweep the list of ACTIVE worktrees to sk
 ```sh
 git worktree list
 git branch --list
-du -sk ../wt-* 2>/dev/null
+git worktree list --porcelain | sed -n 's/^worktree //p' | tail -n +2 | xargs -I{} du -sk {} 2>/dev/null
 ```
 
 ## Sweep Classification
@@ -31,8 +31,10 @@ Classify every worktree and local branch, then act only on what is safe:
 | Clean | `git status --porcelain` in the worktree is empty | required with merged |
 | Dirty, unmerged, or active | either test fails, or the worktree is ACTIVE | keep and report; never delete or force |
 | Remote branch | merged and name starts with `wt/` | delete it; report every other remote |
-| Orphan `wt-*` directory | not registered with git | report path and size; delete only if empty |
+| Orphan directory | not in `git worktree list` **and** `git -C <dir> rev-parse --git-common-dir` equals this repo's `git rev-parse --git-common-dir` | report path and size; delete only if empty |
 | Primary checkout | always | report only; never clean |
+
+Only paths from this repo's `git worktree list` are treated as this repo's worktrees; directories belonging to other repos that share the parent folder are never examined, reported, or touched. `git worktree prune` handles registered-but-missing paths.
 
 Remove in this order: `git worktree remove <path>`, then `git branch -d <branch>`, then `git worktree prune` and `git fetch --prune`. Never rewrite history, force-push, use `git branch -D`, or touch `main`.
 

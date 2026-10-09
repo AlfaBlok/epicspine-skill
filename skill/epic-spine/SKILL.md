@@ -239,7 +239,7 @@ Use these gates:
 
 ## Repo Hygiene
 
-`main` stays clean because a worker's worktree and local branch are removed right after the manager integrates it. The manager also dispatches a cheap **sweep** worker as backstop: it reclaims finished `wt-*` worktrees and local branches, or reports what needs a decision. Keep one `Last sweep: YYYY-MM-DD, <result>` line in the root spine; re-dispatch when it is absent or over 7 days old.
+`main` stays clean because a worker's worktree and local branch are removed right after the manager integrates it. The manager also dispatches a cheap **sweep** worker as backstop: it reclaims this repo's finished worktrees and local branches, or reports what needs a decision. Keep one `Last sweep: YYYY-MM-DD, <result>` line in the root spine; re-dispatch when it is absent or over 7 days old.
 
 A sweep removes only worktrees whose commits are all reachable from `main` and whose tree is clean; dirty, unmerged, or active work is kept and reported, never forced. Never sweep while integrating. Read `references/hygiene.md`; paste `assets/sweep-brief.md` to dispatch one.
 

@@ -314,7 +314,7 @@ The integration gates are precise:
 
 ## Hygiene
 
-Worktrees cost disk, so cleanup is normal operations, not a separate chore. The delivery manager removes a worker's worktree and local branch as soon as it integrates the work, and dispatches a cheap **sweep** worker as backstop to reclaim merged, clean `wt-*` worktrees and branches and to report anything needing a decision. The manager records one `Last sweep: YYYY-MM-DD, <result>` line in the root spine and sweeps again when it is absent or older than 7 days. A sweep never forces, never rewrites history, and never touches `main`. See [hygiene.md](skill/epic-spine/references/hygiene.md).
+Worktrees cost disk, so cleanup is normal operations, not a separate chore. The delivery manager removes a worker's worktree and local branch as soon as it integrates the work, and dispatches a cheap **sweep** worker as backstop to reclaim this repo's merged, clean worktrees and branches and to report anything needing a decision. The manager records one `Last sweep: YYYY-MM-DD, <result>` line in the root spine and sweeps again when it is absent or older than 7 days. A sweep never forces, never rewrites history, and never touches `main`. See [hygiene.md](skill/epic-spine/references/hygiene.md).
 
 ## Human Gates And Recovery
 
