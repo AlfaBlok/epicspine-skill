@@ -467,5 +467,6 @@ Integration rule: every dispatched worker/tester uses a dedicated branch and sep
 - Start every paste-ready worker prompt with `assets/dispatch-prompt-preamble.md` and store the completed prompt in the spine appendix.
 - Read `references/operating-model.md` when changing the workflow structure itself or when the existing spine is inconsistent.
 - Read `references/roles-and-dispatch.md` to bind an agent as delivery manager or worker and to resolve the mechanism, provider, model, reasoning, isolation, parallelism, and review profile.
+- Read `references/learnings.md` when recording, proposing, navigating, or pruning operating learnings.
 - Read `references/book-companion.md` when installing, repairing, validating, or materially extending an active Book companion.
 - Run `scripts/validate_spine.py <spine.md>` after creating or materially restructuring a spine. Use `--strict` for non-template project spines. Pass the affected local spine files together with `--graph` to check parent/root links, reciprocal registration, cycles, and multiple-root policy. Validation checks recorded structure and evidence, not remote GitHub truth.
