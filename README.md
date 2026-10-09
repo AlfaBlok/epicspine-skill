@@ -51,6 +51,16 @@ When published with GitHub Pages, the deck lives at:
 
 https://alfablok.github.io/epicspine-skill/
 
+## Upgrading
+
+Ask your agent to "upgrade epic-spine", or run the updater from the installed copy:
+
+```sh
+python3 ~/.agents/skills/epic-spine/scripts/skill_update.py upgrade
+```
+
+`status` compares the installed copy's pinned commit against the source's latest `main` without cloning; `upgrade` shallow-clones, verifies the tree against `MANIFEST.sha256`, swaps atomically (one `.bak`), and rewrites the pin. The default source is this repository. The delivery manager runs `status` at bind and follows `Skill updates: auto|manual|off` (default `auto`). See [skill-update.md](skill/epic-spine/references/skill-update.md).
+
 ## Why This Exists
 
 AI agents are powerful, but they lose the plot easily:

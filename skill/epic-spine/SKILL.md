@@ -140,6 +140,16 @@ Call the pattern **EpicSpine** in conversation. Use `epic-spine` for files, labe
 10. **Act in role.** Continue from the authoritative state (or reconciled legacy cursor) and apply the relevant role protocol.
 11. **Write back and roll up.** Update detailed work in the issue, the bound spine's durable state and cursor if steward, and a compact direct-child rollup in the parent through its steward. Land durable user-facing knowledge in the Book leaf and owning chapter when the Book trigger applies.
 
+## Skill Freshness
+
+At bind, the delivery manager runs `scripts/skill_update.py status` (cheap: at most one remote check per window). Set `Skill updates:` in the root spine or `AGENTS.md`:
+
+- `auto` (default): when stale and upgradeable, run `upgrade --yes` between tasks, then report the change in ≤ 3 lines.
+- `manual`: report staleness and ask.
+- `off`: never check.
+
+`linked`/`unknown` get one short line and no action. Record `EpicSpine skill: <version> @ <short sha>, checked <YYYY-MM-DD>` in the root spine. Read `references/skill-update.md` for the process and trust model.
+
 ## Spine Creation And Registration
 
 Creating a spine is a relationship change, not just a file write:

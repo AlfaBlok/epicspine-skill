@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased — skill self-update and freshness
+
+- Adds `scripts/skill_update.py` (stdlib-only): `status` reports `fresh`/`stale`/`unpinned`/`unknown`/`linked` from a `<skill-dir>.SOURCE` pin, using one network check per window (default 7 days, no clone); `upgrade --yes` shallow-clones, verifies the tree byte-for-byte against `MANIFEST.sha256`, swaps atomically with one `.bak`, and rewrites the pin.
+- Adds `references/skill-update.md` — the simple upgrade answer, status vocabulary, the `Skill updates: auto|manual|off` policy, the repo-level `EpicSpine skill:` record, vendored-copy handling, and the trust model.
+- Adds `VERSION` (CalVer `YYYY.MM.DD`, bumped when a change lands on `main`; freshness is decided by commit and manifest, not the label).
+- Adds the `## Skill Freshness` section to `SKILL.md` and `## Upgrading` to the README.
+- Adds `tests/test_skill_update.py`, including a proof that the Python manifest equals `tools/epicspine-manifest.sh`.
+
 ## Unreleased — repo hygiene sweeps
 
 - Adds a repo-hygiene protocol: the delivery manager removes a worker's worktree and local branch right after integrating, and dispatches a cheap **sweep** worker as backstop for what slipped through.
