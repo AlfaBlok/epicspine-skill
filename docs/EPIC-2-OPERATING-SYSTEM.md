@@ -28,7 +28,7 @@ Next action: idle; reopen the ledger to start new work.
 Source revision: e48e6fd
 Verified at: 2026-10-09
 Last sweep: 2026-10-09, main clean
-EpicSpine skill: 2026.10.09 @ e48e6fd; installed hub fresh, checked 2026-10-09
+EpicSpine skill: 2026.10.09 @ 6e827e8; installed hub fresh, checked 2026-10-09
 
 ## Mission
 
