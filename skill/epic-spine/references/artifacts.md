@@ -13,6 +13,8 @@ python3 -m http.server "$PORT" --bind 127.0.0.1 --directory <artifact-dir> &
 
 Record `url`, `port`, `pid`, and `directory`. Reuse a running server for the same directory instead of starting another.
 
+Serve only the artifact directory, never the repository root — serving the root exposes `.git` and the working tree. The port probe races with the bind: if the server exits with `Address already in use`, re-run the probe and retry.
+
 ## Verify before reporting
 
 ```sh

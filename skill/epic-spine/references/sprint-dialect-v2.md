@@ -1,7 +1,5 @@
 # Sprint Dialect v2
 
-## Sprint Dialect v2 — Bounded Human-Verifiable Delivery
-
 Use v2 when authoring a sprint with the SHIP/HARDEN workflow; a small compact epic may choose v1 explicitly. Declare `Spine dialect: v2` and `Acceptance surface: browser|cli|library|infrastructure|documentation` (choose one value). Use the primary surface and explicitly list any additional surfaces required by acceptance. Existing v1 spines remain readable and executable. Undeclared spines default to v1; strict validation enforces the selected dialect, not an implicit upgrade. A v2 spine is a budget for one observable increment, not a wish list for a perfect end state.
 
 ### Journey-First SHIP And HARDEN

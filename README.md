@@ -8,7 +8,7 @@ This repository is the single development home for the skill. Any other copy of 
 
 ## Defaults
 
-The kernel's **Default Behaviors** card (`skill/epic-spine/SKILL.md`) is the automatic default for every task: bind a base role; the manager coordinates and never implements; stay in `main` with worker `wt/<task>` worktrees; read the root `Operating Learnings` **Always** and report `Learnings in force:`; run `scripts/skill_update.py status` at bind (`Skill updates: auto`); remove a worker's worktree and branch after integrating and sweep when stale; serve HTML/visual artifacts as `127.0.0.1` URLs. Read it in full before any task; you or the root spine may override it.
+The kernel's **Default Behaviors** card (`skill/epic-spine/SKILL.md`) is the automatic default for every task; read it in full before any task, since you or the root spine may override it.
 
 Per-topic detail and pointers live in the references: [roles-and-dispatch](skill/epic-spine/references/roles-and-dispatch.md) · [role-protocols](skill/epic-spine/references/role-protocols.md) · [git-doctrine](skill/epic-spine/references/git-doctrine.md) · [learnings](skill/epic-spine/references/learnings.md) · [hygiene](skill/epic-spine/references/hygiene.md) · [artifacts](skill/epic-spine/references/artifacts.md).
 
@@ -319,16 +319,37 @@ This repo includes the installable Codex skill under `skill/epic-spine/`:
 skill/
   epic-spine/
     SKILL.md
+    VERSION
     agents/openai.yaml
     assets/
       book-companion-contract.md
+      compact-spine-template.md
       dispatch-prompt-preamble.md
       epic-spine-template.md
       github-issue-template.md
+      sweep-brief.md
     references/
+      artifacts.md
       book-companion.md
+      compact-state.md
+      dispatch-prompts.md
+      execution-rollups.md
+      git-doctrine.md
+      hygiene.md
+      learnings.md
       operating-model.md
+      role-protocols.md
+      roles-and-dispatch.md
+      skill-update.md
+      spine-creation.md
+      spine-model.md
+      sprint-dialect-v2.md
+      structural-validation.md
+      ticket-backends.md
     scripts/
+      migrate_spine.py
+      rollup_spine.py
+      skill_update.py
       validate_spine.py
 ```
 

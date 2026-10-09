@@ -4,8 +4,10 @@ Ratchet policy: budgets may be LOWERED freely; a budget may be RAISED only with 
 recorded reason (a comment here or in the commit message). Pre-existing files are
 pinned to their line count rounded up to the next multiple of 5; grandfathered
 files that already exceed the new-file cap are pinned at their exact current size
-and may only shrink. New references and assets are capped at 200 lines and
-`SKILL.md` at 150, so a cold agent never loads a runaway kernel.
+and may only shrink. Rounded budgets leave slack: a file below its rounded budget
+is expected, so a passing check does not mean the file sits exactly at the limit.
+New references, assets, and scripts are capped at 200 lines and `SKILL.md` at 150,
+so a cold agent never loads a runaway kernel.
 """
 from __future__ import annotations
 
@@ -23,8 +25,9 @@ NEW_FILE_MAX = 200
 ALWAYS_MAX = 12
 
 # Pre-existing files: budget = current line count rounded up to the next 5.
-# operating-model.md and epic-spine-template.md are grandfathered (already over
-# the 200-line new-file cap) and pinned exactly: they may only shrink.
+# operating-model.md, epic-spine-template.md, and validate_spine.py are
+# grandfathered (already over the 200-line new-file cap) and pinned exactly: they
+# may only shrink. The other scripts are pre-existing and pinned to rounded sizes.
 EXISTING_BUDGETS = {
     "references/book-companion.md": 155,
     "references/compact-state.md": 60,
@@ -43,6 +46,10 @@ EXISTING_BUDGETS = {
     "assets/epic-spine-template.md": 292,
     "assets/github-issue-template.md": 85,
     "assets/sweep-brief.md": 25,
+    "scripts/migrate_spine.py": 170,
+    "scripts/rollup_spine.py": 398,
+    "scripts/skill_update.py": 438,
+    "scripts/validate_spine.py": 1032,
 }
 
 # Files authored by the lean-kernel change: hard-capped instead of pinned.
@@ -76,8 +83,8 @@ class BudgetTests(unittest.TestCase):
         self.assertLessEqual(line_count(SKILL), SKILL_MAX)
 
     def test_new_references_within_cap(self) -> None:
-        # Any reference/asset not pinned in EXISTING_BUDGETS is "new": hard-capped.
-        for folder in ("references", "assets"):
+        # Any reference/asset/script not pinned in EXISTING_BUDGETS is "new": capped.
+        for folder in ("references", "assets", "scripts"):
             for path in sorted((SKILL_DIR / folder).glob("*")):
                 if not path.is_file():
                     continue
@@ -132,11 +139,17 @@ class BudgetTests(unittest.TestCase):
         self.assertGreaterEqual(checked, 1, "no root Operating Learnings Always block found")
 
     def test_skill_md_links_every_skill_file(self) -> None:
-        text = SKILL.read_text(encoding="utf-8")
+        # No orphans: each skill file must be an exact backticked token in a table
+        # row, not merely a substring anywhere in the kernel.
+        rows = "\n".join(
+            line
+            for line in SKILL.read_text(encoding="utf-8").splitlines()
+            if line.lstrip().startswith("|")
+        )
         missing = [
             str(path.relative_to(SKILL_DIR))
             for path in skill_files()
-            if str(path.relative_to(SKILL_DIR)) not in text
+            if f"`{path.relative_to(SKILL_DIR)}`" not in rows
         ]
         self.assertEqual([], missing, f"SKILL.md does not link: {missing}")
 

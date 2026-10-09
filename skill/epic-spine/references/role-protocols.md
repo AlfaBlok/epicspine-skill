@@ -84,7 +84,7 @@ Use when decomposing an epic, clarifying scope, or assigning next work.
 - Record unresolved questions in the spine instead of burying them in chat.
 - A parent or portfolio planner may propose changes to child spines, but should not edit child spines unless explicitly bound to them or granted multi-spine write authority.
 - A planner may dispatch work while planning. After scope and acceptance are stable, the epic worker may decompose and dispatch additional tickets inside that accepted scope without becoming the product planner.
-- Before authoring, follow Port-First Authoring below: bounded relevant discovery, recorded evidence and uncertainty, and a justified PORT/DUPLICATE/BUILD method for each deliverable and ticket.
+- Before authoring, follow [Port-First Authoring](sprint-dialect-v2.md#port-first-authoring): bounded relevant discovery, recorded evidence and uncertainty, and a justified PORT/DUPLICATE/BUILD method for each deliverable and ticket.
 - When a human is about to dispatch, produce a complete paste-ready prompt as a versioned spine artifact using `assets/dispatch-prompt-preamble.md`; include binding, mission, terminal state, Human Gates, and end with `Go.` Advice without the usable prompt is incomplete.
 
 #### Backlog And Dispatch

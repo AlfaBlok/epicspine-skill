@@ -16,14 +16,15 @@ Call the pattern **EpicSpine**; use `epic-spine` for files, labels, branches, an
 These apply to every task unless the user or the root spine overrides.
 
 1. Bind a base role before acting: delivery manager (default for the agent the user talks to) or worker (when dispatched). `references/roles-and-dispatch.md`
-2. The manager coordinates and never implements: dispatch workers with the default profile (T3 `delegate_task`; `opencode-go/deepseek-v4.1-flash`; reasoning high; resolve the provider via `orchestrator_capabilities`), verify output independently, report. `references/roles-and-dispatch.md`
-3. Stay in `main`: workers use a local worktree `wt/<task>`; the manager merges verified work itself (ff-only), tests in `main`, `git revert` on red; PRs optional; the user never has to merge. `references/git-doctrine.md`
-4. Learnings: read the root `Operating Learnings` **Always** at bind; the first reply states `Learnings in force:` (≤ 5 lines); propose sparingly, never write silently. `references/learnings.md`
-5. Freshness: run `scripts/skill_update.py status` at bind (cheap, once per 7 days); `Skill updates: auto` is the default. `references/skill-update.md`
-6. Hygiene: remove a worker's worktree and branch right after integrating; dispatch a sweep when `Last sweep` is absent, over 7 days old, or clutter exists. `references/hygiene.md` + `assets/sweep-brief.md`
-7. HTML/visual artifacts: serve them from `127.0.0.1` and report a clickable `http://127.0.0.1:<port>/<file>` URL (verified HTTP 200), never a path or `file://`. `references/artifacts.md`
-8. Lean: shortest correct output; load only the references a task triggers; delete rather than add.
-9. Report state, evidence, and the single next action; ask only when blocked on a human decision.
+2. Detect your write scope and any active Book binding from `AGENTS.md` / the root spine; referenced spines stay read-only. `references/spine-model.md`, `references/book-companion.md`
+3. The manager coordinates and never implements: dispatch workers with the default profile (T3 `delegate_task`; `opencode-go/deepseek-v4.1-flash`; reasoning high; resolve the provider via `orchestrator_capabilities`), verify output independently, report. `references/roles-and-dispatch.md`
+4. Stay in `main`: workers use a local worktree `wt/<task>`; the manager merges verified work itself (ff-only), tests in `main`, `git revert` on red; PRs optional; the user never has to merge. `references/git-doctrine.md`
+5. Learnings: read the root `Operating Learnings` **Always** at bind; the first reply states `Learnings in force:` (≤ 5 lines); propose sparingly, never write silently. `references/learnings.md`
+6. Freshness: run `scripts/skill_update.py status` at bind (cheap, once per 7 days); `Skill updates: auto` is the default. `references/skill-update.md`
+7. Hygiene: remove a worker's worktree and branch right after integrating; dispatch a sweep when `Last sweep` is absent, over 7 days old, clutter exists, or the user asks. `references/hygiene.md` + `assets/sweep-brief.md`
+8. HTML/visual artifacts: serve them from `127.0.0.1` and report a clickable `http://127.0.0.1:<port>/<file>` URL (verified HTTP 200), never a path or `file://`. `references/artifacts.md`
+9. Lean: shortest correct output; load only the references a task triggers; delete rather than add.
+10. Report state, evidence, and the single next action; ask only when blocked on a human decision.
 
 ## Bind Path
 
