@@ -12,7 +12,7 @@ Parent spine: none
 Additional root rationale: n/a
 Integration branch: main
 Integration policy: main-direct
-Dispatch profile: default
+Dispatch profile: native subagent (harness's own Agent tool), model Sonnet 5.5 (claude-sonnet-5-5), own worktree
 Skill updates: auto
 
 ## Current State
@@ -23,8 +23,8 @@ Last attempted: 2026-10-09 comparison adoption complete: L-9..L-11 landed (a8682
 Result: all four agreed steps landed; main at e48e6fd; 120 tests, agents_block check, strict validation, manifest and skill status all green.
 Evidence: [main @ e48e6fd](https://github.com/AlfaBlok/epicspine-skill/commit/e48e6fd) and [CI runs](https://github.com/AlfaBlok/epicspine-skill/actions)
 Waiting on: none
-Approved work: none.
-Next action: idle; reopen the ledger to start new work.
+Approved work: dispatch-defaults ticket (vanilla shipped default vs repo profile).
+Next action: verify and integrate the dispatch-defaults worker.
 Source revision: e48e6fd
 Verified at: 2026-10-09
 Last sweep: 2026-10-09, main clean
@@ -44,7 +44,7 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 
 - L-1 | any task | Keep everything lean: shortest correct text/code; delete before adding | user core value | confirmed 2026-10-09
 - L-2 | any task | Delivery manager coordinates and never implements; dispatch workers | user doctrine | confirmed 2026-10-09
-- L-3 | dispatching | Default workers, reviewers and researchers: T3 delegate_task, OpenCode opencode-go/deepseek-v4.1-flash, reasoning high; never pick another model unless the user asks; independence comes from fresh context | user rule; manager broke it 2026-10-09 | confirmed 2026-10-09
+- L-3 | dispatching | Workers, reviewers and researchers use this spine's `Dispatch profile:` (native subagent, Sonnet 5.5); not T3 delegate_task; never pick another model unless the user asks; independence comes from fresh context | user profile change 2026-10-10 | confirmed 2026-10-10
 - L-4 | integrating | Stay in main; manager merges verified work ff-only, tests in main, reverts on red | user should never merge | confirmed 2026-10-09
 - L-5 | HTML output | Serve on http://127.0.0.1:<port>/ and report that link, never a file path | clickable, recognised | confirmed 2026-10-09
 - L-6 | binding | First reply names role and `Learnings in force:`; propose new learnings sparingly | user wants quick bind | confirmed 2026-10-09
@@ -74,6 +74,7 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 | draft | Ticket worker | worker B (default profile) | Adopt L-9..L-11 doctrine + extend tests/smoke | draft | worker A | wt/adopt-l9-l11 | 3108192 | integrated on a868281 (rebased over 7d617c2); 136 tests, strict validate, block check, manifest green; smoke 4/4 after P2 test rewrite (a694ae2) | 2026-10-09 | done |
 | draft | Ticket worker | worker C (default profile) | Shortlist-by-default: JSON + generated sortable/filterable HTML as the default deliverable when a shortlist is key (port from abnb_agent SHORTLIST_STANDARD, check idea_scraper) | draft | none (SKILL.md/MANIFEST merge serialized after B) | wt/shortlist-default | 5fffe5a | dispatched | 2026-10-09 | verify diff + tests + served demo URL, ff-merge after B |
 | draft | Ticket worker | worker D (default profile) | Shortlist template: table-first compact layout (user feedback on demo page) | draft | worker C | wt/shortlist-table-first | a868281 | integrated (ff-only, 7781d8e); 137 tests + strict validate + agents_block + manifest green; screenshot reviewed; demo re-served 200; worktree removed; installed skill upgraded | 2026-10-09 | done |
+| draft | Ticket worker | worker E (Sonnet 5.5 subagent) | Vanilla dispatch default: shipped skill drops the author's hardwired profile; default becomes a lower-cost harness-native subagent; ask once when unset and record the answer as the root spine `Dispatch profile:`; AGENTS.md block defers to it | draft | none | wt/dispatch-defaults | 8c6eef8 | dispatched | 2026-10-10 | verify diff + tests, ff-merge |
 
 ## Decisions
 
@@ -90,6 +91,7 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 | 2026-10-09 | accepted | Serialize MANIFEST-changing merges | One writer per spine and one MANIFEST merge at a time: agents-block landed first, kernel rebases second; the second merge regenerates MANIFEST. | thread collision a0380f46 vs 441c3c64 | Two branches touch MANIFEST |
 | 2026-10-09 | accepted | Comparison adoption fork | Adopt L-9 (resolve decisions before dispatch), L-10 (ready frontier), L-11 (two-axis verification) in our own words from the Pocock/poteto comparison. Guarded by tags checkpoint/pre-adoption (b620d50) and checkpoint/post-adoption, plus contract tests and a dry-run smoke test. Revert = `git revert b620d50..HEAD`, then re-sync the installed skill; never reset public main. | user decision 2026-10-09; thread a0380f46 | Smoke or contract tests regress |
 | 2026-10-09 | accepted | L-9 asks on missing details | L-9 stays as written: when an instruction leaves out a detail, the agent asks one clear question with a recommendation before dispatching. The P2 smoke prompt was a bad test (an unspecified typo), not a rule regression; P2 is rewritten as a fully specified edit and the ask-first behavior stays covered by P4. | user decision 2026-10-09 | Over-asking becomes a recurring complaint |
+| 2026-10-10 | accepted | Shipped default vs repo profile | The public skill ships a vague vanilla default (lower-cost harness-native worker); a user's profile is stored per repo as the root spine `Dispatch profile:` and wins thereafter. This repo's profile: native subagent, Sonnet 5.5. Supersedes the 2026-10-09 hardwired DeepSeek default. | user decision 2026-10-10 | User changes profile |
 
 ## Spine Map
 
