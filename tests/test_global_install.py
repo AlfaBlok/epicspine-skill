@@ -133,7 +133,8 @@ class FirstMessageTest(unittest.TestCase):
     def test_both_blocks_bootstrap_on_first_message(self) -> None:
         for name in ("agents-block.md", "global-block.md"):
             text = (SCRIPT.parent.parent / "assets" / name).read_text(encoding="utf-8")
-            self.assertIn('even on "hi"', text, name)
+            self.assertIn("whatever the message", text, name)
+            self.assertIn("`Delivery manager · EpicSpine · Learnings in force:", text, name)
             self.assertIn("What do you want?", text, name)
             self.assertIn("≤4 lines", text, name)
 
