@@ -64,7 +64,7 @@ class DefaultBehaviorsTest(unittest.TestCase):
 
     def test_d_binding_names_role_and_learnings(self) -> None:
         block = self.agents_block().lower()
-        self.assertIn("first reply names role", block)
+        self.assertIn("reply in ≤4 lines: role (default: delivery manager)", block)
         self.assertIn("learnings in force:", block)
 
     def test_e_always_learnings_l1_to_l8_in_order(self) -> None:
