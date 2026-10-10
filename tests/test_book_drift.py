@@ -112,6 +112,43 @@ class BookDriftTests(unittest.TestCase):
         )
         self.assertGreater(checked, 0, "no path-like <code> tokens were checked")
 
+    def test_counter_total_matches_slide_count(self) -> None:
+        text = book_text()
+        slides = len(SLIDE_RE.findall(text))
+        match = re.search(r'id="counter">\s*1 / (\d+)<', text)
+        self.assertIsNotNone(match, "slide counter markup not found")
+        self.assertEqual(
+            slides,
+            int(match.group(1)),
+            "the initial slide counter total must equal the number of slides. "
+            "Fix: update the counter in index.html.",
+        )
+
+    def test_every_diagram_is_an_accessible_figure(self) -> None:
+        text = book_text()
+        svgs = re.findall(r"<svg\b[^>]*>.*?</svg>", text, re.S)
+        self.assertGreater(len(svgs), 10, "expected the deck to carry inline diagrams")
+        ids: list[str] = []
+        for svg in svgs:
+            head = svg[: svg.index(">") + 1]
+            self.assertIn('role="img"', head, f"diagram without role=img: {head[:80]}")
+            labelled = re.search(r'aria-labelledby="([^"]+)"', head)
+            self.assertIsNotNone(labelled, f"diagram without aria-labelledby: {head[:80]}")
+            title_id, desc_id = labelled.group(1).split()
+            body = svg[len(head):]
+            self.assertTrue(
+                body.startswith(f'<title id="{title_id}">'),
+                f"<title> must be the first child of {title_id}",
+            )
+            self.assertIn(f'<desc id="{desc_id}">', body)
+            ids += [title_id, desc_id]
+        self.assertEqual(len(ids), len(set(ids)), "diagram title/desc ids must be unique")
+
+    def test_diagrams_carry_no_shadows(self) -> None:
+        text = book_text()
+        css = "\n".join(re.findall(r"<style>(.*?)</style>", text, re.S))
+        self.assertNotRegex(css, r"box-shadow|drop-shadow|text-shadow")
+
 
 if __name__ == "__main__":
     unittest.main()
