@@ -19,13 +19,13 @@ Skill updates: auto
 
 Owner: /root delivery manager
 Status: active
-Last attempted: 2026-10-10 machine-wide dispatch profile landed (ac3c4d4): `~/.agents/epicspine-profile.md` is used in every repo; a repo `Dispatch profile:` line only overrides; unset everywhere -> ask once, save to the machine file. This repo now defers to the machine profile.
+Last attempted: 2026-10-10 `agents_block.py profile` show/set landed (04c28e0); the machine profile is now read and written by code, not hand edits; SMOKE P5 covers the ask-once cold start (live run pending).
 Result: main at b545fb5; tests, block check, strict validate, manifest green. Claude Code cold first messages (question in zenod, task in blank repo, "hi" in zenod) all open with `Delivery manager · EpicSpine · Learnings in force:`.
 Evidence: [main @ b545fb5](https://github.com/AlfaBlok/epicspine-skill/commit/b545fb5)
 Waiting on: user
 Approved work: none open
 Next action: User confirms in a fresh T3 Claude session; Gemini and Codex parked by user.
-Source revision: ac3c4d4
+Source revision: 04c28e0
 Verified at: 2026-10-10
 Last sweep: 2026-10-09, main clean
 EpicSpine skill: 2026.10.10.1 @ 97b7535 (tree 59cc88f), checked 2026-10-10; hub upgraded; status via harness symlinks works
@@ -78,7 +78,7 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 | draft | Ticket worker | worker F (Sonnet 5.5 subagent) | Make skill updates actually work: content-tree freshness (not head commit), resolve harness symlinks to the hub, cache the last result not 'fresh', 1-day window, PR per user | draft | none | PR #27 | 974021d | merged ff (97b7535); 145 tests + CI + agents_block + manifest green; hub bootstrapped via real path, then upgrade + status --force via ~/.claude symlink = fresh; docs-only commit stays fresh; worktree removed | 2026-10-10 | done |
 | draft | Ticket worker | worker G (Sonnet 5.5 subagent) | Always-on bind on every major harness: harness-neutral global block + `install-global` (instruction files + session hooks on by default; unsupported reported), repo pointers (CLAUDE.md/GEMINI.md -> AGENTS.md), first-message route | draft | none | wt/always-on-all-harnesses | a272d1f | integrated (ff-only, 5088c2f); 160 tests + block + validate + manifest green; install-global run here; cold "hi" pass on Claude Code, Codex, OpenCode; Gemini untested (no API key); worktree removed | 2026-10-10 | Gemini cold start |
 | draft | Ticket worker | worker (Sonnet 5.5 subagent) | Machine-wide dispatch profile: one user-level file `~/.agents/epicspine-profile.md` used in every repo; repo `Dispatch profile:` only overrides; ask once and save at machine level | draft | none | wt/machine-profile | 3c12fbe | integrated (ff-only, ac3c4d4); 160 tests + agents_block + manifest green; machine file written; worktree removed | 2026-10-10 | done |
-| draft | Ticket worker | worker (Sonnet 5.5 subagent) | Profile command + cold-start test: `profile` show/set command for `~/.agents/epicspine-profile.md`; docs point to it; tests prove ask-once, save, reuse across repos | draft | none | wt/profile-command | HEAD | dispatched | 2026-10-10 | verify diff + tests, ff-merge |
+| draft | Ticket worker | worker (Sonnet 5.5 subagent) | Profile command + cold-start test: `profile` show/set command for `~/.agents/epicspine-profile.md`; docs point to it; tests prove ask-once, save, reuse across repos | draft | none | wt/profile-command | fcddfe5 | integrated (ff-only, 04c28e0); 165 tests + agents_block + manifest green; `profile` verified live (machine, rc 0) and empty home (unset, rc 3); worktree removed | 2026-10-10 | done |
 
 ## Decisions
 
