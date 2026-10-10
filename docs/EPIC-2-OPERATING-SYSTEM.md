@@ -19,13 +19,13 @@ Skill updates: auto
 
 Owner: /root delivery manager
 Status: active
-Last attempted: 2026-10-10 vanilla dispatch default landed (c3d2dc3): shipped skill names no vendor/model; unset profile -> ask once, recommend a lower-cost native subagent, record as root spine `Dispatch profile:`. This repo's profile: native subagent, Sonnet 5.5.
-Result: main at c3d2dc3; 138 tests, strict validation, agents_block check and manifest green.
-Evidence: [main @ c3d2dc3](https://github.com/AlfaBlok/epicspine-skill/commit/c3d2dc3)
-Waiting on: worker G (always-on bind on every major harness)
-Approved work: always-on bind across all major harnesses (user 2026-10-10).
-Next action: integrate worker G when it reports.
-Source revision: c3d2dc3
+Last attempted: 2026-10-10 always-on bind on every major harness landed (5088c2f): global block + `install-global` (instruction files + SessionStart hooks, harness-neutral) and a first-message route (even on "hi": role, mission, state, "What do you want?"). Installed on this machine.
+Result: main at 5088c2f; 160 tests, agents_block check, strict validation and manifest green. Cold start "hi" in a blockless repo: Claude Code, Codex (gpt-6-luna) and OpenCode (deepseek-v4.1-flash) all bound as delivery manager in 4 lines; Gemini untested (no GEMINI_API_KEY).
+Evidence: [main @ 5088c2f](https://github.com/AlfaBlok/epicspine-skill/commit/5088c2f)
+Waiting on: user
+Approved work: none open
+Next action: Gemini cold start once authenticated; Codex default model gpt-6-sol fails on ChatGPT account (user config, not EpicSpine).
+Source revision: 5088c2f
 Verified at: 2026-10-10
 Last sweep: 2026-10-09, main clean
 EpicSpine skill: 2026.10.10.1 @ 97b7535 (tree 59cc88f), checked 2026-10-10; hub upgraded; status via harness symlinks works
@@ -76,7 +76,7 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 | draft | Ticket worker | worker D (default profile) | Shortlist template: table-first compact layout (user feedback on demo page) | draft | worker C | wt/shortlist-table-first | a868281 | integrated (ff-only, 7781d8e); 137 tests + strict validate + agents_block + manifest green; screenshot reviewed; demo re-served 200; worktree removed; installed skill upgraded | 2026-10-09 | done |
 | draft | Ticket worker | worker E (Sonnet 5.5 subagent) | Vanilla dispatch default: shipped skill drops the author's hardwired profile; default becomes a lower-cost harness-native subagent; ask once when unset and record the answer as the root spine `Dispatch profile:`; AGENTS.md block defers to it | draft | none | wt/dispatch-defaults | 940d9f8 | integrated (ff-only, c3d2dc3); 138 tests + strict validate + agents_block + manifest green; roles-and-dispatch budget 100->105; worktree removed | 2026-10-10 | done |
 | draft | Ticket worker | worker F (Sonnet 5.5 subagent) | Make skill updates actually work: content-tree freshness (not head commit), resolve harness symlinks to the hub, cache the last result not 'fresh', 1-day window, PR per user | draft | none | PR #27 | 974021d | merged ff (97b7535); 145 tests + CI + agents_block + manifest green; hub bootstrapped via real path, then upgrade + status --force via ~/.claude symlink = fresh; docs-only commit stays fresh; worktree removed | 2026-10-10 | done |
-| draft | Ticket worker | worker G (Sonnet 5.5 subagent) | Always-on bind on every major harness: harness-neutral global block + `install-global` (Claude Code, Codex, OpenCode, Gemini; others reported), optional session hooks, repo pointers (CLAUDE.md/GEMINI.md -> AGENTS.md) | draft | none (MANIFEST merge after F) | wt/always-on-all-harnesses | a272d1f | dispatched | 2026-10-10 | verify diff + tests, merge, install-global on this machine, cold-start in a blockless repo on 2+ harnesses |
+| draft | Ticket worker | worker G (Sonnet 5.5 subagent); first-message route | Always-on bind on every major harness: harness-neutral global block + `install-global` (Claude Code, Codex, OpenCode, Gemini; others reported), optional session hooks, repo pointers (CLAUDE.md/GEMINI.md -> AGENTS.md) | draft | none (MANIFEST merge after F) | wt/always-on-all-harnesses | integrated (ff-only, 5088c2f); 160 tests + block + validate + manifest green; install-global run here; cold "hi" pass on Claude Code, Codex, OpenCode; Gemini untested (no API key); worktree removed | dispatched | Gemini cold start |
 
 ## Decisions
 
