@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>EpicSpine</title>
+<title>EpicSpine — the book</title>
 <style>
   :root {
     --bg: #101214;
@@ -44,103 +44,98 @@
     position: absolute;
     inset: 0;
     display: none;
-    padding: 5.2vh 6vw;
+    padding: 4.4vh 5vw;
     overflow: auto;
   }
   .slide.active {
     display: grid;
     grid-template-rows: auto 1fr;
-    gap: 28px;
+    gap: 20px;
   }
   .eyebrow {
     color: var(--gold);
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 760;
     letter-spacing: .16em;
     text-transform: uppercase;
   }
   h1, h2 {
-    margin: 10px 0 0;
+    margin: 8px 0 0;
     letter-spacing: 0;
     line-height: 1.04;
     font-weight: 780;
   }
-  h1 { font-size: clamp(48px, 7.2vw, 94px); max-width: 1120px; }
-  h2 { font-size: clamp(36px, 5vw, 66px); max-width: 1120px; }
+  h1 { font-size: clamp(46px, 6.6vw, 88px); max-width: 1120px; }
+  h2 { font-size: clamp(28px, 3.7vw, 52px); max-width: 1120px; }
   h3 {
-    margin: 0 0 10px;
-    font-size: clamp(19px, 1.7vw, 26px);
+    margin: 0 0 8px;
+    font-size: clamp(16px, 1.5vw, 22px);
     letter-spacing: 0;
   }
   p {
     margin: 0;
     color: var(--muted);
-    font-size: clamp(20px, 2.05vw, 30px);
+    font-size: clamp(16px, 1.7vw, 25px);
     line-height: 1.34;
-    max-width: 1080px;
+    max-width: 1120px;
   }
+  .lead { font-size: clamp(19px, 2vw, 30px); color: var(--ink); }
   .body {
     min-height: 0;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    gap: 24px;
+    justify-content: flex-start;
+    gap: 18px;
   }
   .two {
     display: grid;
-    grid-template-columns: minmax(0, .95fr) minmax(380px, 1.05fr);
-    gap: 34px;
+    grid-template-columns: minmax(0, .95fr) minmax(360px, 1.05fr);
+    gap: 30px;
     align-items: center;
   }
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 18px;
-  }
+  .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
   .grid.two-col { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .card, .box, .screen {
+  .grid.stretch { align-items: stretch; }
+  .card, .box, .screen, .svg-wrap, .cap, .tile, .pcard {
     background: var(--panel);
     border: 1px solid var(--line);
     border-radius: 8px;
-    box-shadow: 0 16px 45px var(--shadow);
   }
-  .card {
-    padding: 22px;
-  }
-  .card p, .card li, .box span {
+  .card { padding: 18px; }
+  .card p, .card li {
     color: var(--muted);
-    font-size: clamp(14px, 1.16vw, 18px);
+    font-size: clamp(13px, 1.05vw, 16px);
     line-height: 1.45;
   }
-  .card ul {
-    margin: 10px 0 0;
-    padding-left: 18px;
-  }
+  .card ul { margin: 6px 0 0; padding-left: 18px; }
+  .card li { margin: 5px 0; }
+  .card.big { padding: 30px 28px; min-height: 330px; display: flex; flex-direction: column; justify-content: center; }
+  .card.big h3 { font-size: clamp(22px, 1.8vw, 28px); margin-bottom: 12px; }
+  .card.big p { font-size: clamp(16px, 1.3vw, 19px); line-height: 1.55; }
+  .card.big .tag { font-size: 12px; min-height: 26px; margin-bottom: 14px; align-self: flex-start; }
   .tag {
     display: inline-flex;
     align-items: center;
-    min-height: 28px;
+    min-height: 24px;
     border: 1px solid var(--line);
     border-radius: 999px;
-    padding: 4px 10px;
+    padding: 3px 10px;
     color: var(--muted);
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 760;
-    letter-spacing: .04em;
+    letter-spacing: .05em;
     text-transform: uppercase;
     white-space: nowrap;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
   }
   .tag.gold { color: var(--gold); border-color: rgba(217, 173, 98, .58); }
   .tag.green { color: var(--green); border-color: rgba(120, 181, 140, .58); }
   .tag.blue { color: var(--blue); border-color: rgba(125, 169, 199, .58); }
   .tag.red { color: var(--red); border-color: rgba(210, 119, 109, .58); }
   .tag.violet { color: var(--violet); border-color: rgba(168, 145, 215, .58); }
-  .screen {
-    overflow: hidden;
-  }
+  .screen { overflow: hidden; }
   .bar {
-    height: 42px;
+    height: 38px;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -149,91 +144,63 @@
     color: var(--muted);
     font-size: 13px;
   }
-  .dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--line);
-  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--line); }
   .dot:nth-child(1) { background: var(--red); }
   .dot:nth-child(2) { background: var(--gold); }
   .dot:nth-child(3) { background: var(--green); }
-  .screen-body {
-    display: grid;
-    gap: 12px;
-    padding: 20px;
-  }
+  .screen-body { display: grid; gap: 9px; padding: 16px; }
   .row {
     display: grid;
-    grid-template-columns: 150px 1fr 100px;
+    grid-template-columns: 140px 1fr 84px;
     gap: 12px;
     align-items: center;
-    min-height: 46px;
+    min-height: 42px;
     border: 1px solid var(--line);
     border-radius: 8px;
     background: var(--panel-2);
-    padding: 12px 14px;
+    padding: 10px 14px;
   }
-  .row strong {
-    font-size: 15px;
-  }
-  .row span {
-    color: var(--muted);
-    font-size: 14px;
-    line-height: 1.35;
-  }
+  .row strong { font-size: 14px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .row span { color: var(--muted); font-size: 13px; line-height: 1.35; }
   .pill {
     justify-self: end;
     border: 1px solid rgba(217, 173, 98, .55);
     border-radius: 999px;
     color: var(--gold);
-    padding: 4px 9px;
-    font-size: 12px;
+    padding: 3px 9px;
+    font-size: 11px;
     font-weight: 760;
     text-transform: uppercase;
   }
-  .flow {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr auto 1fr;
-    align-items: center;
-    gap: 14px;
-  }
-  .stack {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 14px;
-  }
-  .tree {
-    display: grid;
-    grid-template-columns: 1fr 1.2fr;
-    gap: 28px;
-    align-items: center;
-  }
-  .branches {
-    display: grid;
-    gap: 14px;
-  }
-  .lane {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    gap: 14px;
-    align-items: center;
-  }
+  .flow { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; align-items: stretch; gap: 12px; }
+  .flow.four { grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr; }
+  .stack { display: grid; grid-template-columns: 1fr; gap: 12px; }
   .box {
-    min-height: 118px;
-    padding: 18px;
+    min-height: 96px;
+    padding: 15px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 7px;
+    gap: 5px;
   }
-  .box strong {
-    font-size: clamp(20px, 1.55vw, 26px);
+  .box strong { font-size: clamp(16px, 1.3vw, 21px); }
+  .box span, .box p { color: var(--muted); font-size: clamp(12.5px, 1vw, 15.5px); line-height: 1.4; }
+  .arrow { color: var(--gold); font-size: 26px; line-height: 1; align-self: center; }
+  .callout {
+    border-left: 4px solid var(--gold);
+    background: rgba(217, 173, 98, .08);
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
   }
-  .arrow {
-    color: var(--gold);
-    font-size: 30px;
-    line-height: 1;
+  .callout p { font-size: clamp(14px, 1.25vw, 20px); color: var(--ink); }
+  code, .mono {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: .92em;
+    color: var(--ink);
+    background: rgba(255, 255, 255, .06);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 1px 5px;
   }
   .ledger {
     width: 100%;
@@ -242,32 +209,73 @@
     border-radius: 8px;
     border: 1px solid var(--line);
     background: var(--panel);
-    box-shadow: 0 16px 45px var(--shadow);
   }
   .ledger th, .ledger td {
     border-bottom: 1px solid var(--line);
-    padding: 13px 14px;
+    padding: 10px 12px;
     text-align: left;
     vertical-align: top;
-    font-size: clamp(13px, 1.02vw, 16px);
-    line-height: 1.35;
+    font-size: clamp(12px, .95vw, 15px);
+    line-height: 1.38;
   }
-  .ledger th {
-    color: var(--ink);
-    background: var(--panel-2);
-    font-weight: 760;
-  }
+  .ledger th { color: var(--ink); background: var(--panel-2); font-weight: 760; }
   .ledger td { color: var(--muted); }
+  .ledger td strong { color: var(--ink); }
   .ledger tr:last-child td { border-bottom: 0; }
-  .callout {
-    border-left: 4px solid var(--gold);
-    background: rgba(217, 173, 98, .08);
-    padding: 18px 20px;
+
+  /* Part 2: principles */
+  .principles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+  .pcard { padding: 13px 14px; display: grid; grid-template-columns: 32px 1fr; gap: 10px; align-items: start; }
+  .pcard .g {
+    width: 30px; height: 30px;
+    display: grid; place-items: center;
+    border-radius: 8px;
+    background: rgba(217, 173, 98, .14);
+    border: 1px solid rgba(217, 173, 98, .5);
+    color: var(--gold);
+    font-size: 15px;
   }
-  .callout p {
-    font-size: clamp(18px, 1.55vw, 24px);
-    color: var(--ink);
+  .pcard strong { display: block; font-size: clamp(13.5px, 1.08vw, 16px); line-height: 1.2; margin-bottom: 3px; }
+  .pcard span { color: var(--muted); font-size: clamp(11.5px, .9vw, 13.5px); line-height: 1.34; display: block; }
+
+  /* Part 3: feature map */
+  .tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 11px; }
+  .tile { display: block; padding: 11px 13px; text-decoration: none; color: var(--ink); }
+  .tile:hover { border-color: rgba(217, 173, 98, .65); }
+  .tile strong { display: block; font-size: clamp(13px, 1.05vw, 15.5px); margin-bottom: 2px; }
+  .tile span { display: block; color: var(--muted); font-size: clamp(11px, .86vw, 12.5px); line-height: 1.3; }
+  .tile .go { display: block; color: var(--gold); font-size: 10.5px; font-weight: 760; margin-top: 4px; }
+
+  /* diagrams */
+  .svg-wrap { padding: 12px; box-shadow: 0 16px 45px var(--shadow); }
+  .svg-wrap svg { width: 100%; height: auto; display: block; }
+  .svg-wrap svg text { font-family: inherit; }
+  .caps { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 11px; }
+  .cap { padding: 9px 12px; color: var(--muted); font-size: clamp(11.5px, .92vw, 13.5px); line-height: 1.34; }
+  .cap b { display: block; color: var(--ink); font-size: clamp(12px, .95vw, 14px); margin-bottom: 2px; }
+
+  /* Part 5 */
+  .links { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
+  .links li {
+    display: grid;
+    grid-template-columns: minmax(150px, 300px) 1fr;
+    gap: 14px;
+    align-items: baseline;
+    padding: 8px 13px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel);
+    font-size: clamp(12.5px, 1vw, 15px);
   }
+  .links a { color: var(--gold); text-decoration: none; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .links a:hover { text-decoration: underline; }
+  .links span { color: var(--muted); }
+  .hint { color: var(--muted); font-size: 14px; }
+  .filemap { display: grid; grid-template-columns: 1fr; gap: 9px; align-content: start; }
+  .filemap div { color: var(--muted); font-size: 11px; line-height: 1.5; }
+  .filemap code { font-size: 10.5px; padding: 0 4px; margin-right: 4px; display: inline-block; }
+  .filemap b { display: block; color: var(--gold); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 3px; }
+
   .controls {
     position: fixed;
     right: 18px;
@@ -275,462 +283,1299 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    z-index: 10;
+    z-index: 20;
   }
   .controls span {
     color: var(--muted);
     font-size: 13px;
-    min-width: 52px;
+    min-width: 62px;
     text-align: right;
+    font-variant-numeric: tabular-nums;
   }
   button {
-    width: 40px;
-    height: 40px;
+    width: 40px; height: 40px;
     border: 1px solid var(--line);
     border-radius: 8px;
     background: var(--panel);
     color: var(--ink);
-    font-size: 24px;
+    font-size: 22px;
     line-height: 1;
     cursor: pointer;
   }
   button:hover { border-color: rgba(217, 173, 98, .65); }
+  button:focus-visible, a:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 
-  @media (max-width: 860px) {
+  .index {
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    display: none;
+    background: rgba(0, 0, 0, .62);
+    padding: 5vh 6vw;
+    overflow: auto;
+  }
+  .index.open { display: block; }
+  .index-panel {
+    max-width: 760px;
+    margin: 0 auto;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    box-shadow: 0 24px 70px var(--shadow);
+    overflow: hidden;
+  }
+  .index-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 20px;
+    border-bottom: 1px solid var(--line);
+  }
+  .index-head h2 { font-size: 19px; margin: 0; }
+  .index ol { margin: 0; padding: 6px 0 10px; list-style: none; }
+  .index li a {
+    display: flex;
+    gap: 14px;
+    align-items: baseline;
+    padding: 7px 20px;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+  }
+  .index li a:hover { background: var(--panel-2); color: var(--ink); }
+  .index li.current a { color: var(--gold); }
+  .idx-num { min-width: 1.6em; color: var(--gold); font-variant-numeric: tabular-nums; }
+  .idx-part { padding: 12px 20px 3px; color: var(--gold); font-size: 11px; font-weight: 760; letter-spacing: .14em; text-transform: uppercase; }
+  .index-close { width: 34px; height: 34px; font-size: 18px; }
+
+  @media (max-width: 900px) {
     body { overflow: auto; }
     .deck { height: auto; min-height: 100vh; }
-    .slide {
-      position: static;
-      min-height: 100vh;
-      padding: 36px 20px 82px;
-    }
+    .slide { position: static; min-height: 100vh; padding: 32px 18px 78px; }
     .slide.active { display: grid; }
-    .two, .grid, .grid.two-col, .flow {
-      grid-template-columns: 1fr;
-    }
-    .tree, .lane {
-      grid-template-columns: 1fr;
-    }
+    .two, .grid, .grid.two-col, .flow, .flow.four, .principles, .tiles, .filemap { grid-template-columns: 1fr; }
     .arrow { display: none; }
     .row { grid-template-columns: 1fr; }
     .pill { justify-self: start; }
     .ledger { display: block; overflow-x: auto; }
+    .links li { grid-template-columns: 1fr; gap: 4px; }
+    .index { padding: 24px 14px; }
+  }
+
+  @media print {
+    :root { --bg: #fff; --panel: #fff; --panel-2: #f4f4f4; --ink: #111; --muted: #333; --line: #bbb; --shadow: rgba(0,0,0,0); }
+    html, body { background: #fff; color: #111; }
+    body { overflow: visible; }
+    .progress, .controls, .index, .hint { display: none !important; }
+    .deck { height: auto; position: static; }
+    .slide {
+      position: static;
+      display: grid !important;
+      grid-template-rows: auto 1fr;
+      gap: 16px;
+      min-height: 0;
+      padding: 14mm 12mm;
+      page-break-after: always;
+      break-after: page;
+      overflow: visible;
+    }
+    .slide:last-child { page-break-after: auto; break-after: auto; }
+    .card, .box, .screen, .svg-wrap, .cap, .tile, .pcard, .ledger, .callout, .links li {
+      box-shadow: none;
+      break-inside: avoid;
+    }
+    h1 { font-size: 44px; }
+    h2 { font-size: 32px; }
+    p { font-size: 15px; }
   }
 </style>
 </head>
 <body>
 <div class="progress" id="progress"></div>
+
+<!-- shared arrow markers -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <marker id="ag" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#d9ad62"/></marker>
+    <marker id="ab" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#7da9c7"/></marker>
+    <marker id="av" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#a891d7"/></marker>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#d2776d"/></marker>
+    <marker id="agrn" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#78b58c"/></marker>
+    <marker id="am" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#b8b0a5"/></marker>
+  </defs>
+</svg>
+
 <main class="deck">
-  <section class="slide active">
+
+  <!-- PART 1 -->
+  <!-- 1 -->
+  <section class="slide active" data-part="Part 1 · What and why" data-title="EpicSpine">
     <header>
-      <div class="eyebrow">Document-centered agent delivery</div>
+      <div class="eyebrow">Part 1 · What and why</div>
       <h1>EpicSpine</h1>
     </header>
     <div class="body two">
       <div>
-        <p>A living epic document that lets AI agents keep intent, context, state, GitHub work, decisions, and handoffs coherent across long-running projects.</p>
+        <p class="lead">A living document that gives agent-assisted work durable memory, one authoritative intent, and a clean path from idea to proven outcome.</p>
+        <p class="hint" style="margin-top:14px">Navigate with <b>&larr; &rarr;</b> or Space; press <b>G</b> for the part-grouped index. Deep-link with <code>#5</code>.</p>
       </div>
       <div class="screen">
-        <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span>EPIC-0.md</span></div>
+        <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span>docs/EPIC-2-OPERATING-SYSTEM.md</span></div>
         <div class="screen-body">
-          <div class="row"><strong>Why</strong><span>What this project wants to make true.</span><b class="pill">intent</b></div>
+          <div class="row"><strong>Intent</strong><span>Why this work exists and what outcome we want.</span><b class="pill">spine</b></div>
           <div class="row"><strong>State</strong><span>What is true now, what is blocked, what is next.</span><b class="pill">now</b></div>
-          <div class="row"><strong>Map</strong><span>Child spines, issues, PRs, dependencies, owners.</span><b class="pill">fit</b></div>
-          <div class="row"><strong>Handoffs</strong><span>Evidence and decisions future agents can trust.</span><b class="pill">memory</b></div>
+          <div class="row"><strong>Backlog</strong><span>Issues as executable tickets for one step each.</span><b class="pill">execute</b></div>
+          <div class="row"><strong>Evidence</strong><span>What code, tests and validation actually proved.</span><b class="pill">proof</b></div>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="slide">
+  <!-- 2 -->
+  <section class="slide" data-part="Part 1 · What and why" data-title="Agents lose the plot">
     <header>
       <div class="eyebrow">Why it exists</div>
-      <h2>Agents need more than chat and tickets.</h2>
+      <h2>Agents lose the plot between chats.</h2>
     </header>
     <div class="body">
       <div class="grid">
-        <div class="card">
+        <div class="card big">
           <span class="tag red">Chat fades</span>
           <h3>Intent disappears</h3>
-          <p>Long projects drift when the only memory is a transcript or a thread that future agents will not read completely.</p>
+          <p>Long projects drift when the only memory is a transcript no future agent will read completely.</p>
         </div>
-        <div class="card">
-          <span class="tag red">Issues are local</span>
-          <h3>Tickets go deep</h3>
-          <p>GitHub issues are excellent for a step, but they are too narrow to carry the whole epic, its dependencies, and its direction.</p>
+        <div class="card big">
+          <span class="tag red">Issues are narrow</span>
+          <h3>Tickets lack the whole story</h3>
+          <p>A ticket is excellent for one bounded step, but too narrow to carry scope, direction and acceptance.</p>
         </div>
-        <div class="card">
+        <div class="card big">
           <span class="tag red">Roles blur</span>
           <h3>Agents overreach</h3>
-          <p>A worker starts planning, a tester starts rewriting, a parent agent mutates child docs. The system needs boundaries.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="slide">
-    <header>
-      <div class="eyebrow">Meta spine diagram</div>
-      <h2>Epic 0 is the root spine for the project.</h2>
-    </header>
-    <div class="body">
-      <div class="tree">
-        <div class="box">
-          <strong>Epic 0 spine</strong>
-          <span>Root intent, project thrust, child-spine map, cross-epic dependencies, health, and decisions needed.</span>
-        </div>
-        <div class="branches">
-          <div class="lane">
-            <div class="box"><strong>Epic 2.3 spine</strong><span>Zenod delivery surface.</span></div>
-            <div class="arrow">›</div>
-            <div class="box"><strong>Epic worker</strong><span>Bound to 2.3 and responsible for delivery.</span></div>
-          </div>
-          <div class="lane">
-            <div class="box"><strong>Epic 2.4 spine</strong><span>Callisthenes delivery surface.</span></div>
-            <div class="arrow">›</div>
-            <div class="box"><strong>Epic worker</strong><span>Creates issues and dispatches ticket workers.</span></div>
-          </div>
-          <div class="lane">
-            <div class="box"><strong>Epic 2.5 spine</strong><span>Ring delivery surface.</span></div>
-            <div class="arrow">›</div>
-            <div class="box"><strong>Epic worker</strong><span>Reports clean state back up.</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="slide">
-    <header>
-      <div class="eyebrow">The root concept</div>
-      <h2>Epic 0 holds the whole project together.</h2>
-    </header>
-    <div class="body">
-      <div class="flow">
-        <div class="box">
-          <strong>Epic 0 spine</strong>
-          <span>The root context: why the project exists, child-spine map, project state, cross-epic decisions.</span>
-        </div>
-        <div class="arrow">›</div>
-        <div class="box">
-          <strong>Child spines</strong>
-          <span>Bounded delivery surfaces for Epic 2.3, 2.4, 2.5, or any other major track.</span>
-        </div>
-        <div class="arrow">›</div>
-        <div class="box">
-          <strong>GitHub issues</strong>
-          <span>Executable tickets where one step can go deep into blockers, code, logs, and validation.</span>
+          <p>Workers start planning, reviewers rewrite, and state gets buried in comments. The system needs boundaries.</p>
         </div>
       </div>
       <div class="callout">
-        <p>Epic 0 is why the project exists and how the moving parts fit. It is the root spine, not a giant ticket.</p>
+        <p>The promise: a spine every fresh agent binds from in minutes, so the work outlives the conversation.</p>
       </div>
     </div>
   </section>
 
-  <section class="slide">
+  <!-- 3 -->
+  <section class="slide" data-part="Part 1 · What and why" data-title="One living spine">
     <header>
-      <div class="eyebrow">Delivery loop diagram</div>
-      <h2>Epic workers manage execution without dirtying the spine.</h2>
+      <div class="eyebrow">The one-sentence promise</div>
+      <h2>One living spine carries intent; everything else carries detail.</h2>
     </header>
     <div class="body">
-      <div class="flow">
-        <div class="box">
-          <strong>Bound child spine</strong>
-          <span>Clean intent, state, acceptance, issue ledger, blockers, and handoff journal.</span>
-        </div>
-        <div class="arrow">›</div>
-        <div class="box">
-          <strong>GitHub issues</strong>
-          <span>Executable ticket backlog with deep technical detail and subagent comments.</span>
-        </div>
-        <div class="arrow">›</div>
-        <div class="box">
-          <strong>Ticket workers</strong>
-          <span>Implement one issue, write detail into the issue, and return PR/evidence.</span>
-        </div>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 1000 366" role="img" aria-label="Three stacked layers: Spine owns intent, Tickets own detail, Code and tests are truth. Intent and acceptance fall from the spine down through tickets into code; the durable consequence rises back up.">
+          <rect x="230" y="14" width="540" height="78" rx="10" fill="#23282d" stroke="#d9ad62"/>
+          <text x="500" y="44" text-anchor="middle" fill="#f2eee7" font-size="20" font-weight="700">Spine — intent</text>
+          <text x="500" y="66" text-anchor="middle" fill="#b8b0a5" font-size="13">mission · scope · epic acceptance · decisions · current state</text>
+          <text x="500" y="84" text-anchor="middle" fill="#d9ad62" font-size="12">the one authoritative intent every agent binds from</text>
+
+          <rect x="230" y="112" width="540" height="78" rx="10" fill="#23282d" stroke="#7da9c7"/>
+          <text x="500" y="142" text-anchor="middle" fill="#f2eee7" font-size="20" font-weight="700">Tickets — detail</text>
+          <text x="500" y="164" text-anchor="middle" fill="#b8b0a5" font-size="13">one bounded step each · the deep technical detail lives here</text>
+          <text x="500" y="182" text-anchor="middle" fill="#7da9c7" font-size="12">the execution board the manager dispatches from</text>
+
+          <rect x="230" y="210" width="540" height="78" rx="10" fill="#23282d" stroke="#78b58c"/>
+          <text x="500" y="240" text-anchor="middle" fill="#f2eee7" font-size="20" font-weight="700">Code and tests — truth</text>
+          <text x="500" y="262" text-anchor="middle" fill="#b8b0a5" font-size="13">what exists and what actually passed</text>
+          <text x="500" y="280" text-anchor="middle" fill="#78b58c" font-size="12">observed evidence outranks any older document</text>
+
+          <line x1="200" y1="24" x2="200" y2="300" stroke="#d9ad62" stroke-width="2.4" marker-end="url(#ag)"/>
+          <text x="184" y="156" text-anchor="end" fill="#d9ad62" font-size="13" font-weight="700">intent and</text>
+          <text x="184" y="174" text-anchor="end" fill="#b8b0a5" font-size="12">acceptance</text>
+
+          <line x1="800" y1="300" x2="800" y2="24" stroke="#78b58c" stroke-width="2.4" marker-end="url(#agrn)"/>
+          <text x="816" y="156" fill="#78b58c" font-size="13" font-weight="700">durable</text>
+          <text x="816" y="174" fill="#b8b0a5" font-size="12">consequence</text>
+
+          <text x="500" y="330" text-anchor="middle" fill="#f2eee7" font-size="13">Compression rule: keep a detail in the ticket if it helps only that step;</text>
+          <text x="500" y="352" text-anchor="middle" fill="#b8b0a5" font-size="12">summarize the durable consequence back into the spine.</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- PART 2 -->
+  <!-- 4 -->
+  <section class="slide" data-part="Part 2 · Basic principles" data-title="The core principles">
+    <header>
+      <div class="eyebrow">Part 2 · Basic principles</div>
+      <h2>Eight principles everything else follows from.</h2>
+    </header>
+    <div class="body">
+      <div class="principles">
+        <div class="pcard"><div class="g">&#9670;</div><div><strong>One authoritative intent</strong><span>The spine owns why, scope, acceptance and decisions.</span></div></div>
+        <div class="pcard"><div class="g">&#9656;</div><div><strong>Issues are executable tickets</strong><span>One bounded step each; the deep detail lives there.</span></div></div>
+        <div class="pcard"><div class="g">&#10003;</div><div><strong>Code and tests are truth</strong><span>Observed evidence outranks any older document.</span></div></div>
+        <div class="pcard"><div class="g">&#9678;</div><div><strong>The manager never implements</strong><span>Coordinate, dispatch, verify, integrate, report.</span></div></div>
+        <div class="pcard"><div class="g">&#10022;</div><div><strong>Fresh-context workers</strong><span>Each runs one task in its own <code>wt/&lt;task&gt;</code> worktree.</span></div></div>
+        <div class="pcard"><div class="g">&#10230;</div><div><strong>Stay in main and verify first</strong><span>ff-only merge, tests in main, revert on red.</span></div></div>
+        <div class="pcard"><div class="g">&#8984;</div><div><strong>Learnings are explicit and scoped</strong><span>Read Always at bind; propose, never write silently.</span></div></div>
+        <div class="pcard"><div class="g">&#9986;</div><div><strong>Lean, tidy, documented</strong><span>Delete before adding; clean as you integrate; land knowledge in the Book.</span></div></div>
       </div>
       <div class="callout">
-        <p>The epic worker loops across this system until ready for human test, tester handoff, or a precise blocker.</p>
+        <p>Source of truth: the Default Behaviors card in <code>skill/epic-spine/SKILL.md</code> and the root spine's Always list.</p>
       </div>
     </div>
   </section>
 
-  <section class="slide">
+  <!-- PART 3 -->
+  <!-- 5 -->
+  <section class="slide" data-part="Part 3 · Feature map" data-title="Feature map">
     <header>
-      <div class="eyebrow">Spine versus issues</div>
-      <h2>The spine stays clean. Issues go deep.</h2>
+      <div class="eyebrow">Part 3 · Feature map</div>
+      <h2>Everything the skill does, and where to dig in.</h2>
     </header>
     <div class="body">
-      <div class="grid two-col">
-        <div class="card">
-          <span class="tag gold">EpicSpine</span>
-          <h3>Intent, desire, context, fit, state</h3>
-          <p>Mission, current state, child-spine map, decisions, dependencies, issue ledger, evidence links, and next action.</p>
-        </div>
-        <div class="card">
-          <span class="tag blue">GitHub issue</span>
-          <h3>Deep detail for one step</h3>
-          <p>Code paths, implementation notes, blocker investigation, logs, stack traces, review discussion, and ticket-level validation.</p>
-        </div>
+      <div class="tiles">
+        <a class="tile" href="#7"><strong>Spine model</strong><span>One intent; authority by artifact.</span><span class="go">Anatomy &rarr;</span></a>
+        <a class="tile" href="#7"><strong>Profiles: compact / full</strong><span>Document size control.</span><span class="go">Anatomy &rarr;</span></a>
+        <a class="tile" href="#7"><strong>Dialect v1 / v2</strong><span>Acceptance workflow; SHIP / HARDEN.</span><span class="go">Anatomy &rarr;</span></a>
+        <a class="tile" href="#8"><strong>Hierarchy + rollups</strong><span>Root to child; one level up.</span><span class="go">Hierarchy &rarr;</span></a>
+        <a class="tile" href="#9"><strong>Bind path</strong><span>AGENTS.md, root spine, branch spine.</span><span class="go">Bind &rarr;</span></a>
+        <a class="tile" href="#10"><strong>Roles + dispatch</strong><span>Manager and worker; default profile.</span><span class="go">Roles &rarr;</span></a>
+        <a class="tile" href="#12"><strong>Verification + ask-first</strong><span>Two axes; settle forks before dispatch.</span><span class="go">Verify &rarr;</span></a>
+        <a class="tile" href="#13"><strong>Learnings</strong><span>Explicit, scoped memory.</span><span class="go">Learnings &rarr;</span></a>
+        <a class="tile" href="#11"><strong>Git doctrine</strong><span>Main, worktrees, revert on red.</span><span class="go">Git &rarr;</span></a>
+        <a class="tile" href="#14"><strong>Validation tooling</strong><span>Structural and graph checks.</span><span class="go">Tooling &rarr;</span></a>
+        <a class="tile" href="#15"><strong>Hygiene + sweeps</strong><span>Clean as you go.</span><span class="go">Hygiene &rarr;</span></a>
+        <a class="tile" href="#19"><strong>Ticket backends</strong><span>GitHub default; local files.</span><span class="go">Tickets &rarr;</span></a>
+        <a class="tile" href="#16"><strong>Skill updates</strong><span>Freshness checked at bind; auto.</span><span class="go">Distribution &rarr;</span></a>
+        <a class="tile" href="#17"><strong>Book companion</strong><span>Chapters, leaves, registry.</span><span class="go">Book &rarr;</span></a>
+        <a class="tile" href="#18"><strong>HTML serving</strong><span>127.0.0.1 plus a verified 200.</span><span class="go">Shortlists &rarr;</span></a>
+        <a class="tile" href="#18"><strong>Shortlists</strong><span>JSON to table-first page.</span><span class="go">Shortlists &rarr;</span></a>
+        <a class="tile" href="#7"><strong>Migration</strong><span>Full to compact, hash-gated.</span><span class="go">Anatomy &rarr;</span></a>
+        <a class="tile" href="#16"><strong>Always-on AGENTS.md block</strong><span>Installed and verified anywhere.</span><span class="go">Distribution &rarr;</span></a>
       </div>
       <div class="callout">
-        <p>If it only helps the current ticket worker, keep it in the issue. If it changes how future agents understand the epic, summarize it in the spine.</p>
+        <p>Also landed: smoke and behavior tests, and a default that treats a shortlist as a first-class deliverable.</p>
       </div>
     </div>
   </section>
 
-  <section class="slide">
+  <!-- PART 4 -->
+  <!-- 6 D1 authority -->
+  <section class="slide" data-part="Part 4 · How it works" data-title="Who owns which truth">
     <header>
-      <div class="eyebrow">Authority map</div>
-      <h2>Different artifacts own different kinds of truth.</h2>
+      <div class="eyebrow">Part 4 · How it works · 1 of 14</div>
+      <h2>Different artifacts own different truths.</h2>
     </header>
     <div class="body">
-      <div class="grid">
-        <div class="card">
-          <span class="tag gold">EpicSpine</span>
-          <h3>Intent and coordination</h3>
-          <p>Scope, epic acceptance, dependencies, decisions, and rollup state.</p>
-        </div>
-        <div class="card">
-          <span class="tag blue">Issue + code</span>
-          <h3>Execution and implementation</h3>
-          <p>The issue owns ticket detail. The branch, PR, and code show what actually exists.</p>
-        </div>
-        <div class="card">
-          <span class="tag green">Evidence</span>
-          <h3>What has been proved</h3>
-          <p>Validation names the exact commit, environment, method, result, and residual risk.</p>
-        </div>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 1000 330" role="img" aria-label="A stack from code and tests up to the Book; the compression rule lets only the durable consequence rise one level.">
+          <rect x="40" y="18" width="540" height="60" rx="8" fill="#23282d" stroke="#a891d7"/>
+          <rect x="60" y="18" width="5" height="60" fill="#a891d7"/>
+          <text x="80" y="45" fill="#f2eee7" font-size="17" font-weight="700">Book companion</text>
+          <text x="80" y="64" fill="#b8b0a5" font-size="12.5">navigable user-facing knowledge; its registry when present</text>
+
+          <rect x="40" y="92" width="540" height="60" rx="8" fill="#23282d" stroke="#d9ad62"/>
+          <rect x="60" y="92" width="5" height="60" fill="#d9ad62"/>
+          <text x="80" y="119" fill="#f2eee7" font-size="17" font-weight="700">EpicSpine</text>
+          <text x="80" y="138" fill="#b8b0a5" font-size="12.5">intent, scope, epic acceptance, decisions, rollup state</text>
+
+          <rect x="40" y="166" width="540" height="60" rx="8" fill="#23282d" stroke="#7da9c7"/>
+          <rect x="60" y="166" width="5" height="60" fill="#7da9c7"/>
+          <text x="80" y="193" fill="#f2eee7" font-size="17" font-weight="700">Issues / tickets</text>
+          <text x="80" y="212" fill="#b8b0a5" font-size="12.5">detailed execution of one bounded step</text>
+
+          <rect x="40" y="240" width="540" height="60" rx="8" fill="#23282d" stroke="#78b58c"/>
+          <rect x="60" y="240" width="5" height="60" fill="#78b58c"/>
+          <text x="80" y="267" fill="#f2eee7" font-size="17" font-weight="700">Code, data and validation</text>
+          <text x="80" y="286" fill="#b8b0a5" font-size="12.5">what exists and what has been proved</text>
+
+          <line x1="640" y1="312" x2="640" y2="30" stroke="#d9ad62" stroke-width="2" marker-end="url(#ag)"/>
+          <text x="660" y="120" fill="#d9ad62" font-size="13" font-weight="700">Durable consequence</text>
+          <text x="660" y="138" fill="#b8b0a5" font-size="12">summary rises one level</text>
+          <text x="660" y="176" fill="#b8b0a5" font-size="12">raw detail stays where it lives</text>
+          <rect x="660" y="200" width="330" height="104" rx="8" fill="#191d20" stroke="#363d43"/>
+          <text x="680" y="228" fill="#f2eee7" font-size="12.5">One steward reconciles contradictions.</text>
+          <text x="680" y="252" fill="#f2eee7" font-size="12.5">Code and test evidence are never</text>
+          <text x="680" y="274" fill="#f2eee7" font-size="12.5">overwritten by an older document.</text>
+        </svg>
       </div>
-      <div class="callout">
-        <p>One active spine steward reconciles contradictions. A stale document never overrides observable code or test evidence.</p>
+      <div class="caps">
+        <div class="cap"><b>Spine</b>owns intent, scope, acceptance, decisions and rollup state.</div>
+        <div class="cap"><b>Ticket</b>owns detailed execution; the ledger keeps unverified snapshots for coordination.</div>
+        <div class="cap"><b>Code and tests</b>own what exists and what passed in a named environment.</div>
+        <div class="cap"><b>Compression rule</b>detail flows up only as the durable consequence.</div>
       </div>
     </div>
   </section>
 
-  <section class="slide">
+  <!-- 7 D2 anatomy -->
+  <section class="slide" data-part="Part 4 · How it works" data-title="Anatomy of a spine">
     <header>
-      <div class="eyebrow">The skill</div>
-      <h2>The skill teaches agents the operating discipline.</h2>
-    </header>
-    <div class="body two">
-      <div>
-        <p>The public repo includes a Codex skill plus templates. The skill defines role binding, write scope, clean-spine discipline, GitHub issue flow, and goal-seeking persistence.</p>
-      </div>
-      <div class="screen">
-        <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span>skill/</span></div>
-        <div class="screen-body">
-          <div class="row"><strong>SKILL.md</strong><span>Main trigger and operating rules.</span><b class="pill">core</b></div>
-          <div class="row"><strong>operating-model.md</strong><span>Deeper role, scope, GitHub, and persistence model.</span><b class="pill">ref</b></div>
-          <div class="row"><strong>epic template</strong><span>Starting point for root and child spines.</span><b class="pill">asset</b></div>
-          <div class="row"><strong>issue template</strong><span>Ticket shape for GitHub execution.</span><b class="pill">asset</b></div>
-          <div class="row"><strong>validate_spine.py</strong><span>Local structural contract checker.</span><b class="pill">tool</b></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="slide">
-    <header>
-      <div class="eyebrow">Role binding</div>
-      <h2>Agents become useful when they know who they are.</h2>
+      <div class="eyebrow">Part 4 · How it works · 2 of 14</div>
+      <h2>A spine is small on purpose.</h2>
     </header>
     <div class="body">
-      <table class="ledger">
-        <thead>
-          <tr>
-            <th>Identity</th>
-            <th>Owns</th>
-            <th>Writes</th>
-            <th>Stops When</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Epic 0 worker</td>
-            <td>Full project picture</td>
-            <td>Root spine, child-spine map, rollups</td>
-            <td>Human decision or next actions are clear</td>
-          </tr>
-          <tr>
-            <td>Epic worker</td>
-            <td>One child epic as delivery lead</td>
-            <td>Bound spine as steward, issues, dispatch state</td>
-            <td>Ready for human test or tester handoff</td>
-          </tr>
-          <tr>
-            <td>Ticket worker</td>
-            <td>One GitHub issue</td>
-            <td>Issue detail, dedicated branch, PR, handoff</td>
-            <td>Ready for testing or precisely blocked</td>
-          </tr>
-          <tr>
-            <td>Tester</td>
-            <td>Acceptance evidence</td>
-            <td>Issue evidence, exact commit, risk</td>
-            <td>Pass, evidenced fail, or planner decision</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 1000 350" role="img" aria-label="A spine document with a header and its labeled sections, beside its minimums and state fields.">
+          <rect x="30" y="16" width="440" height="318" rx="8" fill="#191d20" stroke="#363d43"/>
+          <rect x="30" y="16" width="440" height="56" rx="8" fill="#23282d" stroke="#363d43"/>
+          <text x="52" y="40" fill="#d9ad62" font-size="14" font-weight="700">HEADER — declarations</text>
+          <text x="52" y="58" fill="#b8b0a5" font-size="11.5">Spine ID · Repository · Primary document · Integration branch · defaults</text>
 
-  <section class="slide">
-    <header>
-      <div class="eyebrow">Goal seeking</div>
-      <h2>Do not do one pass. Work toward a terminal state.</h2>
-    </header>
-    <div class="body">
-      <div class="grid">
-        <div class="card">
-          <span class="tag green">Epic 0</span>
-          <h3>Keep the project coherent</h3>
-          <p>Read child spines, roll up state, create child spines, bind workers, and keep pushing until the next human decision is explicit.</p>
-        </div>
-        <div class="card">
-          <span class="tag blue">Epic worker</span>
-          <h3>Deliver the scoped epic</h3>
-          <p>Create issues, dispatch ticket workers, reconcile outputs, and loop until the epic is ready for human test.</p>
-        </div>
-        <div class="card">
-          <span class="tag violet">Tester</span>
-          <h3>Prove pass or fail</h3>
-          <p>Run checks, record evidence, use bounded fix loops for small failures, and escalate scope changes to the planner.</p>
-        </div>
+          <g fill="#b8b0a5" font-size="12.5">
+            <text x="52" y="98">Current State</text>
+            <text x="52" y="130">Mission</text>
+            <text x="52" y="162">Non-Goals</text>
+            <text x="52" y="194">Operating Learnings</text>
+            <text x="52" y="226">Definition Of Done</text>
+            <text x="52" y="258">Issue Ledger</text>
+            <text x="52" y="290">Decisions</text>
+            <text x="52" y="322">Spine Map</text>
+          </g>
+          <g stroke="#363d43">
+            <line x1="30" y1="106" x2="470" y2="106"/><line x1="30" y1="138" x2="470" y2="138"/>
+            <line x1="30" y1="170" x2="470" y2="170"/><line x1="30" y1="202" x2="470" y2="202"/>
+            <line x1="30" y1="234" x2="470" y2="234"/><line x1="30" y1="266" x2="470" y2="266"/>
+            <line x1="30" y1="298" x2="470" y2="298"/>
+          </g>
+          <g fill="#d9ad62" font-size="11" font-weight="700">
+            <text x="300" y="98">required</text>
+            <text x="300" y="226">required</text>
+            <text x="300" y="258">required</text>
+            <text x="300" y="290">required</text>
+          </g>
+
+          <rect x="510" y="16" width="460" height="96" rx="8" fill="#191d20" stroke="#363d43"/>
+          <text x="530" y="40" fill="#f2eee7" font-size="13.5" font-weight="700">Current State carries</text>
+          <text x="530" y="60" fill="#b8b0a5" font-size="11.5">Owner · Status · Last attempted · Result · Evidence</text>
+          <text x="530" y="78" fill="#b8b0a5" font-size="11.5">Waiting on · Approved work · Next action</text>
+          <text x="530" y="96" fill="#b8b0a5" font-size="11.5">Source revision · Verified at</text>
+
+          <rect x="510" y="126" width="460" height="96" rx="8" fill="#191d20" stroke="#363d43"/>
+          <text x="530" y="150" fill="#f2eee7" font-size="13.5" font-weight="700">Profile and dialect are separate</text>
+          <text x="530" y="172" fill="#b8b0a5" font-size="11.5">compact controls document size; full stays readable.</text>
+          <text x="530" y="192" fill="#b8b0a5" font-size="11.5">v1 is the small structural contract; v2 adds a declared</text>
+          <text x="530" y="210" fill="#b8b0a5" font-size="11.5">acceptance surface with SHIP and HARDEN; sprint-dialect-v2.md.</text>
+
+          <rect x="510" y="236" width="460" height="98" rx="8" fill="#191d20" stroke="#363d43"/>
+          <text x="530" y="260" fill="#f2eee7" font-size="13.5" font-weight="700">Templates and rules</text>
+          <text x="530" y="280" fill="#b8b0a5" font-size="11.5">compact-spine-template.md · epic-spine-template.md</text>
+          <text x="530" y="300" fill="#b8b0a5" font-size="11.5">spine-model.md · spine-creation.md · compact-state.md</text>
+        </svg>
+      </div>
+      <div class="caps">
+        <div class="cap"><b>Minimums</b>Mission, Non-Goals, Current State, Definition of Done, Issue Ledger, Decisions.</div>
+        <div class="cap"><b>One state</b>no competing cursor; every field is a single line or a link.</div>
+        <div class="cap"><b>Readable</b><code>skill/epic-spine/references/spine-model.md</code> and the templates.</div>
       </div>
     </div>
   </section>
 
-  <section class="slide">
+  <!-- 8 D3 hierarchy -->
+  <section class="slide" data-part="Part 4 · How it works" data-title="Root, children, rollups">
     <header>
-      <div class="eyebrow">Integration discipline</div>
-      <h2>Dedicated branches. Protected main. Verified merges.</h2>
+      <div class="eyebrow">Part 4 · How it works · 3 of 14</div>
+      <h2>One root. Children own local truth.</h2>
     </header>
     <div class="body">
-      <div class="flow">
-        <div class="box">
-          <strong>issue branch + worktree</strong>
-          <span>Every ticket has a dedicated branch. Concurrent agents use separate worktrees for filesystem isolation.</span>
-        </div>
-        <div class="arrow">›</div>
-        <div class="box">
-          <strong>review gate</strong>
-          <span>Implementation complete, PR open, and required automated checks passing.</span>
-        </div>
-        <div class="arrow">›</div>
-        <div class="box">
-          <strong>integration + test</strong>
-          <span>Merge small reviewed work, then test an exact commit on a named surface before acceptance.</span>
-        </div>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 1000 330" role="img" aria-label="A root spine registers two child spines, each owning two issues; rollups travel up one level at a time.">
+          <rect x="370" y="14" width="260" height="60" rx="8" fill="#23282d" stroke="#d9ad62"/>
+          <text x="500" y="40" text-anchor="middle" fill="#f2eee7" font-size="16" font-weight="700">Root spine</text>
+          <text x="500" y="60" text-anchor="middle" fill="#b8b0a5" font-size="11.5">one canonical root per project</text>
+
+          <rect x="90" y="150" width="250" height="58" rx="8" fill="#23282d" stroke="#7da9c7"/>
+          <text x="215" y="176" text-anchor="middle" fill="#f2eee7" font-size="15" font-weight="700">Child spine A</text>
+          <text x="215" y="195" text-anchor="middle" fill="#b8b0a5" font-size="11">own mission, acceptance, ledger</text>
+
+          <rect x="660" y="150" width="250" height="58" rx="8" fill="#23282d" stroke="#7da9c7"/>
+          <text x="785" y="176" text-anchor="middle" fill="#f2eee7" font-size="15" font-weight="700">Child spine B</text>
+          <text x="785" y="195" text-anchor="middle" fill="#b8b0a5" font-size="11">own mission, acceptance, ledger</text>
+
+          <line x1="410" y1="74" x2="235" y2="150" stroke="#d9ad62" stroke-width="1.6" marker-end="url(#ag)"/>
+          <line x1="590" y1="74" x2="765" y2="150" stroke="#d9ad62" stroke-width="1.6" marker-end="url(#ag)"/>
+          <text x="185" y="130" text-anchor="middle" fill="#d9ad62" font-size="11.5">Spine Map registers child</text>
+          <text x="815" y="130" text-anchor="middle" fill="#d9ad62" font-size="11.5">Spine Map registers child</text>
+
+          <rect x="75" y="252" width="126" height="50" rx="7" fill="#191d20" stroke="#363d43"/>
+          <text x="138" y="282" text-anchor="middle" fill="#b8b0a5" font-size="12">issue A-1</text>
+          <rect x="229" y="252" width="126" height="50" rx="7" fill="#191d20" stroke="#363d43"/>
+          <text x="292" y="282" text-anchor="middle" fill="#b8b0a5" font-size="12">issue A-2</text>
+          <rect x="645" y="252" width="126" height="50" rx="7" fill="#191d20" stroke="#363d43"/>
+          <text x="708" y="282" text-anchor="middle" fill="#b8b0a5" font-size="12">issue B-1</text>
+          <rect x="799" y="252" width="126" height="50" rx="7" fill="#191d20" stroke="#363d43"/>
+          <text x="862" y="282" text-anchor="middle" fill="#b8b0a5" font-size="12">issue B-2</text>
+          <line x1="138" y1="252" x2="200" y2="208" stroke="#78b58c" stroke-width="1.4" marker-end="url(#agrn)"/>
+          <line x1="862" y1="252" x2="800" y2="208" stroke="#78b58c" stroke-width="1.4" marker-end="url(#agrn)"/>
+          <text x="500" y="224" text-anchor="middle" fill="#78b58c" font-size="11.5">Child publishes; parent reconciles</text>
+          <text x="500" y="242" text-anchor="middle" fill="#78b58c" font-size="11.5">one compact rollup row</text>
+          <text x="500" y="322" text-anchor="middle" fill="#b8b0a5" font-size="11.5">Never copy descendant issue ledgers or deep history into an ancestor</text>
+        </svg>
       </div>
-      <div class="callout">
-        <p>Integrate frequently, but never blindly. New agents start from the freshest validated base; unmerged state remains explicit in the issue and spine.</p>
+      <div class="caps">
+        <div class="cap"><b>Stable ID</b>every connected spine declares Spine Type, Root and Parent.</div>
+        <div class="cap"><b>One level</b>rollups travel root-ward one level at a time.</div>
+        <div class="cap"><b>Local truth</b>the child owns its state, evidence and ledger.</div>
+        <div class="cap"><b>Write scope</b>referenced spines stay read-only; write only inside your bound scope.</div>
       </div>
     </div>
   </section>
 
-  <section class="slide">
+  <!-- 9 D4 bind -->
+  <section class="slide" data-part="Part 4 · How it works" data-title="Bind first, read three hops">
     <header>
-      <div class="eyebrow">Write scope</div>
-      <h2>Read broadly. Write narrowly.</h2>
+      <div class="eyebrow">Part 4 · How it works · 4 of 14</div>
+      <h2>Bind first. Then read three hops.</h2>
     </header>
     <div class="body">
-      <div class="grid">
-        <div class="card">
-          <span class="tag gold">One steward</span>
-          <h3>One active reconciler</h3>
-          <p>The root worker stewards Epic 0; the epic worker normally stewards its child spine.</p>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 1000 300" role="img" aria-label="AGENTS.md routes to the root spine, which routes to the branch spine; each hop names exactly what is read.">
+          <rect x="30" y="24" width="280" height="76" rx="8" fill="#23282d" stroke="#d9ad62"/>
+          <text x="170" y="56" text-anchor="middle" fill="#f2eee7" font-size="16" font-weight="700">1 · AGENTS.md</text>
+          <text x="170" y="78" text-anchor="middle" fill="#b8b0a5" font-size="11.5">router and always-on block only</text>
+
+          <rect x="360" y="24" width="280" height="76" rx="8" fill="#23282d" stroke="#d9ad62"/>
+          <text x="500" y="56" text-anchor="middle" fill="#f2eee7" font-size="16" font-weight="700">2 · Root spine</text>
+          <text x="500" y="78" text-anchor="middle" fill="#b8b0a5" font-size="11">Current State + Operating Learnings Always</text>
+
+          <rect x="690" y="24" width="280" height="76" rx="8" fill="#23282d" stroke="#d9ad62"/>
+          <text x="830" y="56" text-anchor="middle" fill="#f2eee7" font-size="16" font-weight="700">3 · Branch spine</text>
+          <text x="830" y="78" text-anchor="middle" fill="#b8b0a5" font-size="11.5">the mission that contains the task</text>
+
+          <line x1="310" y1="62" x2="360" y2="62" stroke="#d9ad62" stroke-width="2" marker-end="url(#ag)"/>
+          <line x1="640" y1="62" x2="690" y2="62" stroke="#d9ad62" stroke-width="2" marker-end="url(#ag)"/>
+
+          <text x="170" y="140" text-anchor="middle" fill="#b8b0a5" font-size="12">never holds live project state</text>
+          <text x="500" y="140" text-anchor="middle" fill="#b8b0a5" font-size="12">read the Always list in full</text>
+          <text x="830" y="140" text-anchor="middle" fill="#b8b0a5" font-size="12">Current State, Decisions, Issue Ledger</text>
+
+          <rect x="30" y="176" width="940" height="52" rx="8" fill="#191d20" stroke="#363d43"/>
+          <text x="500" y="198" text-anchor="middle" fill="#f2eee7" font-size="13">First reply: role (default delivery manager) and Learnings in force: in at most five lines.</text>
+          <text x="500" y="218" text-anchor="middle" fill="#b8b0a5" font-size="11.5">Binding fields, one compact line: role | bound spine | bound issue | steward | handoff</text>
+
+          <text x="500" y="266" text-anchor="middle" fill="#b8b0a5" font-size="12">If role, spine or issue is unclear: orient read-only and ask before editing.</text>
+        </svg>
+      </div>
+      <div class="caps">
+        <div class="cap"><b>Cheap bind</b>a fresh agent reads few lines before acting.</div>
+        <div class="cap"><b>Reference</b><code>skill/epic-spine/SKILL.md</code> and <code>skill/epic-spine/references/role-protocols.md</code>.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 D5 roles -->
+  <section class="slide" data-part="Part 4 · How it works" data-title="Roles and dispatch">
+    <header>
+      <div class="eyebrow">Part 4 · How it works · 5 of 14</div>
+      <h2>Independence comes from fresh context.</h2>
+    </header>
+    <div class="body">
+      <div class="svg-wrap">
+        <svg viewBox="0 0 1000 340" role="img" aria-label="User to delivery manager to a worker in its own worktree, back to the manager for two-axis verification and integration, with a fallback branch if the default is unavailable.">
+          <rect x="24" y="30" width="180" height="72" rx="8" fill="#23282d" stroke="#b8b0a5"/>
+          <text x="114" y="58" text-anchor="middle" fill="#f2eee7" font-size="14" font-weight="700">User</text>
+          <text x="114" y="78" text-anchor="middle" fill="#b8b0a5" font-size="11">states the goal</text>
+
+          <rect x="240" y="30" width="220" height="72" rx="8" fill="#23282d" stroke="#d9ad62"/>
+          <text x="350" y="56" text-anchor="middle" fill="#f2eee7" font-size="14" font-weight="700">Delivery manager</text>
+          <text x="350" y="76" text-anchor="middle" fill="#b8b0a5" font-size="11">settle ask-first decisions, then dispatch</text>
+
+          <rect x="496" y="30" width="220" height="72" rx="8" fill="#23282d" stroke="#7da9c7"/>
+          <text x="606" y="56" text-anchor="middle" fill="#f2eee7" font-size="14" font-weight="700">Worker</text>
+          <text x="606" y="76" text-anchor="middle" fill="#b8b0a5" font-size="11">own worktree, one task</text>
+
+          <rect x="752" y="30" width="222" height="72" rx="8" fill="#23282d" stroke="#78b58c"/>
+          <text x="863" y="56" text-anchor="middle" fill="#f2eee7" font-size="14" font-weight="700">Manager verifies</text>
+          <text x="863" y="76" text-anchor="middle" fill="#b8b0a5" font-size="11">verify two axes, then integrate</text>
+
+          <line x1="204" y1="66" x2="240" y2="66" stroke="#d9ad62" stroke-width="2" marker-end="url(#ag)"/>
+          <line x1="460" y1="66" x2="496" y2="66" stroke="#7da9c7" stroke-width="2" marker-end="url(#ab)"/>
+          <line x1="716" y1="66" x2="752" y2="66" stroke="#78b58c" stroke-width="2" marker-end="url(#agrn)"/>
+
+          <rect x="496" y="150" width="220" height="66" rx="8" fill="#23282d" stroke="#78b58c"/>
+          <text x="606" y="176" text-anchor="middle" fill="#f2eee7" font-size="14" font-weight="700">main</text>
+          <text x="606" y="196" text-anchor="middle" fill="#b8b0a5" font-size="11">ff-only merge; test; revert on red</text>
+          <line x1="863" y1="102" x2="660" y2="150" stroke="#78b58c" stroke-width="2" marker-end="url(#agrn)"/>
+
+          <rect x="240" y="150" width="220" height="66" rx="8" fill="#23282d" stroke="#d9ad62"/>
+          <text x="350" y="176" text-anchor="middle" fill="#f2eee7" font-size="14" font-weight="700">Record and clean</text>
+          <text x="350" y="196" text-anchor="middle" fill="#b8b0a5" font-size="11">Current State, ledger, worktree</text>
+          <line x1="496" y1="183" x2="460" y2="183" stroke="#d9ad62" stroke-width="2" marker-end="url(#ag)"/>
+          <line x1="350" y1="150" x2="350" y2="104" stroke="#b8b0a5" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#am)"/>
+
+          <rect x="24" y="250" width="470" height="74" rx="8" fill="#191d20" stroke="#d9ad62"/>
+          <text x="44" y="274" fill="#f2eee7" font-size="12.5" font-weight="700">Default profile</text>
+          <text x="44" y="294" fill="#b8b0a5" font-size="11.5">T3 delegate_task · opencode-go/deepseek-v4.1-flash</text>
+          <text x="44" y="312" fill="#b8b0a5" font-size="11.5">reasoning high · worktree-first · disjoint waves</text>
+
+          <rect x="512" y="250" width="462" height="74" rx="8" fill="#191d20" stroke="#d2776d"/>
+          <text x="532" y="274" fill="#d2776d" font-size="12.5" font-weight="700">If T3 or the model is unavailable</text>
+          <text x="532" y="294" fill="#b8b0a5" font-size="11.5">Stop and say so, then propose a concrete substitute.</text>
+          <text x="532" y="312" fill="#b8b0a5" font-size="11.5">Never silently substitute or implement the work yourself.</text>
+        </svg>
+      </div>
+      <div class="caps">
+        <div class="cap"><b>Resolution order</b>per-task user instruction, then repo declaration, then the built-in default.</div>
+        <div class="cap"><b>Read</b><code>skill/epic-spine/references/roles-and-dispatch.md</code>, <code>skill/epic-spine/references/dispatch-prompts.md</code>, <code>skill/epic-spine/assets/dispatch-prompt-preamble.md</code>.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 D6 git -->
+  <section class="slide" data-part="Part 4 · How it works" data-title="Git lanes">
+    <header>
+      <div class="eyebrow">Part 4 · How it works · 6 of 14</div>
+      <h2>Stay in main. Isolate execution. Merge verified.</h2>
+    </header>
+    <div class="body">
+      <div class="svg-wrap">
+        <svg viewBox="0 0 1000 360" role="img" aria-label="Main is one horizontal line. Two worktree lanes fork below it and rejoin with fast-forward-only merges marked above main. A callout to the right of main says tests run in main and a red main is reverted.">
+          <text x="50" y="44" fill="#d9ad62" font-size="14" font-weight="700">main — the one integration line</text>
+          <line x1="50" y1="76" x2="640" y2="76" stroke="#d9ad62" stroke-width="3"/>
+          <text x="440" y="62" text-anchor="middle" fill="#78b58c" font-size="11.5" font-weight="700">ff-only merge</text>
+          <text x="580" y="62" text-anchor="middle" fill="#78b58c" font-size="11.5" font-weight="700">ff-only merge</text>
+
+          <rect x="180" y="154" width="300" height="38" rx="9" fill="#1b2126" stroke="#7da9c7"/>
+          <text x="330" y="178" text-anchor="middle" fill="#7da9c7" font-size="12">wt/task A — worker worktree</text>
+          <line x1="240" y1="76" x2="240" y2="154" stroke="#7da9c7" stroke-width="2"/>
+          <line x1="440" y1="154" x2="440" y2="76" stroke="#7da9c7" stroke-width="2" marker-end="url(#ab)"/>
+          <circle cx="240" cy="76" r="4.5" fill="#7da9c7"/>
+          <circle cx="440" cy="76" r="4.5" fill="#78b58c"/>
+
+          <rect x="140" y="228" width="460" height="38" rx="9" fill="#1b2126" stroke="#a891d7"/>
+          <text x="370" y="252" text-anchor="middle" fill="#a891d7" font-size="12">wt/task B — second worker</text>
+          <line x1="155" y1="76" x2="155" y2="228" stroke="#a891d7" stroke-width="2"/>
+          <line x1="580" y1="228" x2="580" y2="76" stroke="#a891d7" stroke-width="2" marker-end="url(#av)"/>
+          <circle cx="155" cy="76" r="4.5" fill="#a891d7"/>
+          <circle cx="580" cy="76" r="4.5" fill="#78b58c"/>
+
+          <rect x="700" y="40" width="280" height="74" rx="8" fill="#191d20" stroke="#d2776d"/>
+          <text x="720" y="66" fill="#f2eee7" font-size="12.5" font-weight="700">tests run in main</text>
+          <text x="720" y="86" fill="#d2776d" font-size="12">red? git revert immediately</text>
+          <text x="720" y="104" fill="#b8b0a5" font-size="11">then re-dispatch a fix</text>
+          <line x1="700" y1="77" x2="648" y2="77" stroke="#d2776d" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#ar)"/>
+
+          <rect x="40" y="286" width="920" height="58" rx="8" fill="#191d20" stroke="#363d43"/>
+          <text x="500" y="308" text-anchor="middle" fill="#f2eee7" font-size="12.5">One merge at a time; serialise branches that touch the same generated file (MANIFEST.sha256).</text>
+          <text x="500" y="330" text-anchor="middle" fill="#b8b0a5" font-size="11.5">Clean-repo end state: one branch main, one worktree, clean status, no stray remote branches.</text>
+        </svg>
+      </div>
+      <div class="caps">
+        <div class="cap"><b>Workers</b>create <code>wt/&lt;task&gt;</code> from clean main and never touch the shared checkout.</div>
+        <div class="cap"><b>Manager</b>verifies, rebases if main moved, ff-only merges, tests in main.</div>
+        <div class="cap"><b>PRs optional</b>a local ff-only merge is enough; the user never has to merge.</div>
+        <div class="cap"><b>Read</b><code>skill/epic-spine/references/git-doctrine.md</code>.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12 D7 two-axis -->
+  <section class="slide" data-part="Part 4 · How it works" data-title="Two-axis verification">
+    <header>
+      <div class="eyebrow">Part 4 · How it works · 7 of 14</div>
+      <h2>Verify on two axes. Settle forks first.</h2>
+    </header>
+    <div class="body">
+      <div class="svg-wrap">
+        <svg viewBox="0 0 1000 340" role="img" aria-label="A two-by-two grid: the X axis is repo standards with fail and pass columns, the Y axis is the ticket spec with fail and pass rows. Only the both-pass cell integrates; the other three are rework for a stated reason. An ask-first panel and a ready-frontier panel sit to the right.">
+          <line x1="150" y1="290" x2="150" y2="46" stroke="#b8b0a5" stroke-width="1.6" marker-end="url(#am)"/>
+          <text x="68" y="176" transform="rotate(-90 68 176)" text-anchor="middle" fill="#f2eee7" font-size="13" font-weight="700">Ticket spec (acceptance)</text>
+          <line x1="150" y1="300" x2="626" y2="300" stroke="#b8b0a5" stroke-width="1.6" marker-end="url(#am)"/>
+          <text x="392" y="328" text-anchor="middle" fill="#f2eee7" font-size="13" font-weight="700">Repo standards (tests, validators, conventions, lean)</text>
+
+          <text x="285" y="62" text-anchor="middle" fill="#b8b0a5" font-size="11.5">fail</text>
+          <text x="507" y="62" text-anchor="middle" fill="#b8b0a5" font-size="11.5">pass</text>
+          <text x="140" y="124" text-anchor="end" fill="#b8b0a5" font-size="11.5">passes</text>
+          <text x="140" y="232" text-anchor="end" fill="#b8b0a5" font-size="11.5">fails</text>
+
+          <rect x="180" y="72" width="210" height="96" rx="8" fill="#191d20" stroke="#d9ad62"/>
+          <text x="285" y="112" text-anchor="middle" fill="#d9ad62" font-size="14" font-weight="700">rework</text>
+          <text x="285" y="134" text-anchor="middle" fill="#b8b0a5" font-size="11.5">standards not met</text>
+
+          <rect x="402" y="72" width="210" height="96" rx="8" fill="#191d20" stroke="#78b58c"/>
+          <text x="507" y="112" text-anchor="middle" fill="#78b58c" font-size="14" font-weight="700">integrate</text>
+          <text x="507" y="134" text-anchor="middle" fill="#b8b0a5" font-size="11.5">both axes pass</text>
+
+          <rect x="180" y="180" width="210" height="96" rx="8" fill="#191d20" stroke="#d2776d"/>
+          <text x="285" y="220" text-anchor="middle" fill="#d2776d" font-size="14" font-weight="700">rework</text>
+          <text x="285" y="242" text-anchor="middle" fill="#b8b0a5" font-size="11.5">neither met</text>
+
+          <rect x="402" y="180" width="210" height="96" rx="8" fill="#191d20" stroke="#d9ad62"/>
+          <text x="507" y="220" text-anchor="middle" fill="#d9ad62" font-size="14" font-weight="700">rework</text>
+          <text x="507" y="242" text-anchor="middle" fill="#b8b0a5" font-size="11.5">spec not met</text>
+
+          <rect x="650" y="50" width="330" height="120" rx="8" fill="#191d20" stroke="#d9ad62"/>
+          <text x="670" y="78" fill="#d9ad62" font-size="13.5" font-weight="700">Ask-first decisions</text>
+          <text x="670" y="100" fill="#b8b0a5" font-size="11.5">Settle facts yourself by reading and running things.</text>
+          <text x="670" y="120" fill="#b8b0a5" font-size="11.5">The user makes decisions. Ask one real fork at a time,</text>
+          <text x="670" y="140" fill="#b8b0a5" font-size="11.5">with a recommendation, before dispatch.</text>
+          <text x="670" y="160" fill="#b8b0a5" font-size="11.5">Record the resolved decision in the Decisions table.</text>
+
+          <rect x="650" y="190" width="330" height="110" rx="8" fill="#191d20" stroke="#363d43"/>
+          <text x="670" y="218" fill="#f2eee7" font-size="13.5" font-weight="700">Ready frontier</text>
+          <text x="670" y="240" fill="#b8b0a5" font-size="11.5">Launch only tickets whose dependencies are done</text>
+          <text x="670" y="260" fill="#b8b0a5" font-size="11.5">and whose write surfaces are disjoint from every</text>
+          <text x="670" y="280" fill="#b8b0a5" font-size="11.5">in-flight worker; sequence the rest.</text>
+        </svg>
+      </div>
+      <div class="caps">
+        <div class="cap"><b>Never the summary</b>verify the repository, the diff and the checks, not the worker's account.</div>
+        <div class="cap"><b>Record</b>each resolved decision in the spine's Decisions table.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 13 D8 learnings -->
+  <section class="slide" data-part="Part 4 · How it works" data-title="Operating Learnings">
+    <header>
+      <div class="eyebrow">Part 4 · How it works · 8 of 14</div>
+      <h2>Memory, at the depth where it applies.</h2>
+    </header>
+    <div class="body">
+      <div class="svg-wrap">
+        <svg viewBox="0 0 1000 320" role="img" aria-label="A root Always list with a scoped index descending into child spines and Book leaves, plus the precedence rule.">
+          <rect x="330" y="16" width="340" height="58" rx="8" fill="#23282d" stroke="#d9ad62"/>
+          <text x="500" y="42" text-anchor="middle" fill="#f2eee7" font-size="15" font-weight="700">Root spine — Operating Learnings</text>
+          <text x="500" y="62" text-anchor="middle" fill="#b8b0a5" font-size="11">the repo's navigable memory</text>
+
+          <rect x="110" y="122" width="330" height="80" rx="8" fill="#191d20" stroke="#d9ad62"/>
+          <text x="130" y="148" fill="#d9ad62" font-size="13.5" font-weight="700">Always</text>
+          <text x="130" y="170" fill="#b8b0a5" font-size="11.5">every task; read in full at bind</text>
+          <text x="130" y="190" fill="#b8b0a5" font-size="11.5">hard cap 12 lines, one learning per line</text>
+
+          <rect x="560" y="122" width="330" height="80" rx="8" fill="#191d20" stroke="#7da9c7"/>
+          <text x="580" y="148" fill="#7da9c7" font-size="13.5" font-weight="700">Scoped index</text>
+          <text x="580" y="170" fill="#b8b0a5" font-size="11.5">one row per scoped learning: an</text>
+          <text x="580" y="190" fill="#b8b0a5" font-size="11.5">applies-when trigger and a pointer</text>
+
+          <line x1="400" y1="74" x2="275" y2="122" stroke="#d9ad62" stroke-width="1.6" marker-end="url(#ag)"/>
+          <line x1="600" y1="74" x2="725" y2="122" stroke="#7da9c7" stroke-width="1.6" marker-end="url(#ab)"/>
+
+          <rect x="560" y="236" width="330" height="64" rx="8" fill="#191d20" stroke="#363d43"/>
+          <text x="580" y="262" fill="#f2eee7" font-size="12.5">child spines and Book leaves own deeper rules</text>
+          <text x="580" y="284" fill="#b8b0a5" font-size="11.5">follow only matching triggers; descend until no match</text>
+          <line x1="725" y1="202" x2="725" y2="236" stroke="#7da9c7" stroke-width="1.6" marker-end="url(#ab)"/>
+
+          <rect x="110" y="236" width="330" height="64" rx="8" fill="#191d20" stroke="#d9ad62"/>
+          <text x="130" y="260" fill="#d9ad62" font-size="12.5" font-weight="700">Precedence</text>
+          <text x="130" y="282" fill="#b8b0a5" font-size="11.5">user instruction &gt; deeper &gt; shallower</text>
+        </svg>
+      </div>
+      <div class="caps">
+        <div class="cap"><b>Propose</b>rarely, at most one per reply; only the spine steward writes.</div>
+        <div class="cap"><b>Read</b><code>skill/epic-spine/references/learnings.md</code>.</div>
+        <div class="cap"><b>Cost</b>a learning is capped so a cold agent never reads a runaway kernel.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 14 D9 tooling -->
+  <section class="slide" data-part="Part 4 · How it works" data-title="Validation and tooling">
+    <header>
+      <div class="eyebrow">Part 4 · How it works · 9 of 14</div>
+      <h2>Documents have a contract. Checks prove it.</h2>
+    </header>
+    <div class="body">
+      <div class="svg-wrap">
+        <svg viewBox="0 0 1000 344" role="img" aria-label="Six tools as a grid under two headings. Spine documents: validate_spine.py, rollup_spine.py, migrate_spine.py. Repo and install: tests plus MANIFEST.sha256 and CI, skill_update.py, agents_block.py. No sequence is implied between them.">
+          <text x="30" y="30" fill="#d9ad62" font-size="13" font-weight="700" letter-spacing=".07em">SPINE DOCUMENTS</text>
+
+          <rect x="30" y="42" width="280" height="94" rx="8" fill="#191d20" stroke="#d9ad62"/>
+          <text x="50" y="70" fill="#f2eee7" font-size="13.5" font-weight="700">validate_spine.py</text>
+          <text x="50" y="92" fill="#b8b0a5" font-size="11.5">document contract, required data,</text>
+          <text x="50" y="110" fill="#b8b0a5" font-size="11.5">state conflicts; --graph adds</text>
+          <text x="50" y="128" fill="#b8b0a5" font-size="11.5">the hierarchy checks</text>
+
+          <rect x="360" y="42" width="280" height="94" rx="8" fill="#191d20" stroke="#7da9c7"/>
+          <text x="380" y="70" fill="#f2eee7" font-size="13.5" font-weight="700">rollup_spine.py</text>
+          <text x="380" y="92" fill="#b8b0a5" font-size="11.5">projects direct-child facts into</text>
+          <text x="380" y="110" fill="#b8b0a5" font-size="11.5">the parent with source-hash</text>
+          <text x="380" y="128" fill="#b8b0a5" font-size="11.5">receipts</text>
+
+          <rect x="690" y="42" width="280" height="94" rx="8" fill="#191d20" stroke="#a891d7"/>
+          <text x="710" y="70" fill="#f2eee7" font-size="13.5" font-weight="700">migrate_spine.py</text>
+          <text x="710" y="92" fill="#b8b0a5" font-size="11.5">conservative full-to-compact</text>
+          <text x="710" y="110" fill="#b8b0a5" font-size="11.5">migration behind a reviewed</text>
+          <text x="710" y="128" fill="#b8b0a5" font-size="11.5">source hash</text>
+
+          <text x="30" y="176" fill="#78b58c" font-size="13" font-weight="700" letter-spacing=".07em">REPO AND INSTALL</text>
+
+          <rect x="30" y="188" width="280" height="94" rx="8" fill="#191d20" stroke="#78b58c"/>
+          <text x="50" y="216" fill="#f2eee7" font-size="13.5" font-weight="700">tests + MANIFEST.sha256 + CI</text>
+          <text x="50" y="238" fill="#b8b0a5" font-size="11.5">unit suites, smoke and drift</text>
+          <text x="50" y="256" fill="#b8b0a5" font-size="11.5">tests, and the manifest gate</text>
+          <text x="50" y="274" fill="#b8b0a5" font-size="11.5">that keeps the install in sync</text>
+
+          <rect x="360" y="188" width="280" height="94" rx="8" fill="#191d20" stroke="#d9ad62"/>
+          <text x="380" y="216" fill="#f2eee7" font-size="13.5" font-weight="700">skill_update.py</text>
+          <text x="380" y="238" fill="#b8b0a5" font-size="11.5">status, pin, verify, atomic</text>
+          <text x="380" y="256" fill="#b8b0a5" font-size="11.5">upgrade of the installed copy</text>
+
+          <rect x="690" y="188" width="280" height="94" rx="8" fill="#191d20" stroke="#d9ad62"/>
+          <text x="710" y="216" fill="#f2eee7" font-size="13.5" font-weight="700">agents_block.py</text>
+          <text x="710" y="238" fill="#b8b0a5" font-size="11.5">install and check the always-on</text>
+          <text x="710" y="256" fill="#b8b0a5" font-size="11.5">AGENTS.md block</text>
+
+          <text x="500" y="312" text-anchor="middle" fill="#b8b0a5" font-size="11.5">Also: build_shortlist.py renders a shortlist JSON to HTML; see the shortlist slide.</text>
+          <text x="500" y="332" text-anchor="middle" fill="#b8b0a5" font-size="11.5">Validation proves the document contract and the checks, never that a product shipped.</text>
+        </svg>
+      </div>
+      <div class="caps">
+        <div class="cap"><b>Diagnostics</b>stable rule IDs and categories; strict adds gates, advisory never fails.</div>
+        <div class="cap"><b>Repair and evolve</b><code>skill/epic-spine/references/operating-model.md</code> is the reference for repairing a spine or changing the workflow itself.</div>
+        <div class="cap"><b>Read</b><code>skill/epic-spine/references/structural-validation.md</code>, <code>skill/epic-spine/references/execution-rollups.md</code>.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 15 D10 hygiene -->
+  <section class="slide" data-part="Part 4 · How it works" data-title="Hygiene and resumability">
+    <header>
+      <div class="eyebrow">Part 4 · How it works · 10 of 14</div>
+      <h2>Leave the repo clean and the next agent a map.</h2>
+    </header>
+    <div class="body">
+      <div class="svg-wrap">
+        <svg viewBox="0 0 1000 320" role="img" aria-label="A hygiene loop: integrate, remove the worktree and branch, record Current State, then dispatch a sweep when the repo is stale.">
+          <rect x="70" y="30" width="300" height="80" rx="8" fill="#191d20" stroke="#78b58c"/>
+          <text x="220" y="60" text-anchor="middle" fill="#f2eee7" font-size="14" font-weight="700">Integrate</text>
+          <text x="220" y="82" text-anchor="middle" fill="#b8b0a5" font-size="11.5">ff-only merge; test in main</text>
+          <text x="220" y="100" text-anchor="middle" fill="#b8b0a5" font-size="11.5">revert on red</text>
+
+          <rect x="630" y="30" width="300" height="80" rx="8" fill="#191d20" stroke="#d9ad62"/>
+          <text x="780" y="60" text-anchor="middle" fill="#f2eee7" font-size="14" font-weight="700">Remove</text>
+          <text x="780" y="82" text-anchor="middle" fill="#b8b0a5" font-size="11.5">worktree and local branch, right</text>
+          <text x="780" y="100" text-anchor="middle" fill="#b8b0a5" font-size="11.5">after integrating</text>
+
+          <rect x="630" y="220" width="300" height="80" rx="8" fill="#191d20" stroke="#7da9c7"/>
+          <text x="780" y="250" text-anchor="middle" fill="#f2eee7" font-size="14" font-weight="700">Record</text>
+          <text x="780" y="272" text-anchor="middle" fill="#b8b0a5" font-size="11.5">Current State and Issue Ledger</text>
+          <text x="780" y="290" text-anchor="middle" fill="#b8b0a5" font-size="11.5">so any agent can resume</text>
+
+          <rect x="70" y="220" width="300" height="80" rx="8" fill="#191d20" stroke="#a891d7"/>
+          <text x="220" y="250" text-anchor="middle" fill="#f2eee7" font-size="14" font-weight="700">Sweep when stale</text>
+          <text x="220" y="272" text-anchor="middle" fill="#b8b0a5" font-size="11.5">Last sweep absent or over 7 days,</text>
+          <text x="220" y="290" text-anchor="middle" fill="#b8b0a5" font-size="11.5">clutter, or the user asks</text>
+
+          <line x1="370" y1="70" x2="630" y2="70" stroke="#78b58c" stroke-width="2" marker-end="url(#agrn)"/>
+          <line x1="780" y1="110" x2="780" y2="220" stroke="#d9ad62" stroke-width="2" marker-end="url(#ag)"/>
+          <line x1="630" y1="260" x2="370" y2="260" stroke="#7da9c7" stroke-width="2" marker-end="url(#ab)"/>
+          <line x1="220" y1="220" x2="220" y2="110" stroke="#b8b0a5" stroke-width="1.6" stroke-dasharray="6 4" marker-end="url(#am)"/>
+          <text x="500" y="176" text-anchor="middle" fill="#b8b0a5" font-size="12">repo hygiene loop</text>
+          <text x="500" y="196" text-anchor="middle" fill="#b8b0a5" font-size="11.5">never sweep while integrating; pass the active worktrees to skip</text>
+        </svg>
+      </div>
+      <div class="caps">
+        <div class="cap"><b>Sweep</b>a cheap worker brief, not a role and not part of integration.</div>
+        <div class="cap"><b>Resumable</b>owner, issue, branch, base and latest commit, last verified, blocker, next action.</div>
+        <div class="cap"><b>Read</b><code>skill/epic-spine/references/hygiene.md</code> and <code>skill/epic-spine/assets/sweep-brief.md</code>.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 16 D11 distribution -->
+  <section class="slide" data-part="Part 4 · How it works" data-title="Skill distribution and updates">
+    <header>
+      <div class="eyebrow">Part 4 · How it works · 11 of 14</div>
+      <h2>One source, auto-updated, installed anywhere.</h2>
+    </header>
+    <div class="body">
+      <div class="svg-wrap">
+        <svg viewBox="0 0 1000 300" role="img" aria-label="The skill source flows to an installed hub and then to harness symlinks, with a freshness check at bind.">
+          <rect x="30" y="40" width="280" height="82" rx="8" fill="#23282d" stroke="#d9ad62"/>
+          <text x="170" y="68" text-anchor="middle" fill="#f2eee7" font-size="14.5" font-weight="700">Canonical source</text>
+          <text x="170" y="90" text-anchor="middle" fill="#b8b0a5" font-size="11.5">skill/epic-spine/ in this repo,</text>
+          <text x="170" y="108" text-anchor="middle" fill="#b8b0a5" font-size="11.5">deployed continuously from main</text>
+
+          <rect x="360" y="40" width="280" height="82" rx="8" fill="#23282d" stroke="#7da9c7"/>
+          <text x="500" y="68" text-anchor="middle" fill="#f2eee7" font-size="14.5" font-weight="700">Installed hub</text>
+          <text x="500" y="90" text-anchor="middle" fill="#b8b0a5" font-size="11.5">one real copy; upgrade the hub</text>
+          <text x="500" y="108" text-anchor="middle" fill="#b8b0a5" font-size="11.5">and every link follows</text>
+
+          <rect x="690" y="40" width="280" height="82" rx="8" fill="#23282d" stroke="#a891d7"/>
+          <text x="830" y="68" text-anchor="middle" fill="#f2eee7" font-size="14.5" font-weight="700">Harness symlinks</text>
+          <text x="830" y="90" text-anchor="middle" fill="#b8b0a5" font-size="11.5">each harness points at the hub;</text>
+          <text x="830" y="108" text-anchor="middle" fill="#b8b0a5" font-size="11.5">a plain per-harness copy also works</text>
+
+          <line x1="310" y1="81" x2="360" y2="81" stroke="#d9ad62" stroke-width="2" marker-end="url(#ag)"/>
+          <line x1="640" y1="81" x2="690" y2="81" stroke="#7da9c7" stroke-width="2" marker-end="url(#ab)"/>
+
+          <rect x="30" y="158" width="940" height="112" rx="8" fill="#191d20" stroke="#363d43"/>
+          <text x="50" y="184" fill="#f2eee7" font-size="13" font-weight="700">At bind: skill_update.py status — at most one network check per 7-day window.</text>
+          <text x="50" y="208" fill="#b8b0a5" font-size="11.5">auto (default) upgrades between tasks; manual asks; off never checks. linked and unknown report one line, no nagging.</text>
+          <text x="50" y="232" fill="#b8b0a5" font-size="11.5">Upgrade: shallow clone, verify byte-for-byte against MANIFEST.sha256, atomic swap, rewrite the pin.</text>
+          <text x="50" y="256" fill="#b8b0a5" font-size="11.5">VERSION is a CalVer label; commit and manifest decide real freshness. Vendored copies re-sync and are not upgraded here.</text>
+        </svg>
+      </div>
+      <div class="caps">
+        <div class="cap"><b>Always-on block</b><code>skill/epic-spine/assets/agents-block.md</code> installed by <code>skill/epic-spine/scripts/agents_block.py</code>.</div>
+        <div class="cap"><b>Read</b><code>skill/epic-spine/references/skill-update.md</code>.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 17 D12 book -->
+  <section class="slide" data-part="Part 4 · How it works" data-title="The Book companion">
+    <header>
+      <div class="eyebrow">Part 4 · How it works · 12 of 14</div>
+      <h2>The spine owns development. The Book owns understanding.</h2>
+    </header>
+    <div class="body">
+      <div class="svg-wrap">
+        <svg viewBox="0 0 1000 320" role="img" aria-label="A Book tree from root to chapters to leaves, an optional canonical registry, and the landing test that decides whether knowledge becomes a leaf.">
+          <rect x="30" y="24" width="250" height="60" rx="8" fill="#23282d" stroke="#a891d7"/>
+          <text x="155" y="50" text-anchor="middle" fill="#f2eee7" font-size="13.5" font-weight="700">Book root (shallow)</text>
+          <text x="155" y="69" text-anchor="middle" fill="#b8b0a5" font-size="11">goal, synthesis, chapter map</text>
+
+          <rect x="30" y="128" width="250" height="60" rx="8" fill="#23282d" stroke="#7da9c7"/>
+          <text x="155" y="154" text-anchor="middle" fill="#f2eee7" font-size="13.5" font-weight="700">Chapter</text>
+          <text x="155" y="173" text-anchor="middle" fill="#b8b0a5" font-size="11">one durable knowledge domain</text>
+
+          <rect x="30" y="232" width="250" height="60" rx="8" fill="#23282d" stroke="#78b58c"/>
+          <text x="155" y="258" text-anchor="middle" fill="#f2eee7" font-size="13.5" font-weight="700">Leaf</text>
+          <text x="155" y="277" text-anchor="middle" fill="#b8b0a5" font-size="11">one bounded question, evidence</text>
+
+          <rect x="330" y="232" width="220" height="60" rx="8" fill="#191d20" stroke="#d9ad62"/>
+          <text x="440" y="258" text-anchor="middle" fill="#f2eee7" font-size="12.5" font-weight="700">Canonical registry</text>
+          <text x="440" y="277" text-anchor="middle" fill="#b8b0a5" font-size="11">optional; one row per item</text>
+
+          <line x1="155" y1="84" x2="155" y2="128" stroke="#a891d7" stroke-width="1.8" marker-end="url(#av)"/>
+          <line x1="155" y1="188" x2="155" y2="232" stroke="#7da9c7" stroke-width="1.8" marker-end="url(#ab)"/>
+
+          <rect x="600" y="40" width="368" height="120" rx="8" fill="#191d20" stroke="#d9ad62"/>
+          <text x="784" y="66" text-anchor="middle" fill="#d9ad62" font-size="13.5" font-weight="700">Landing test</text>
+          <text x="784" y="90" text-anchor="middle" fill="#b8b0a5" font-size="11.5">durable after the chat? evidence-backed?</text>
+          <text x="784" y="110" text-anchor="middle" fill="#b8b0a5" font-size="11.5">navigable? worth returning to?</text>
+          <text x="784" y="134" text-anchor="middle" fill="#78b58c" font-size="11.5">yes &rarr; create or update a leaf</text>
+          <text x="784" y="152" text-anchor="middle" fill="#b8b0a5" font-size="11.5">no &rarr; stay in chat or the issue</text>
+
+          <text x="600" y="196" fill="#b8b0a5" font-size="11.5">Reuse before creation: read the root and chapter,</text>
+          <text x="600" y="216" fill="#b8b0a5" font-size="11.5">search existing leaves, update in place — no v2 or final copies.</text>
+          <text x="600" y="240" fill="#b8b0a5" font-size="11.5">Every leaf links back to its chapter and root; the chapter</text>
+          <text x="600" y="260" fill="#b8b0a5" font-size="11.5">links back to the leaf. This deck is the repo's Book root.</text>
+          <text x="600" y="286" fill="#b8b0a5" font-size="11.5">Book behavior is opt-in, declared by the repo.</text>
+        </svg>
+      </div>
+      <div class="caps">
+        <div class="cap"><b>Read</b><code>skill/epic-spine/references/book-companion.md</code>, <code>skill/epic-spine/assets/book-companion-contract.md</code>.</div>
+        <div class="cap"><b>Enforced</b>navigation and registry rules; the spine validator does not check Book truth.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 18 D13 shortlists -->
+  <section class="slide" data-part="Part 4 · How it works" data-title="Shortlists">
+    <header>
+      <div class="eyebrow">Part 4 · How it works · 13 of 14</div>
+      <h2>A shortlist is a first-class deliverable.</h2>
+    </header>
+    <div class="body">
+      <div class="svg-wrap">
+        <svg viewBox="0 0 1000 330" role="img" aria-label="A shortlist flows from a JSON source of truth through the builder to generated table-first HTML, served on localhost, with choices and rejections recorded.">
+          <rect x="24" y="30" width="220" height="88" rx="8" fill="#23282d" stroke="#d9ad62"/>
+          <text x="134" y="58" text-anchor="middle" fill="#f2eee7" font-size="13" font-weight="700">shortlist JSON</text>
+          <text x="134" y="78" text-anchor="middle" fill="#b8b0a5" font-size="11">shortlists/&lt;slug&gt;.json</text>
+          <text x="134" y="98" text-anchor="middle" fill="#b8b0a5" font-size="11">source of truth; never hand-edit HTML</text>
+
+          <rect x="286" y="30" width="200" height="88" rx="8" fill="#23282d" stroke="#7da9c7"/>
+          <text x="386" y="58" text-anchor="middle" fill="#f2eee7" font-size="13" font-weight="700">build_shortlist.py</text>
+          <text x="386" y="78" text-anchor="middle" fill="#b8b0a5" font-size="11">renders the template</text>
+          <text x="386" y="98" text-anchor="middle" fill="#b8b0a5" font-size="11">stdlib; offline; embeds data</text>
+
+          <rect x="528" y="30" width="210" height="88" rx="8" fill="#23282d" stroke="#78b58c"/>
+          <text x="633" y="58" text-anchor="middle" fill="#f2eee7" font-size="13" font-weight="700">Generated HTML</text>
+          <text x="633" y="78" text-anchor="middle" fill="#b8b0a5" font-size="11">table-first compact layout</text>
+          <text x="633" y="98" text-anchor="middle" fill="#b8b0a5" font-size="11">sortable and filterable</text>
+
+          <rect x="780" y="30" width="196" height="88" rx="8" fill="#23282d" stroke="#a891d7"/>
+          <text x="878" y="58" text-anchor="middle" fill="#f2eee7" font-size="13" font-weight="700">Serve it</text>
+          <text x="878" y="78" text-anchor="middle" fill="#b8b0a5" font-size="11">127.0.0.1 only, HTTP 200</text>
+          <text x="878" y="98" text-anchor="middle" fill="#b8b0a5" font-size="11">hand over the clickable URL</text>
+
+          <line x1="244" y1="74" x2="286" y2="74" stroke="#d9ad62" stroke-width="2" marker-end="url(#ag)"/>
+          <line x1="486" y1="74" x2="528" y2="74" stroke="#7da9c7" stroke-width="2" marker-end="url(#ab)"/>
+          <line x1="738" y1="74" x2="780" y2="74" stroke="#78b58c" stroke-width="2" marker-end="url(#agrn)"/>
+
+          <rect x="24" y="150" width="470" height="150" rx="8" fill="#191d20" stroke="#363d43"/>
+          <text x="44" y="176" fill="#f2eee7" font-size="12.5" font-weight="700">Schema essentials</text>
+          <text x="44" y="198" fill="#b8b0a5" font-size="11.5">title; criteria[] (non-empty); items[] (non-empty)</text>
+          <text x="44" y="218" fill="#b8b0a5" font-size="11.5">item: id (stable, unique) and name required; optional</text>
+          <text x="44" y="238" fill="#b8b0a5" font-size="11.5">url, area, score, price, rating, tags, evidence, risks</text>
+          <text x="44" y="258" fill="#b8b0a5" font-size="11.5">status: candidate, shortlisted, contacted, chosen, rejected</text>
+          <text x="44" y="278" fill="#b8b0a5" font-size="11.5">rejected rows need a rejectedReason and are kept forever</text>
+
+          <rect x="514" y="150" width="462" height="150" rx="8" fill="#191d20" stroke="#363d43"/>
+          <text x="534" y="176" fill="#f2eee7" font-size="12.5" font-weight="700">Choices are never silent</text>
+          <text x="534" y="198" fill="#b8b0a5" font-size="11.5">Set status to chosen or rejected and rebuild the HTML.</text>
+          <text x="534" y="218" fill="#b8b0a5" font-size="11.5">Add one dated row to the bound spine's Decisions table.</text>
+          <text x="534" y="238" fill="#b8b0a5" font-size="11.5">Only then hand the user the served URL.</text>
+          <text x="534" y="264" fill="#d9ad62" font-size="11.5" font-weight="700">Any HTML artifact is served from 127.0.0.1, never a file path.</text>
+          <text x="534" y="284" fill="#b8b0a5" font-size="11.5">Serve only the artifact directory, never the repository root.</text>
+        </svg>
+      </div>
+      <div class="caps">
+        <div class="cap"><b>Read</b><code>skill/epic-spine/references/shortlists.md</code> and <code>skill/epic-spine/assets/shortlist.template.html</code>.</div>
+        <div class="cap"><b>Sample</b><code>skill/epic-spine/assets/shortlist-sample.json</code> and <code>skill/epic-spine/references/artifacts.md</code>.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 19 D14 tickets -->
+  <section class="slide" data-part="Part 4 · How it works" data-title="Ticket backends and lifecycle">
+    <header>
+      <div class="eyebrow">Part 4 · How it works · 14 of 14</div>
+      <h2>GitHub by default. Local files when declared.</h2>
+    </header>
+    <div class="body">
+      <div class="svg-wrap">
+        <svg viewBox="0 0 1000 330" role="img" aria-label="The github and local ticket backends with their ledger semantics, and the ticket lifecycle from draft to done. Superseded and deferred are shown as off-path states the documentation fixes no origin for.">
+          <rect x="60" y="20" width="400" height="102" rx="8" fill="#191d20" stroke="#7da9c7"/>
+          <text x="80" y="46" fill="#f2eee7" font-size="13.5" font-weight="700">github — the default backend</text>
+          <text x="80" y="68" fill="#b8b0a5" font-size="11.5">Issue Ledger holds concrete issue URLs; status,</text>
+          <text x="80" y="86" fill="#b8b0a5" font-size="11.5">assignment and evidence cells are declared snapshots.</text>
+          <text x="80" y="104" fill="#b8b0a5" font-size="11.5">Offline: a valid URL never proves the issue is current.</text>
+
+          <rect x="540" y="20" width="400" height="102" rx="8" fill="#191d20" stroke="#d9ad62"/>
+          <text x="560" y="46" fill="#f2eee7" font-size="13.5" font-weight="700">local — a declared file backend</text>
+          <text x="560" y="68" fill="#b8b0a5" font-size="11.5">Declare Ticket backend: local and Ticket root.</text>
+          <text x="560" y="86" fill="#b8b0a5" font-size="11.5">The ledger is references and dependencies only; each</text>
+          <text x="560" y="104" fill="#b8b0a5" font-size="11.5">ticket file owns Status, Owner and Evidence.</text>
+
+          <rect x="40" y="176" width="112" height="46" rx="7" fill="#23282d" stroke="#b8b0a5"/>
+          <text x="96" y="204" text-anchor="middle" fill="#f2eee7" font-size="12.5">draft</text>
+          <rect x="172" y="176" width="112" height="46" rx="7" fill="#23282d" stroke="#7da9c7"/>
+          <text x="228" y="204" text-anchor="middle" fill="#f2eee7" font-size="12.5">ready</text>
+          <rect x="304" y="176" width="112" height="46" rx="7" fill="#23282d" stroke="#78b58c"/>
+          <text x="360" y="204" text-anchor="middle" fill="#f2eee7" font-size="12.5">active</text>
+          <rect x="436" y="176" width="112" height="46" rx="7" fill="#23282d" stroke="#d2776d"/>
+          <text x="492" y="204" text-anchor="middle" fill="#f2eee7" font-size="12.5">blocked</text>
+          <rect x="568" y="176" width="112" height="46" rx="7" fill="#23282d" stroke="#7da9c7"/>
+          <text x="624" y="204" text-anchor="middle" fill="#f2eee7" font-size="12.5">review</text>
+          <rect x="700" y="176" width="112" height="46" rx="7" fill="#23282d" stroke="#a891d7"/>
+          <text x="756" y="204" text-anchor="middle" fill="#f2eee7" font-size="12.5">testing</text>
+          <rect x="832" y="176" width="112" height="46" rx="7" fill="#23282d" stroke="#78b58c"/>
+          <text x="888" y="204" text-anchor="middle" fill="#78b58c" font-size="12.5" font-weight="700">done</text>
+
+          <line x1="152" y1="199" x2="172" y2="199" stroke="#d9ad62" stroke-width="1.8" marker-end="url(#ag)"/>
+          <line x1="284" y1="199" x2="304" y2="199" stroke="#d9ad62" stroke-width="1.8" marker-end="url(#ag)"/>
+          <line x1="416" y1="199" x2="436" y2="199" stroke="#d9ad62" stroke-width="1.8" marker-end="url(#ag)"/>
+          <line x1="548" y1="199" x2="568" y2="199" stroke="#d9ad62" stroke-width="1.8" marker-end="url(#ag)"/>
+          <line x1="680" y1="199" x2="700" y2="199" stroke="#d9ad62" stroke-width="1.8" marker-end="url(#ag)"/>
+          <line x1="812" y1="199" x2="832" y2="199" stroke="#d9ad62" stroke-width="1.8" marker-end="url(#ag)"/>
+
+          <text x="500" y="256" text-anchor="middle" fill="#b8b0a5" font-size="11.5">off-path states — the reference fixes no single origin, so draw no arrow</text>
+          <rect x="320" y="268" width="150" height="42" rx="7" fill="#171b1e" stroke="#363d43" stroke-dasharray="5 4"/>
+          <text x="395" y="294" text-anchor="middle" fill="#b8b0a5" font-size="12">superseded</text>
+          <rect x="530" y="268" width="150" height="42" rx="7" fill="#171b1e" stroke="#363d43" stroke-dasharray="5 4"/>
+          <text x="605" y="294" text-anchor="middle" fill="#b8b0a5" font-size="12">deferred</text>
+        </svg>
+      </div>
+      <div class="caps">
+        <div class="cap"><b>Lifecycle</b>draft, ready, active, blocked, review, testing, done, plus superseded and deferred.</div>
+        <div class="cap"><b>Parallel</b>only tickets with no unresolved dependency dispatch together.</div>
+        <div class="cap"><b>Read</b><code>skill/epic-spine/references/ticket-backends.md</code>, <code>skill/epic-spine/assets/github-issue-template.md</code>.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PART 5 -->
+  <!-- 20 D15 swimlane -->
+  <section class="slide" data-part="Part 5 · Putting it together" data-title="One task, end to end">
+    <header>
+      <div class="eyebrow">Part 5 · Putting it together · 1 of 3</div>
+      <h2>One full task, end to end.</h2>
+    </header>
+    <div class="body">
+      <div class="svg-wrap">
+        <svg viewBox="0 0 1000 350" role="img" aria-label="A four-lane swimlane: User, Manager, Worker and Repo slash main. Seven numbered steps run left to right with orthogonal connectors only. In the Manager lane beside the integrate step, a caption says the user never merges.">
+          <g stroke="#363d43">
+            <line x1="16" y1="84" x2="986" y2="84"/>
+            <line x1="16" y1="172" x2="986" y2="172"/>
+            <line x1="16" y1="260" x2="986" y2="260"/>
+            <line x1="120" y1="16" x2="120" y2="346"/>
+          </g>
+          <text x="24" y="52" fill="#b8b0a5" font-size="12" font-weight="700">User</text>
+          <text x="24" y="128" fill="#b8b0a5" font-size="12" font-weight="700">Manager</text>
+          <text x="24" y="216" fill="#b8b0a5" font-size="12" font-weight="700">Worker</text>
+          <text x="24" y="305" fill="#b8b0a5" font-size="12" font-weight="700">Repo / main</text>
+
+          <rect x="150" y="27" width="104" height="46" rx="7" fill="#23282d" stroke="#b8b0a5"/>
+          <circle cx="164" cy="41" r="8" fill="#d9ad62"/>
+          <text x="164" y="45" text-anchor="middle" fill="#101214" font-size="11" font-weight="700">1</text>
+          <text x="202" y="64" text-anchor="middle" fill="#f2eee7" font-size="11">states the goal</text>
+
+          <rect x="272" y="105" width="104" height="46" rx="7" fill="#23282d" stroke="#d9ad62"/>
+          <circle cx="286" cy="119" r="8" fill="#d9ad62"/>
+          <text x="286" y="123" text-anchor="middle" fill="#101214" font-size="11" font-weight="700">2</text>
+          <text x="324" y="142" text-anchor="middle" fill="#f2eee7" font-size="11">bind + dispatch</text>
+
+          <rect x="394" y="193" width="104" height="46" rx="7" fill="#23282d" stroke="#7da9c7"/>
+          <circle cx="408" cy="207" r="8" fill="#7da9c7"/>
+          <text x="408" y="211" text-anchor="middle" fill="#101214" font-size="11" font-weight="700">3</text>
+          <text x="446" y="230" text-anchor="middle" fill="#f2eee7" font-size="11">implement + check</text>
+
+          <rect x="516" y="193" width="104" height="46" rx="7" fill="#23282d" stroke="#7da9c7"/>
+          <circle cx="530" cy="207" r="8" fill="#7da9c7"/>
+          <text x="530" y="211" text-anchor="middle" fill="#101214" font-size="11" font-weight="700">4</text>
+          <text x="568" y="230" text-anchor="middle" fill="#f2eee7" font-size="11">hand off branch</text>
+
+          <rect x="638" y="105" width="104" height="46" rx="7" fill="#23282d" stroke="#78b58c"/>
+          <circle cx="652" cy="119" r="8" fill="#78b58c"/>
+          <text x="652" y="123" text-anchor="middle" fill="#101214" font-size="11" font-weight="700">5</text>
+          <text x="690" y="142" text-anchor="middle" fill="#f2eee7" font-size="11">verify + merge</text>
+
+          <rect x="760" y="277" width="104" height="46" rx="7" fill="#23282d" stroke="#78b58c"/>
+          <circle cx="774" cy="291" r="8" fill="#78b58c"/>
+          <text x="774" y="295" text-anchor="middle" fill="#101214" font-size="11" font-weight="700">6</text>
+          <text x="812" y="314" text-anchor="middle" fill="#f2eee7" font-size="11">checks in main</text>
+
+          <rect x="882" y="105" width="104" height="46" rx="7" fill="#23282d" stroke="#d9ad62"/>
+          <circle cx="896" cy="119" r="8" fill="#d9ad62"/>
+          <text x="896" y="123" text-anchor="middle" fill="#101214" font-size="11" font-weight="700">7</text>
+          <text x="934" y="142" text-anchor="middle" fill="#f2eee7" font-size="11">record + clean</text>
+
+          <path d="M254,50 H263 V128 H272" fill="none" stroke="#d9ad62" stroke-width="1.6" marker-end="url(#ag)"/>
+          <path d="M376,128 H385 V216 H394" fill="none" stroke="#7da9c7" stroke-width="1.6" marker-end="url(#ab)"/>
+          <path d="M498,216 H516" fill="none" stroke="#7da9c7" stroke-width="1.6" marker-end="url(#ab)"/>
+          <path d="M620,216 H629 V128 H638" fill="none" stroke="#78b58c" stroke-width="1.6" marker-end="url(#agrn)"/>
+          <path d="M742,128 H751 V300 H760" fill="none" stroke="#78b58c" stroke-width="1.6" marker-end="url(#agrn)"/>
+          <path d="M864,300 H873 V128 H882" fill="none" stroke="#d9ad62" stroke-width="1.6" marker-end="url(#ag)"/>
+
+          <text x="690" y="164" text-anchor="middle" fill="#b8b0a5" font-size="11">the user never merges</text>
+        </svg>
+      </div>
+      <div class="caps">
+        <div class="cap"><b>Loop</b>bind, dispatch, execute, verify and integrate, record and clean.</div>
+        <div class="cap"><b>Output</b>state, evidence, and one next action — or a precise human gate.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 21 D16 dogfood -->
+  <section class="slide" data-part="Part 5 · Putting it together" data-title="Skill, spine, Book — one repo">
+    <header>
+      <div class="eyebrow">Part 5 · Putting it together · 2 of 3</div>
+      <h2>This repo is the skill, its own spine, and its own Book.</h2>
+    </header>
+    <div class="body">
+      <div class="svg-wrap">
+        <svg viewBox="0 0 1000 344" role="img" aria-label="Three overlapping circles labelled Skill source (skill/epic-spine/), Root spine (docs/EPIC-2-OPERATING-SYSTEM.md) and Book (index.html). The rule: if any one changes the other two change in the same commit; the manager checks all three at integration and the drift test guards skill to Book.">
+          <circle cx="225" cy="128" r="104" fill="rgba(217,173,98,.10)" stroke="#d9ad62"/>
+          <circle cx="425" cy="128" r="104" fill="rgba(125,169,199,.10)" stroke="#7da9c7"/>
+          <circle cx="325" cy="232" r="104" fill="rgba(168,145,215,.10)" stroke="#a891d7"/>
+          <text x="160" y="108" text-anchor="middle" fill="#d9ad62" font-size="13" font-weight="700">Skill source</text>
+          <text x="160" y="126" text-anchor="middle" fill="#b8b0a5" font-size="11">skill/epic-spine/</text>
+          <text x="490" y="108" text-anchor="middle" fill="#7da9c7" font-size="13" font-weight="700">Root spine</text>
+          <text x="490" y="126" text-anchor="middle" fill="#b8b0a5" font-size="11">docs/EPIC-2-OPERATING-SYSTEM.md</text>
+          <text x="325" y="300" text-anchor="middle" fill="#a891d7" font-size="13" font-weight="700">Book (this deck)</text>
+          <text x="325" y="318" text-anchor="middle" fill="#b8b0a5" font-size="11">index.html</text>
+          <text x="325" y="150" text-anchor="middle" fill="#f2eee7" font-size="12" font-weight="700">same commit</text>
+
+          <rect x="690" y="60" width="290" height="220" rx="8" fill="#191d20" stroke="#78b58c"/>
+          <text x="710" y="90" fill="#78b58c" font-size="13" font-weight="700">The rule</text>
+          <text x="710" y="116" fill="#b8b0a5" font-size="11.5">If any one changes, the other</text>
+          <text x="710" y="134" fill="#b8b0a5" font-size="11.5">two change in the same commit.</text>
+          <text x="710" y="160" fill="#d2776d" font-size="11.5" font-weight="700">Divergence is a defect.</text>
+          <text x="710" y="186" fill="#b8b0a5" font-size="11.5">Manager checks all three at</text>
+          <text x="710" y="204" fill="#b8b0a5" font-size="11.5">integration; the drift test</text>
+          <text x="710" y="222" fill="#b8b0a5" font-size="11.5">guards skill &#8594; Book.</text>
+        </svg>
+      </div>
+      <div class="caps">
+        <div class="cap"><b>Drift test</b><code>tests/test_book_drift.py</code> fails if a skill file or path is missing from this deck.</div>
+        <div class="cap"><b>Surfaces</b><code>skill/epic-spine/SKILL.md</code>, <code>docs/EPIC-2-OPERATING-SYSTEM.md</code>, <code>index.html</code>.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 22 -->
+  <section class="slide" data-part="Part 5 · Putting it together" data-title="Where to go next">
+    <header>
+      <div class="eyebrow">Part 5 · Putting it together · 3 of 3</div>
+      <h2>Read the source, not the summary.</h2>
+    </header>
+    <div class="body two" style="align-items:start">
+      <ul class="links">
+        <li><a href="README.md">README.md</a><span>The concept, install steps, and the spine-versus-issues rule.</span></li>
+        <li><a href="skill/epic-spine/SKILL.md">skill/epic-spine/SKILL.md</a><span>The kernel and the Default Behaviors card.</span></li>
+        <li><a href="skill/epic-spine/references/roles-and-dispatch.md">skill/epic-spine/references/roles-and-dispatch.md</a><span>Base roles, the dispatch profile, and binding prompts.</span></li>
+        <li><a href="skill/epic-spine/references/git-doctrine.md">skill/epic-spine/references/git-doctrine.md</a><span>Worktrees, integration, rollback and the clean-repo contract.</span></li>
+        <li><a href="docs/EPIC-2-OPERATING-SYSTEM.md">docs/EPIC-2-OPERATING-SYSTEM.md</a><span>The root spine: authoritative for current state.</span></li>
+        <li><a href="examples/EPIC-0-CLI-EXAMPLE.md">examples/EPIC-0-CLI-EXAMPLE.md</a><span>A populated spine you can validate locally.</span></li>
+        <li><a href="https://github.com/AlfaBlok/epicspine-skill">github.com/AlfaBlok/epicspine-skill</a><span>The canonical source repository and issue tracker.</span></li>
+      </ul>
+      <div class="filemap">
+        <div>
+          <b>References</b>
+          <code>skill/epic-spine/references/operating-model.md</code>
+          <code>skill/epic-spine/references/spine-creation.md</code>
+          <code>skill/epic-spine/references/spine-model.md</code>
+          <code>skill/epic-spine/references/compact-state.md</code>
+          <code>skill/epic-spine/references/sprint-dialect-v2.md</code>
+          <code>skill/epic-spine/references/execution-rollups.md</code>
+          <code>skill/epic-spine/references/structural-validation.md</code>
+          <code>skill/epic-spine/references/learnings.md</code>
+          <code>skill/epic-spine/references/hygiene.md</code>
+          <code>skill/epic-spine/references/role-protocols.md</code>
+          <code>skill/epic-spine/references/dispatch-prompts.md</code>
+          <code>skill/epic-spine/references/book-companion.md</code>
+          <code>skill/epic-spine/references/shortlists.md</code>
+          <code>skill/epic-spine/references/ticket-backends.md</code>
+          <code>skill/epic-spine/references/artifacts.md</code>
+          <code>skill/epic-spine/references/skill-update.md</code>
         </div>
-        <div class="card">
-          <span class="tag blue">Ticket workers</span>
-          <h3>Issue-first handoffs</h3>
-          <p>Workers and testers write detail to their issue unless a narrow spine section is explicitly delegated.</p>
+        <div>
+          <b>Scripts</b>
+          <code>skill/epic-spine/scripts/validate_spine.py</code>
+          <code>skill/epic-spine/scripts/rollup_spine.py</code>
+          <code>skill/epic-spine/scripts/migrate_spine.py</code>
+          <code>skill/epic-spine/scripts/agents_block.py</code>
+          <code>skill/epic-spine/scripts/skill_update.py</code>
+          <code>skill/epic-spine/scripts/build_shortlist.py</code>
+          <b style="margin-top:6px">Tooling</b>
+          <code>tools/epicspine-manifest.sh</code>
+          <code>tests/test_book_drift.py</code>
         </div>
-        <div class="card">
-          <span class="tag red">Cross-spine drift</span>
-          <h3>Propose, do not mutate</h3>
-          <p>Record proposed changes in the bound spine, then route them to the owner of the target spine.</p>
+        <div>
+          <b>Assets</b>
+          <code>skill/epic-spine/assets/agents-block.md</code>
+          <code>skill/epic-spine/assets/book-companion-contract.md</code>
+          <code>skill/epic-spine/assets/compact-spine-template.md</code>
+          <code>skill/epic-spine/assets/dispatch-prompt-preamble.md</code>
+          <code>skill/epic-spine/assets/epic-spine-template.md</code>
+          <code>skill/epic-spine/assets/github-issue-template.md</code>
+          <code>skill/epic-spine/assets/shortlist-sample.json</code>
+          <code>skill/epic-spine/assets/shortlist.template.html</code>
+          <code>skill/epic-spine/assets/sweep-brief.md</code>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="slide">
-    <header>
-      <div class="eyebrow">Recovery and human gates</div>
-      <h2>The system remains resumable when an agent stops.</h2>
-    </header>
-    <div class="body">
-      <div class="flow">
-        <div class="box">
-          <strong>resumable assignment</strong>
-          <span>Stable identity, issue, branch, base and latest commit, last verified time, blocker, next action.</span>
-        </div>
-        <div class="arrow">›</div>
-        <div class="box">
-          <strong>explicit takeover</strong>
-          <span>Preserve old history, mark it superseded, name the new owner and starting commit.</span>
-        </div>
-        <div class="arrow">›</div>
-        <div class="box">
-          <strong>named human gate</strong>
-          <span>State the decision, owner, evidence, exact input required, and work that may continue.</span>
-        </div>
-      </div>
-      <div class="callout">
-        <p>&ldquo;Human required&rdquo; is not a blocker description. Product changes, production actions, secrets, destructive work, and irreversible actions need precise approval gates.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="slide">
-    <header>
-      <div class="eyebrow">Bootstrap prompt</div>
-      <h2>Bind the agent, then let the document orient it.</h2>
-    </header>
-    <div class="body">
-      <div class="screen">
-        <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span>prompt.txt</span></div>
-        <div class="screen-body">
-          <div class="row"><strong>Use</strong><span>$epic-spine</span><b class="pill">skill</b></div>
-          <div class="row"><strong>Identity</strong><span>Epic 0 worker</span><b class="pill">role</b></div>
-          <div class="row"><strong>Bound spine</strong><span>docs/EPIC-0.md</span><b class="pill">scope</b></div>
-          <div class="row"><strong>Steward</strong><span>task / thread / agent identity</span><b class="pill">write</b></div>
-          <div class="row"><strong>Goal</strong><span>Keep the full project picture, create child spines, bind workers, and loop until clear next actions or human input.</span><b class="pill">drive</b></div>
-        </div>
-      </div>
-      <div class="callout">
-        <p>The public package now includes the skill, templates, operating model, HTML deck, and a local spine validator.</p>
-      </div>
-    </div>
-  </section>
 </main>
-<div class="controls">
-  <span id="counter">1 / 14</span>
-  <button type="button" id="prev" aria-label="Previous slide">‹</button>
-  <button type="button" id="next" aria-label="Next slide">›</button>
+
+<div class="controls" role="group" aria-label="Slide navigation">
+  <span id="counter">1 / 22</span>
+  <button type="button" id="index-btn" aria-label="Slide index" aria-expanded="false" title="Slide index (g)">&#9776;</button>
+  <button type="button" id="prev" aria-label="Previous slide" title="Previous (left arrow)">&lsaquo;</button>
+  <button type="button" id="next" aria-label="Next slide" title="Next (right arrow)">&rsaquo;</button>
 </div>
+
+<div class="index" id="index" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Slide index">
+  <div class="index-panel">
+    <div class="index-head">
+      <h2>Slides</h2>
+      <button type="button" class="index-close" id="index-close" aria-label="Close index">&times;</button>
+    </div>
+    <ol id="index-list"></ol>
+  </div>
+</div>
+
 <script>
-  const slides = Array.from(document.querySelectorAll(".slide"));
-  const counter = document.getElementById("counter");
-  const progress = document.getElementById("progress");
-  let index = 0;
+  (function () {
+    var slides = Array.prototype.slice.call(document.querySelectorAll(".slide"));
+    var counter = document.getElementById("counter");
+    var progress = document.getElementById("progress");
+    var indexPanel = document.getElementById("index");
+    var indexList = document.getElementById("index-list");
+    var indexBtn = document.getElementById("index-btn");
+    var index = 0;
 
-  function show(nextIndex) {
-    index = Math.max(0, Math.min(slides.length - 1, nextIndex));
-    slides.forEach((slide, i) => slide.classList.toggle("active", i === index));
-    counter.textContent = `${index + 1} / ${slides.length}`;
-    progress.style.width = `${((index + 1) / slides.length) * 100}%`;
-  }
+    var lastPart = null;
+    slides.forEach(function (slide, i) {
+      var part = slide.getAttribute("data-part");
+      if (part && part !== lastPart) {
+        lastPart = part;
+        var head = document.createElement("li");
+        head.className = "idx-part";
+        head.textContent = part;
+        indexList.appendChild(head);
+      }
+      var li = document.createElement("li");
+      var a = document.createElement("a");
+      a.href = "#" + (i + 1);
+      var num = document.createElement("span");
+      num.className = "idx-num";
+      num.textContent = String(i + 1);
+      var label = document.createElement("span");
+      label.textContent = slide.getAttribute("data-title") || "";
+      a.appendChild(num);
+      a.appendChild(label);
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        show(i);
+        closeIndex();
+      });
+      li.appendChild(a);
+      indexList.appendChild(li);
+    });
 
-  document.getElementById("prev").addEventListener("click", () => show(index - 1));
-  document.getElementById("next").addEventListener("click", () => show(index + 1));
-  window.addEventListener("keydown", (event) => {
-    if (event.key === "ArrowRight" || event.key === "PageDown" || event.key === " ") show(index + 1);
-    if (event.key === "ArrowLeft" || event.key === "PageUp") show(index - 1);
-  });
-  show(0);
+    function show(n) {
+      index = Math.max(0, Math.min(slides.length - 1, n));
+      slides.forEach(function (slide, i) {
+        slide.classList.toggle("active", i === index);
+      });
+      counter.textContent = (index + 1) + " / " + slides.length;
+      progress.style.width = (((index + 1) / slides.length) * 100) + "%";
+      slides[index].scrollTop = 0;
+      if (window.history && history.replaceState) {
+        history.replaceState(null, "", "#" + (index + 1));
+      } else {
+        window.location.hash = String(index + 1);
+      }
+      Array.prototype.forEach.call(indexList.querySelectorAll("li"), function (li) {
+        if (li.classList.contains("idx-part")) { return; }
+      });
+      var items = indexList.querySelectorAll("li:not(.idx-part)");
+      Array.prototype.forEach.call(items, function (li, i) {
+        li.classList.toggle("current", i === index);
+      });
+    }
+
+    function openIndex() {
+      indexPanel.classList.add("open");
+      indexPanel.setAttribute("aria-hidden", "false");
+      indexBtn.setAttribute("aria-expanded", "true");
+    }
+    function closeIndex() {
+      indexPanel.classList.remove("open");
+      indexPanel.setAttribute("aria-hidden", "true");
+      indexBtn.setAttribute("aria-expanded", "false");
+    }
+    function toggleIndex() {
+      if (indexPanel.classList.contains("open")) { closeIndex(); } else { openIndex(); }
+    }
+
+    document.getElementById("prev").addEventListener("click", function () { show(index - 1); });
+    document.getElementById("next").addEventListener("click", function () { show(index + 1); });
+    indexBtn.addEventListener("click", toggleIndex);
+    document.getElementById("index-close").addEventListener("click", closeIndex);
+    indexPanel.addEventListener("click", function (e) { if (e.target === indexPanel) { closeIndex(); } });
+
+    window.addEventListener("keydown", function (e) {
+      var k = e.key;
+      if (k === "ArrowRight" || k === "PageDown" || k === " " || k === "Spacebar") {
+        e.preventDefault(); show(index + 1);
+      } else if (k === "ArrowLeft" || k === "PageUp") {
+        e.preventDefault(); show(index - 1);
+      } else if (k === "Home") {
+        e.preventDefault(); show(0);
+      } else if (k === "End") {
+        e.preventDefault(); show(slides.length - 1);
+      } else if (k === "g" || k === "G") {
+        e.preventDefault(); toggleIndex();
+      } else if (k === "Escape") {
+        closeIndex();
+      }
+    });
+
+    window.addEventListener("hashchange", function () {
+      var n = parseInt(window.location.hash.replace("#", ""), 10);
+      if (!isNaN(n)) { show(n - 1); }
+    });
+
+    var start = parseInt(window.location.hash.replace("#", ""), 10);
+    show(isNaN(start) ? 0 : start - 1);
+  })();
 </script>
 </body>
 </html>
