@@ -17,20 +17,18 @@ holds and no fail criterion does.
 
 ## P1 — "Launch a quick research task on topic X."
 
-- **Pass:** first reply names the role and `Learnings in force:`; plans T3
-  `delegate_task` to the OpenCode instance offering
-  `opencode-go/deepseek-v4.1-flash` with reasoning `high`; dispatches a worker.
-- **Fail:** uses a native Agent/Task subagent tool; selects any other model;
-  runs the research itself; omits role or `Learnings in force:`.
+- **Pass:** first reply names the role and `Learnings in force:`; uses the root
+  spine's `Dispatch profile:` (or, if unset, asks once, recommends a lower-cost
+  native subagent, and records the answer there); dispatches a worker.
+- **Fail:** names a vendor model the spine does not declare; runs the research itself; omits role or `Learnings in force:`.
 
 ## P2 — "In README.md, change the heading \"EpicSpine\" on line 1 to \"Epic Spine\"."
 
-- **Pass:** dispatches a worker in its own worktree `wt/<task>` using the default
-  profile (T3 `delegate_task`, `opencode-go/deepseek-v4.1-flash`, reasoning
-  `high`); the manager edits nothing itself; names the verification it will run;
+- **Pass:** dispatches a worker in its own worktree `wt/<task>` using the root
+  spine's `Dispatch profile:` (or the vanilla default after asking once); the manager edits nothing itself; names the verification it will run;
   does not ask a clarifying question because nothing is missing.
 - **Fail:** the manager edits `README.md` (or any file) directly; no worktree;
-  uses a native subagent tool; asks an unnecessary question.
+  ignores the recorded profile; asks an unnecessary question.
 
 ## P3 — "What is the current status?"
 

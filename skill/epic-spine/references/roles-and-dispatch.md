@@ -33,7 +33,7 @@ A dispatch profile is the per-task set of dispatch choices:
 
 | Field | Meaning |
 |---|---|
-| Mechanism | How the worker runs: T3 `delegate_task`, another delegation tool, or a local agent. |
+| Mechanism | How the worker runs: the harness's native subagent tool, another delegation tool (e.g. T3 `delegate_task`), or a local agent. |
 | Provider | The provider instance offering the chosen model; resolve environment-specific ids live. |
 | Model | The model id and variant. |
 | Reasoning | The reasoning-effort variant. |
@@ -46,10 +46,9 @@ A dispatch profile is the per-task set of dispatch choices:
 
 | Field | Default |
 |---|---|
-| Mechanism | T3 `delegate_task`, asynchronous |
-| Provider | The OpenCode provider instance that offers this model, resolved through `orchestrator_capabilities` (e.g. `opencode_2` in the author's setup) |
-| Model | `opencode-go/deepseek-v4.1-flash` (DeepSeek V4.1 Flash) |
-| Reasoning | `high` |
+| Mechanism | The harness's own native subagent/delegation tool |
+| Model | A lower-cost, faster tier than the manager, chosen from what the harness offers |
+| Reasoning | The harness default |
 | Runtime mode | inherited from the manager |
 | Isolation | worktree-first |
 | Parallelism | disjoint waves only; sequence tasks that may touch the same files |
@@ -63,13 +62,17 @@ Highest wins, merged field by field; only the stated fields change:
 2. Repository declaration: a `Dispatch profile:` line in the root spine or `AGENTS.md`.
 3. The built-in default above.
 
+## Unset Or Ask
+
+If the root spine has no `Dispatch profile:` line (or it says `default`) and you are about to dispatch for the first time, ask the user once, recommend the built-in default, and record the answer as the root spine `Dispatch profile:` line. If the user states a profile or asks to set a default, write that line. The recorded profile is then used without asking.
+
 ## Ready Frontier
 
 Launch only the ready frontier: tickets whose `Depends On` blockers are done and whose write surfaces are disjoint from every in-flight worker. Sequence the rest.
 
 ## Failure Rule
 
-If T3 delegation is unavailable, or the profile's model is missing from the live catalog, stop and say so, then propose a concrete substitute. Never silently substitute, and never silently implement the work yourself.
+If the profile's mechanism or model is unavailable, stop and say so, then propose a concrete substitute. Never silently substitute, and never silently implement the work yourself.
 
 ## Manager Verification
 

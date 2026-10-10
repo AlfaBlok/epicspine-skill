@@ -5,8 +5,12 @@ import unittest
 from pathlib import Path
 
 REPO = Path(__file__).parents[1]
-MODEL_ID = "opencode-go/deepseek-v4.1-flash"
-MODEL_RE = re.compile(r"opencode-go/[A-Za-z0-9.\-]+")
+VENDOR_RE = re.compile(r"deepseek|opencode", re.I)
+SHIPPED = (
+    "skill/epic-spine/SKILL.md",
+    "skill/epic-spine/assets/agents-block.md",
+    "skill/epic-spine/references/roles-and-dispatch.md",
+)
 
 
 def read(rel: str) -> str:
@@ -31,17 +35,20 @@ class DefaultBehaviorsTest(unittest.TestCase):
             read("skill/epic-spine/references/roles-and-dispatch.md"),
             "## Built-In Default", "## Resolution Order")
 
-    def test_a_default_model_and_reasoning_agree(self) -> None:
-        regions = [self.agents_block(), self.card(), self.default_table()]
-        ids = []
-        for region in regions:
-            found = MODEL_RE.search(region)
-            self.assertIsNotNone(found, "default model id missing")
-            self.assertIn(MODEL_ID, region)
-            self.assertRegex(region, r"\bhigh\b")
-            ids.append(found.group(0))
-        self.assertEqual(ids[0], ids[1])
-        self.assertEqual(ids[1], ids[2])
+    def test_a_no_hardwired_vendor_model(self) -> None:
+        for rel in SHIPPED:
+            text = read(rel)
+            self.assertNotRegex(text, VENDOR_RE, rel)
+
+    def test_a2_ask_and_record_and_defer_to_spine(self) -> None:
+        for region in (self.agents_block(), self.card()):
+            self.assertIn("Dispatch profile:", region)
+            self.assertIn("ask once", region)
+            self.assertIn("record", region)
+        self.assertIn("lower-cost", self.default_table())
+        refs = read("skill/epic-spine/references/roles-and-dispatch.md")
+        self.assertIn("## Unset Or Ask", refs)
+        self.assertIn("ask the user once", refs)
 
     def test_b_manager_never_implements(self) -> None:
         self.assertIn("never implements", self.agents_block().lower())

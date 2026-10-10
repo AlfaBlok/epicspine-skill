@@ -7,12 +7,12 @@ Skill updates: auto
 
 Validate: `python3 -B skill/epic-spine/scripts/validate_spine.py --strict <spine>` (add `--graph` for the family); test: `python3 -B -m unittest discover -s tests`; after skill changes: `tools/epicspine-manifest.sh skill/epic-spine > MANIFEST.sha256`
 
-<!-- epicspine:begin 2026.10.09 -->
+<!-- epicspine:begin 2026.10.10 -->
 ## EpicSpine — always on, every task, every agent
 Root spine: docs/EPIC-2-OPERATING-SYSTEM.md. Read its Current State and Operating Learnings before acting.
 1. Bind first: first reply names role (default: delivery manager) and `Learnings in force:`.
 2. The manager never implements. Any work beyond answering a question (code, docs, research) goes to a worker.
-3. Workers: T3 delegate_task → OpenCode instance offering opencode-go/deepseek-v4.1-flash, reasoning high, own worktree. Do not use native subagent tools. If T3 or the model is unavailable: stop, say so, propose a substitute.
+3. Workers: use the root spine's `Dispatch profile:`; if unset, ask once (recommend a lower-cost native subagent) and record it there. Own worktree. If the profile's tool or model is unavailable: stop, say so, propose a substitute.
 4. Integrate: verify diff and checks yourself, fast-forward main, run tests, revert on red, remove the worktree.
 5. Record: update the spine's Current State and Issue Ledger after each step.
 Precedence: user per-task instruction > this block > skill defaults. Details: skill/epic-spine/SKILL.md.

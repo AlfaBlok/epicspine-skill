@@ -6,7 +6,7 @@ keep overlapping Current State and Execution Cursor facts consistent until migra
 Spine profile: full
 Ticket backend: github
 Dispatch profile: default
-<!-- Optional: default dispatches workers via T3 delegate_task on the OpenCode provider instance offering the built-in model, reasoning high. Override per task or name a reserved template: template:<name>. See ../references/roles-and-dispatch.md. -->
+<!-- Optional: default is a lower-cost native subagent; the agent asks once and records the answer here. Override per task or name a reserved template: template:<name>. See ../references/roles-and-dispatch.md. -->
 Integration policy: main-direct
 <!-- Optional: main-direct (default) or pr-approval. The delivery manager merges verified work to the integration branch itself under ../references/git-doctrine.md. -->
 

@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased — vanilla dispatch default
+
+- The shipped default is now a lower-cost native subagent in its own worktree; no vendor, model ID, or T3/OpenCode is hardwired. With no root-spine `Dispatch profile:`, the agent asks once, recommends the default, and records the answer there; the recorded profile then wins. The Failure Rule is now generic.
+
 ## Unreleased — lean kernel
 
 - Splits `SKILL.md` into a ≤ 150-line kernel — Overview, a 9-rule **Default Behaviors** card, Bind Path, a load-on-demand table, and spine document minimums — and moves every removed section verbatim into `references/spine-model.md`, `references/spine-creation.md`, `references/role-protocols.md`, `references/dispatch-prompts.md`, and `references/sprint-dialect-v2.md`. A cold agent now reads the kernel (491→65 lines, 7,134→687 words) and loads deeper references only when a task triggers them.
