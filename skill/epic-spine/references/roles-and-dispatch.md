@@ -65,7 +65,7 @@ Highest wins, merged field by field; only the stated fields change:
 
 ## Unset Or Ask
 
-Check with `agents_block.py profile --repo .` (exit 3 = unset). If unset when you first dispatch, ask the user once, recommend the built-in default, and save it with `agents_block.py profile --set "..."`, not in the repo. Write a repo line only when the user says the choice is specific to that repo. If the user states a profile or asks to set a default, run `profile --set`. The saved profile is then used without asking.
+Check with `agents_block.py profile --repo .` (exit 3 = unset). If unset when you first dispatch, ask the user once, recommend the built-in default, and save it with `agents_block.py profile --set "..."`, not the repo. Write a repo line only when the user says the choice is specific to that repo. If the user states a profile or asks to set a default, run `profile --set`. The saved profile is then used without asking.
 
 ## Ready Frontier
 
