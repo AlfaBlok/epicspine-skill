@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased — profile command
+
+- `agents_block.py profile [--repo PATH]` prints the effective dispatch profile and source (exit 3 if unset); `profile --set "..."` writes the machine file.
+
 ## Unreleased — machine-wide dispatch profile
 
 - The dispatch profile is set once per machine in `~/.agents/epicspine-profile.md` (survives upgrades); the repo `Dispatch profile:` line is now an optional override, and ask-once saves to the machine file.

@@ -32,6 +32,8 @@ COPIES = (".cursor/rules/epicspine.mdc", ".github/copilot-instructions.md")
 CURSOR_HEAD = "---\ndescription: EpicSpine always-on bind\nalwaysApply: true\n---\n\n"
 BLOCK_RE = global_install.BLOCK_RE
 BEGIN_RE = re.compile(r"<!-- epicspine:begin (.*?) -->")
+PROFILE_RE = re.compile(r"^Dispatch profile:[ \t]*(\S.*?)[ \t]*$", re.MULTILINE)
+MACHINE_FILE = ".agents/epicspine-profile.md"
 ROOT_RE = re.compile(r"^Root spine: (.*?)\. Read its", re.MULTILINE)
 
 
@@ -111,6 +113,31 @@ def check(repo: Path) -> int:
     return 1 if problems else 0
 
 
+def profile(repo: Path, home: Path, text: str | None) -> int:
+    """Print the effective dispatch profile (repo override, machine file, unset); exit 3 if unset."""
+    machine = home / MACHINE_FILE
+    if text is not None:
+        line = "Dispatch profile: " + " ".join(text.split())
+        machine.parent.mkdir(parents=True, exist_ok=True)
+        machine.write_text(line + "\n", encoding="utf-8")
+        print(f"{line} (wrote ~/{MACHINE_FILE})")
+        return 0
+    agents = repo / AGENTS_NAME
+    files = [agents]
+    root = ROOT_RE.search(agents.read_text(encoding="utf-8")) if agents.is_file() else None
+    if root:
+        files.insert(0, repo / root.group(1))
+    sources = [(f, f"repo {f.relative_to(repo) if f.is_relative_to(repo) else f}") for f in files]
+    sources.append((machine, f"machine ~/{MACHINE_FILE}"))
+    for path, label in sources:
+        match = PROFILE_RE.search(path.read_text(encoding="utf-8")) if path.is_file() else None
+        if match and (path == machine or match.group(1).lower() != "default"):
+            print(f"Dispatch profile: {match.group(1)} (source: {label})")
+            return 0
+    print("unset")
+    return 3
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="agents_block.py", description="Install or verify the EpicSpine always-on block."
@@ -126,6 +153,10 @@ def build_parser() -> argparse.ArgumentParser:
         cmd.add_argument("--home", type=Path, help="override the home directory (tests)")
         cmd.add_argument("--claude-dir", action="append", default=[], help="Claude config dir; repeatable")
         cmd.add_argument("--no-hooks", action="store_true", help="skip session-start hooks")
+    cmd = sub.add_parser("profile", help="print the effective dispatch profile; exit 3 if unset")
+    cmd.add_argument("--repo", type=Path, default=Path("."))
+    cmd.add_argument("--home", type=Path, help="override the home directory (tests)")
+    cmd.add_argument("--set", metavar="TEXT", help="write the machine profile file")
     sub.add_parser("print-global", help="print the global block")
     sub.add_parser("print-hook", help="print the SessionStart hook JSON (used by hooks)")
     return parser
@@ -139,6 +170,8 @@ def main(argv: list[str] | None = None) -> int:
         return check(args.repo)
     if args.command == "uninstall":
         return uninstall(args.repo)
+    if args.command == "profile":
+        return profile(args.repo, args.home or Path.home(), args.set)
     if args.command == "print-global":
         print(global_install.render_global(), end="")
         return 0

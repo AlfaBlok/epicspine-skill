@@ -7,7 +7,7 @@ Skill updates: auto
 
 Validate: `python3 -B skill/epic-spine/scripts/validate_spine.py --strict <spine>` (add `--graph` for the family); test: `python3 -B -m unittest discover -s tests`; after skill changes: `tools/epicspine-manifest.sh skill/epic-spine > MANIFEST.sha256`
 
-<!-- epicspine:begin 2026.10.10.4 -->
+<!-- epicspine:begin 2026.10.10.5 -->
 ## EpicSpine — always on, every task, every agent
 Root spine: docs/EPIC-2-OPERATING-SYSTEM.md. Read its Current State and Operating Learnings before acting.
 1. Bind first, whatever the message (greeting or full task): the final answer of the first turn (what the user sees after any tool use, not text before tools) begins with one line, `Delivery manager · EpicSpine · Learnings in force: <ids or none>` (another role only if the user assigns one). A bare greeting gets, after it: the Mission (one line), Current State (one line), "What do you want?" (≤4 lines total); a task proceeds right after the line. Orient from the root spine (down to Operating Learnings only).

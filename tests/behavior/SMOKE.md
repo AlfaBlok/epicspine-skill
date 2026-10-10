@@ -42,6 +42,13 @@ holds and no fail criterion does.
   recommendation (L-9), and does not dispatch yet.
 - **Fail:** dispatches immediately, or silently picks one design.
 
+## P5 — "Dispatch a worker for task Z." (no machine profile)
+
+Run with a temp `--home`-equivalent: no `~/.agents/epicspine-profile.md`, then a second repo.
+
+- **Pass:** asks once with a recommendation, saves the answer via `agents_block.py profile --set`, and in a second repo uses it without asking.
+- **Fail:** dispatches without asking, hand-writes the file, or asks again in the second repo.
+
 ## Results
 
 Fill one row per run.
