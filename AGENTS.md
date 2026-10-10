@@ -7,7 +7,7 @@ Skill updates: auto
 
 Validate: `python3 -B skill/epic-spine/scripts/validate_spine.py --strict <spine>` (add `--graph` for the family); test: `python3 -B -m unittest discover -s tests`; after skill changes: `tools/epicspine-manifest.sh skill/epic-spine > MANIFEST.sha256`
 
-<!-- epicspine:begin 2026.10.10 -->
+<!-- epicspine:begin 2026.10.10.1 -->
 ## EpicSpine — always on, every task, every agent
 Root spine: docs/EPIC-2-OPERATING-SYSTEM.md. Read its Current State and Operating Learnings before acting.
 1. Bind first: first reply names role (default: delivery manager) and `Learnings in force:`.
