@@ -19,14 +19,14 @@ Skill updates: auto
 
 Owner: /root delivery manager
 Status: active
-Last attempted: 2026-10-09 comparison adoption complete: L-9..L-11 landed (a868281), P2 test rewritten (a694ae2), post-adoption smoke 4/4; tagged checkpoint/post-adoption. Prior: cold-start test passed on the default worker: a fresh agent bound via AGENTS.md -> root spine -> SKILL.md, named the default profile, and found the Default Behaviors card.
-Result: all four agreed steps landed; main at e48e6fd; 120 tests, agents_block check, strict validation, manifest and skill status all green.
-Evidence: [main @ e48e6fd](https://github.com/AlfaBlok/epicspine-skill/commit/e48e6fd) and [CI runs](https://github.com/AlfaBlok/epicspine-skill/actions)
+Last attempted: 2026-10-10 vanilla dispatch default landed (c3d2dc3): shipped skill names no vendor/model; unset profile -> ask once, recommend a lower-cost native subagent, record as root spine `Dispatch profile:`. This repo's profile: native subagent, Sonnet 5.5.
+Result: main at c3d2dc3; 138 tests, strict validation, agents_block check and manifest green.
+Evidence: [main @ c3d2dc3](https://github.com/AlfaBlok/epicspine-skill/commit/c3d2dc3)
 Waiting on: none
-Approved work: dispatch-defaults ticket (vanilla shipped default vs repo profile).
-Next action: verify and integrate the dispatch-defaults worker.
-Source revision: e48e6fd
-Verified at: 2026-10-09
+Approved work: none.
+Next action: idle; reopen the ledger to start new work.
+Source revision: c3d2dc3
+Verified at: 2026-10-10
 Last sweep: 2026-10-09, main clean
 EpicSpine skill: 2026.10.09 @ 6e827e8; installed hub fresh, checked 2026-10-09
 
@@ -74,7 +74,7 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 | draft | Ticket worker | worker B (default profile) | Adopt L-9..L-11 doctrine + extend tests/smoke | draft | worker A | wt/adopt-l9-l11 | 3108192 | integrated on a868281 (rebased over 7d617c2); 136 tests, strict validate, block check, manifest green; smoke 4/4 after P2 test rewrite (a694ae2) | 2026-10-09 | done |
 | draft | Ticket worker | worker C (default profile) | Shortlist-by-default: JSON + generated sortable/filterable HTML as the default deliverable when a shortlist is key (port from abnb_agent SHORTLIST_STANDARD, check idea_scraper) | draft | none (SKILL.md/MANIFEST merge serialized after B) | wt/shortlist-default | 5fffe5a | dispatched | 2026-10-09 | verify diff + tests + served demo URL, ff-merge after B |
 | draft | Ticket worker | worker D (default profile) | Shortlist template: table-first compact layout (user feedback on demo page) | draft | worker C | wt/shortlist-table-first | a868281 | integrated (ff-only, 7781d8e); 137 tests + strict validate + agents_block + manifest green; screenshot reviewed; demo re-served 200; worktree removed; installed skill upgraded | 2026-10-09 | done |
-| draft | Ticket worker | worker E (Sonnet 5.5 subagent) | Vanilla dispatch default: shipped skill drops the author's hardwired profile; default becomes a lower-cost harness-native subagent; ask once when unset and record the answer as the root spine `Dispatch profile:`; AGENTS.md block defers to it | draft | none | wt/dispatch-defaults | 8c6eef8 | dispatched | 2026-10-10 | verify diff + tests, ff-merge |
+| draft | Ticket worker | worker E (Sonnet 5.5 subagent) | Vanilla dispatch default: shipped skill drops the author's hardwired profile; default becomes a lower-cost harness-native subagent; ask once when unset and record the answer as the root spine `Dispatch profile:`; AGENTS.md block defers to it | draft | none | wt/dispatch-defaults | 940d9f8 | integrated (ff-only, c3d2dc3); 138 tests + strict validate + agents_block + manifest green; roles-and-dispatch budget 100->105; worktree removed | 2026-10-10 | done |
 
 ## Decisions
 
