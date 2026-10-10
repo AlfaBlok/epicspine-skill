@@ -86,7 +86,7 @@ class SkillUpdateTest(unittest.TestCase):
         run_git(["commit", "-m", marker], root)
         return run_git(["rev-parse", "HEAD"], root)
 
-    def install(self, source: Path, *, commit: str, checked: str | None) -> Path:
+    def install(self, source: Path, *, commit: str, checked: str | None, tree: bool = True, latest: bool = False) -> Path:
         """Create <tmp>/skills/epic-spine plus a pin marking `commit`."""
         skills = self.tmp / "skills"
         skill = skills / "epic-spine"
@@ -100,6 +100,11 @@ class SkillUpdateTest(unittest.TestCase):
         ]
         if checked is not None:
             lines.append(f"checked: {checked}")
+        if tree:
+            t = run_git(["rev-parse", "HEAD:skill/epic-spine"], source)
+            lines.append(f"tree: {t}")
+            if latest:
+                lines.append(f"latest: {t}")
         (skills / "epic-spine.SOURCE").write_text("\n".join(lines) + "\n", encoding="utf-8")
         return skills
 
@@ -185,7 +190,7 @@ class SkillUpdateTest(unittest.TestCase):
         source = self.make_source()
         commit = run_git(["rev-parse", "HEAD"], source)
         today = skill_update.utc_today()
-        skills = self.install(source, commit=commit, checked=today)
+        skills = self.install(source, commit=commit, checked=today, latest=True)
 
         # A nonexistent source proves no remote call was attempted.
         proc = self.run_update(
@@ -300,42 +305,102 @@ class SkillUpdateTest(unittest.TestCase):
             (backup / "SKILL.md").read_text(encoding="utf-8"), "# Skill one\n"
         )
 
-    def test_upgrade_refuses_symlinked_skill_dir(self) -> None:
+    def pin_of(self, skills: Path) -> dict:
+        return skill_update.read_pin(skills / "epic-spine.SOURCE")
+
+    def status(self, skills: Path, source, *extra: str) -> dict:
+        proc = self.run_update(
+            self.script_in(skills), "status", "--json", "--source", str(source), *extra
+        )
+        return json.loads(proc.stdout)
+
+    def test_docs_only_commit_stays_fresh_and_refreshes_commit(self) -> None:
+        source = self.make_source()
+        skills = self.install(source, commit=run_git(["rev-parse", "HEAD"], source), checked="2000-01-01")
+        (source / "NOTES.md").write_text("docs\n", encoding="utf-8")
+        run_git(["add", "."], source)
+        run_git(["commit", "-m", "docs"], source)
+        head = run_git(["rev-parse", "HEAD"], source)
+        self.assertEqual(self.status(skills, source)["status"], "fresh")
+        self.assertEqual(self.pin_of(skills)["commit"], head)
+
+    def test_skill_change_is_stale_and_cached_stale_persists(self) -> None:
+        source = self.make_source()
+        skills = self.install(source, commit=run_git(["rev-parse", "HEAD"], source), checked="2000-01-01")
+        self.bump_source(source, "2026.02.02", "two")
+        self.assertEqual(self.status(skills, source)["status"], "stale")
+        pin = self.pin_of(skills)
+        self.assertEqual(pin["checked"], skill_update.utc_today())
+        self.assertNotEqual(pin["latest"], pin["tree"])
+        cached = self.status(skills, self.tmp / "nowhere")
+        self.assertEqual((cached["status"], cached["cached"], cached["upgradeable"]), ("stale", True, True))
+
+    def test_legacy_pin_equal_commit_writes_tree(self) -> None:
         source = self.make_source()
         commit = run_git(["rev-parse", "HEAD"], source)
-        real = self.tmp / "skills-real"
-        shutil.copytree(source / "skill" / "epic-spine", real / "epic-spine")
-        skills = self.tmp / "skills"
-        skills.mkdir()
-        (skills / "epic-spine").symlink_to(real / "epic-spine", target_is_directory=True)
+        skills = self.install(source, commit=commit, checked="2000-01-01", tree=False)
+        self.assertEqual(self.status(skills, source)["status"], "fresh")
+        self.assertEqual(self.pin_of(skills)["tree"], run_git(["rev-parse", "HEAD:skill/epic-spine"], source))
 
-        proc = self.run_update(
-            self.script_in(skills),
-            "status",
-            "--json",
-            "--source",
-            str(source),
-        )
-        self.assertEqual(json.loads(proc.stdout)["status"], "linked")
+    def test_legacy_pin_different_commit_is_stale_without_tree(self) -> None:
+        source = self.make_source()
+        skills = self.install(source, commit=run_git(["rev-parse", "HEAD"], source), checked="2000-01-01", tree=False)
+        (source / "NOTES.md").write_text("docs\n", encoding="utf-8")
+        run_git(["add", "."], source)
+        run_git(["commit", "-m", "docs"], source)
+        self.assertEqual(self.status(skills, source)["status"], "stale")
+        self.assertNotIn("tree", self.pin_of(skills))
 
-        before = (real / "epic-spine" / "SKILL.md").read_text(encoding="utf-8")
-        self.run_update(
-            self.script_in(skills),
-            "upgrade",
-            "--yes",
-            "--source",
-            str(source),
-            expect_rc=1,
-        )
-        self.assertEqual(
-            (real / "epic-spine" / "SKILL.md").read_text(encoding="utf-8"), before
-        )
+    def test_symlinked_hub_not_linked_and_upgrades_in_place(self) -> None:
+        source = self.make_source()
+        old = run_git(["rev-parse", "HEAD"], source)
+        skills = self.install(source, commit=old, checked="2000-01-01")
+        harness = self.tmp / "harness"
+        harness.mkdir()
+        (harness / "epic-spine").symlink_to(skills / "epic-spine", target_is_directory=True)
+        self.bump_source(source, "2026.02.02", "two")
+        self.assertEqual(self.status(harness, source)["status"], "stale")
+        self.run_update(self.script_in(harness), "upgrade", "--yes", "--source", str(source))
+        self.assertEqual((skills / "epic-spine" / "SKILL.md").read_text(), "# Skill two\n")
+        self.assertEqual(self.status(harness, source, "--force")["status"], "fresh")
+
+    def test_dir_inside_git_repo_is_linked(self) -> None:
+        source = self.make_source()
+        harness = self.tmp / "harness"
+        harness.mkdir()
+        (harness / "epic-spine").symlink_to(source / "skill" / "epic-spine", target_is_directory=True)
+        self.assertEqual(self.status(harness, source)["status"], "linked")
+        self.run_update(self.script_in(harness), "upgrade", "--yes", "--source", str(source), expect_rc=1)
+
+    def test_upgrade_short_circuits_when_tree_equal(self) -> None:
+        source = self.make_source()
+        skills = self.install(source, commit=run_git(["rev-parse", "HEAD"], source), checked="2000-01-01")
+        (source / "NOTES.md").write_text("docs\n", encoding="utf-8")
+        run_git(["add", "."], source)
+        run_git(["commit", "-m", "docs"], source)
+        head = run_git(["rev-parse", "HEAD"], source)
+        proc = self.run_update(self.script_in(skills), "upgrade", "--yes", "--source", str(source))
+        self.assertIn("Already current", proc.stdout)
+        self.assertEqual(list(skills.glob("epic-spine.bak*")), [])
+        self.assertEqual(self.pin_of(skills)["commit"], head)
+        self.assertNotIn("installed", self.pin_of(skills))
+
+    def test_upgrade_writes_tree_and_latest(self) -> None:
+        source = self.make_source()
+        skills = self.install(source, commit=run_git(["rev-parse", "HEAD"], source), checked="2000-01-01", tree=False)
+        self.bump_source(source, "2026.02.02", "two")
+        self.run_update(self.script_in(skills), "upgrade", "--yes", "--source", str(source))
+        t = run_git(["rev-parse", "HEAD:skill/epic-spine"], source)
+        pin = self.pin_of(skills)
+        self.assertEqual((pin["tree"], pin["latest"]), (t, t))
+
 
     def test_upgrade_rejects_manifest_mismatch(self) -> None:
         source = self.make_source()
         old_commit = run_git(["rev-parse", "HEAD"], source)
         skills = self.install(source, commit=old_commit, checked="2000-01-01")
 
+        self.bump_source(source, "2026.02.02", "two")
         (source / "MANIFEST.sha256").write_text(f"{BLANK_DIGEST}  skill/epic-spine/SKILL.md\n")
         run_git(["add", "."], source)
         run_git(["commit", "-m", "break manifest"], source)

@@ -20,7 +20,7 @@ These apply to every task unless the user or the root spine overrides.
 3. The manager coordinates and never implements: settle open decisions with the user before dispatch (one real fork at a time, with a recommendation), then dispatch workers with the root spine's `Dispatch profile:` (if unset, ask once, recommend a lower-cost native subagent, and record it there), verify output independently on two axes—repo standards and the ticket's spec—and report. `references/roles-and-dispatch.md`
 4. Stay in `main`: workers use a local worktree `wt/<task>`; the manager merges verified work itself (ff-only), tests in `main`, `git revert` on red; PRs optional; the user never has to merge. `references/git-doctrine.md`
 5. Learnings: read the root `Operating Learnings` **Always** at bind; the first reply states `Learnings in force:` (≤ 5 lines); propose sparingly, never write silently. `references/learnings.md`
-6. Freshness: run `scripts/skill_update.py status` at bind (cheap, once per 7 days); `Skill updates: auto` is the default. `references/skill-update.md`
+6. Freshness: run `scripts/skill_update.py status` at bind (cheap, once per day); `Skill updates: auto` is the default. `references/skill-update.md`
 7. Hygiene: remove a worker's worktree and branch right after integrating; dispatch a sweep when `Last sweep` is absent, over 7 days old, clutter exists, or the user asks. `references/hygiene.md` + `assets/sweep-brief.md`
 8. HTML/visual artifacts: serve them from `127.0.0.1` and report a clickable `http://127.0.0.1:<port>/<file>` URL (verified HTTP 200), never a path or `file://`. `references/artifacts.md`
 9. Lean: shortest correct output; load only the references a task triggers; delete rather than add.

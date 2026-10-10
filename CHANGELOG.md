@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased — tree-based freshness
+
+- `skill_update.py` decides freshness by the git tree hash of `skill/epic-spine/` (blobless clone), so docs-only commits no longer mark installs stale; the pin gains `tree:` and `latest:`, the cache returns the last verdict (stale stays stale), and the default window is 1 day. `upgrade` short-circuits when the tree is unchanged.
+- The skill dir is symlink-resolved: harness symlinks to a non-git hub now work; `linked` means a git work tree or vendored copy.
+
 ## Unreleased — vanilla dispatch default
 
 - The shipped default is now a lower-cost native subagent in its own worktree; no vendor, model ID, or T3/OpenCode is hardwired. With no root-spine `Dispatch profile:`, the agent asks once, recommends the default, and records the answer there; the recorded profile then wins. The Failure Rule is now generic.

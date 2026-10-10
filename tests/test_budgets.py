@@ -48,7 +48,7 @@ EXISTING_BUDGETS = {
     "assets/sweep-brief.md": 25,
     "scripts/migrate_spine.py": 170,
     "scripts/rollup_spine.py": 398,
-    "scripts/skill_update.py": 438,
+    "scripts/skill_update.py": 485,  # raised: tree-based freshness + symlink resolution, 2026-10-10
     "scripts/validate_spine.py": 1032,
 }
 
