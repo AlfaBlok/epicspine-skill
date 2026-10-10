@@ -22,8 +22,8 @@ Status: active
 Last attempted: 2026-10-10 vanilla dispatch default landed (c3d2dc3): shipped skill names no vendor/model; unset profile -> ask once, recommend a lower-cost native subagent, record as root spine `Dispatch profile:`. This repo's profile: native subagent, Sonnet 5.5.
 Result: main at c3d2dc3; 138 tests, strict validation, agents_block check and manifest green.
 Evidence: [main @ c3d2dc3](https://github.com/AlfaBlok/epicspine-skill/commit/c3d2dc3)
-Waiting on: worker F (skill update fix, PR)
-Approved work: skill update fix (user 2026-10-10).
+Waiting on: worker F (skill update fix, PR); worker G (always-on bind on every major harness)
+Approved work: skill update fix; always-on bind across all major harnesses (user 2026-10-10).
 Next action: verify worker F diff, merge PR, upgrade hub, run acceptance.
 Source revision: c3d2dc3
 Verified at: 2026-10-10
@@ -76,6 +76,7 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 | draft | Ticket worker | worker D (default profile) | Shortlist template: table-first compact layout (user feedback on demo page) | draft | worker C | wt/shortlist-table-first | a868281 | integrated (ff-only, 7781d8e); 137 tests + strict validate + agents_block + manifest green; screenshot reviewed; demo re-served 200; worktree removed; installed skill upgraded | 2026-10-09 | done |
 | draft | Ticket worker | worker E (Sonnet 5.5 subagent) | Vanilla dispatch default: shipped skill drops the author's hardwired profile; default becomes a lower-cost harness-native subagent; ask once when unset and record the answer as the root spine `Dispatch profile:`; AGENTS.md block defers to it | draft | none | wt/dispatch-defaults | 940d9f8 | integrated (ff-only, c3d2dc3); 138 tests + strict validate + agents_block + manifest green; roles-and-dispatch budget 100->105; worktree removed | 2026-10-10 | done |
 | draft | Ticket worker | worker F (Sonnet 5.5 subagent) | Make skill updates actually work: content-tree freshness (not head commit), resolve harness symlinks to the hub, cache the last result not 'fresh', 1-day window, PR per user | draft | none | wt/skill-update-tree | 974021d | dispatched | 2026-10-10 | verify diff + tests, merge PR, upgrade hub, acceptance via ~/.claude symlink path |
+| draft | Ticket worker | worker G (Sonnet 5.5 subagent) | Always-on bind on every major harness: harness-neutral global block + `install-global` (Claude Code, Codex, OpenCode, Gemini; others reported), optional session hooks, repo pointers (CLAUDE.md/GEMINI.md -> AGENTS.md) | draft | none (MANIFEST merge after F) | wt/always-on-all-harnesses | a272d1f | dispatched | 2026-10-10 | verify diff + tests, merge, install-global on this machine, cold-start in a blockless repo on 2+ harnesses |
 
 ## Decisions
 
@@ -94,6 +95,7 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 | 2026-10-09 | accepted | L-9 asks on missing details | L-9 stays as written: when an instruction leaves out a detail, the agent asks one clear question with a recommendation before dispatching. The P2 smoke prompt was a bad test (an unspecified typo), not a rule regression; P2 is rewritten as a fully specified edit and the ask-first behavior stays covered by P4. | user decision 2026-10-09 | Over-asking becomes a recurring complaint |
 | 2026-10-10 | accepted | Shipped default vs repo profile | The public skill ships a vague vanilla default (lower-cost harness-native worker); a user's profile is stored per repo as the root spine `Dispatch profile:` and wins thereafter. This repo's profile: native subagent, Sonnet 5.5. Supersedes the 2026-10-09 hardwired DeepSeek default. | user decision 2026-10-10 | User changes profile |
 | 2026-10-10 | accepted | Skill freshness by content | Freshness = git tree hash of `skill/epic-spine/` (pin `tree:`), not repo head; harness symlinks resolve to the real hub; only a symlink into a git checkout or a vendored pin is `linked`; cache returns the last result; default window 1 day. | user report 2026-10-10 (false stale; harness `linked`) | Freshness misreports again |
+| 2026-10-10 | accepted | Always-on is harness-neutral | Installing EpicSpine must make every major agent bind on its first reply in any repo; no harness is the default. Delivery: a global block in each harness's user-level instruction file, per-adapter hooks where they exist, and repo pointers for harnesses that don't read AGENTS.md. Done only when a cold start in a blockless repo passes. | user decision 2026-10-10 | A major harness fails cold start |
 
 ## Spine Map
 
