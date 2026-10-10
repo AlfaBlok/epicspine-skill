@@ -22,13 +22,13 @@ Status: active
 Last attempted: 2026-10-10 vanilla dispatch default landed (c3d2dc3): shipped skill names no vendor/model; unset profile -> ask once, recommend a lower-cost native subagent, record as root spine `Dispatch profile:`. This repo's profile: native subagent, Sonnet 5.5.
 Result: main at c3d2dc3; 138 tests, strict validation, agents_block check and manifest green.
 Evidence: [main @ c3d2dc3](https://github.com/AlfaBlok/epicspine-skill/commit/c3d2dc3)
-Waiting on: worker F (skill update fix, PR); worker G (always-on bind on every major harness)
-Approved work: skill update fix; always-on bind across all major harnesses (user 2026-10-10).
-Next action: verify worker F diff, merge PR, upgrade hub, run acceptance.
+Waiting on: worker G (always-on bind on every major harness)
+Approved work: always-on bind across all major harnesses (user 2026-10-10).
+Next action: integrate worker G when it reports.
 Source revision: c3d2dc3
 Verified at: 2026-10-10
 Last sweep: 2026-10-09, main clean
-EpicSpine skill: 2026.10.10 @ 02f93e2; installed hub upgraded 2026-10-10
+EpicSpine skill: 2026.10.10.1 @ 97b7535 (tree 59cc88f), checked 2026-10-10; hub upgraded; status via harness symlinks works
 
 ## Mission
 
@@ -75,7 +75,7 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 | draft | Ticket worker | worker C (default profile) | Shortlist-by-default: JSON + generated sortable/filterable HTML as the default deliverable when a shortlist is key (port from abnb_agent SHORTLIST_STANDARD, check idea_scraper) | draft | none (SKILL.md/MANIFEST merge serialized after B) | wt/shortlist-default | 5fffe5a | dispatched | 2026-10-09 | verify diff + tests + served demo URL, ff-merge after B |
 | draft | Ticket worker | worker D (default profile) | Shortlist template: table-first compact layout (user feedback on demo page) | draft | worker C | wt/shortlist-table-first | a868281 | integrated (ff-only, 7781d8e); 137 tests + strict validate + agents_block + manifest green; screenshot reviewed; demo re-served 200; worktree removed; installed skill upgraded | 2026-10-09 | done |
 | draft | Ticket worker | worker E (Sonnet 5.5 subagent) | Vanilla dispatch default: shipped skill drops the author's hardwired profile; default becomes a lower-cost harness-native subagent; ask once when unset and record the answer as the root spine `Dispatch profile:`; AGENTS.md block defers to it | draft | none | wt/dispatch-defaults | 940d9f8 | integrated (ff-only, c3d2dc3); 138 tests + strict validate + agents_block + manifest green; roles-and-dispatch budget 100->105; worktree removed | 2026-10-10 | done |
-| draft | Ticket worker | worker F (Sonnet 5.5 subagent) | Make skill updates actually work: content-tree freshness (not head commit), resolve harness symlinks to the hub, cache the last result not 'fresh', 1-day window, PR per user | draft | none | wt/skill-update-tree | 974021d | dispatched | 2026-10-10 | verify diff + tests, merge PR, upgrade hub, acceptance via ~/.claude symlink path |
+| draft | Ticket worker | worker F (Sonnet 5.5 subagent) | Make skill updates actually work: content-tree freshness (not head commit), resolve harness symlinks to the hub, cache the last result not 'fresh', 1-day window, PR per user | draft | none | PR #27 | 974021d | merged ff (97b7535); 145 tests + CI + agents_block + manifest green; hub bootstrapped via real path, then upgrade + status --force via ~/.claude symlink = fresh; docs-only commit stays fresh; worktree removed | 2026-10-10 | done |
 | draft | Ticket worker | worker G (Sonnet 5.5 subagent) | Always-on bind on every major harness: harness-neutral global block + `install-global` (Claude Code, Codex, OpenCode, Gemini; others reported), optional session hooks, repo pointers (CLAUDE.md/GEMINI.md -> AGENTS.md) | draft | none (MANIFEST merge after F) | wt/always-on-all-harnesses | a272d1f | dispatched | 2026-10-10 | verify diff + tests, merge, install-global on this machine, cold-start in a blockless repo on 2+ harnesses |
 
 ## Decisions
