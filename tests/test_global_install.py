@@ -135,6 +135,7 @@ class FirstMessageTest(unittest.TestCase):
             text = (SCRIPT.parent.parent / "assets" / name).read_text(encoding="utf-8")
             self.assertIn("whatever the message", text, name)
             self.assertIn("`Delivery manager · EpicSpine · Learnings in force:", text, name)
+            self.assertIn("final answer", text, name)
             self.assertIn("What do you want?", text, name)
             self.assertIn("≤4 lines", text, name)
 

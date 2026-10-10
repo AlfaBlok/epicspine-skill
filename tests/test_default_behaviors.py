@@ -67,6 +67,7 @@ class DefaultBehaviorsTest(unittest.TestCase):
         self.assertIn("whatever the message", block)
         self.assertIn("delivery manager · epicspine · learnings in force:", block)
         self.assertIn("learnings in force:", block)
+        self.assertIn("final answer", block)
 
     def test_e_always_learnings_l1_to_l8_in_order(self) -> None:
         always = self.between(read("docs/EPIC-2-OPERATING-SYSTEM.md"), "**Always**", "**Scoped index**")
