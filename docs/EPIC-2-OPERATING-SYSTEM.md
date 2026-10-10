@@ -19,13 +19,13 @@ Skill updates: auto
 
 Owner: /root delivery manager
 Status: active
-Last attempted: 2026-10-10 always-on bind on every major harness landed (5088c2f): global block + `install-global` (instruction files + SessionStart hooks, harness-neutral) and a first-message route (even on "hi": role, mission, state, "What do you want?"). Installed on this machine.
-Result: main at 5088c2f; 160 tests, agents_block check, strict validation and manifest green. Cold start "hi" in a blockless repo: Claude Code, Codex (gpt-6-luna) and OpenCode (deepseek-v4.1-flash) all bound as delivery manager in 4 lines; Gemini untested (no GEMINI_API_KEY).
-Evidence: [main @ 5088c2f](https://github.com/AlfaBlok/epicspine-skill/commit/5088c2f)
+Last attempted: 2026-10-10 bind line made unconditional and visible (077b284, b545fb5): it opens the first turn's final answer, since UIs hide pre-tool text. Root cause found in transcripts: agents bound but the line was hidden or the rule read as greeting-only.
+Result: main at b545fb5; tests, block check, strict validate, manifest green. Claude Code cold first messages (question in zenod, task in blank repo, "hi" in zenod) all open with `Delivery manager · EpicSpine · Learnings in force:`.
+Evidence: [main @ b545fb5](https://github.com/AlfaBlok/epicspine-skill/commit/b545fb5)
 Waiting on: user
 Approved work: none open
-Next action: Gemini cold start once authenticated; Codex default model gpt-6-sol fails on ChatGPT account (user config, not EpicSpine).
-Source revision: 5088c2f
+Next action: User confirms in a fresh T3 Claude session; Gemini and Codex parked by user.
+Source revision: b545fb5
 Verified at: 2026-10-10
 Last sweep: 2026-10-09, main clean
 EpicSpine skill: 2026.10.10.1 @ 97b7535 (tree 59cc88f), checked 2026-10-10; hub upgraded; status via harness symlinks works
