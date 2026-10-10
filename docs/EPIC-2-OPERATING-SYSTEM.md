@@ -19,13 +19,13 @@ Skill updates: auto
 
 Owner: /root delivery manager
 Status: active
-Last attempted: 2026-10-10 `agents_block.py profile` show/set landed (04c28e0); the machine profile is now read and written by code, not hand edits; SMOKE P5 covers the ask-once cold start (live run pending).
-Result: main at b545fb5; tests, block check, strict validate, manifest green. Claude Code cold first messages (question in zenod, task in blank repo, "hi" in zenod) all open with `Delivery manager · EpicSpine · Learnings in force:`.
-Evidence: [main @ b545fb5](https://github.com/AlfaBlok/epicspine-skill/commit/b545fb5)
+Last attempted: 2026-10-10 Book (index.html, 29 slides) redrawn with diagram-design diagrams (eb0a7fc, 62a8852, pushed) and declared as the active Book companion in this spine.
+Result: Book companion active; drift test, tests, strict validate, manifest green. Prior: profile show/set landed (04c28e0); Claude Code cold first messages bind correctly.
+Evidence: [main @ 62a8852](https://github.com/AlfaBlok/epicspine-skill/commit/62a8852)
 Waiting on: user
 Approved work: none open
 Next action: User confirms in a fresh T3 Claude session; Gemini and Codex parked by user.
-Source revision: 04c28e0
+Source revision: 62a8852
 Verified at: 2026-10-10
 Last sweep: 2026-10-09, main clean
 EpicSpine skill: 2026.10.10.1 @ 97b7535 (tree 59cc88f), checked 2026-10-10; hub upgraded; status via harness symlinks works
@@ -99,6 +99,30 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 | 2026-10-10 | accepted | Skill freshness by content | Freshness = git tree hash of `skill/epic-spine/` (pin `tree:`), not repo head; harness symlinks resolve to the real hub; only a symlink into a git checkout or a vendored pin is `linked`; cache returns the last result; default window 1 day. | user report 2026-10-10 (false stale; harness `linked`) | Freshness misreports again |
 | 2026-10-10 | accepted | Always-on is harness-neutral | Installing EpicSpine must make every major agent bind on its first reply in any repo; no harness is the default. Delivery: a global block in each harness's user-level instruction file, per-adapter hooks where they exist, and repo pointers for harnesses that don't read AGENTS.md. Done only when a cold start in a blockless repo passes. | user decision 2026-10-10 | A major harness fails cold start |
 | 2026-10-10 | accepted | Profile is machine-wide | The user sets the worker profile once per machine (`~/.agents/epicspine-profile.md`); every repo uses it; a repo's `Dispatch profile:` line only overrides. Unset everywhere: ask once, save at machine level. Supersedes per-repo ask-and-record. | user decision 2026-10-10 | User wants per-repo profiles |
+
+## EpicSpine Book Companion
+
+Status: active
+Book root: index.html
+Book steward: /root delivery manager
+Chapter map: index.html (part-grouped slide index)
+Leaf roots: index.html (single-file deck; leaves are slides)
+Canonical registry: none
+Registry row identity: none
+Generated registry view: none
+Author scope: slides of index.html plus tests/test_book_drift.py
+Root promotion authority: Book steward
+Registry write authority: read-only
+Archive location: git history
+Validation command: `uv run --with pytest pytest -q tests/test_book_drift.py`
+
+Binding rule: When `Status: active`, every agent bound to this spine is also a Book author. For material research, comparison, recommendation, reusable explanation, or substantial user-facing synthesis, update or add a slide in index.html without a separate request.
+
+Navigation rule: Every slide is reachable from the part-grouped index and links back to the Book root; the root promotes only current, foundational, or decision-significant slides.
+
+Registry rule: No canonical registry; the Book keeps no live structured collection.
+
+Landing exceptions: No slide for quick answers, transient status, raw logs, ticket debugging, or work with no durable user-facing knowledge.
 
 ## Spine Map
 
