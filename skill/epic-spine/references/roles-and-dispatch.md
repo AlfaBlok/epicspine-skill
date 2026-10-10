@@ -59,12 +59,13 @@ A dispatch profile is the per-task set of dispatch choices:
 Highest wins, merged field by field; only the stated fields change:
 
 1. Per-task instruction from the user (a different model, provider, mechanism, parallelism, reasoning, and so on).
-2. Repository declaration: a `Dispatch profile:` line in the root spine or `AGENTS.md`.
-3. The built-in default above.
+2. Repository declaration: a `Dispatch profile:` line in the root spine or `AGENTS.md`; an optional override only.
+3. Machine profile: `~/.agents/epicspine-profile.md`, one line `Dispatch profile: <free text>`, set once per machine and outside the skill dir so upgrades never touch it.
+4. The built-in default above.
 
 ## Unset Or Ask
 
-If the root spine has no `Dispatch profile:` line (or it says `default`) and you are about to dispatch for the first time, ask the user once, recommend the built-in default, and record the answer as the root spine `Dispatch profile:` line. If the user states a profile or asks to set a default, write that line. The recorded profile is then used without asking.
+If neither the repo `Dispatch profile:` line (absent or `default`) nor the machine file exists when you first dispatch, ask the user once, recommend the built-in default, and save the answer to the machine file, not the repo. Write a repo line only when the user says the choice is specific to that repo. If the user states a profile or asks to set a default, write the machine file. The saved profile is then used without asking.
 
 ## Ready Frontier
 

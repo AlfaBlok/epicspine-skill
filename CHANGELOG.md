@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased — machine-wide dispatch profile
+
+- The dispatch profile is set once per machine in `~/.agents/epicspine-profile.md` (survives upgrades); the repo `Dispatch profile:` line is now an optional override, and ask-once saves to the machine file.
+
 ## Unreleased — tree-based freshness
 
 - `skill_update.py` decides freshness by the git tree hash of `skill/epic-spine/` (blobless clone), so docs-only commits no longer mark installs stale; the pin gains `tree:` and `latest:`, the cache returns the last verdict (stale stays stale), and the default window is 1 day. `upgrade` short-circuits when the tree is unchanged.

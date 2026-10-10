@@ -45,10 +45,15 @@ class DefaultBehaviorsTest(unittest.TestCase):
             self.assertIn("Dispatch profile:", region)
             self.assertIn("ask once", region)
             self.assertIn("record", region)
+            self.assertIn("~/.agents/epicspine-profile.md", region)
         self.assertIn("lower-cost", self.default_table())
         refs = read("skill/epic-spine/references/roles-and-dispatch.md")
         self.assertIn("## Unset Or Ask", refs)
         self.assertIn("ask the user once", refs)
+        self.assertIn("~/.agents/epicspine-profile.md", refs)
+        self.assertIn("not the repo", refs)
+        self.assertIn("optional override only", refs)
+        self.assertIn("~/.agents/epicspine-profile.md", read("skill/epic-spine/assets/global-block.md"))
 
     def test_b_manager_never_implements(self) -> None:
         self.assertIn("never implements", self.agents_block().lower())
