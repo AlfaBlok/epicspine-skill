@@ -67,6 +67,28 @@ python3 ~/.agents/skills/epic-spine/scripts/skill_update.py upgrade
 
 `status` compares the installed copy's pinned commit against the source's latest `main` without cloning; `upgrade` shallow-clones, verifies the tree against `MANIFEST.sha256`, swaps atomically (one `.bak`), and rewrites the pin. The default source is this repository. The delivery manager runs `status` at bind and follows `Skill updates: auto|manual|off` (default `auto`). See [skill-update.md](skill/epic-spine/references/skill-update.md).
 
+## Always on (every harness, every repo)
+
+Skills load only when a request matches, so a first message like "fix the login bug" never loads one. Run once per machine, and once per repo:
+
+```sh
+python3 ~/.agents/skills/epic-spine/scripts/agents_block.py install-global   # --claude-dir DIR (repeatable), --no-hooks, --home
+python3 ~/.agents/skills/epic-spine/scripts/agents_block.py install --root-spine docs/SPINE.md   # in a repo
+```
+
+Both are idempotent and keep existing content; `check-global`, `check`, `uninstall-global`, `uninstall` mirror them. Output names every harness it wrote, skipped, or cannot support.
+
+| Harness | Global (install-global) | Repo (install) | Confidence |
+|---|---|---|---|
+| Claude Code | `<config dir>/CLAUDE.md` for `$CLAUDE_CONFIG_DIR`, `~/.claude`, `~/.claude*` dirs with settings; plus SessionStart hook in `settings.json` | `CLAUDE.md` (`@AGENTS.md`) | file high; hook high |
+| Codex | `~/.codex/AGENTS.md` (`$CODEX_HOME`) | `AGENTS.md` | file high; no hook |
+| OpenCode | `~/.config/opencode/AGENTS.md` | `AGENTS.md` | file high; no hook (needs JS plugin) |
+| Gemini CLI | `~/.gemini/GEMINI.md`; SessionStart hook in `~/.gemini/settings.json` | `GEMINI.md` (`@AGENTS.md`) | file high; hook low |
+| Cursor | unsupported (user rules are UI-only) | `.cursor/rules/epicspine.mdc` (`alwaysApply`) + `AGENTS.md` | repo medium |
+| Windsurf | `~/.codeium/windsurf/memories/global_rules.md` | `AGENTS.md` | medium |
+| Copilot CLI | `~/.copilot/copilot-instructions.md` | `.github/copilot-instructions.md` | medium |
+| Aider | unsupported (needs `read:` in `.aider.conf.yml`) | none | n/a |
+
 ## Why This Exists
 
 AI agents are powerful, but they lose the plot easily:

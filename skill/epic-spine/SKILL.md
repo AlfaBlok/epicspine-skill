@@ -59,7 +59,7 @@ Binding fields, one compact line: role | bound spine | bound issue | steward | h
 | A shortlist / selection of candidates is a key deliverable | `references/shortlists.md`, `scripts/build_shortlist.py`, `assets/shortlist.template.html`, `assets/shortlist-sample.json` |
 | Repairing a spine or changing the workflow itself | `references/operating-model.md` |
 | Any worker dispatch | `assets/dispatch-prompt-preamble.md` |
-| Always-on AGENTS.md block (installed in any repo) | `assets/agents-block.md`, `scripts/agents_block.py` |
+| Always-on block: repo files, or once per machine (`install-global`: every harness's instruction file + session hook) | `assets/agents-block.md`, `assets/global-block.md`, `scripts/agents_block.py`, `scripts/global_install.py` |
 
 ## Spine Document Minimums
 
