@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Machine-wide EpicSpine install: for every detected harness, write the global
 bind block into its user-level instruction file AND register its session-start
-hook where one exists (both default on; ``hooks=False`` is the opt-out).
+hook where one exists (Claude Code also gets the ``url_gate.py`` Stop hook; all
+default on; ``hooks=False`` is the opt-out).
 Stdlib only, Python 3.10+. Harness-neutral: one block, one marker pair, one
 adapter table; no harness is privileged.
 """
@@ -16,6 +17,8 @@ SKILL_DIR = Path(__file__).resolve().parent.parent
 GLOBAL_TEMPLATE = SKILL_DIR / "assets" / "global-block.md"
 BLOCK_RE = re.compile(r"<!-- epicspine:begin [^>]*-->.*?<!-- epicspine:end -->", re.DOTALL)
 HOOK_MARK = 'agents_block.py" print-hook'
+GATE_MARK = 'url_gate.py"'
+HOOK_EVENTS = (("SessionStart", HOOK_MARK), ("Stop", GATE_MARK))
 UNSUPPORTED = {
     "cursor (user level)": "user rules live in the app settings UI, not a file; repo install writes .cursor/rules",
     "aider": "no user-level instruction file; needs a read: entry in .aider.conf.yml",
@@ -106,38 +109,42 @@ def _load(settings: Path) -> dict:
 
 
 def _strip_hook(data: dict) -> bool:
-    groups = data.get("hooks", {}).get("SessionStart")
-    if not isinstance(groups, list):
-        return False
+    """Remove EpicSpine-managed hooks (SessionStart, Stop); foreign hooks stay."""
     changed = False
-    for group in list(groups):
-        hooks = group.get("hooks") if isinstance(group, dict) else None
-        if not isinstance(hooks, list):
+    for event, mark in HOOK_EVENTS:
+        groups = data.get("hooks", {}).get(event)
+        if not isinstance(groups, list):
             continue
-        keep = [h for h in hooks if HOOK_MARK not in str(h.get("command", ""))]
-        if len(keep) != len(hooks):
-            changed = True
-            group["hooks"] = keep
-            if not keep:
-                groups.remove(group)
-    if changed and not groups:
-        del data["hooks"]["SessionStart"]
-        if not data["hooks"]:
-            del data["hooks"]
+        hit = False
+        for group in list(groups):
+            hooks = group.get("hooks") if isinstance(group, dict) else None
+            keep = [h for h in hooks if mark not in str(h.get("command", ""))] if isinstance(hooks, list) else None
+            if keep is not None and len(keep) != len(hooks):
+                hit = changed = True
+                group["hooks"] = keep
+                if not keep:
+                    groups.remove(group)
+        if hit and not groups:
+            del data["hooks"][event]
+    if changed and not data["hooks"]:
+        del data["hooks"]
     return changed
 
 
-def set_hook(settings: Path, on: bool) -> str:
-    """Add or remove the SessionStart hook, merging into existing settings."""
+def set_hook(settings: Path, on: bool, stop: bool = False) -> str:
+    """Add/remove managed hooks (SessionStart; plus url_gate Stop if ``stop``), merging."""
     try:
         data = _load(settings)
     except (ValueError, OSError) as exc:
         return f"error: cannot merge {settings}: {exc}"
     had = _strip_hook(data)
     if on:
-        command = f'python3 "{Path(__file__).with_name("agents_block.py")}" print-hook'
-        data.setdefault("hooks", {}).setdefault("SessionStart", []).append(
-            {"hooks": [{"type": "command", "command": command}]})
+        cmds = {"SessionStart": f'python3 "{Path(__file__).with_name("agents_block.py")}" print-hook'}
+        if stop:
+            cmds["Stop"] = f'python3 "{Path(__file__).with_name("url_gate.py")}"'
+        for event, command in cmds.items():
+            data.setdefault("hooks", {}).setdefault(event, []).append(
+                {"hooks": [{"type": "command", "command": command}]})
     elif not had:
         return "absent"
     if data:
@@ -148,11 +155,12 @@ def set_hook(settings: Path, on: bool) -> str:
     return "set" if on else "removed"
 
 
-def has_hook(settings: Path) -> bool:
+def has_hook(settings: Path, stop: bool = False) -> bool:
     try:
-        return HOOK_MARK in str(_load(settings).get("hooks", {}))
+        hooks = str(_load(settings).get("hooks", {}))
     except (ValueError, OSError):
         return False
+    return HOOK_MARK in hooks and (not stop or GATE_MARK in hooks)
 
 
 def run(action: str, home: Path, env: dict, claude_dirs: list[str], hooks: bool = True) -> int:
@@ -174,12 +182,13 @@ def run(action: str, home: Path, env: dict, claude_dirs: list[str], hooks: bool 
             code |= state != "current"
             line = f"{label}: {state} {target}"
         if settings is not None:
+            stop = label.startswith("claude-code")
             if action == "check" and hooks:
-                ok = has_hook(settings)
+                ok = has_hook(settings, stop)
                 code |= not ok
                 line += f"; hook {'present' if ok else 'missing'}"
             elif action == "uninstall" or (action == "install" and hooks):
-                result = set_hook(settings, action == "install")
+                result = set_hook(settings, action == "install", stop)
                 code |= result.startswith("error")
                 line += f"; hook {result}"
         print(line)

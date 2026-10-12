@@ -87,6 +87,51 @@ class GlobalInstallTest(unittest.TestCase):
         self.assertEqual(claude_md.read_text(), "# Mine\n\nkeep\n")
         self.assertEqual(json.loads(settings.read_text()), existing)
 
+    def stop_commands(self, name: str = ".claude") -> list[str]:
+        data = json.loads((self.home / name / "settings.json").read_text())
+        return [h["command"] for g in data.get("hooks", {}).get("Stop", []) for h in g["hooks"]]
+
+    def test_stop_hook_installed_for_claude_only(self) -> None:
+        self.run_cmd("install-global")
+        for name in (".claude", ".claude_acct2"):
+            cmds = [c for c in self.stop_commands(name) if "url_gate.py" in c]
+            self.assertEqual(len(cmds), 1, name)
+            self.assertTrue(cmds[0].startswith("python3 "))
+        gem = json.loads((self.home / ".gemini/settings.json").read_text())
+        self.assertNotIn("Stop", gem["hooks"])
+
+    def test_stop_hook_idempotent_and_coexists_with_foreign(self) -> None:
+        settings = self.home / ".claude/settings.json"
+        foreign = {"hooks": {"Stop": [
+            {"matcher": "", "hooks": [{"type": "command", "command": "other-tool notify"}]},
+            {"hooks": [{"type": "command", "command": "second"}]}]}}
+        settings.write_text(json.dumps(foreign))
+        self.run_cmd("install-global")
+        snap = settings.read_text()
+        self.run_cmd("install-global")
+        self.assertEqual(snap, settings.read_text())
+        cmds = self.stop_commands()
+        self.assertEqual(sum("url_gate.py" in c for c in cmds), 1)
+        self.assertIn("other-tool notify", cmds)
+        self.assertIn("second", cmds)
+        self.run_cmd("uninstall-global")
+        self.assertEqual(json.loads(settings.read_text()), foreign)
+
+    def test_check_reports_missing_stop_hook(self) -> None:
+        self.run_cmd("install-global")
+        self.assertEqual(self.run_cmd("check-global")[0], 0)
+        settings = self.home / ".claude/settings.json"
+        data = json.loads(settings.read_text())
+        del data["hooks"]["Stop"]
+        settings.write_text(json.dumps(data))
+        code, out = self.run_cmd("check-global")
+        self.assertEqual(code, 1)
+        self.assertIn("hook missing", out)
+
+    def test_no_hooks_skips_stop_hook(self) -> None:
+        self.run_cmd("install-global", "--no-hooks")
+        self.assertFalse((self.home / ".claude/settings.json").exists())
+
     def test_uninstall_clean(self) -> None:
         self.run_cmd("install-global")
         code, _ = self.run_cmd("uninstall-global")
@@ -137,6 +182,9 @@ class FirstMessageTest(unittest.TestCase):
             self.assertIn("`Delivery manager · EpicSpine · Learnings in force:", text, name)
             self.assertIn("final answer", text, name)
             self.assertIn("What do you want?", text, name)
+            self.assertIn("http://127.0.0.1:<port>/<file>", text, name)
+            self.assertIn("never a path or `file://`", text, name)
+            self.assertIn("Stop hook", text, name)
             self.assertIn("≤4 lines", text, name)
 
 

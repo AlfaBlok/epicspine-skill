@@ -1,0 +1,150 @@
+#!/usr/bin/env python3
+"""Claude Code Stop hook: block a final reply that hands over an HTML/visual
+deliverable as a path or ``file://`` instead of a reachable 127.0.0.1 URL.
+
+Stdin is the Stop-hook JSON (``last_assistant_message``, else the last assistant
+text in ``transcript_path``). To block, print ``{"decision": "block", "reason": ...}``
+and exit 0 (https://code.claude.com/docs/en/hooks, "Stop decision control").
+Stdlib only, Python 3.10+.
+
+Heuristics (deliberately simple):
+- A visual mention is a ``file://`` link or a path containing ``/`` ending in
+  .html .htm .svg .png .pdf; a bare ``name.html`` counts only on a line that
+  also says open/view. Fenced code blocks are ignored, URLs included (quoted source/diffs);
+  remote http(s) URLs are ignored.
+- Any ``http://127.0.0.1[:port]/...`` or ``localhost`` URL in the message is
+  curl-checked (GET, 2s); anything but 200 blocks. A reachable one satisfies a
+  visual mention, whatever it points at.
+- Non-visual paths (.py .md .json ...) never trigger.
+Safety: fails open on any error; at most MAX_BLOCKS blocks per turn (a counter
+file per session in the temp dir, reset when ``stop_hook_active`` is false);
+``EPICSPINE_URL_GATE=off`` disables the gate.
+"""
+
+from __future__ import annotations
+
+import json
+import os
+import re
+import sys
+import tempfile
+import urllib.request
+from pathlib import Path
+
+MAX_BLOCKS = 2
+FENCE = re.compile(r"^(```|~~~).*?^\1[^\n]*$", re.DOTALL | re.MULTILINE)
+LOCAL_URL = re.compile(
+    r"https?://(?:127\.0\.0\.1|localhost)(?::\d+)?(?![\w:<])(?:/[^\s)\]>\"'`<]*)?")
+REMOTE_URL = re.compile(r"https?://[^\s)\]>\"'`<]+")
+FILE_URL = re.compile(r"file://[^\s)\]>\"'`<]*", re.I)
+EXT = r"\.(?:html?|svg|png|pdf)\b"
+PATH = re.compile(r"(?<![\w.])[\w~./\-+%@]*[\w\-+%@]" + EXT + r"(?![\w/])", re.I)
+OPEN_WORD = re.compile(r"\b(?:open|view)\b", re.I)
+
+REASON_NO_URL = (
+    "HTML deliverable reported without a served URL ({found}). Serve the artifact "
+    "directory on 127.0.0.1 (references/artifacts.md; or the repo's declared serve "
+    "script), curl-check HTTP 200, and report the clickable URL "
+    "http://127.0.0.1:<port>/<file> on its own line. Set EPICSPINE_URL_GATE=off to disable.")
+REASON_BAD_URL = (
+    "Reported URL not serving HTTP 200: {bad}. Start or fix the server on 127.0.0.1, "
+    "curl-check it, then report the working URL on its own line.")
+
+
+def final_text(payload: dict) -> str:
+    text = payload.get("last_assistant_message")
+    if isinstance(text, str) and text.strip():
+        return text
+    path = payload.get("transcript_path")
+    if not isinstance(path, str):
+        return ""
+    last = ""
+    with open(os.path.expanduser(path), encoding="utf-8") as fh:
+        for line in fh:
+            try:
+                rec = json.loads(line)
+            except ValueError:
+                continue
+            msg = rec.get("message") if isinstance(rec, dict) else None
+            if rec.get("type") != "assistant" or not isinstance(msg, dict):
+                continue
+            content = msg.get("content")
+            if isinstance(content, str):
+                parts = [content]
+            else:
+                parts = [c.get("text", "") for c in content or []
+                         if isinstance(c, dict) and c.get("type") == "text"]
+            joined = "\n".join(p for p in parts if p).strip()
+            if joined:
+                last = joined
+    return last
+
+
+def visual_mentions(text: str) -> list[str]:
+    """Visual-file mentions in prose (fences and remote URLs removed)."""
+    prose = REMOTE_URL.sub(lambda m: m.group(0) if LOCAL_URL.match(m.group(0)) else "",
+                           FENCE.sub("", text))
+    found = FILE_URL.findall(prose)
+    prose = FILE_URL.sub("", prose)
+    for line in prose.splitlines():
+        for m in PATH.finditer(LOCAL_URL.sub("", line)):
+            if "/" in m.group(0) or OPEN_WORD.search(line):
+                found.append(m.group(0))
+    return found
+
+
+def status_ok(url: str) -> bool:
+    try:
+        with urllib.request.urlopen(url, timeout=2) as resp:
+            return resp.status == 200
+    except Exception:
+        return False
+
+
+def decide(text: str) -> str | None:
+    """Return a block reason, or None to allow."""
+    urls = [u.rstrip(".,;:!?") for u in LOCAL_URL.findall(FENCE.sub("", text))]
+    urls = list(dict.fromkeys(urls))
+    bad = [u for u in urls if not status_ok(u)]
+    if bad:
+        return REASON_BAD_URL.format(bad=", ".join(bad))
+    if not urls:
+        found = visual_mentions(text)
+        if found:
+            return REASON_NO_URL.format(found=", ".join(dict.fromkeys(found))[:200])
+    return None
+
+
+def counter_path(session: str) -> Path:
+    safe = re.sub(r"[^\w.-]", "_", session or "nosession")[:80]
+    return Path(tempfile.gettempdir()) / "epicspine-url-gate" / f"{safe}.count"
+
+
+def main() -> int:
+    try:
+        if os.environ.get("EPICSPINE_URL_GATE", "").strip().lower() == "off":
+            return 0
+        payload = json.loads(sys.stdin.read() or "{}")
+        if not isinstance(payload, dict):
+            return 0
+        counter = counter_path(str(payload.get("session_id", "")))
+        count = 0
+        if payload.get("stop_hook_active"):
+            try:
+                count = int(counter.read_text())
+            except (OSError, ValueError):
+                count = 0
+        reason = decide(final_text(payload))
+        if reason is None or count >= MAX_BLOCKS:
+            counter.unlink(missing_ok=True)
+            return 0
+        counter.parent.mkdir(parents=True, exist_ok=True)
+        counter.write_text(str(count + 1))
+        print(json.dumps({"decision": "block", "reason": reason}))
+    except Exception:
+        return 0
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

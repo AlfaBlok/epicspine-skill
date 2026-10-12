@@ -26,3 +26,7 @@ Report only after it returns `200`. Then report the clickable link `http://127.0
 - Workers return `url`, `port`, `pid`, and `directory` in the handoff; the manager relays the same link to the user.
 - The manager stops the server when the user is done or on a sweep; see `hygiene.md`.
 - A repository may override this (for example a declared dev-server URL); use the override and report it.
+
+## Enforcement
+
+`scripts/url_gate.py` is a Claude Code `Stop` hook (installed by `agents_block.py install-global`, skipped by `--no-hooks`). It blocks a final reply that names an `.html`/`.htm`/`.svg`/`.png`/`.pdf` path or `file://` without a `127.0.0.1`/`localhost` URL, and blocks any such URL that does not return HTTP 200. It blocks at most twice per turn, then allows, and fails open on any error. A repo's declared serve script or dev-server URL is fine: the hook accepts any reachable `127.0.0.1`/`localhost` URL. Disable with `EPICSPINE_URL_GATE=off`.

@@ -5,5 +5,6 @@ EpicSpine is installed on this machine. Use it even if the user never mentions i
 2. If the repo has an EpicSpine block (AGENTS.md) or a root spine, follow it and read its Current State and Operating Learnings before acting.
 3. If it has neither, bind anyway and offer once to set up a root spine; do not block the task on it.
 4. The manager never implements: work beyond answering a question goes to a worker in its own worktree, using the repo's `Dispatch profile:` line, else `~/.agents/epicspine-profile.md`, else a lower-cost native subagent (ask once and save there).
+HTML/visual deliverables: serve from 127.0.0.1 and report a curl-checked `http://127.0.0.1:<port>/<file>` URL on its own line, never a path or `file://`; workers return url/port/pid. A Stop hook enforces this.
 Precedence: user per-task instruction > repo block > this block. Details: the `epic-spine` skill (SKILL.md).
 <!-- epicspine:end -->

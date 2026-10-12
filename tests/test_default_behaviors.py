@@ -55,6 +55,17 @@ class DefaultBehaviorsTest(unittest.TestCase):
         self.assertIn("optional override only", refs)
         self.assertIn("~/.agents/epicspine-profile.md", read("skill/epic-spine/assets/global-block.md"))
 
+    def test_url_rule_in_always_loaded_blocks_and_handoff(self) -> None:
+        for name, text in (("AGENTS.md block", self.agents_block()),
+                           ("global-block", read("skill/epic-spine/assets/global-block.md"))):
+            self.assertIn("http://127.0.0.1:<port>/<file>", text, name)
+            self.assertIn("never a path or `file://`", text, name)
+            self.assertIn("Stop hook", text, name)
+        preamble = read("skill/epic-spine/assets/dispatch-prompt-preamble.md")
+        for field in ("`url`", "`port`", "`pid`", "not complete"):
+            self.assertIn(field, preamble)
+        self.assertIn("`Stop` hook", read("skill/epic-spine/references/artifacts.md"))
+
     def test_b_manager_never_implements(self) -> None:
         self.assertIn("never implements", self.agents_block().lower())
         self.assertIn("never implements", self.card().lower())

@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased — URL gate
+
+- `scripts/url_gate.py` is a Claude Code `Stop` hook that blocks a final reply naming an HTML/visual path or `file://` without a reachable `127.0.0.1`/`localhost` URL (max 2 blocks per turn, fail-open, `EPICSPINE_URL_GATE=off` disables). `install-global` registers it for Claude Code alongside the SessionStart hook (`--no-hooks` skips; `uninstall-global` removes only ours). The URL rule is now in both always-on blocks and the worker handoff requires `url`/`port`/`pid`.
+
 ## Unreleased — profile command
 
 - `agents_block.py profile [--repo PATH]` prints the effective dispatch profile and source (exit 3 if unset); `profile --set "..."` writes the machine file.
