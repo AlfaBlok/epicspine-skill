@@ -19,14 +19,14 @@ Skill updates: auto
 
 Owner: /root delivery manager
 Status: active
-Last attempted: 2026-10-10 Book (index.html, 29 slides) redrawn with diagram-design diagrams (eb0a7fc, 62a8852, pushed) and declared as the active Book companion in this spine.
-Result: Book companion active; drift test, tests, strict validate, manifest green. Prior: profile show/set landed (04c28e0); Claude Code cold first messages bind correctly.
-Evidence: [main @ 62a8852](https://github.com/AlfaBlok/epicspine-skill/commit/62a8852)
-Waiting on: user
+Last attempted: 2026-10-11 Stop hook `url_gate.py` (blocks final replies that hand over HTML/visual files as paths instead of verified 127.0.0.1 URLs) integrated on main; install-global wiring included.
+Result: 193 tests, strict validate, block check, manifest green on main; hook not yet installed on this machine. Prior: Book companion active (62a8852); profile show/set landed (04c28e0).
+Evidence: [main @ 2346d2d](https://github.com/AlfaBlok/epicspine-skill/commit/2346d2d) (local, unpushed)
+Waiting on: user (OK to run `install-global` so the Stop hook lands in ~/.claude/settings.json; push)
 Approved work: none open
-Next action: User confirms in a fresh T3 Claude session; Gemini and Codex parked by user.
-Source revision: 62a8852
-Verified at: 2026-10-10
+Next action: On user OK run install-global, then confirm in a fresh Claude session that a path-only HTML reply is blocked; Gemini and Codex parked by user.
+Source revision: 2346d2d
+Verified at: 2026-10-11
 Last sweep: 2026-10-09, main clean
 EpicSpine skill: 2026.10.10.1 @ 97b7535 (tree 59cc88f), checked 2026-10-10; hub upgraded; status via harness symlinks works
 
@@ -78,6 +78,7 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 | draft | Ticket worker | worker F (Sonnet 5.5 subagent) | Make skill updates actually work: content-tree freshness (not head commit), resolve harness symlinks to the hub, cache the last result not 'fresh', 1-day window, PR per user | draft | none | PR #27 | 974021d | merged ff (97b7535); 145 tests + CI + agents_block + manifest green; hub bootstrapped via real path, then upgrade + status --force via ~/.claude symlink = fresh; docs-only commit stays fresh; worktree removed | 2026-10-10 | done |
 | draft | Ticket worker | worker G (Sonnet 5.5 subagent) | Always-on bind on every major harness: harness-neutral global block + `install-global` (instruction files + session hooks on by default; unsupported reported), repo pointers (CLAUDE.md/GEMINI.md -> AGENTS.md), first-message route | draft | none | wt/always-on-all-harnesses | a272d1f | integrated (ff-only, 5088c2f); 160 tests + block + validate + manifest green; install-global run here; cold "hi" pass on Claude Code, Codex, OpenCode; Gemini untested (no API key); worktree removed | 2026-10-10 | Gemini cold start |
 | draft | Ticket worker | worker (Sonnet 5.5 subagent) | Machine-wide dispatch profile: one user-level file `~/.agents/epicspine-profile.md` used in every repo; repo `Dispatch profile:` only overrides; ask once and save at machine level | draft | none | wt/machine-profile | 3c12fbe | integrated (ff-only, ac3c4d4); 160 tests + agents_block + manifest green; machine file written; worktree removed | 2026-10-10 | done |
+| draft | Ticket worker | worker (Sonnet 5.5 subagent) | Enforce the served-URL rule on output: Stop hook `url_gate.py` + install-global wiring + rule line in both always-on blocks + handoff url/port/pid | draft | none | wt/url-gate | main | integrated (ff-only, 2346d2d); 193 tests + strict validate + block check + manifest green; e2e block/allow proof; worktree removed | 2026-10-11 | install-global on user OK |
 | draft | Ticket worker | worker (Sonnet 5.5 subagent) | Profile command + cold-start test: `profile` show/set command for `~/.agents/epicspine-profile.md`; docs point to it; tests prove ask-once, save, reuse across repos | draft | none | wt/profile-command | fcddfe5 | integrated (ff-only, 04c28e0); 165 tests + agents_block + manifest green; `profile` verified live (machine, rc 0) and empty home (unset, rc 3); worktree removed | 2026-10-10 | done |
 
 ## Decisions
