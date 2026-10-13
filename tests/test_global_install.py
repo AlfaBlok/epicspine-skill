@@ -204,6 +204,15 @@ class GlobalInstallTest(unittest.TestCase):
         self.run_cmd("uninstall-global")
         self.assertFalse(self.link(".claude").is_symlink())
 
+    def test_check_accepts_foreign_skill_dir(self) -> None:
+        self.run_cmd("install-global")
+        link = self.link(".claude")
+        link.unlink()
+        link.mkdir()
+        code, out = self.run_cmd("check-global")
+        self.assertEqual(code, 0, out)
+        self.assertIn("skill link present (foreign)", out)
+
     def test_foreign_skill_dir_and_link_left_alone(self) -> None:
         real = self.link(".claude")
         real.mkdir(parents=True)
