@@ -19,13 +19,13 @@ Skill updates: auto
 
 Owner: /root delivery manager
 Status: active
-Last attempted: 2026-10-13 manager-guard + push-on-close hooks built as PR #28, then PARKED by user (draft, not merged; do not merge or build on it). Before that: 2026-10-11 Stop hook `url_gate.py` (blocks final replies that hand over HTML/visual files as paths instead of verified 127.0.0.1 URLs) integrated on main; install-global wiring included.
-Result: 193 tests, strict validate, block check, manifest green on main; hook not yet installed on this machine. Prior: Book companion active (62a8852); profile show/set landed (04c28e0).
-Evidence: [main @ 2346d2d](https://github.com/AlfaBlok/epicspine-skill/commit/2346d2d) (local, unpushed)
+Last attempted: 2026-10-13 machine dispatcher (`EPICSPINE_DISPATCHER` contract, `install-global --config-dir` + per-dir skill link, T3 seat-pool adapter in examples/) merged as PR #30, skill 2026.10.13.2; guard allowance PR #29 parked with #28. Before that: manager-guard + push-on-close hooks built as PR #28, then PARKED by user (draft, not merged; do not merge or build on it). Before that: 2026-10-11 Stop hook `url_gate.py` (blocks final replies that hand over HTML/visual files as paths instead of verified 127.0.0.1 URLs) integrated on main; install-global wiring included.
+Result: 200 tests, strict validate, manifest, CI green on main @ adbc1ce. Prior: 193 tests, strict validate, block check, manifest green on main; hook not yet installed on this machine. Prior: Book companion active (62a8852); profile show/set landed (04c28e0).
+Evidence: [PR #30](https://github.com/AlfaBlok/epicspine-skill/pull/30), main @ adbc1ce
 Waiting on: user (OK to run `install-global` so the Stop hook lands in ~/.claude/settings.json; push)
 Approved work: none open
-Next action: PR #28 parked, see Decisions 2026-10-13 (next direction, not started: per-turn manager reminder instead of blocking hooks). On user OK run install-global, then confirm in a fresh Claude session that a path-only HTML reply is blocked; Gemini and Codex parked by user.
-Source revision: 2346d2d
+Next action: agent_team adopts the dispatcher (drop its repo Dispatch rule, set EPICSPINE_DISPATCHER on vps1, install-global --config-dir per seat). PR #28 parked, see Decisions 2026-10-13 (next direction, not started: per-turn manager reminder instead of blocking hooks). On user OK run install-global, then confirm in a fresh Claude session that a path-only HTML reply is blocked; Gemini and Codex parked by user.
+Source revision: adbc1ce
 Verified at: 2026-10-13
 Last sweep: 2026-10-09, main clean
 EpicSpine skill: 2026.10.10.1 @ 97b7535 (tree 59cc88f), checked 2026-10-10; hub upgraded; status via harness symlinks works
@@ -80,6 +80,7 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 | draft | Ticket worker | worker (Sonnet 5.5 subagent) | Machine-wide dispatch profile: one user-level file `~/.agents/epicspine-profile.md` used in every repo; repo `Dispatch profile:` only overrides; ask once and save at machine level | draft | none | wt/machine-profile | 3c12fbe | integrated (ff-only, ac3c4d4); 160 tests + agents_block + manifest green; machine file written; worktree removed | 2026-10-10 | done |
 | draft | Ticket worker | worker (Sonnet 5.5 subagent) | Enforce the served-URL rule on output: Stop hook `url_gate.py` + install-global wiring + rule line in both always-on blocks + handoff url/port/pid | draft | none | wt/url-gate | main | integrated (ff-only, 2346d2d); 193 tests + strict validate + block check + manifest green; e2e block/allow proof; worktree removed | 2026-10-11 | install-global on user OK |
 | draft | Ticket worker | worker (Sonnet 5.5 subagent) | Profile command + cold-start test: `profile` show/set command for `~/.agents/epicspine-profile.md`; docs point to it; tests prove ask-once, save, reuse across repos | draft | none | wt/profile-command | fcddfe5 | integrated (ff-only, 04c28e0); 165 tests + agents_block + manifest green; `profile` verified live (machine, rc 0) and empty home (unset, rc 3); worktree removed | 2026-10-10 | done |
+| done | Ticket worker | worker (Sonnet 5.5, native) | Machine dispatcher: env `EPICSPINE_DISPATCHER` (status/pick/done JSON, via t3_delegate_task) routes workers on any host; repo opt-out `Dispatch profile: local-only`; `install-global --config-dir` links the skill per Claude config dir | done | none | PR #30 (merged); PR #29 guard allowance parked with #28 | adbc1ce | 200 tests + CI green; VPS rollout pending in agent_team | 2026-10-13 | agent_team rollout |
 | draft | Ticket worker | worker (Opus 5.5, T3 thread) | Enforce manager-never-implements and push-on-close with hooks: PreToolUse `manager_guard.py` (allowlist-first Bash/Edit policy, subagents via `agent_id`) + Stop `push_gate.py` | draft | none | PR #28 (feat/manager-guards) | 6ccb101 | PARKED 2026-10-13 by user: draft, not merged, not installed; 228 tests + CI green and e2e proven, but judged too complex/narrow/unpredictable. Do not merge, install, or build on it | 2026-10-13 | user revisits |
 
 ## Decisions
