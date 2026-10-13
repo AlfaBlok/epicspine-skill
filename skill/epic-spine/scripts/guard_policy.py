@@ -17,6 +17,7 @@ import re
 import shlex
 import tempfile
 from dataclasses import dataclass, field
+from pathlib import Path
 
 from guard_lex import lex
 
@@ -61,6 +62,10 @@ def is_dispatch(words: list[str]) -> bool:
         while i < len(words) and words[i].startswith("-") and words[i] not in ("-c", "-m", "-"):
             i += 1
     if i < len(words) and os.path.basename(words[i]) == "dispatcher.py":
+        real = os.path.realpath(words[i])
+        if real != str(Path(__file__).resolve().with_name("dispatcher.py")) and not any(
+                q.endswith("epic-spine/scripts/dispatcher.py") for q in (os.path.abspath(words[i]), real)):
+            return False
         return words[i + 1:i + 2] != [] and words[i + 1] in ("status", "pick", "done", "bind")
     words = orig
     if re.fullmatch(r"\$(EPICSPINE_DISPATCHER|\{EPICSPINE_DISPATCHER\})", words[0]):

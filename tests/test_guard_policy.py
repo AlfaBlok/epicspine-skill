@@ -273,11 +273,12 @@ class GuardPolicyTest(unittest.TestCase):
 
     def test_dispatcher(self) -> None:
         disp = "python3 /opt/t3/pool.py"
-        allow = ["python3 -B /x/scripts/dispatcher.py status", "python3 /x/dispatcher.py bind --repo .",
-                 "/x/scripts/dispatcher.py pick --task T", "python3 -B dispatcher.py done 3 --fail",
+        allow = ["python3 -B /x/epic-spine/scripts/dispatcher.py status", "python3 /x/epic-spine/scripts/dispatcher.py bind --repo .",
+                 "/x/epic-spine/scripts/dispatcher.py pick --task T", f"python3 -B {SCRIPTS}/dispatcher.py done 3 --fail",
                  "$EPICSPINE_DISPATCHER status", '"$EPICSPINE_DISPATCHER" pick --task T',
                  "${{EPICSPINE_DISPATCHER}} done 1 --signal x", f"{disp} status", f"{disp} done 2 --fail"]
-        deny = ["python3 /x/dispatcher.py rm", "python3 /x/dispatcher.py", "$EPICSPINE_DISPATCHER rm",
+        deny = ["python3 /x/epic-spine/scripts/dispatcher.py rm", "python3 /x/epic-spine/scripts/dispatcher.py",
+                "python3 /tmp/x/dispatcher.py status", "/tmp/x/dispatcher.py status", "python3 -B dispatcher.py status", "$EPICSPINE_DISPATCHER rm",
                 "$EPICSPINE_DISPATCHER bind", "$EPICSPINE_DISPATCHER", "$OTHER status", f"{disp} rm",
                 f"{disp} status; rm -rf x", "python3 /x/other.py status"]
         with mock.patch.dict(os.environ, {"EPICSPINE_DISPATCHER": disp}):
