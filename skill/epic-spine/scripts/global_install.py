@@ -179,10 +179,8 @@ def skill_link(action: str, cdir: Path) -> tuple[str, int]:
         if ours:
             link.unlink()
         return ("removed" if ours else "absent or foreign"), 0
-    if ours:
-        return "current", 0
     present = link.is_symlink() or link.exists()
-    return ("present (foreign)" if present else "missing"), int(not present)
+    return ("current" if ours else "present (foreign)" if present else "missing"), int(not present)
 
 
 def run(action: str, home: Path, env: dict, claude_dirs: list[str], hooks: bool = True) -> int:
