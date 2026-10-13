@@ -8,6 +8,7 @@ import unittest
 from pathlib import Path
 
 SCRIPTS = Path(__file__).parents[1] / "skill" / "epic-spine" / "scripts"
+sys.dont_write_bytecode = True
 sys.path.insert(0, str(SCRIPTS))
 import guard_policy as gp  # noqa: E402
 from guard_lex import lex  # noqa: E402

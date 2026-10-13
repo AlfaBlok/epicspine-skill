@@ -27,6 +27,7 @@ import sys
 import time
 from pathlib import Path
 
+sys.dont_write_bytecode = True  # never leave __pycache__ in an installed skill
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from guard_git import linked_worktree  # noqa: E402
 from guard_policy import Ctx, check_command, path_ok, toplevel  # noqa: E402

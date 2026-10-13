@@ -27,6 +27,7 @@ import sys
 import tempfile
 from pathlib import Path
 
+sys.dont_write_bytecode = True  # never leave __pycache__ in an installed skill
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from guard_policy import toplevel  # noqa: E402
 from manager_guard import repo_config, role  # noqa: E402
