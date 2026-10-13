@@ -19,14 +19,14 @@ Skill updates: auto
 
 Owner: /root delivery manager
 Status: active
-Last attempted: 2026-10-11 Stop hook `url_gate.py` (blocks final replies that hand over HTML/visual files as paths instead of verified 127.0.0.1 URLs) integrated on main; install-global wiring included.
+Last attempted: 2026-10-13 manager-guard + push-on-close hooks built as PR #28, then PARKED by user (draft, not merged; do not merge or build on it). Before that: 2026-10-11 Stop hook `url_gate.py` (blocks final replies that hand over HTML/visual files as paths instead of verified 127.0.0.1 URLs) integrated on main; install-global wiring included.
 Result: 193 tests, strict validate, block check, manifest green on main; hook not yet installed on this machine. Prior: Book companion active (62a8852); profile show/set landed (04c28e0).
 Evidence: [main @ 2346d2d](https://github.com/AlfaBlok/epicspine-skill/commit/2346d2d) (local, unpushed)
 Waiting on: user (OK to run `install-global` so the Stop hook lands in ~/.claude/settings.json; push)
 Approved work: none open
-Next action: On user OK run install-global, then confirm in a fresh Claude session that a path-only HTML reply is blocked; Gemini and Codex parked by user.
+Next action: PR #28 parked, see Decisions 2026-10-13 (next direction, not started: per-turn manager reminder instead of blocking hooks). On user OK run install-global, then confirm in a fresh Claude session that a path-only HTML reply is blocked; Gemini and Codex parked by user.
 Source revision: 2346d2d
-Verified at: 2026-10-11
+Verified at: 2026-10-13
 Last sweep: 2026-10-09, main clean
 EpicSpine skill: 2026.10.10.1 @ 97b7535 (tree 59cc88f), checked 2026-10-10; hub upgraded; status via harness symlinks works
 
@@ -80,6 +80,7 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 | draft | Ticket worker | worker (Sonnet 5.5 subagent) | Machine-wide dispatch profile: one user-level file `~/.agents/epicspine-profile.md` used in every repo; repo `Dispatch profile:` only overrides; ask once and save at machine level | draft | none | wt/machine-profile | 3c12fbe | integrated (ff-only, ac3c4d4); 160 tests + agents_block + manifest green; machine file written; worktree removed | 2026-10-10 | done |
 | draft | Ticket worker | worker (Sonnet 5.5 subagent) | Enforce the served-URL rule on output: Stop hook `url_gate.py` + install-global wiring + rule line in both always-on blocks + handoff url/port/pid | draft | none | wt/url-gate | main | integrated (ff-only, 2346d2d); 193 tests + strict validate + block check + manifest green; e2e block/allow proof; worktree removed | 2026-10-11 | install-global on user OK |
 | draft | Ticket worker | worker (Sonnet 5.5 subagent) | Profile command + cold-start test: `profile` show/set command for `~/.agents/epicspine-profile.md`; docs point to it; tests prove ask-once, save, reuse across repos | draft | none | wt/profile-command | fcddfe5 | integrated (ff-only, 04c28e0); 165 tests + agents_block + manifest green; `profile` verified live (machine, rc 0) and empty home (unset, rc 3); worktree removed | 2026-10-10 | done |
+| draft | Ticket worker | worker (Opus 5.5, T3 thread) | Enforce manager-never-implements and push-on-close with hooks: PreToolUse `manager_guard.py` (allowlist-first Bash/Edit policy, subagents via `agent_id`) + Stop `push_gate.py` | draft | none | PR #28 (feat/manager-guards) | 6ccb101 | PARKED 2026-10-13 by user: draft, not merged, not installed; 228 tests + CI green and e2e proven, but judged too complex/narrow/unpredictable. Do not merge, install, or build on it | 2026-10-13 | user revisits |
 
 ## Decisions
 
@@ -100,6 +101,7 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 | 2026-10-10 | accepted | Skill freshness by content | Freshness = git tree hash of `skill/epic-spine/` (pin `tree:`), not repo head; harness symlinks resolve to the real hub; only a symlink into a git checkout or a vendored pin is `linked`; cache returns the last result; default window 1 day. | user report 2026-10-10 (false stale; harness `linked`) | Freshness misreports again |
 | 2026-10-10 | accepted | Always-on is harness-neutral | Installing EpicSpine must make every major agent bind on its first reply in any repo; no harness is the default. Delivery: a global block in each harness's user-level instruction file, per-adapter hooks where they exist, and repo pointers for harnesses that don't read AGENTS.md. Done only when a cold start in a blockless repo passes. | user decision 2026-10-10 | A major harness fails cold start |
 | 2026-10-10 | accepted | Profile is machine-wide | The user sets the worker profile once per machine (`~/.agents/epicspine-profile.md`); every repo uses it; a repo's `Dispatch profile:` line only overrides. Unset everywhere: ask once, save at machine level. Supersedes per-repo ask-and-record. | user decision 2026-10-10 | User wants per-repo profiles |
+| 2026-10-13 | accepted | Park manager guard via blocking hooks (PR #28) | Hard-blocking the manager with a heuristic PreToolUse shell/edit policy, plus a push-on-close Stop hook, is parked: the user doesn't trust it (complex, Claude Code + main checkout only, unpredictable false positives). Preferred direction: reinforce the rule by re-injecting a short manager reminder every turn and after compaction, not blocking. Open gaps if revisited: non-isolated subagents, non-Claude harnesses, `gh pr create` under pr-approval, git pre-commit layer, scheduled push-backlog sweep. | user decision 2026-10-13; PR #28 comment | User revisits enforcement |
 
 ## EpicSpine Book Companion
 
