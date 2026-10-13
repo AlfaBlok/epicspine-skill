@@ -163,6 +163,25 @@ def has_hook(settings: Path, stop: bool = False) -> bool:
     return HOOK_MARK in hooks and (not stop or GATE_MARK in hooks)
 
 
+def skill_link(action: str, cdir: Path) -> tuple[str, int]:
+    """Make the skill discoverable at ``<cdir>/skills/epic-spine`` (symlink to SKILL_DIR)."""
+    link = cdir / "skills" / "epic-spine"
+    ours = link.is_symlink() and link.resolve() == SKILL_DIR
+    if action == "install":
+        if ours:
+            return "current", 0
+        if link.is_symlink() or link.exists():
+            return "foreign, left alone", 0
+        link.parent.mkdir(parents=True, exist_ok=True)
+        link.symlink_to(SKILL_DIR, target_is_directory=True)
+        return "linked", 0
+    if action == "uninstall":
+        if ours:
+            link.unlink()
+        return ("removed" if ours else "absent or foreign"), 0
+    return ("current" if ours else "missing"), int(not ours)
+
+
 def run(action: str, home: Path, env: dict, claude_dirs: list[str], hooks: bool = True) -> int:
     """action: install | check | uninstall. Prints one line per harness."""
     block, code, present = render_global(), 0, 0
@@ -191,6 +210,10 @@ def run(action: str, home: Path, env: dict, claude_dirs: list[str], hooks: bool 
                 result = set_hook(settings, action == "install", stop)
                 code |= result.startswith("error")
                 line += f"; hook {result}"
+        if label.startswith("claude-code"):
+            state, bad = skill_link(action, detect)
+            code |= bad
+            line += f"; skill link {state}"
         print(line)
     for name, reason in UNSUPPORTED.items():
         print(f"{name}: unsupported: {reason}")

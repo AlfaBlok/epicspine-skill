@@ -54,12 +54,17 @@ Binding fields, one compact line: role | bound spine | bound issue | steward | h
 | Git, worktrees, integration, rollback | `references/git-doctrine.md` |
 | Hygiene and sweeps | `references/hygiene.md`, `assets/sweep-brief.md` |
 | Skill freshness and upgrades | `references/skill-update.md`, `scripts/skill_update.py` |
+| A machine dispatcher is configured (`EPICSPINE_DISPATCHER`) | `references/machine-dispatcher.md`, `scripts/dispatcher.py` |
 | Book companion | `references/book-companion.md`, `assets/book-companion-contract.md` |
 | Serving HTML/visual artifacts | `references/artifacts.md`, `scripts/url_gate.py` |
 | A shortlist / selection of candidates is a key deliverable | `references/shortlists.md`, `scripts/build_shortlist.py`, `assets/shortlist.template.html`, `assets/shortlist-sample.json` |
 | Repairing a spine or changing the workflow itself | `references/operating-model.md` |
 | Any worker dispatch | `assets/dispatch-prompt-preamble.md` |
 | Always-on block: repo files, or once per machine (`install-global`: every harness's instruction file + session hook) | `assets/agents-block.md`, `assets/global-block.md`, `scripts/agents_block.py`, `scripts/global_install.py`, `scripts/url_gate.py` |
+
+## Machine Dispatcher
+
+If env `EPICSPINE_DISPATCHER` is set, it decides where each worker runs, in every repo, with no repo rule. At thread start run `scripts/dispatcher.py status`; per worker `pick`, dispatch as its `via` says (still in its own worktree), then `done <id>` (`--fail --signal TEXT` on failure). `id: null` = queue and retry, never fall back silently. A dispatcher error: say so and use a native subagent. Append `scripts/dispatcher.py bind` output to the bind line. A repo `Dispatch profile: local-only` opts out; a per-task user instruction wins. Contract: `references/machine-dispatcher.md`.
 
 ## Spine Document Minimums
 

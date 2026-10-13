@@ -105,6 +105,13 @@ class DefaultBehaviorsTest(unittest.TestCase):
         self.assertIn("ready frontier", refs.lower())
         self.assertIn("two independent axes", refs.lower())
 
+    def test_machine_dispatcher_doctrine(self) -> None:
+        ref = read("skill/epic-spine/references/machine-dispatcher.md")
+        for word in ("EPICSPINE_DISPATCHER", "local-only", "t3_delegate_task", "native_subagent", "dispatch: unavailable"):
+            self.assertIn(word, ref)
+        self.assertIn("EPICSPINE_DISPATCHER", read("skill/epic-spine/SKILL.md"))
+        self.assertIn("machine dispatcher", read("skill/epic-spine/references/roles-and-dispatch.md").lower())
+
 
 if __name__ == "__main__":
     unittest.main()

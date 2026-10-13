@@ -59,9 +59,10 @@ A dispatch profile is the per-task set of dispatch choices:
 Highest wins, merged field by field; only the stated fields change:
 
 1. Per-task instruction from the user (a different model, provider, mechanism, parallelism, reasoning, and so on).
-2. Repository declaration: a `Dispatch profile:` line in the root spine or `AGENTS.md`; an optional override only.
-3. Machine profile: `~/.agents/epicspine-profile.md`, one line `Dispatch profile: <free text>`, set once per machine and outside the skill dir so upgrades never touch it.
-4. The built-in default above.
+2. Repo opt-out `Dispatch profile: local-only` ignores the machine dispatcher. Else env `EPICSPINE_DISPATCHER` decides where the worker runs (`references/machine-dispatcher.md`); the fields below still apply when its `via` takes them.
+3. Repository declaration: a `Dispatch profile:` line in the root spine or `AGENTS.md`; an optional override only.
+4. Machine profile: `~/.agents/epicspine-profile.md`, one line `Dispatch profile: <free text>`, set once per machine and outside the skill dir so upgrades never touch it.
+5. The built-in default above.
 
 ## Unset Or Ask
 

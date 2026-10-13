@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased — machine dispatcher
+
+- Env `EPICSPINE_DISPATCHER` routes every manager's worker dispatch through one machine-level command (`status` / `pick` / `done`; `via`: `t3_delegate_task`, `native_subagent`, `command`), with no per-repo rule. `scripts/dispatcher.py` validates the contract and prints the bind suffix; repo `Dispatch profile: local-only` opts out; errors fall back to a native subagent. Both always-on blocks gain one line. Reference adapter: `examples/dispatchers/t3_seat_pool.py`.
+- `install-global --config-dir DIR` (alias of `--claude-dir`) also links `<dir>/skills/epic-spine` to the installed skill; `check-global` reports it, `uninstall-global` removes only our link.
+
 ## Unreleased — URL gate
 
 - `scripts/url_gate.py` is a Claude Code `Stop` hook that blocks a final reply naming an HTML/visual path or `file://` without a reachable `127.0.0.1`/`localhost` URL (max 2 blocks per turn, fail-open, `EPICSPINE_URL_GATE=off` disables). `install-global` registers it for Claude Code alongside the SessionStart hook (`--no-hooks` skips; `uninstall-global` removes only ours). The URL rule is now in both always-on blocks and the worker handoff requires `url`/`port`/`pid`.

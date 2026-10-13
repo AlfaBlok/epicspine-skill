@@ -46,6 +46,7 @@ EXISTING_BUDGETS = {
     "assets/epic-spine-template.md": 292,
     "assets/github-issue-template.md": 85,
     "assets/sweep-brief.md": 25,
+    "scripts/global_install.py": 225,  # raised: per-config-dir skill symlink, 2026-10-13
     "scripts/migrate_spine.py": 170,
     "scripts/rollup_spine.py": 398,
     "scripts/skill_update.py": 485,  # raised: tree-based freshness + symlink resolution, 2026-10-10

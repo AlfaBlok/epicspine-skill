@@ -151,7 +151,7 @@ def build_parser() -> argparse.ArgumentParser:
     for name in ("install-global", "check-global", "uninstall-global"):
         cmd = sub.add_parser(name, help=f"{name.split('-')[0]} the machine-wide block and hooks")
         cmd.add_argument("--home", type=Path, help="override the home directory (tests)")
-        cmd.add_argument("--claude-dir", action="append", default=[], help="Claude config dir; repeatable")
+        cmd.add_argument("--claude-dir", "--config-dir", dest="claude_dir", action="append", default=[], help="Claude config dir; repeatable")
         cmd.add_argument("--no-hooks", action="store_true", help="skip session-start hooks")
     cmd = sub.add_parser("profile", help="print the effective dispatch profile; exit 3 if unset")
     cmd.add_argument("--repo", type=Path, default=Path("."))

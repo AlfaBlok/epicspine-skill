@@ -173,6 +173,51 @@ class GlobalInstallTest(unittest.TestCase):
         self.assertEqual(code, 1)
         self.assertIn("nothing done", out)
 
+    def link(self, name: str) -> Path:
+        return self.home / name / "skills" / "epic-spine"
+
+    def test_config_dir_alias_multiple_dirs_blocks_hooks_links(self) -> None:
+        a, b = self.home / ".claude_seat1", self.home / ".claude_seat2"
+        code, out = self.run_cmd("install-global", "--config-dir", str(a), "--config-dir", str(b))
+        self.assertEqual(code, 0, out)
+        for d in (a, b):
+            self.assertIn(MARK, (d / "CLAUDE.md").read_text())
+            data = json.loads((d / "settings.json").read_text())
+            self.assertIn("print-hook", json.dumps(data["hooks"]["SessionStart"]))
+            self.assertIn("Stop", data["hooks"])
+            link = d / "skills" / "epic-spine"
+            self.assertTrue(link.is_symlink())
+            self.assertEqual(link.resolve(), SCRIPT.parent.parent.resolve())
+        self.assertIn("skill link linked", out)
+
+    def test_skill_link_idempotent_check_and_uninstall(self) -> None:
+        self.run_cmd("install-global")
+        self.assertTrue(self.link(".claude").is_symlink())
+        _, out = self.run_cmd("install-global")
+        self.assertIn("skill link current", out)
+        self.assertEqual(self.run_cmd("check-global")[0], 0)
+        self.link(".claude").unlink()
+        code, out = self.run_cmd("check-global")
+        self.assertEqual(code, 1)
+        self.assertIn("skill link missing", out)
+        self.run_cmd("install-global")
+        self.run_cmd("uninstall-global")
+        self.assertFalse(self.link(".claude").is_symlink())
+
+    def test_foreign_skill_dir_and_link_left_alone(self) -> None:
+        real = self.link(".claude")
+        real.mkdir(parents=True)
+        (real / "SKILL.md").write_text("mine")
+        foreign = self.link(".claude_acct2")
+        foreign.parent.mkdir(parents=True)
+        foreign.symlink_to(self.home / ".codex", target_is_directory=True)
+        _, out = self.run_cmd("install-global")
+        self.assertIn("skill link foreign, left alone", out)
+        self.run_cmd("uninstall-global")
+        self.assertEqual((real / "SKILL.md").read_text(), "mine")
+        self.assertTrue(foreign.is_symlink())
+        self.assertEqual(foreign.resolve(), (self.home / ".codex").resolve())
+
 
 class FirstMessageTest(unittest.TestCase):
     def test_both_blocks_bootstrap_on_first_message(self) -> None:
@@ -186,6 +231,13 @@ class FirstMessageTest(unittest.TestCase):
             self.assertIn("never a path or `file://`", text, name)
             self.assertIn("Stop hook", text, name)
             self.assertIn("≤4 lines", text, name)
+
+    def test_blocks_name_machine_dispatcher_and_opt_out(self) -> None:
+        for name in ("agents-block.md", "global-block.md"):
+            text = (SCRIPT.parent.parent / "assets" / name).read_text(encoding="utf-8")
+            self.assertIn("EPICSPINE_DISPATCHER", text, name)
+            self.assertIn("local-only", text, name)
+            self.assertIn("dispatcher.py", text, name)
 
 
 class RepoFilesTest(unittest.TestCase):

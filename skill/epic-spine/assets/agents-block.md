@@ -7,5 +7,6 @@ Root spine: {root_spine}. Read its Current State and Operating Learnings before 
 4. Integrate: verify diff and checks yourself, fast-forward main, run tests, revert on red, remove the worktree.
 5. Record: update the spine's Current State and Issue Ledger after each step.
 HTML/visual deliverables: serve from 127.0.0.1 and report a curl-checked `http://127.0.0.1:<port>/<file>` URL on its own line, never a path or `file://`; workers return url/port/pid. A Stop hook enforces this.
+Machine dispatcher: if env `EPICSPINE_DISPATCHER` is set, route workers through it (`scripts/dispatcher.py`; repo opt-out `Dispatch profile: local-only`) and append `dispatcher.py bind` to the bind line; see SKILL.md.
 Precedence: user per-task instruction > this block > skill defaults. Details: skill/epic-spine/SKILL.md.
 <!-- epicspine:end -->
