@@ -5,6 +5,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 from pathlib import Path
 
 SCRIPTS = Path(__file__).parents[1] / "skill" / "epic-spine" / "scripts"
@@ -269,6 +270,24 @@ class GuardPolicyTest(unittest.TestCase):
         for cmd in join_heredocs(DENY):
             with self.subTest(cmd=cmd):
                 self.assertIsNotNone(self.check(cmd))
+
+    def test_dispatcher(self) -> None:
+        disp = "python3 /opt/t3/pool.py"
+        allow = ["python3 -B /x/scripts/dispatcher.py status", "python3 /x/dispatcher.py bind --repo .",
+                 "/x/scripts/dispatcher.py pick --task T", "python3 -B dispatcher.py done 3 --fail",
+                 "$EPICSPINE_DISPATCHER status", '"$EPICSPINE_DISPATCHER" pick --task T',
+                 "${{EPICSPINE_DISPATCHER}} done 1 --signal x", f"{disp} status", f"{disp} done 2 --fail"]
+        deny = ["python3 /x/dispatcher.py rm", "python3 /x/dispatcher.py", "$EPICSPINE_DISPATCHER rm",
+                "$EPICSPINE_DISPATCHER bind", "$EPICSPINE_DISPATCHER", "$OTHER status", f"{disp} rm",
+                f"{disp} status; rm -rf x", "python3 /x/other.py status"]
+        with mock.patch.dict(os.environ, {"EPICSPINE_DISPATCHER": disp}):
+            for cmd in allow:
+                with self.subTest(cmd=cmd):
+                    self.assertIsNone(self.check(cmd))
+            for cmd in deny:
+                with self.subTest(cmd=cmd):
+                    self.assertIsNotNone(self.check(cmd))
+        self.assertIsNotNone(self.check(f"{disp} status"))  # env unset: literal form not trusted
 
     def test_sample_size(self) -> None:
         self.assertGreaterEqual(len(ALLOW) + len(DENY), 180)

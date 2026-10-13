@@ -14,6 +14,7 @@ from __future__ import annotations
 import fnmatch
 import os
 import re
+import shlex
 import tempfile
 from dataclasses import dataclass, field
 
@@ -49,6 +50,27 @@ DEVS = {"/dev/null", "/dev/stdout", "/dev/stderr", "/dev/tty"}
 WRAPPERS = {"nohup", "time", "builtin", "exec", "command", "nice", "timeout", "env", "xargs", "watch"}
 WRAP_ARG = {"nice": {"-n"}, "env": {"-u", "-C", "-S"}, "watch": {"-n"},
             "xargs": {"-n", "-I", "-P", "-L", "-d", "-E", "-s"}, "timeout": {"-s", "-k"}}
+
+
+def is_dispatch(words: list[str]) -> bool:
+    """Worker dispatcher call: [python3 [-B]] .../dispatcher.py <status|pick|done|bind>, or the
+    machine dispatcher ($EPICSPINE_DISPATCHER / its literal env value) with status|pick|done."""
+    orig, i = words, 0
+    if re.fullmatch(r"python[\d.]*", os.path.basename(words[0])):
+        i = 1
+        while i < len(words) and words[i].startswith("-") and words[i] not in ("-c", "-m", "-"):
+            i += 1
+    if i < len(words) and os.path.basename(words[i]) == "dispatcher.py":
+        return words[i + 1:i + 2] != [] and words[i + 1] in ("status", "pick", "done", "bind")
+    words = orig
+    if re.fullmatch(r"\$(EPICSPINE_DISPATCHER|\{EPICSPINE_DISPATCHER\})", words[0]):
+        return words[1:2] != [] and words[1] in ("status", "pick", "done")
+    try:
+        argv = shlex.split(os.environ.get("EPICSPINE_DISPATCHER", ""))
+    except ValueError:
+        return False
+    n = len(argv)
+    return bool(argv) and words[:n] == argv and words[n:n + 1] != [] and words[n] in ("status", "pick", "done")
 
 
 @dataclass
@@ -141,6 +163,8 @@ def check_simple(words: list[str], body: str | None, ctx: Ctx) -> str | None:
         return check_simple(words[1:], body, ctx)
     joined = " ".join(words)
     if not ctx.remote and any(joined == p or joined.startswith(p + " ") for p in ctx.run_prefixes):
+        return None
+    if not ctx.remote and is_dispatch(words):
         return None
     name, args = os.path.basename(words[0]), words[1:]
     pos = [a for a in args if not a.startswith("-")]

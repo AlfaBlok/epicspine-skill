@@ -136,6 +136,7 @@ class ManagerGuardTest(unittest.TestCase):
         self.assertIsNone(self.run_guard("mcp__filesystem__write_file",
                                          {"path": str(self.repo / "docs/spines/s.md")}))
         self.assertIsNone(self.run_guard("mcp__t3-code__delegate_task", {"task": "x"}))
+        self.assertIsNone(self.run_guard("mcp__t3_code__delegate_task", {"task": "x"}))
 
     def test_malformed_input_fails_open(self) -> None:
         for raw in ("not json", "", "[1]", '{"tool_name": "Bash", "tool_input": 5}'):

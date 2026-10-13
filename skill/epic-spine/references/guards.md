@@ -34,7 +34,7 @@ Allowlist-first: every simple command in a Bash line (split on `;`, `&&`, `||`, 
 | EpicSpine scripts (`validate_spine.py`, `rollup_spine.py`, `agents_block.py`, `skill_update.py`), `python3 -c` that only reads | `python3 -c`/heredoc code using `subprocess`, `os.remove`, `open(…,'w')`, … |
 | `python3 -m http.server --bind 127.0.0.1`, `kill <pid>`, `pkill -f http.server`, `curl` GET, `open http://…` | `http.server` without `--bind 127.0.0.1`, `curl -X POST/-d/-F/-O`, `wget` |
 | `ssh host '<read-only command>'` (the remote command passes the same read-only policy) | Interactive `ssh host`, `ssh` with a write command, `scp`, `rsync`, `sftp` |
-| Dispatch: Agent tool, `claude -p`, `codex exec`, T3 `delegate_task` / `t3_thread_launch` | `sudo`, `eval`, `systemctl restart`, `launchctl load`, `docker run`, `kubectl apply`, T3 `t3_project_create/clone/delete/update`, filesystem/GitHub MCP write tools |
+| Dispatch: Agent tool, `claude -p`, `codex exec`, T3 `delegate_task` / `t3_thread_launch`, `dispatcher.py status\|pick\|done\|bind`, `$EPICSPINE_DISPATCHER status\|pick\|done` (or its literal env value) | `sudo`, `eval`, `systemctl restart`, `launchctl load`, `docker run`, `kubectl apply`, T3 `t3_project_create/clone/delete/update`, filesystem/GitHub MCP write tools |
 
 ## Per-Repo Configuration
 
