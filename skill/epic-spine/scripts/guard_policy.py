@@ -17,7 +17,6 @@ import re
 import shlex
 import tempfile
 from dataclasses import dataclass, field
-from pathlib import Path
 
 from guard_lex import lex
 
@@ -54,20 +53,7 @@ WRAP_ARG = {"nice": {"-n"}, "env": {"-u", "-C", "-S"}, "watch": {"-n"},
 
 
 def is_dispatch(words: list[str]) -> bool:
-    """Worker dispatcher call: [python3 [-B]] .../dispatcher.py <status|pick|done|bind>, or the
-    machine dispatcher ($EPICSPINE_DISPATCHER / its literal env value) with status|pick|done."""
-    orig, i = words, 0
-    if re.fullmatch(r"python[\d.]*", os.path.basename(words[0])):
-        i = 1
-        while i < len(words) and words[i].startswith("-") and words[i] not in ("-c", "-m", "-"):
-            i += 1
-    if i < len(words) and os.path.basename(words[i]) == "dispatcher.py":
-        real = os.path.realpath(words[i])
-        if real != str(Path(__file__).resolve().with_name("dispatcher.py")) and not any(
-                q.endswith("epic-spine/scripts/dispatcher.py") for q in (os.path.abspath(words[i]), real)):
-            return False
-        return words[i + 1:i + 2] != [] and words[i + 1] in ("status", "pick", "done", "bind")
-    words = orig
+    """Machine dispatcher call: $EPICSPINE_DISPATCHER (or its literal env value) with status|pick|done."""
     if re.fullmatch(r"\$(EPICSPINE_DISPATCHER|\{EPICSPINE_DISPATCHER\})", words[0]):
         return words[1:2] != [] and words[1] in ("status", "pick", "done")
     try:
