@@ -66,6 +66,21 @@ class DefaultBehaviorsTest(unittest.TestCase):
             self.assertIn(field, preamble)
         self.assertIn("`Stop` hook", read("skill/epic-spine/references/artifacts.md"))
 
+    def test_guard_and_push_rules_in_always_loaded_blocks(self) -> None:
+        line = "Every session ends with work committed and pushed to the shared remote"
+        for name, text in (("AGENTS.md block", self.agents_block()),
+                           ("global-block", read("skill/epic-spine/assets/global-block.md")),
+                           ("card", self.card())):
+            self.assertIn(line.lower(), text.lower(), name)
+            self.assertIn("hook", text, name)
+        for name, text in (("AGENTS.md block", self.agents_block()),
+                           ("global-block", read("skill/epic-spine/assets/global-block.md"))):
+            self.assertIn("PreToolUse hook", text, name)
+            self.assertIn("~/.agents/epicspine-allow", text, name)
+        guards = read("skill/epic-spine/references/guards.md")
+        for needle in ("agent_id", "EPICSPINE_ROLE", "Manager may edit:", "Push on close:", "Known False Positives"):
+            self.assertIn(needle, guards)
+
     def test_b_manager_never_implements(self) -> None:
         self.assertIn("never implements", self.agents_block().lower())
         self.assertIn("never implements", self.card().lower())

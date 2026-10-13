@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased — manager guard and push-on-close
+
+- `scripts/manager_guard.py` is a Claude Code `PreToolUse` hook: in the manager (main session) it denies Edit/Write/NotebookEdit outside spines and memory, state-changing Bash (allowlist-first policy in `guard_policy.py`, `guard_tools.py`, `guard_git.py`, `guard_lex.py`) and state-changing MCP tools, with "Manager never implements — dispatch a worker". Subagents (hook input `agent_id`) and linked-worktree sessions are workers. Per-repo `Manager guard:` / `Manager may edit:` / `Manager may run:` lines; user-only one-off override `~/.agents/epicspine-allow`; log at `~/.agents/epicspine-guard.log`.
+- `scripts/push_gate.py` is a `Stop` hook: blocks a final answer once per state while the repo (and `wt/*` worker worktrees) has uncommitted files or unpushed commits; no-remote repos are only noted. `Push on close:` per repo, `EPICSPINE_PUSH_GATE=off`.
+- `install-global` registers both for Claude Code (a single `MANAGED` hook table); both always-on blocks gain "Every session ends with work committed and pushed to the shared remote"; new `references/guards.md`.
+
 ## Unreleased — URL gate
 
 - `scripts/url_gate.py` is a Claude Code `Stop` hook that blocks a final reply naming an HTML/visual path or `file://` without a reachable `127.0.0.1`/`localhost` URL (max 2 blocks per turn, fail-open, `EPICSPINE_URL_GATE=off` disables). `install-global` registers it for Claude Code alongside the SessionStart hook (`--no-hooks` skips; `uninstall-global` removes only ours). The URL rule is now in both always-on blocks and the worker handoff requires `url`/`port`/`pid`.

@@ -1,11 +1,8 @@
 #!/usr/bin/env python3
-"""Machine-wide EpicSpine install: for every detected harness, write the global
-bind block into its user-level instruction file AND register its session-start
-hook where one exists (Claude Code also gets the ``url_gate.py`` Stop hook; all
-default on; ``hooks=False`` is the opt-out).
-Stdlib only, Python 3.10+. Harness-neutral: one block, one marker pair, one
-adapter table; no harness is privileged.
-"""
+"""Machine-wide EpicSpine install: write the global bind block into every detected
+harness's user-level instruction file and register its session-start hook; Claude
+Code also gets the enforcement hooks in MANAGED (``hooks=False`` opts out).
+Stdlib only, Python 3.10+. One block, one marker pair, one adapter table."""
 
 from __future__ import annotations
 
@@ -16,9 +13,11 @@ from pathlib import Path
 SKILL_DIR = Path(__file__).resolve().parent.parent
 GLOBAL_TEMPLATE = SKILL_DIR / "assets" / "global-block.md"
 BLOCK_RE = re.compile(r"<!-- epicspine:begin [^>]*-->.*?<!-- epicspine:end -->", re.DOTALL)
-HOOK_MARK = 'agents_block.py" print-hook'
-GATE_MARK = 'url_gate.py"'
-HOOK_EVENTS = (("SessionStart", HOOK_MARK), ("Stop", GATE_MARK))
+# (event, script + args, matcher, claude-code only): every hook EpicSpine manages.
+MANAGED = (("SessionStart", "agents_block.py print-hook", None, False),
+           ("Stop", "url_gate.py", None, True),
+           ("Stop", "push_gate.py", None, True),
+           ("PreToolUse", "manager_guard.py", "Bash|Edit|Write|MultiEdit|NotebookEdit|mcp__.*", True))
 UNSUPPORTED = {
     "cursor (user level)": "user rules live in the app settings UI, not a file; repo install writes .cursor/rules",
     "aider": "no user-level instruction file; needs a read: entry in .aider.conf.yml",
@@ -66,10 +65,7 @@ def remove(path: Path) -> bool:
         return False
     before, after = text[: match.start()].rstrip("\n"), text[match.end() :].strip("\n")
     rest = before + ("\n\n" if before and after else "") + after
-    if rest:
-        path.write_text(rest + "\n", encoding="utf-8")
-    else:
-        path.unlink()
+    path.write_text(rest + "\n", encoding="utf-8") if rest else path.unlink()
     return True
 
 
@@ -84,11 +80,8 @@ def harnesses(home: Path, env: dict, claude_dirs: list[str]):
             if p.is_dir() and (p.name == ".claude" or (p / "settings.json").exists()
                                or (p / "projects").is_dir()):
                 found.append(p)
-    seen: set[Path] = set()
-    for d in found:
-        if d not in seen:
-            seen.add(d)
-            yield f"claude-code[{d}]", d, d / "CLAUDE.md", explicit, d / "settings.json"
+    for d in dict.fromkeys(found):
+        yield f"claude-code[{d}]", d, d / "CLAUDE.md", explicit, d / "settings.json"
     xdg = Path(env.get("XDG_CONFIG_HOME") or home / ".config")
     codex = Path(env.get("CODEX_HOME") or home / ".codex")
     gem, ws = home / ".gemini", home / ".codeium" / "windsurf"
@@ -108,17 +101,24 @@ def _load(settings: Path) -> dict:
     return data
 
 
+def _mark(script: str) -> str:
+    name, _, args = script.partition(" ")
+    return f'{name}"' + (f" {args}" if args else "")
+
+
 def _strip_hook(data: dict) -> bool:
-    """Remove EpicSpine-managed hooks (SessionStart, Stop); foreign hooks stay."""
+    """Remove EpicSpine-managed hooks (see MANAGED); foreign hooks stay."""
     changed = False
-    for event, mark in HOOK_EVENTS:
+    for event in dict.fromkeys(e for e, *_ in MANAGED):
+        marks = [_mark(s) for e, s, *_ in MANAGED if e == event]
         groups = data.get("hooks", {}).get(event)
         if not isinstance(groups, list):
             continue
         hit = False
         for group in list(groups):
             hooks = group.get("hooks") if isinstance(group, dict) else None
-            keep = [h for h in hooks if mark not in str(h.get("command", ""))] if isinstance(hooks, list) else None
+            keep = None if not isinstance(hooks, list) else [
+                h for h in hooks if not any(m in str(h.get("command", "")) for m in marks)]
             if keep is not None and len(keep) != len(hooks):
                 hit = changed = True
                 group["hooks"] = keep
@@ -132,21 +132,18 @@ def _strip_hook(data: dict) -> bool:
 
 
 def set_hook(settings: Path, on: bool, stop: bool = False) -> str:
-    """Add/remove managed hooks (SessionStart; plus url_gate Stop if ``stop``), merging."""
+    """Add/remove managed hooks (SessionStart; plus the Claude-only ones if ``stop``), merging."""
     try:
         data = _load(settings)
     except (ValueError, OSError) as exc:
         return f"error: cannot merge {settings}: {exc}"
-    had = _strip_hook(data)
-    if on:
-        cmds = {"SessionStart": f'python3 "{Path(__file__).with_name("agents_block.py")}" print-hook'}
-        if stop:
-            cmds["Stop"] = f'python3 "{Path(__file__).with_name("url_gate.py")}"'
-        for event, command in cmds.items():
-            data.setdefault("hooks", {}).setdefault(event, []).append(
-                {"hooks": [{"type": "command", "command": command}]})
-    elif not had:
+    if not _strip_hook(data) and not on:
         return "absent"
+    for event, script, matcher, claude_only in MANAGED if on else ():
+        if stop or not claude_only:
+            group = {"matcher": matcher} if matcher else {}
+            group["hooks"] = [{"type": "command", "command": f'python3 "{Path(__file__).parent}/{_mark(script)}'}]
+            data.setdefault("hooks", {}).setdefault(event, []).append(group)
     if data:
         settings.parent.mkdir(parents=True, exist_ok=True)
         settings.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
@@ -160,7 +157,7 @@ def has_hook(settings: Path, stop: bool = False) -> bool:
         hooks = str(_load(settings).get("hooks", {}))
     except (ValueError, OSError):
         return False
-    return HOOK_MARK in hooks and (not stop or GATE_MARK in hooks)
+    return all(_mark(s) in hooks for _, s, _, claude_only in MANAGED if stop or not claude_only)
 
 
 def run(action: str, home: Path, env: dict, claude_dirs: list[str], hooks: bool = True) -> int:

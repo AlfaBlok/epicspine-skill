@@ -17,7 +17,7 @@ These apply to every task unless the user or the root spine overrides.
 
 1. Bind a base role before acting: delivery manager (default for the agent the user talks to) or worker (when dispatched). `references/roles-and-dispatch.md`
 2. Detect your write scope and any active Book binding from `AGENTS.md` / the root spine; referenced spines stay read-only. `references/spine-model.md`, `references/book-companion.md`
-3. The manager coordinates and never implements: settle open decisions with the user before dispatch (one real fork at a time, with a recommendation), then dispatch workers with the dispatch profile (the root spine's `Dispatch profile:` override, else `~/.agents/epicspine-profile.md`; if neither exists, ask once, recommend a lower-cost native subagent, and record it in that machine file), verify output independently on two axes—repo standards and the ticket's spec—and report. `references/roles-and-dispatch.md`
+3. The manager coordinates and never implements: settle open decisions with the user before dispatch (one real fork at a time, with a recommendation), then dispatch workers with the dispatch profile (the root spine's `Dispatch profile:` override, else `~/.agents/epicspine-profile.md`; if neither exists, ask once, recommend a lower-cost native subagent, and record it in that machine file), verify output independently on two axes—repo standards and the ticket's spec—and report; a PreToolUse hook denies manager edits and state changes. `references/roles-and-dispatch.md`, `references/guards.md`
 4. Stay in `main`: workers use a local worktree `wt/<task>`; the manager merges verified work itself (ff-only), tests in `main`, `git revert` on red; PRs optional; the user never has to merge. `references/git-doctrine.md`
 5. Learnings: read the root `Operating Learnings` **Always** at bind; the first reply states `Learnings in force:` (≤ 5 lines); propose sparingly, never write silently. `references/learnings.md`
 6. Freshness: run `scripts/skill_update.py status` at bind (cheap, once per day); `Skill updates: auto` is the default. `references/skill-update.md`
@@ -25,6 +25,7 @@ These apply to every task unless the user or the root spine overrides.
 8. HTML/visual artifacts: serve them from `127.0.0.1` and report a clickable `http://127.0.0.1:<port>/<file>` URL (verified HTTP 200), never a path or `file://`; a Stop hook enforces it. `references/artifacts.md`
 9. Lean: shortest correct output; load only the references a task triggers; delete rather than add.
 10. Report state, evidence, and the single next action; ask only when blocked on a human decision.
+11. Close: every session ends with work committed and pushed to the shared remote (workers commit and hand off); a Stop hook checks it. `references/guards.md`
 
 ## Bind Path
 
@@ -56,10 +57,11 @@ Binding fields, one compact line: role | bound spine | bound issue | steward | h
 | Skill freshness and upgrades | `references/skill-update.md`, `scripts/skill_update.py` |
 | Book companion | `references/book-companion.md`, `assets/book-companion-contract.md` |
 | Serving HTML/visual artifacts | `references/artifacts.md`, `scripts/url_gate.py` |
+| A hook blocked you; manager-guard or push-on-close config | `references/guards.md`, `scripts/manager_guard.py`, `scripts/guard_policy.py`, `scripts/guard_tools.py`, `scripts/guard_git.py`, `scripts/guard_lex.py`, `scripts/push_gate.py` |
 | A shortlist / selection of candidates is a key deliverable | `references/shortlists.md`, `scripts/build_shortlist.py`, `assets/shortlist.template.html`, `assets/shortlist-sample.json` |
 | Repairing a spine or changing the workflow itself | `references/operating-model.md` |
 | Any worker dispatch | `assets/dispatch-prompt-preamble.md` |
-| Always-on block: repo files, or once per machine (`install-global`: every harness's instruction file + session hook) | `assets/agents-block.md`, `assets/global-block.md`, `scripts/agents_block.py`, `scripts/global_install.py`, `scripts/url_gate.py` |
+| Always-on block: repo files, or once per machine (`install-global`: every harness's instruction file + session hook) | `assets/agents-block.md`, `assets/global-block.md`, `scripts/agents_block.py`, `scripts/global_install.py`, `scripts/url_gate.py`, `scripts/manager_guard.py`, `scripts/push_gate.py` |
 
 ## Spine Document Minimums
 

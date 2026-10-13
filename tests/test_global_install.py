@@ -128,6 +128,36 @@ class GlobalInstallTest(unittest.TestCase):
         self.assertEqual(code, 1)
         self.assertIn("hook missing", out)
 
+    def test_guard_hooks_installed_for_claude_only(self) -> None:
+        self.run_cmd("install-global")
+        for name in (".claude", ".claude_acct2"):
+            data = json.loads((self.home / name / "settings.json").read_text())
+            pre = data["hooks"]["PreToolUse"]
+            self.assertEqual(len(pre), 1, name)
+            self.assertEqual(pre[0]["matcher"], "Bash|Edit|Write|MultiEdit|NotebookEdit|mcp__.*")
+            self.assertIn('manager_guard.py"', pre[0]["hooks"][0]["command"])
+            self.assertEqual(sum("push_gate.py" in c for c in self.stop_commands(name)), 1, name)
+        gem = json.loads((self.home / ".gemini/settings.json").read_text())
+        self.assertEqual(set(gem["hooks"]), {"SessionStart"})
+
+    def test_guard_hooks_idempotent_check_and_uninstall(self) -> None:
+        settings = self.home / ".claude/settings.json"
+        foreign = {"hooks": {"PreToolUse": [{"matcher": "*", "hooks": [{"type": "command", "command": "orca"}]}]}}
+        settings.write_text(json.dumps(foreign))
+        self.run_cmd("install-global")
+        snap = settings.read_text()
+        self.run_cmd("install-global")
+        self.assertEqual(snap, settings.read_text())
+        self.assertEqual(self.run_cmd("check-global")[0], 0)
+        data = json.loads(snap)
+        data["hooks"]["PreToolUse"] = foreign["hooks"]["PreToolUse"]
+        settings.write_text(json.dumps(data))
+        code, out = self.run_cmd("check-global")
+        self.assertEqual(code, 1)
+        self.assertIn("hook missing", out)
+        self.run_cmd("uninstall-global")
+        self.assertEqual(json.loads(settings.read_text()), foreign)
+
     def test_no_hooks_skips_stop_hook(self) -> None:
         self.run_cmd("install-global", "--no-hooks")
         self.assertFalse((self.home / ".claude/settings.json").exists())

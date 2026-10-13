@@ -80,7 +80,7 @@ Both are idempotent and keep existing content; `check-global`, `check`, `uninsta
 
 | Harness | Global (install-global) | Repo (install) | Confidence |
 |---|---|---|---|
-| Claude Code | `<config dir>/CLAUDE.md` for `$CLAUDE_CONFIG_DIR`, `~/.claude`, `~/.claude*` dirs with settings; plus SessionStart hook in `settings.json` | `CLAUDE.md` (`@AGENTS.md`) | file high; hook high |
+| Claude Code | `<config dir>/CLAUDE.md` for `$CLAUDE_CONFIG_DIR`, `~/.claude`, `~/.claude*` dirs with settings; plus SessionStart and enforcement hooks in `settings.json` | `CLAUDE.md` (`@AGENTS.md`) | file high; hook high |
 | Codex | `~/.codex/AGENTS.md` (`$CODEX_HOME`) | `AGENTS.md` | file high; no hook |
 | OpenCode | `~/.config/opencode/AGENTS.md` | `AGENTS.md` | file high; no hook (needs JS plugin) |
 | Gemini CLI | `~/.gemini/GEMINI.md`; SessionStart hook in `~/.gemini/settings.json` | `GEMINI.md` (`@AGENTS.md`) | file high; hook low |
@@ -88,6 +88,16 @@ Both are idempotent and keep existing content; `check-global`, `check`, `uninsta
 | Windsurf | `~/.codeium/windsurf/memories/global_rules.md` | `AGENTS.md` | medium |
 | Copilot CLI | `~/.copilot/copilot-instructions.md` | `.github/copilot-instructions.md` | medium |
 | Aider | unsupported (needs `read:` in `.aider.conf.yml`) | none | n/a |
+
+### Enforcement hooks (Claude Code)
+
+Written rules drift; `install-global` also registers three hooks in each Claude Code `settings.json`:
+
+- **Manager guard** (`PreToolUse`, `manager_guard.py`): in the main session, denies edits outside spines/memory and state-changing commands (`git commit` of code, `clone`, `gh repo create`, `gh pr create/merge`, package installs, writes via `>`, ssh with write commands, …) with "Manager never implements — dispatch a worker (Agent tool, isolation: worktree)". Subagents (hook input carries `agent_id`) and sessions running in a linked worktree are workers and are never blocked. Integration (`git -C <wt> rebase main`, `merge --ff-only`, `push`, `worktree remove`, tests) and spine edits/commits stay allowed.
+- **Push on close** (`Stop`, `push_gate.py`): blocks a final answer once per state while the repo has uncommitted files or unpushed commits ("commit and push, or say why not"); repos without a remote are only noted.
+- **URL gate** (`Stop`, `url_gate.py`): HTML deliverables as served `http://127.0.0.1` URLs.
+
+Per repo, `AGENTS.md` lines `Manager guard: enforce|warn|off`, `Manager may edit: <globs>`, `Manager may run: <prefixes>`, `Push on close: enforce|warn|off` tune them. One-off override, by the user only: `touch ~/.agents/epicspine-allow`. Details, the full allow/deny table and known false positives: [guards.md](skill/epic-spine/references/guards.md).
 
 ## Why This Exists
 

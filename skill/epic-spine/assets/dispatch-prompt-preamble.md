@@ -4,7 +4,7 @@ Role: bind this agent to exactly one base role, `delivery manager` or `worker`. 
 
 Dispatch profile: default. Override any field per task (`Dispatch profile: model: <id>, reasoning: medium`) or name a reserved template (`Dispatch profile: template:<name>`; templates are not defined yet, so an unknown template stops and asks). See `references/roles-and-dispatch.md` for the fields, built-in default, and resolution order.
 
-FIRST ACTION: `git worktree add ../wt-<task> -b wt/<task> main` and work only there. Record the absolute worktree path in the issue/dispatch record. Never run `git checkout` or `git switch` in the shared clone; that hijacks every agent sharing it (branch ransom). The shared clone always sits on a clean integration branch and is read-only. Hand off your branch and commits; do not push or open a PR by default.
+FIRST ACTION: `git worktree add ../wt-<task> -b wt/<task> main` and work only there. Record the absolute worktree path in the issue/dispatch record. Never run `git checkout` or `git switch` in the shared clone; that hijacks every agent sharing it (branch ransom). The shared clone always sits on a clean integration branch and is read-only. Commit all work before handing off (a Stop hook flags uncommitted files); hand off your branch and commits; do not push or open a PR by default.
 
 HTML or visual outputs → serve them per `references/artifacts.md` and report the clickable URL, never a file path. The handoff is not complete without `url`, `port`, and `pid` (plus `directory`) for any HTML/visual output; a Stop hook blocks replies that give a path instead.
 

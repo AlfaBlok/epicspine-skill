@@ -46,6 +46,8 @@ After every integration with no work in flight, the repository is in this end-st
 - `git status` clean;
 - no stray remote branches.
 
+Every session ends with work committed and pushed to the shared remote; `scripts/push_gate.py` (a `Stop` hook, see `guards.md`) flags uncommitted files and unpushed commits.
+
 The manager audits this at the end of each task and fixes drift before declaring done.
 
 ## Authority And Override
