@@ -78,6 +78,8 @@ python3 ~/.agents/skills/epic-spine/scripts/agents_block.py install --root-spine
 
 Both are idempotent and keep existing content; `check-global`, `check`, `uninstall-global`, `uninstall` mirror them. Output names every harness it wrote, skipped, or cannot support.
 
+On a new Claude seat or account, run `install-global --config-dir ~/.claude_seatN`: it writes the block and hooks there and links `<dir>/skills/epic-spine` to the installed skill (an existing real dir or foreign link is left alone and reported; `check-global` reports the link, `uninstall-global` removes only our link).
+
 | Harness | Global (install-global) | Repo (install) | Confidence |
 |---|---|---|---|
 | Claude Code | `<config dir>/CLAUDE.md` for `$CLAUDE_CONFIG_DIR`, `~/.claude`, `~/.claude*` dirs with settings; plus SessionStart hook in `settings.json` | `CLAUDE.md` (`@AGENTS.md`) | file high; hook high |
@@ -88,12 +90,6 @@ Both are idempotent and keep existing content; `check-global`, `check`, `uninsta
 | Windsurf | `~/.codeium/windsurf/memories/global_rules.md` | `AGENTS.md` | medium |
 | Copilot CLI | `~/.copilot/copilot-instructions.md` | `.github/copilot-instructions.md` | medium |
 | Aider | unsupported (needs `read:` in `.aider.conf.yml`) | none | n/a |
-
-On a new Claude seat or account, run `install-global --config-dir ~/.claude_seatN`: it writes the block and hooks there and links `<dir>/skills/epic-spine` to the installed skill (an existing real dir or foreign link is left alone and reported; `check-global` reports the link, `uninstall-global` removes only our link).
-
-### Machine dispatcher
-
-Set `EPICSPINE_DISPATCHER` (a command line) on a machine and every manager in every repo routes worker dispatch through it, with no per-repo rule: `status`, `pick`, and `done <id>` print JSON, and `pick` says how to run the worker (T3 `delegate_task` to a provider instance, a native subagent, or a command). A repo opts out with `Dispatch profile: local-only`. Unset means today's behaviour. Contract: [machine-dispatcher.md](skill/epic-spine/references/machine-dispatcher.md); a seat-pool reference adapter is in [examples/dispatchers](examples/dispatchers/README.md).
 
 ## Why This Exists
 
@@ -216,6 +212,10 @@ flowchart LR
     T -->|"durable result only"| S
     I -->|"scope or state changed"| S
 ```
+
+## Machine Dispatcher
+
+Set `EPICSPINE_DISPATCHER` (a command line) on a machine and every manager in every repo routes worker dispatch through it, with no per-repo rule: `status`, `pick`, and `done <id>` print JSON, and `pick` says how to run the worker (T3 `delegate_task` to a provider instance, a native subagent, or a command). A repo opts out with `Dispatch profile: local-only`. Unset means today's behaviour. Contract: [machine-dispatcher.md](skill/epic-spine/references/machine-dispatcher.md); a seat-pool reference adapter is in [examples/dispatchers](examples/dispatchers/README.md).
 
 ## Authority By Artifact
 
