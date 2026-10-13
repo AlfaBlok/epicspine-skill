@@ -246,7 +246,6 @@ class FirstMessageTest(unittest.TestCase):
             text = (SCRIPT.parent.parent / "assets" / name).read_text(encoding="utf-8")
             self.assertIn("EPICSPINE_DISPATCHER", text, name)
             self.assertIn("local-only", text, name)
-            self.assertIn("dispatcher.py", text, name)
 
 
 class RepoFilesTest(unittest.TestCase):

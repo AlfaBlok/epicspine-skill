@@ -8,7 +8,7 @@ Each subcommand prints one JSON object and exits 0:
 - `pick [--task TEXT]` -> `{"id": "seat1", "via": "t3_delegate_task", "providerInstanceId": "claudeAgent_seat1"}`, or `{"id": null, "reason": "..."}` when all busy
 - `done <id> [--fail] [--signal TEXT]` -> `{"ok": true}`
 
-`via`: `t3_delegate_task` (`providerInstanceId`, optional `model`), `native_subagent` (optional `model`), `command` (`argv` list).
+`via`: only `t3_delegate_task` (`providerInstanceId`, optional `model`).
 
 ## t3_seat_pool.py
 
