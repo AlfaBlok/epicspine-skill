@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased — install scope
+
+- `agents_block.py install --repo` now always writes `AGENTS.md` but updates a harness mirror (`CLAUDE.md`, `GEMINI.md`, `.cursor/rules/epicspine.mdc`, `.github/copilot-instructions.md`) only if it already exists; new `--mirrors` creates the missing ones. Self-migrating an old repo (the global block's Migrate line) no longer litters it with untracked files. `check` only looks at mirrors that exist; `uninstall` is unchanged. Skill 2026.10.14.6.
+
 ## Unreleased — gate quoting + self-heal
 
 - `url_gate.py` no longer blocks a reply that only quotes the rule wording: a bare `file://` and URLs carrying a `<placeholder>` (`http://<host>:<port>/<file>`) are not visual mentions or URLs to curl; real file URLs, slash paths, "open x" and unreachable URLs still block.

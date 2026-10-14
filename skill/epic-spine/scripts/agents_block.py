@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
 """Install and verify the EpicSpine always-on block (per repo, or machine-wide).
 
-Stdlib only, Python 3.10+. Repo ``install``/``check``/``uninstall`` write the
-thin ``assets/agents-block.md`` (repo facts + pointer; shared rules live in the
-live global block) into AGENTS.md (Codex, OpenCode, Windsurf, Copilot, Cursor read
-it) and every other harness's repo file: CLAUDE.md and GEMINI.md get an
-``@AGENTS.md`` pointer, ``.cursor/rules/epicspine.mdc`` and
-``.github/copilot-instructions.md`` get a copy. ``install`` also migrates an old
-full block. Existing content is kept; reruns change nothing. ``*-global`` write a
-pointer to the global block plus each harness's session-start hook (``--no-hooks``
-opts out); see global_install.py. ``print-hook``/``print-global`` emit the live block.
+Stdlib only, Python 3.10+. Repo ``install``/``check``/``uninstall`` write the thin
+``assets/agents-block.md`` (repo facts + pointer; shared rules live in the live global
+block) into AGENTS.md. ``install`` also refreshes harness mirrors that already exist
+(CLAUDE.md, GEMINI.md: ``@AGENTS.md`` pointer; ``.cursor/rules/epicspine.mdc``,
+``.github/copilot-instructions.md``: copy) and creates them only with ``--mirrors``;
+it migrates an old full block. Existing content is kept; reruns change nothing.
+``*-global`` write a pointer to the global block plus each harness's session-start hook
+(``--no-hooks`` opts out); see global_install.py. ``print-hook``/``print-global`` emit the live block.
 """
 
 from __future__ import annotations
@@ -54,7 +53,7 @@ def pointer() -> str:
     return f"<!-- epicspine:begin {block_id()} -->\n@{AGENTS_NAME}\n<!-- epicspine:end -->\n"
 
 
-def install(repo: Path, root_spine: str | None = None) -> int:
+def install(repo: Path, root_spine: str | None = None, mirrors: bool = False) -> int:
     agents = repo / AGENTS_NAME
     old = BLOCK_RE.search(agents.read_text(encoding="utf-8")) if agents.is_file() else None
     root = ROOT_RE.search(old.group(0)) if old else None
@@ -66,15 +65,15 @@ def install(repo: Path, root_spine: str | None = None) -> int:
     global_install.upsert(agents, block.rstrip("\n") + note + "\n")
     if carried:
         print(f"{AGENTS_NAME}: carried over {len(carried)} repo-specific rule(s) from the old block")
-    for name in POINTERS:
-        global_install.upsert(repo / name, pointer())
-    for name in COPIES:
+    for name in (*POINTERS, *COPIES):
         path = repo / name
+        if not (mirrors or path.exists()):
+            continue
         if name.endswith(".mdc") and not path.exists():
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(CURSOR_HEAD + block, encoding="utf-8")
         else:
-            global_install.upsert(path, block)
+            global_install.upsert(path, pointer() if name in POINTERS else block)
     return 0
 
 
@@ -156,10 +155,11 @@ def build_parser() -> argparse.ArgumentParser:
     )
     sub = parser.add_subparsers(dest="command", required=True)
     for name in ("install", "check", "uninstall"):
-        cmd = sub.add_parser(name, help=f"{name} the repo files (AGENTS.md + every harness file)")
+        cmd = sub.add_parser(name, help=f"{name} the repo files (AGENTS.md + existing harness mirrors)")
         cmd.add_argument("--repo", type=Path, default=Path("."))
         if name == "install":
             cmd.add_argument("--root-spine", help="default: the one in the existing block")
+            cmd.add_argument("--mirrors", action="store_true", help="also create missing harness mirrors")
     for name in ("install-global", "check-global", "uninstall-global"):
         cmd = sub.add_parser(name, help=f"{name.split('-')[0]} the machine-wide block and hooks")
         cmd.add_argument("--home", type=Path, help="override the home directory (tests)")
@@ -178,7 +178,7 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     if args.command == "install":
-        return install(args.repo, args.root_spine)
+        return install(args.repo, args.root_spine, args.mirrors)
     if args.command == "check":
         return check(args.repo)
     if args.command == "uninstall":

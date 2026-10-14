@@ -73,10 +73,10 @@ Skills load only when a request matches, so a first message like "fix the login 
 
 ```sh
 python3 ~/.agents/skills/epic-spine/scripts/agents_block.py install-global   # --config-dir DIR (alias --claude-dir; repeatable), --no-hooks, --artifact-host VALUE, --home
-python3 ~/.agents/skills/epic-spine/scripts/agents_block.py install --root-spine docs/SPINE.md   # in a repo
+python3 ~/.agents/skills/epic-spine/scripts/agents_block.py install --root-spine docs/SPINE.md   # in a repo; add --mirrors to also create CLAUDE.md, GEMINI.md, Cursor, Copilot files
 ```
 
-Both are idempotent and keep existing content; `check-global`, `check`, `uninstall-global`, `uninstall` mirror them. Output names every harness it wrote, skipped, or cannot support.
+Both are idempotent and keep existing content; repo `install` always writes `AGENTS.md` and refreshes only the harness mirrors that already exist; `check-global`, `check`, `uninstall-global`, `uninstall` mirror them. Output names every harness it wrote, skipped, or cannot support.
 
 On a new Claude seat or account, run `install-global --config-dir ~/.claude_seatN`: it writes the block and hooks there and links `<dir>/skills/epic-spine` to the installed skill (an existing real dir or foreign link is left alone and reported; `check-global` reports the link, `uninstall-global` removes only our link).
 

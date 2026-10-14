@@ -312,31 +312,62 @@ class RepoFilesTest(unittest.TestCase):
                 ".github/copilot-instructions.md"]
 
     def test_all_harness_files_written(self) -> None:
-        ab.install(self.repo, "docs/s.md")
+        ab.install(self.repo, "docs/s.md", mirrors=True)
         for n in self.names():
             self.assertIn(MARK, (self.repo / n).read_text(), n)
         self.assertIn("@AGENTS.md", (self.repo / "CLAUDE.md").read_text())
         self.assertIn("alwaysApply: true", (self.repo / ".cursor/rules/epicspine.mdc").read_text())
         self.assertEqual(ab.check(self.repo), 0)
 
+    def test_install_without_mirrors_writes_only_agents(self) -> None:
+        ab.install(self.repo, "docs/s.md")
+        self.assertEqual(sorted(p.name for p in self.repo.iterdir()), ["AGENTS.md", "docs"])
+        self.assertEqual(ab.check(self.repo), 0)
+
+    def test_migration_creates_no_other_files(self) -> None:
+        (self.repo / "AGENTS.md").write_text(
+            "<!-- epicspine:begin 2026.10.09 -->\n## EpicSpine — always on\n"
+            "Root spine: docs/s.md. Read its Current State.\n1. Bind first.\n<!-- epicspine:end -->\n")
+        self.assertEqual(ab.main(["install", "--repo", str(self.repo)]), 0)
+        self.assertEqual(sorted(p.name for p in self.repo.iterdir()), ["AGENTS.md", "docs"])
+        self.assertEqual(ab.check(self.repo), 0)
+
+    def test_existing_mirrors_updated_missing_ones_not_created(self) -> None:
+        (self.repo / "CLAUDE.md").write_text("# Claude notes\n")
+        gh = self.repo / ".github/copilot-instructions.md"
+        gh.parent.mkdir()
+        gh.write_text("old\n<!-- epicspine:begin 1 -->\nstale\n<!-- epicspine:end -->\n")
+        ab.install(self.repo, "docs/s.md")
+        self.assertIn("@AGENTS.md", (self.repo / "CLAUDE.md").read_text())
+        self.assertIn("# Claude notes", (self.repo / "CLAUDE.md").read_text())
+        self.assertIn("Root spine: docs/s.md.", gh.read_text())
+        self.assertFalse((self.repo / "GEMINI.md").exists())
+        self.assertFalse((self.repo / ".cursor").exists())
+        self.assertEqual(ab.check(self.repo), 0)
+
+    def test_mirrors_flag_creates_them(self) -> None:
+        self.assertEqual(ab.main(["install", "--repo", str(self.repo), "--root-spine", "docs/s.md", "--mirrors"]), 0)
+        for n in self.names():
+            self.assertTrue((self.repo / n).is_file(), n)
+
     def test_idempotent_and_preserves(self) -> None:
         (self.repo / "CLAUDE.md").write_text("# Claude notes\n")
-        ab.install(self.repo, "docs/s.md")
+        ab.install(self.repo, "docs/s.md", mirrors=True)
         snap = {n: (self.repo / n).read_text() for n in self.names()}
-        ab.install(self.repo, "docs/s.md")
+        ab.install(self.repo, "docs/s.md", mirrors=True)
         self.assertEqual(snap, {n: (self.repo / n).read_text() for n in self.names()})
         self.assertIn("# Claude notes", snap["CLAUDE.md"])
 
     def test_uninstall_restores(self) -> None:
         (self.repo / "CLAUDE.md").write_text("# Claude notes\n")
-        ab.install(self.repo, "docs/s.md")
+        ab.install(self.repo, "docs/s.md", mirrors=True)
         ab.uninstall(self.repo)
         self.assertEqual((self.repo / "CLAUDE.md").read_text(), "# Claude notes\n")
         for n in ("AGENTS.md", "GEMINI.md", ".cursor/rules/epicspine.mdc", ".github/copilot-instructions.md"):
             self.assertFalse((self.repo / n).exists(), n)
 
     def test_check_flags_stale_mirror(self) -> None:
-        ab.install(self.repo, "docs/s.md")
+        ab.install(self.repo, "docs/s.md", mirrors=True)
         p = self.repo / ".github/copilot-instructions.md"
         p.write_text(p.read_text().replace("override skill defaults", "tampered"))
         out = io.StringIO()
