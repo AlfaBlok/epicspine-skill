@@ -144,7 +144,7 @@ class UrlGateTest(unittest.TestCase):
 
 
 class UrlGateArtifactHostTest(unittest.TestCase):
-    """EPICSPINE_ARTIFACT_HOST set: tailnet host accepted, loopback-only is missing."""
+    """Non-loopback host (explicit or auto-detected): tailnet host accepted, loopback-only is missing."""
 
     def setUp(self) -> None:
         patcher = mock.patch.dict(os.environ)
@@ -182,6 +182,21 @@ class UrlGateArtifactHostTest(unittest.TestCase):
 
     def test_tailnet_wins_over_localhost(self) -> None:
         self.assertIsNone(self.decide("http://127.0.0.1:1/x.html and http://vps.tail.ts.net:2/x.html"))
+
+    def test_auto_detect_end_to_end(self) -> None:
+        """Headless + Tailscale with env unset: resolve() (not mocked) yields the tailnet host."""
+        def fake_run(*cmd: str) -> str:
+            return '{"Self": {"DNSName": "vps.tail.ts.net."}}' if cmd[1] == "status" else "100.64.0.5\n"
+        env = {k: v for k, v in os.environ.items() if k != "EPICSPINE_ARTIFACT_HOST"}
+        ah = self.gate.artifact_host
+        with mock.patch.dict(os.environ, env, clear=True), \
+                mock.patch.object(ah.sys, "platform", "linux"), \
+                mock.patch.object(ah, "_run", fake_run), mock.patch.object(self.gate, "status_ok", return_value=True):
+            os.environ.pop("DISPLAY", None)
+            self.assertIn("http://vps.tail.ts.net:<port>", self.gate.decide("See http://127.0.0.1:8091/x.html"))
+            self.assertIsNone(self.gate.decide("http://vps.tail.ts.net:8091/x.html"))
+            os.environ["DISPLAY"] = ":0"
+            self.assertIsNone(self.gate.decide("http://127.0.0.1:8091/x.html"))
 
     def test_subprocess_literal_host_blocks_loopback_only(self) -> None:
         proc = subprocess.run(

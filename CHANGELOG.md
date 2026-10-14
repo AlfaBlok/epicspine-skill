@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased — artifact host auto-detect
+
+- `artifact_host.resolve()` now detects a headless machine (not macOS/Windows, no `DISPLAY`/`WAYLAND_DISPLAY`/x11-wayland `XDG_SESSION_TYPE`) with a working Tailscale and serves on the tailnet by default, with zero per-machine setup; desktops and headless hosts without Tailscale stay on `127.0.0.1`, silently. `EPICSPINE_ARTIFACT_HOST` is now only an override: `local` (or `127.0.0.1`) forces loopback, `tailscale` and hostnames behave as before (still warn on failure). Subprocess timeout 3s. Always-on HTML line, `artifacts.md`, README and `--artifact-host` help reworded. Skill 2026.10.14.4.
+
 ## Unreleased — live rules
 
 - Shared rules now live only in the skill: `assets/global-block.md` (injected live by the session hook) carries bind, dispatch, integrate, record, HTML/artifact-host, machine-dispatcher and a migrate line. `assets/agents-block.md` is a thin repo block (root spine, pointer, repo-values override, precedence) with a stable id (`repo-1`) instead of the skill version, so releases never stale it. `install-global` writes a short pointer to the live global block (absolute skill path) instead of a pasted copy. `agents_block.py install --repo .` migrates an old full block (root spine kept, `--root-spine` optional; non-stock worker/integrate lines carried over below the block) and `check` reports old blocks as stale. Skill 2026.10.14.3.

@@ -22,7 +22,7 @@ These apply to every task unless the user or the root spine overrides.
 5. Learnings: read the root `Operating Learnings` **Always** at bind; the first reply states `Learnings in force:` (≤ 5 lines); propose sparingly, never write silently. `references/learnings.md`
 6. Freshness: run `scripts/skill_update.py status` at bind (cheap, once per day); `Skill updates: auto` is the default. `references/skill-update.md`
 7. Hygiene: remove a worker's worktree and branch right after integrating; dispatch a sweep when `Last sweep` is absent, over 7 days old, clutter exists, or the user asks. `references/hygiene.md` + `assets/sweep-brief.md`
-8. HTML/visual artifacts: serve them from `127.0.0.1` and report a clickable `http://127.0.0.1:<port>/<file>` URL (verified HTTP 200), never a path or `file://`; a Stop hook enforces it. `references/artifacts.md`
+8. HTML/visual artifacts: serve them from `127.0.0.1` (Tailscale automatically on headless hosts) and report a clickable `http://127.0.0.1:<port>/<file>` URL (verified HTTP 200), never a path or `file://`; a Stop hook enforces it. `references/artifacts.md`
 9. Lean: shortest correct output; load only the references a task triggers; delete rather than add.
 10. Report state, evidence, and the single next action; ask only when blocked on a human decision.
 

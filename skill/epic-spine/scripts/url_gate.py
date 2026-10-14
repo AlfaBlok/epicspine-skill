@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Claude Code Stop hook: block a final reply that hands over an HTML/visual
-deliverable as a path or ``file://`` instead of a reachable 127.0.0.1 URL.
+deliverable as a path or ``file://`` instead of a reachable URL (127.0.0.1, or the Tailscale host on a headless machine).
 
 Stdin is the Stop-hook JSON (``last_assistant_message``, else the last assistant
 text in ``transcript_path``). To block, print ``{"decision": "block", "reason": ...}``
@@ -15,9 +15,10 @@ Heuristics (deliberately simple):
 - Any ``http://127.0.0.1[:port]/...`` or ``localhost`` URL in the message is
   curl-checked (GET, 2s); anything but 200 blocks. A reachable one satisfies a
   visual mention, whatever it points at.
-- With env ``EPICSPINE_ARTIFACT_HOST`` set (see artifact_host.py) the same holds
-  for URLs on that host (or its non-loopback bind IP), and 127.0.0.1/localhost URLs no longer
-  count: a remote reader cannot open them.
+- When artifact_host.resolve() picks a non-loopback host (auto-detected on a headless
+  machine with Tailscale, or set by env ``EPICSPINE_ARTIFACT_HOST``) the same holds
+  for URLs on that host (or its bind IP), and 127.0.0.1/localhost URLs no longer
+  count: a remote reader cannot open them. Desktops and ``local`` stay on loopback.
 - Non-visual paths (.py .md .json ...) never trigger.
 Safety: fails open on any error; at most MAX_BLOCKS blocks per turn (a counter
 file per session in the temp dir, reset when ``stop_hook_active`` is false);

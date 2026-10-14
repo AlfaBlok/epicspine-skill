@@ -226,7 +226,7 @@ Set `EPICSPINE_DISPATCHER` (a command line) on a machine and every manager in ev
 
 ## Artifact Host
 
-On a headless or remote machine the reader's browser is elsewhere, so loopback links are useless. Set `EPICSPINE_ARTIFACT_HOST` (`tailscale`, or a hostname) and artifacts are served on the tailnet/private address and reported as `http://<host>:<port>/<file>`; the `url_gate.py` Stop hook then rejects `127.0.0.1` links. The bind is never `0.0.0.0` or a public address. Unset keeps today's `127.0.0.1` behaviour. For Claude Code seats: `install-global --artifact-host tailscale` (with `--config-dir DIR`, repeatable; `""` removes) writes `env` into each `settings.json`; for other harnesses set it in the service unit (`Environment="EPICSPINE_ARTIFACT_HOST=tailscale"` in a systemd drop-in). Details: [artifacts.md](skill/epic-spine/references/artifacts.md).
+EpicSpine detects a headless machine (not macOS/Windows, no `DISPLAY`/`WAYLAND_DISPLAY`/x11-wayland session) with Tailscale by itself and serves artifacts on the tailnet address, reported as `http://<host>:<port>/<file>`; the `url_gate.py` Stop hook then rejects `127.0.0.1` links. A desktop (e.g. a Mac) keeps `127.0.0.1`. No setup is needed; env `EPICSPINE_ARTIFACT_HOST` is an override only (`local`, `tailscale`, or a hostname), and `install-global --artifact-host VALUE` (with `--config-dir DIR`, repeatable; `""` removes) persists it per Claude seat. The bind is never `0.0.0.0` or a public address. Details: [artifacts.md](skill/epic-spine/references/artifacts.md).
 
 ## Authority By Artifact
 

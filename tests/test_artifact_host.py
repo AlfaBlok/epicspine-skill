@@ -33,14 +33,50 @@ class ArtifactHostTest(unittest.TestCase):
         for var in ("EPICSPINE_ARTIFACT_HOST", "EPICSPINE_ARTIFACT_BIND"):
             os.environ.pop(var, None)
 
-    def resolve(self, env: dict) -> tuple[dict, str]:
+    def resolve(self, env: dict, platform: str = "linux") -> tuple[dict, str]:
         err = io.StringIO()
-        with contextlib.redirect_stderr(err):
+        with contextlib.redirect_stderr(err), mock.patch.object(ah.sys, "platform", platform):
             return ah.resolve(env), err.getvalue()
 
-    def test_unset_or_empty_is_loopback(self) -> None:
-        for env in ({}, {"EPICSPINE_ARTIFACT_HOST": " "}):
-            self.assertEqual(self.resolve(env), (LOCAL, ""))
+    def test_headless_with_tailscale_auto_uses_tailnet(self) -> None:
+        for env in ({}, {"EPICSPINE_ARTIFACT_HOST": " "}, {"EPICSPINE_ARTIFACT_HOST": "auto"},
+                    {"XDG_SESSION_TYPE": "tty"}):
+            with self.subTest(env=env), mock.patch.object(ah, "_run", fake_ts()):
+                self.assertEqual(self.resolve(env),
+                                 ({"host": "vps-a9-1.taild81fbb.ts.net", "bind": "100.104.206.10"}, ""))
+
+    def test_headless_without_tailscale_is_silent_loopback(self) -> None:
+        for fail in (FileNotFoundError("tailscale"), subprocess.TimeoutExpired("tailscale", 3)):
+            with self.subTest(fail=type(fail).__name__), mock.patch.object(ah, "_run", side_effect=fail):
+                self.assertEqual(self.resolve({}), (LOCAL, ""))
+        with mock.patch.object(ah, "_run", fake_ts("8.8.8.8\n")):
+            self.assertEqual(self.resolve({}), (LOCAL, ""))
+
+    def test_desktop_is_loopback_even_with_tailscale(self) -> None:
+        cases = [({"DISPLAY": ":0"}, "linux"), ({"WAYLAND_DISPLAY": "wayland-0"}, "linux"),
+                 ({"XDG_SESSION_TYPE": "Wayland"}, "linux"), ({"XDG_SESSION_TYPE": "x11"}, "linux"),
+                 ({}, "darwin"), ({}, "win32")]
+        for env, platform in cases:
+            with self.subTest(env=env, platform=platform), \
+                    mock.patch.object(ah, "_run", side_effect=fake_ts()) as run:
+                self.assertEqual(self.resolve(env, platform), (LOCAL, ""))
+                run.assert_not_called()
+
+    def test_local_forces_loopback(self) -> None:
+        for value in ("local", "127.0.0.1"):
+            with self.subTest(value=value), mock.patch.object(ah, "_run", side_effect=fake_ts()) as run:
+                self.assertEqual(self.resolve({"EPICSPINE_ARTIFACT_HOST": value}), (LOCAL, ""))
+                run.assert_not_called()
+
+    def test_explicit_tailscale_ignores_desktop_detection(self) -> None:
+        with mock.patch.object(ah, "_run", fake_ts()):
+            info, _ = self.resolve({"EPICSPINE_ARTIFACT_HOST": "tailscale", "DISPLAY": ":0"}, "darwin")
+        self.assertEqual(info["bind"], "100.104.206.10")
+
+    def test_auto_honours_bind_override(self) -> None:
+        with mock.patch.object(ah, "_run", fake_ts()):
+            info, _ = self.resolve({"EPICSPINE_ARTIFACT_BIND": "100.64.0.9"})
+        self.assertEqual(info["bind"], "100.64.0.9")
 
     def test_tailscale(self) -> None:
         with mock.patch.object(ah, "_run", fake_ts()):
@@ -80,7 +116,7 @@ class ArtifactHostTest(unittest.TestCase):
 
     def test_cli_json_line(self) -> None:
         out = subprocess.run([sys.executable, "-B", str(SCRIPT), "--port", "8091"], text=True,
-                             capture_output=True, env={"PATH": ""}, timeout=30).stdout
+                             capture_output=True, env={"PATH": "", "DISPLAY": ":0"}, timeout=30).stdout
         self.assertEqual(
             out.strip(),
             '{"host": "127.0.0.1", "bind": "127.0.0.1", "port": 8091, "base": "http://127.0.0.1:8091"}')
