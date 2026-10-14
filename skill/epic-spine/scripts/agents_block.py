@@ -189,7 +189,7 @@ def main(argv: list[str] | None = None) -> int:
         print(global_install.render_global(), end="")
         return 0
     if args.command == "print-hook":
-        print(global_install.hook_payload())
+        print(global_install.hook_payload(os.environ))
         return 0
     home = args.home or Path.home()
     env = dict(os.environ) if args.home is None else {}

@@ -138,6 +138,22 @@ class UrlGateTest(unittest.TestCase):
             with self.subTest(raw=raw):
                 self.assertAllows(raw=raw)
 
+    RULE = ("Report a curl-checked `http://<host>:<port>/<file>` URL on its own line, "
+            "never a path or `file://`.")
+
+    def test_quoted_rule_text_allows(self) -> None:
+        self.assertAllows(self.RULE)
+        for text in ("Use `http://<host>:<port>/<file>` and never `file://`.", "No file:// here.",
+                     "Serve at http://127.0.0.1:<port>/<file> then link it.", "a bare `file://` scheme"):
+            with self.subTest(text=text):
+                self.assertAllows(text)
+
+    def test_real_cases_still_block_beside_rule_text(self) -> None:
+        for text in ("file:///home/x/report.html", "out/report.html", "open report.html",
+                     "See http://127.0.0.1:9/x.html"):
+            with self.subTest(text=text):
+                self.assertBlocks(self.RULE + "\n\n" + text)
+
     def test_env_off_allows(self) -> None:
         self.assertAllows("Open /tmp/x.html", env={"EPICSPINE_URL_GATE": "off"})
 
@@ -176,6 +192,10 @@ class UrlGateArtifactHostTest(unittest.TestCase):
             with self.subTest(text=text):
                 reason = self.decide(text)
                 self.assertIn("http://vps.tail.ts.net:<port>/<file>", reason)
+
+    def test_quoted_rule_text_allows(self) -> None:
+        self.assertIsNone(self.decide("Report `http://<host>:<port>/<file>` and never `file://`."))
+        self.assertIn("served URL", self.decide("Open file:///home/x/report.html"))
 
     def test_tailnet_url_must_serve(self) -> None:
         self.assertIn("not serving", self.decide("http://vps.tail.ts.net:8091/x.html", ok=False))

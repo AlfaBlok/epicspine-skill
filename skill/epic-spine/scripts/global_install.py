@@ -10,7 +10,9 @@ adapter table; no harness is privileged.
 from __future__ import annotations
 
 import json
+import os
 import re
+import tempfile
 from pathlib import Path
 
 SKILL_DIR = Path(__file__).resolve().parent.parent
@@ -42,7 +44,10 @@ def render_pointer() -> str:
             f"`{GLOBAL_TEMPLATE}` (read it unless already injected at session start).\n<!-- epicspine:end -->\n")
 
 
-def hook_payload() -> str:
+def hook_payload(env: dict | None = None) -> str:
+    """SessionStart JSON; given ``env`` (the hook), also heal the user-level pasted copy."""
+    if env is not None:
+        heal(env)
     ctx = render_global()
     return json.dumps({"hookSpecificOutput": {"hookEventName": "SessionStart", "additionalContext": ctx}})
 
@@ -59,8 +64,30 @@ def upsert(path: Path, block: str) -> str:
     if new == old:
         return "current"
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(new, encoding="utf-8")
+    target = os.path.realpath(path)
+    fd, tmp = tempfile.mkstemp(dir=os.path.dirname(target), prefix=".epicspine-")
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as fh:
+            fh.write(new)
+        if os.path.exists(target):
+            os.chmod(tmp, os.stat(target).st_mode & 0o7777)
+        os.replace(tmp, target)
+    except BaseException:
+        os.unlink(tmp)
+        raise
     return how
+
+
+def heal(env: dict) -> None:
+    """Best-effort, silent: rewrite a stale EpicSpine block in the Claude config dir's CLAUDE.md
+    (``CLAUDE_CONFIG_DIR``, else ``~/.claude``) with the current pointer. No block, or current: untouched."""
+    try:
+        path = Path(env.get("CLAUDE_CONFIG_DIR") or Path.home() / ".claude").expanduser() / "CLAUDE.md"
+        match = BLOCK_RE.search(path.read_text(encoding="utf-8"))
+        if match and match.group(0) + "\n" != render_pointer() and os.access(path, os.W_OK):
+            upsert(path, render_pointer())
+    except Exception:
+        pass
 
 
 def remove(path: Path) -> bool:

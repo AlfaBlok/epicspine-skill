@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased — gate quoting + self-heal
+
+- `url_gate.py` no longer blocks a reply that only quotes the rule wording: a bare `file://` and URLs carrying a `<placeholder>` (`http://<host>:<port>/<file>`) are not visual mentions or URLs to curl; real file URLs, slash paths, "open x" and unreachable URLs still block.
+- The SessionStart hook (`print-hook`) now also heals, best-effort and silently, a stale EpicSpine block in the user-level `CLAUDE.md` (`CLAUDE_CONFIG_DIR`, else `~/.claude`): an old pasted full copy becomes the pointer, in place and atomically (`upsert` now writes atomically), nothing else touched; a current or absent block is left alone. Machines installed earlier need no manual reinstall. Skill 2026.10.14.5.
+
 ## Unreleased — artifact host auto-detect
 
 - `artifact_host.resolve()` now detects a headless machine (not macOS/Windows, no `DISPLAY`/`WAYLAND_DISPLAY`/x11-wayland `XDG_SESSION_TYPE`) with a working Tailscale and serves on the tailnet by default, with zero per-machine setup; desktops and headless hosts without Tailscale stay on `127.0.0.1`, silently. `EPICSPINE_ARTIFACT_HOST` is now only an override: `local` (or `127.0.0.1`) forces loopback, `tailscale` and hostnames behave as before (still warn on failure). Subprocess timeout 3s. Always-on HTML line, `artifacts.md`, README and `--artifact-host` help reworded. Skill 2026.10.14.4.

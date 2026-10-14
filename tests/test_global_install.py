@@ -4,6 +4,8 @@ import contextlib
 import importlib.util
 import io
 import json
+import os
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -342,6 +344,74 @@ class RepoFilesTest(unittest.TestCase):
             code = ab.check(self.repo)
         self.assertEqual(code, 1)
         self.assertIn("copilot-instructions.md", out.getvalue())
+
+
+class HookHealTest(unittest.TestCase):
+    """print-hook refreshes a stale pasted copy in the Claude config dir, silently."""
+
+    OLD = ("<!-- epicspine:begin 2026.10.13.2 -->\n## EpicSpine — always on\n1. Bind first.\n"
+           "<!-- epicspine:end -->\n")
+
+    def setUp(self) -> None:
+        self._tmp = tempfile.TemporaryDirectory(prefix="epicspine-h-")
+        self.addCleanup(self._tmp.cleanup)
+        self.cdir = Path(self._tmp.name) / "cfg"
+        self.cdir.mkdir()
+        self.file = self.cdir / "CLAUDE.md"
+
+    def hook(self, **env: str) -> dict:
+        proc = subprocess.run(
+            [sys.executable, "-B", str(SCRIPT), "print-hook"], text=True, capture_output=True, timeout=30,
+            env={**os.environ, "HOME": self._tmp.name, "CLAUDE_CONFIG_DIR": str(self.cdir), **env})
+        self.assertEqual((proc.returncode, proc.stderr), (0, ""))
+        out = json.loads(proc.stdout)
+        self.assertEqual(out["hookSpecificOutput"]["hookEventName"], "SessionStart")
+        return out
+
+    def test_old_full_copy_replaced_outside_text_kept(self) -> None:
+        self.file.write_text("# Mine\n\n" + self.OLD + "\nafter\n")
+        self.hook()
+        want = ab.global_install.render_pointer().rstrip("\n")
+        self.assertEqual(self.file.read_text(), "# Mine\n\n" + want + "\n\nafter\n")
+        self.assertEqual([p.name for p in self.cdir.iterdir()], ["CLAUDE.md"])  # no temp litter
+
+    def test_default_dir_is_home_dot_claude(self) -> None:
+        (Path(self._tmp.name) / ".claude").mkdir()
+        file = Path(self._tmp.name) / ".claude" / "CLAUDE.md"
+        file.write_text(self.OLD)
+        subprocess.run([sys.executable, "-B", str(SCRIPT), "print-hook"], capture_output=True, timeout=30,
+                       env={**{k: v for k, v in os.environ.items() if k != "CLAUDE_CONFIG_DIR"},
+                            "HOME": self._tmp.name})
+        self.assertEqual(file.read_text(), ab.global_install.render_pointer())
+
+    def test_current_pointer_untouched(self) -> None:
+        self.file.write_text("# Mine\n\n" + ab.global_install.render_pointer())
+        os.utime(self.file, (1_000_000, 1_000_000))
+        self.hook()
+        self.assertEqual(self.file.stat().st_mtime, 1_000_000)
+
+    def test_no_block_untouched(self) -> None:
+        self.file.write_text("# Mine only\n")
+        os.utime(self.file, (1_000_000, 1_000_000))
+        self.hook()
+        self.assertEqual((self.file.read_text(), self.file.stat().st_mtime), ("# Mine only\n", 1_000_000))
+        self.file.unlink()
+        self.hook()
+        self.assertFalse(self.file.exists())
+
+    def test_unwritable_or_unreadable_keeps_hook_output(self) -> None:
+        self.file.write_text(self.OLD)
+        self.file.chmod(0o444)
+        self.hook()
+        self.file.chmod(0o644)
+        self.file.unlink()
+        self.file.mkdir()  # CLAUDE.md is a directory: read fails
+        self.hook()
+
+    def test_hook_payload_without_env_never_writes(self) -> None:
+        self.file.write_text(self.OLD)
+        json.loads(ab.global_install.hook_payload())
+        self.assertEqual(self.file.read_text(), self.OLD)
 
 
 if __name__ == "__main__":

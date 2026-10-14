@@ -9,7 +9,8 @@ Stdlib only, Python 3.10+.
 
 Heuristics (deliberately simple):
 - A visual mention is a ``file://`` link or a path containing ``/`` ending in
-  .html .htm .svg .png .pdf; a bare ``name.html`` counts only on a line that
+  .html .htm .svg .png .pdf (a bare ``file://`` or a ``<host>``-style placeholder URL,
+  as in quoted rule text, is not one); a bare ``name.html`` counts only on a line that
   also says open/view. Fenced code blocks are ignored, URLs included (quoted source/diffs);
   remote http(s) URLs are ignored.
 - Any ``http://127.0.0.1[:port]/...`` or ``localhost`` URL in the message is
@@ -42,7 +43,9 @@ FENCE = re.compile(r"^(```|~~~).*?^\1[^\n]*$", re.DOTALL | re.MULTILINE)
 URL_TAIL = r"(?::\d+)?(?![\w:<])(?:/[^\s)\]>\"'`<]*)?"
 LOCAL_URL = re.compile(r"https?://(?:127\.0\.0\.1|localhost)" + URL_TAIL)
 REMOTE_URL = re.compile(r"https?://[^\s)\]>\"'`<]+")
-FILE_URL = re.compile(r"file://[^\s)\]>\"'`<]*", re.I)
+FILE_URL = re.compile(r"file://(?=[^\s)\]>\"'`<]*\w)[^\s)\]>\"'`<]*", re.I)
+# A URL token carrying a `<placeholder>` is quoted rule text, not a deliverable.
+PLACEHOLDER_URL = re.compile(r"(?:https?|file)://[^\s)\]\"'`]*<[^<>\s]+>[^\s)\]\"'`]*", re.I)
 EXT = r"\.(?:html?|svg|png|pdf)\b"
 PATH = re.compile(r"(?<![\w.])[\w~./\-+%@]*[\w\-+%@]" + EXT + r"(?![\w/])", re.I)
 OPEN_WORD = re.compile(r"\b(?:open|view)\b", re.I)
@@ -87,10 +90,15 @@ def final_text(payload: dict) -> str:
     return last
 
 
+def prose_of(text: str) -> str:
+    """``text`` without fenced code and placeholder URLs (quoted rule wording)."""
+    return PLACEHOLDER_URL.sub("", FENCE.sub("", text))
+
+
 def visual_mentions(text: str, pat: re.Pattern = LOCAL_URL) -> list[str]:
     """Visual-file mentions in prose (fences and non-``pat`` URLs removed)."""
     prose = REMOTE_URL.sub(lambda m: m.group(0) if pat.match(m.group(0)) else "",
-                           FENCE.sub("", text))
+                           prose_of(text))
     found = FILE_URL.findall(prose)
     prose = FILE_URL.sub("", prose)
     for line in prose.splitlines():
@@ -111,7 +119,7 @@ def status_ok(url: str) -> bool:
 def decide(text: str) -> str | None:
     """Return a block reason, or None to allow."""
     info = artifact_host.resolve()
-    host, pat, prose = info["host"], LOCAL_URL, FENCE.sub("", text)
+    host, pat, prose = info["host"], LOCAL_URL, prose_of(text)
     if host != "127.0.0.1":
         names = "|".join(re.escape(n) for n in {host, info["bind"]} if not n.startswith("127."))
         pat = re.compile(r"https?://(?:" + names + ")" + URL_TAIL, re.I)

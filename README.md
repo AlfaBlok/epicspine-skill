@@ -94,7 +94,7 @@ On a new Claude seat or account, run `install-global --config-dir ~/.claude_seat
 ## Staying up to date
 
 - Merge to `main` and the skill is live everywhere: seats link to the checkout, and `Skill updates: auto` refreshes copies.
-- Shared rules propagate with it: the session hook injects the live block, and the pasted files only point at it.
+- Shared rules propagate with it: the session hook injects the live block, and the pasted files only point at it. Old full copies on other machines heal on the next Claude Code session (the hook rewrites the stale block in the user-level `CLAUDE.md`).
 - Run `install-global` once per machine, or when machine settings change (`--artifact-host`, a new seat via `--config-dir`).
 - Repos self-migrate: an old full `AGENTS.md` block is replaced by the thin one on the next session (`install --repo .`, no `--root-spine` needed); repo-specific worker/integrate lines are carried over under the block for you to fold into the spine.
 
