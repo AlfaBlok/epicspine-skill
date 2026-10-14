@@ -215,7 +215,7 @@ flowchart LR
 
 ## Machine Dispatcher
 
-Set `EPICSPINE_DISPATCHER` (a command line) on a machine and every manager in every repo routes worker dispatch through it, with no per-repo rule: `status`, `pick`, and `done <id>` print JSON, and `pick` says how to run the worker (T3 `delegate_task` to a provider instance). A repo opts out with `Dispatch profile: local-only`. Unset means today's behaviour. Contract: [machine-dispatcher.md](skill/epic-spine/references/machine-dispatcher.md); a seat-pool reference adapter is in [examples/dispatchers](examples/dispatchers/README.md).
+Set `EPICSPINE_DISPATCHER` (a command line) on a machine and every manager in every repo routes worker dispatch through it, with no per-repo rule: `status`, `pick`, and `done <id>` print JSON, and `pick` says how to run the worker (T3 `delegate_task` to a provider instance). Every thread checks the env on its first turn, greetings included, and ends the bind line with `· dispatch: <name> (<available>/<capacity> seats)` (name verbatim from `status`). A repo opts out with `Dispatch profile: local-only`. Unset means today's behaviour. Contract: [machine-dispatcher.md](skill/epic-spine/references/machine-dispatcher.md); a seat-pool reference adapter is in [examples/dispatchers](examples/dispatchers/README.md).
 
 ## Authority By Artifact
 

@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased — dispatch suffix always
+
+- The machine-dispatcher bind suffix was often skipped (3 of 6 vps1 test threads, mostly bare greetings) and agents invented the name. The always-on block line now requires the env check (`echo "$EPICSPINE_DISPATCHER"`) on every thread's first turn, greetings included, then `status`, and the suffix `· dispatch: <status.name> (<status.available>/<status.capacity> seats)` with the name verbatim; rule 1 points to it. SKILL.md and `references/machine-dispatcher.md` match. Skill 2026.10.14.1.
+
 ## Unreleased — machine dispatcher
 
 - Env `EPICSPINE_DISPATCHER` routes every manager's worker dispatch through one machine-level command (`status` / `pick` / `done`; `via`: `t3_delegate_task`), with no per-repo rule. The manager runs the command directly; repo `Dispatch profile: local-only` opts out; errors fall back to a native subagent. Both always-on blocks gain one line. Reference adapter: `examples/dispatchers/t3_seat_pool.py`.

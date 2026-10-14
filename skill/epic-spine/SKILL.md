@@ -64,7 +64,7 @@ Binding fields, one compact line: role | bound spine | bound issue | steward | h
 
 ## Machine Dispatcher
 
-If env `EPICSPINE_DISPATCHER` is set, run it directly. At thread start `status` (bind suffix `· dispatch: <name> (<capacity> seats)`); per worker `pick --task TEXT`, `delegate_task` with its `providerInstanceId`, then `done <id>` (`--fail --signal TEXT` on failure). `id: null` = queue and retry. Command fails or prints garbage: say so, use a native subagent. Repo `Dispatch profile: local-only` opts out. Contract: `references/machine-dispatcher.md`.
+Every thread's first turn, greetings included, check the env (`echo "$EPICSPINE_DISPATCHER"`; never assume unset). If set, run it directly: `status` at thread start, bind suffix `· dispatch: <status.name> (<status.available>/<status.capacity> seats)` with the name verbatim, never invented; per worker `pick --task TEXT`, `delegate_task` with its `providerInstanceId`, then `done <id>` (`--fail --signal TEXT` on failure). `id: null` = queue and retry. Command fails or prints garbage: say so, use a native subagent. Repo `Dispatch profile: local-only` opts out. Contract: `references/machine-dispatcher.md`.
 
 ## Spine Document Minimums
 
