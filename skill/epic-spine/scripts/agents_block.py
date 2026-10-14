@@ -153,6 +153,7 @@ def build_parser() -> argparse.ArgumentParser:
         cmd.add_argument("--home", type=Path, help="override the home directory (tests)")
         cmd.add_argument("--claude-dir", "--config-dir", dest="claude_dir", action="append", default=[], help="Claude config dir; repeatable")
         cmd.add_argument("--no-hooks", action="store_true", help="skip session-start hooks")
+        cmd.add_argument("--artifact-host", metavar="VALUE", help="set env EPICSPINE_ARTIFACT_HOST in each Claude settings.json ('' removes)")
     cmd = sub.add_parser("profile", help="print the effective dispatch profile; exit 3 if unset")
     cmd.add_argument("--repo", type=Path, default=Path("."))
     cmd.add_argument("--home", type=Path, help="override the home directory (tests)")
@@ -180,7 +181,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     home = args.home or Path.home()
     env = dict(os.environ) if args.home is None else {}
-    return global_install.run(args.command.split("-")[0], home, env, args.claude_dir, not args.no_hooks)
+    return global_install.run(args.command.split("-")[0], home, env, args.claude_dir, not args.no_hooks, args.artifact_host)
 
 
 if __name__ == "__main__":

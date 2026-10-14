@@ -19,6 +19,7 @@ BLOCK_RE = re.compile(r"<!-- epicspine:begin [^>]*-->.*?<!-- epicspine:end -->",
 HOOK_MARK = 'agents_block.py" print-hook'
 GATE_MARK = 'url_gate.py"'
 HOOK_EVENTS = (("SessionStart", HOOK_MARK), ("Stop", GATE_MARK))
+ENV_KEY = "EPICSPINE_ARTIFACT_HOST"
 UNSUPPORTED = {
     "cursor (user level)": "user rules live in the app settings UI, not a file; repo install writes .cursor/rules",
     "aider": "no user-level instruction file; needs a read: entry in .aider.conf.yml",
@@ -131,6 +132,14 @@ def _strip_hook(data: dict) -> bool:
     return changed
 
 
+def _save(settings: Path, data: dict) -> None:
+    if data:
+        settings.parent.mkdir(parents=True, exist_ok=True)
+        settings.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+    elif settings.exists():
+        settings.unlink()
+
+
 def set_hook(settings: Path, on: bool, stop: bool = False) -> str:
     """Add/remove managed hooks (SessionStart; plus url_gate Stop if ``stop``), merging."""
     try:
@@ -147,12 +156,29 @@ def set_hook(settings: Path, on: bool, stop: bool = False) -> str:
                 {"hooks": [{"type": "command", "command": command}]})
     elif not had:
         return "absent"
-    if data:
-        settings.parent.mkdir(parents=True, exist_ok=True)
-        settings.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
-    elif settings.exists():
-        settings.unlink()
+    _save(settings, data)
     return "set" if on else "removed"
+
+
+def set_env(settings: Path, value: str) -> str:
+    """Persist (empty ``value`` removes) ``env.EPICSPINE_ARTIFACT_HOST`` in settings.json."""
+    try:
+        data = _load(settings)
+    except (ValueError, OSError) as exc:
+        return f"error: cannot merge {settings}: {exc}"
+    env = data.get("env", {})
+    if not isinstance(env, dict):
+        return f"error: {settings} env is not an object"
+    if env.get(ENV_KEY) == (value or None):
+        return "current" if value else "absent"
+    if value:
+        data["env"] = {**env, ENV_KEY: value}
+    else:
+        del env[ENV_KEY]
+        if not env:
+            del data["env"]
+    _save(settings, data)
+    return f"set {value}" if value else "removed"
 
 
 def has_hook(settings: Path, stop: bool = False) -> bool:
@@ -183,8 +209,10 @@ def skill_link(action: str, cdir: Path) -> tuple[str, int]:
     return ("current" if ours else "present (foreign)" if present else "missing"), int(not present)
 
 
-def run(action: str, home: Path, env: dict, claude_dirs: list[str], hooks: bool = True) -> int:
-    """action: install | check | uninstall. Prints one line per harness."""
+def run(action: str, home: Path, env: dict, claude_dirs: list[str], hooks: bool = True,
+        artifact_host: str | None = None) -> int:
+    """action: install | check | uninstall. Prints one line per harness.
+    ``artifact_host`` (install, Claude only): None leaves settings env alone, "" removes it."""
     block, code, present = render_global(), 0, 0
     for label, detect, target, explicit, settings in harnesses(home, env, claude_dirs):
         if not (detect.exists() or (explicit and action == "install")):
@@ -212,6 +240,10 @@ def run(action: str, home: Path, env: dict, claude_dirs: list[str], hooks: bool 
                 code |= result.startswith("error")
                 line += f"; hook {result}"
         if label.startswith("claude-code"):
+            if action == "uninstall" or (action == "install" and artifact_host is not None):
+                result = set_env(settings, artifact_host or "")
+                code |= result.startswith("error")
+                line += f"; artifact host {result}"
             state, bad = skill_link(action, detect)
             code |= bad
             line += f"; skill link {state}"

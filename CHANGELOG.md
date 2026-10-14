@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased — artifact host
+
+- Env `EPICSPINE_ARTIFACT_HOST` (`tailscale` or a hostname) makes artifacts serve on the tailnet/private address and be reported as `http://<host>:<port>/<file>`, for headless hosts read from another device; optional `EPICSPINE_ARTIFACT_BIND`; never binds `0.0.0.0` or a public address (falls back to `127.0.0.1`). New `scripts/artifact_host.py`; `url_gate.py` accepts that host and rejects loopback-only replies when set; unset is unchanged. `install-global --artifact-host VALUE` persists it in each Claude `settings.json` `env`. Both always-on blocks reword the HTML line. Skill 2026.10.14.2.
+
 ## Unreleased — dispatch suffix always
 
 - The machine-dispatcher bind suffix was often skipped (3 of 6 vps1 test threads, mostly bare greetings) and agents invented the name. The always-on block line now requires the env check (`echo "$EPICSPINE_DISPATCHER"`) on every thread's first turn, greetings included, then `status`, and the suffix `· dispatch: <status.name> (<status.available>/<status.capacity> seats)` with the name verbatim; rule 1 points to it. SKILL.md and `references/machine-dispatcher.md` match. Skill 2026.10.14.1.

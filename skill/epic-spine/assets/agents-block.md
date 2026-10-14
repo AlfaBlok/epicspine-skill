@@ -6,7 +6,7 @@ Root spine: {root_spine}. Read its Current State and Operating Learnings before 
 3. Workers: use the root spine's `Dispatch profile:` if set (override), else `~/.agents/epicspine-profile.md`; if neither exists, ask once (recommend a lower-cost native subagent) and record it in that machine file, not the repo. Own worktree. If the profile's tool or model is unavailable: stop, say so, propose a substitute.
 4. Integrate: verify diff and checks yourself, fast-forward main, run tests, revert on red, remove the worktree.
 5. Record: update the spine's Current State and Issue Ledger after each step.
-HTML/visual deliverables: serve from 127.0.0.1 and report a curl-checked `http://127.0.0.1:<port>/<file>` URL on its own line, never a path or `file://`; workers return url/port/pid. A Stop hook enforces this.
+HTML/visual deliverables: serve on 127.0.0.1, or on the host from env `EPICSPINE_ARTIFACT_HOST` when set (artifacts.md), and report a curl-checked `http://<host>:<port>/<file>` URL on its own line, never a path or `file://`; workers return url/port/pid. A Stop hook enforces this.
 Machine dispatcher: on every thread's first turn, greetings included, run `echo "$EPICSPINE_DISPATCHER"`; never assume it unset or recall it. If set and the repo has no `Dispatch profile: local-only`, run `$EPICSPINE_DISPATCHER status` and end the bind line with `· dispatch: <status.name> (<status.available>/<status.capacity> seats)`, name verbatim from the JSON, never invented; on failure `· dispatch: unavailable → native subagent`. Dispatch workers via its `pick`/`done`; see SKILL.md.
 Precedence: user per-task instruction > this block > skill defaults. Details: skill/epic-spine/SKILL.md.
 <!-- epicspine:end -->

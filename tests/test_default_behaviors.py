@@ -58,7 +58,8 @@ class DefaultBehaviorsTest(unittest.TestCase):
     def test_url_rule_in_always_loaded_blocks_and_handoff(self) -> None:
         for name, text in (("AGENTS.md block", self.agents_block()),
                            ("global-block", read("skill/epic-spine/assets/global-block.md"))):
-            self.assertIn("http://127.0.0.1:<port>/<file>", text, name)
+            self.assertIn("http://<host>:<port>/<file>", text, name)
+            self.assertIn("EPICSPINE_ARTIFACT_HOST", text, name)
             self.assertIn("never a path or `file://`", text, name)
             self.assertIn("Stop hook", text, name)
         preamble = read("skill/epic-spine/assets/dispatch-prompt-preamble.md")

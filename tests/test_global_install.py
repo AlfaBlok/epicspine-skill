@@ -190,6 +190,35 @@ class GlobalInstallTest(unittest.TestCase):
             self.assertEqual(link.resolve(), SCRIPT.parent.parent.resolve())
         self.assertIn("skill link linked", out)
 
+    def test_artifact_host_env_set_idempotent_remove(self) -> None:
+        a, b = self.home / ".claude_seat1", self.home / ".claude_seat2"
+        dirs = ("--config-dir", str(a), "--config-dir", str(b))
+        (a).mkdir()
+        (a / "settings.json").write_text(json.dumps({"env": {"FOO": "1"}, "model": "x"}))
+        _, out = self.run_cmd("install-global", *dirs, "--artifact-host", "tailscale")
+        self.assertIn("artifact host set tailscale", out)
+        for d in (a, b):
+            self.assertEqual(json.loads((d / "settings.json").read_text())["env"]["EPICSPINE_ARTIFACT_HOST"], "tailscale")
+        kept = json.loads((a / "settings.json").read_text())
+        self.assertEqual((kept["env"]["FOO"], kept["model"]), ("1", "x"))
+        _, out = self.run_cmd("install-global", *dirs, "--artifact-host", "tailscale")
+        self.assertIn("artifact host current", out)
+        _, out = self.run_cmd("install-global", *dirs)  # flag absent: untouched
+        self.assertNotIn("artifact host", out)
+        self.assertIn("EPICSPINE_ARTIFACT_HOST", (b / "settings.json").read_text())
+        _, out = self.run_cmd("install-global", *dirs, "--artifact-host", "")
+        self.assertIn("artifact host removed", out)
+        self.assertEqual(json.loads((a / "settings.json").read_text())["env"], {"FOO": "1"})
+        self.assertNotIn("env", json.loads((b / "settings.json").read_text()))
+
+    def test_artifact_host_bad_env_not_clobbered(self) -> None:
+        d = self.home / ".claude_seat1"
+        d.mkdir()
+        (d / "settings.json").write_text('{"env": []}')
+        code, out = self.run_cmd("install-global", "--config-dir", str(d), "--artifact-host", "tailscale")
+        self.assertEqual(code, 1)
+        self.assertEqual(json.loads((d / "settings.json").read_text())["env"], [])
+
     def test_skill_link_idempotent_check_and_uninstall(self) -> None:
         self.run_cmd("install-global")
         self.assertTrue(self.link(".claude").is_symlink())
@@ -236,7 +265,7 @@ class FirstMessageTest(unittest.TestCase):
             self.assertIn("`Delivery manager · EpicSpine · Learnings in force:", text, name)
             self.assertIn("final answer", text, name)
             self.assertIn("What do you want?", text, name)
-            self.assertIn("http://127.0.0.1:<port>/<file>", text, name)
+            self.assertIn("http://<host>:<port>/<file>", text, name)
             self.assertIn("never a path or `file://`", text, name)
             self.assertIn("Stop hook", text, name)
             self.assertIn("≤4 lines", text, name)

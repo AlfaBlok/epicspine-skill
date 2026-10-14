@@ -15,6 +15,9 @@ Heuristics (deliberately simple):
 - Any ``http://127.0.0.1[:port]/...`` or ``localhost`` URL in the message is
   curl-checked (GET, 2s); anything but 200 blocks. A reachable one satisfies a
   visual mention, whatever it points at.
+- With env ``EPICSPINE_ARTIFACT_HOST`` set (see artifact_host.py) the same holds
+  for URLs on that host (or its non-loopback bind IP), and 127.0.0.1/localhost URLs no longer
+  count: a remote reader cannot open them.
 - Non-visual paths (.py .md .json ...) never trigger.
 Safety: fails open on any error; at most MAX_BLOCKS blocks per turn (a counter
 file per session in the temp dir, reset when ``stop_hook_active`` is false);
@@ -31,10 +34,12 @@ import tempfile
 import urllib.request
 from pathlib import Path
 
+import artifact_host
+
 MAX_BLOCKS = 2
 FENCE = re.compile(r"^(```|~~~).*?^\1[^\n]*$", re.DOTALL | re.MULTILINE)
-LOCAL_URL = re.compile(
-    r"https?://(?:127\.0\.0\.1|localhost)(?::\d+)?(?![\w:<])(?:/[^\s)\]>\"'`<]*)?")
+URL_TAIL = r"(?::\d+)?(?![\w:<])(?:/[^\s)\]>\"'`<]*)?"
+LOCAL_URL = re.compile(r"https?://(?:127\.0\.0\.1|localhost)" + URL_TAIL)
 REMOTE_URL = re.compile(r"https?://[^\s)\]>\"'`<]+")
 FILE_URL = re.compile(r"file://[^\s)\]>\"'`<]*", re.I)
 EXT = r"\.(?:html?|svg|png|pdf)\b"
@@ -43,11 +48,12 @@ OPEN_WORD = re.compile(r"\b(?:open|view)\b", re.I)
 
 REASON_NO_URL = (
     "HTML deliverable reported without a served URL ({found}). Serve the artifact "
-    "directory on 127.0.0.1 (references/artifacts.md; or the repo's declared serve "
-    "script), curl-check HTTP 200, and report the clickable URL "
-    "http://127.0.0.1:<port>/<file> on its own line. Set EPICSPINE_URL_GATE=off to disable.")
+    "directory (references/artifacts.md, scripts/artifact_host.py; or the repo's declared "
+    "serve script) so it is reachable at {host}, curl-check HTTP 200, and report the "
+    "clickable URL http://{host}:<port>/<file> on its own line. "
+    "Set EPICSPINE_URL_GATE=off to disable.")
 REASON_BAD_URL = (
-    "Reported URL not serving HTTP 200: {bad}. Start or fix the server on 127.0.0.1, "
+    "Reported URL not serving HTTP 200: {bad}. Start or fix the server on {host}, "
     "curl-check it, then report the working URL on its own line.")
 
 
@@ -80,14 +86,14 @@ def final_text(payload: dict) -> str:
     return last
 
 
-def visual_mentions(text: str) -> list[str]:
-    """Visual-file mentions in prose (fences and remote URLs removed)."""
-    prose = REMOTE_URL.sub(lambda m: m.group(0) if LOCAL_URL.match(m.group(0)) else "",
+def visual_mentions(text: str, pat: re.Pattern = LOCAL_URL) -> list[str]:
+    """Visual-file mentions in prose (fences and non-``pat`` URLs removed)."""
+    prose = REMOTE_URL.sub(lambda m: m.group(0) if pat.match(m.group(0)) else "",
                            FENCE.sub("", text))
     found = FILE_URL.findall(prose)
     prose = FILE_URL.sub("", prose)
     for line in prose.splitlines():
-        for m in PATH.finditer(LOCAL_URL.sub("", line)):
+        for m in PATH.finditer(pat.sub("", line)):
             if "/" in m.group(0) or OPEN_WORD.search(line):
                 found.append(m.group(0))
     return found
@@ -103,15 +109,21 @@ def status_ok(url: str) -> bool:
 
 def decide(text: str) -> str | None:
     """Return a block reason, or None to allow."""
-    urls = [u.rstrip(".,;:!?") for u in LOCAL_URL.findall(FENCE.sub("", text))]
-    urls = list(dict.fromkeys(urls))
+    info = artifact_host.resolve()
+    host, pat, prose = info["host"], LOCAL_URL, FENCE.sub("", text)
+    if host != "127.0.0.1":
+        names = "|".join(re.escape(n) for n in {host, info["bind"]} if not n.startswith("127."))
+        pat = re.compile(r"https?://(?:" + names + ")" + URL_TAIL, re.I)
+    urls = list(dict.fromkeys(u.rstrip(".,;:!?") for u in pat.findall(prose)))
     bad = [u for u in urls if not status_ok(u)]
     if bad:
-        return REASON_BAD_URL.format(bad=", ".join(bad))
+        return REASON_BAD_URL.format(bad=", ".join(bad), host=host)
     if not urls:
-        found = visual_mentions(text)
+        found = visual_mentions(text, pat)
+        if pat is not LOCAL_URL:
+            found += LOCAL_URL.findall(prose)
         if found:
-            return REASON_NO_URL.format(found=", ".join(dict.fromkeys(found))[:200])
+            return REASON_NO_URL.format(found=", ".join(dict.fromkeys(found))[:200], host=host)
     return None
 
 

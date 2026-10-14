@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import functools
+import importlib.util
 import http.server
 import json
 import os
@@ -10,6 +11,7 @@ import tempfile
 import threading
 import unittest
 from pathlib import Path
+from unittest import mock
 
 GATE = Path(__file__).parents[1] / "skill" / "epic-spine" / "scripts" / "url_gate.py"
 
@@ -129,6 +131,49 @@ class UrlGateTest(unittest.TestCase):
 
     def test_env_off_allows(self) -> None:
         self.assertAllows("Open /tmp/x.html", env={"EPICSPINE_URL_GATE": "off"})
+
+
+
+class UrlGateArtifactHostTest(unittest.TestCase):
+    """EPICSPINE_ARTIFACT_HOST set: tailnet host accepted, loopback-only is missing."""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        spec = importlib.util.spec_from_file_location("url_gate_t", GATE)
+        sys.path.insert(0, str(GATE.parent))
+        cls.gate = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(cls.gate)
+
+    def decide(self, text: str, ok: bool = True) -> str | None:
+        info = {"host": "vps.tail.ts.net", "bind": "100.64.0.5"}
+        with mock.patch.object(self.gate.artifact_host, "resolve", return_value=info), \
+                mock.patch.object(self.gate, "status_ok", return_value=ok):
+            return self.gate.decide(text)
+
+    def test_tailnet_url_allows(self) -> None:
+        self.assertIsNone(self.decide("Done: /tmp/x.html\n\nhttp://vps.tail.ts.net:8091/x.html\n"))
+        self.assertIsNone(self.decide("http://100.64.0.5:8091/x.html"))
+
+    def test_localhost_only_blocks_naming_host(self) -> None:
+        for text in ("See http://127.0.0.1:8091/x.html", "Open http://localhost:8091/x.html",
+                     "Open /tmp/x.html"):
+            with self.subTest(text=text):
+                reason = self.decide(text)
+                self.assertIn("http://vps.tail.ts.net:<port>/<file>", reason)
+
+    def test_tailnet_url_must_serve(self) -> None:
+        self.assertIn("not serving", self.decide("http://vps.tail.ts.net:8091/x.html", ok=False))
+
+    def test_tailnet_wins_over_localhost(self) -> None:
+        self.assertIsNone(self.decide("http://127.0.0.1:1/x.html and http://vps.tail.ts.net:2/x.html"))
+
+    def test_subprocess_literal_host_blocks_loopback_only(self) -> None:
+        proc = subprocess.run(
+            [sys.executable, "-B", str(GATE)], text=True, capture_output=True, timeout=30,
+            env={**os.environ, "EPICSPINE_ARTIFACT_HOST": "100.64.0.5"},
+            input=json.dumps({"session_id": self.id(), "last_assistant_message":
+                              "Open http://127.0.0.1:8091/x.html"}))
+        self.assertIn("100.64.0.5", json.loads(proc.stdout)["reason"])
 
 
 if __name__ == "__main__":

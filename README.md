@@ -72,7 +72,7 @@ python3 ~/.agents/skills/epic-spine/scripts/skill_update.py upgrade
 Skills load only when a request matches, so a first message like "fix the login bug" never loads one. Run once per machine, and once per repo:
 
 ```sh
-python3 ~/.agents/skills/epic-spine/scripts/agents_block.py install-global   # --config-dir DIR (alias --claude-dir; repeatable), --no-hooks, --home
+python3 ~/.agents/skills/epic-spine/scripts/agents_block.py install-global   # --config-dir DIR (alias --claude-dir; repeatable), --no-hooks, --artifact-host VALUE, --home
 python3 ~/.agents/skills/epic-spine/scripts/agents_block.py install --root-spine docs/SPINE.md   # in a repo
 ```
 
@@ -216,6 +216,10 @@ flowchart LR
 ## Machine Dispatcher
 
 Set `EPICSPINE_DISPATCHER` (a command line) on a machine and every manager in every repo routes worker dispatch through it, with no per-repo rule: `status`, `pick`, and `done <id>` print JSON, and `pick` says how to run the worker (T3 `delegate_task` to a provider instance). Every thread checks the env on its first turn, greetings included, and ends the bind line with `· dispatch: <name> (<available>/<capacity> seats)` (name verbatim from `status`). A repo opts out with `Dispatch profile: local-only`. Unset means today's behaviour. Contract: [machine-dispatcher.md](skill/epic-spine/references/machine-dispatcher.md); a seat-pool reference adapter is in [examples/dispatchers](examples/dispatchers/README.md).
+
+## Artifact Host
+
+On a headless or remote machine the reader's browser is elsewhere, so loopback links are useless. Set `EPICSPINE_ARTIFACT_HOST` (`tailscale`, or a hostname) and artifacts are served on the tailnet/private address and reported as `http://<host>:<port>/<file>`; the `url_gate.py` Stop hook then rejects `127.0.0.1` links. The bind is never `0.0.0.0` or a public address. Unset keeps today's `127.0.0.1` behaviour. For Claude Code seats: `install-global --artifact-host tailscale` (with `--config-dir DIR`, repeatable; `""` removes) writes `env` into each `settings.json`; for other harnesses set it in the service unit (`Environment="EPICSPINE_ARTIFACT_HOST=tailscale"` in a systemd drop-in). Details: [artifacts.md](skill/epic-spine/references/artifacts.md).
 
 ## Authority By Artifact
 
