@@ -20,13 +20,13 @@ Skill updates: auto
 Owner: /root delivery manager
 Status: active
 Last attempted: 2026-10-14 dispatch-suffix fix (skill 2026.10.14.1): the block line now forces the env check + `status` on every first turn, greetings included, and the name verbatim from `status.name`; vps1 saw 3 of 6 threads skip the suffix and invent "t3-seat-pool". Before that: 2026-10-13 machine dispatcher (`EPICSPINE_DISPATCHER` contract, `install-global --config-dir` + per-dir skill link, T3 seat-pool adapter in examples/) merged as PR #30, skill 2026.10.13.2; guard allowance PR #29 parked with #28. Before that: manager-guard + push-on-close hooks built as PR #28, then PARKED by user (draft, not merged; do not merge or build on it). Before that: 2026-10-11 Stop hook `url_gate.py` (blocks final replies that hand over HTML/visual files as paths instead of verified 127.0.0.1 URLs) integrated on main; install-global wiring included.
-Result: 200 tests, strict validate, manifest, CI green on main @ adbc1ce. Prior: 193 tests, strict validate, block check, manifest green on main; hook not yet installed on this machine. Prior: Book companion active (62a8852); profile show/set landed (04c28e0).
+Result: 200 tests, strict validate, block check, manifest green (2026.10.14.1); prior: CI green on main @ adbc1ce. Prior: 193 tests, strict validate, block check, manifest green on main; hook not yet installed on this machine. Prior: Book companion active (62a8852); profile show/set landed (04c28e0).
 Evidence: [PR #30](https://github.com/AlfaBlok/epicspine-skill/pull/30), main @ adbc1ce
 Waiting on: user (OK to run `install-global` so the Stop hook lands in ~/.claude/settings.json; push)
 Approved work: none open
 Next action: agent_team rollout is DONE by another thread (agent_team 4026755, 7dea50c: adapter live, repo dispatch rule removed, D-11 updated, skill + block 2026.10.13.2 installed in ~/.claude and both seat dirs on vps1, env in systemd drop-in, broker.py JSON status). Remaining: reinstall the 2026.10.14.1 block on vps1 (`install-global` for ~/.claude, ~/.claude_seat1, ~/.claude_seat2), then re-test that a bare "hi" shows `· dispatch: seat pool (...)`. PR #28 parked, see Decisions 2026-10-13 (next direction, not started: per-turn manager reminder instead of blocking hooks). On user OK run install-global, then confirm in a fresh Claude session that a path-only HTML reply is blocked; Gemini and Codex parked by user.
 Source revision: adbc1ce
-Verified at: 2026-10-13
+Verified at: 2026-10-14
 Last sweep: 2026-10-09, main clean
 EpicSpine skill: 2026.10.10.1 @ 97b7535 (tree 59cc88f), checked 2026-10-10; hub upgraded; status via harness symlinks works
 
