@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Machine-wide EpicSpine install: for every detected harness, write the global
-bind block into its user-level instruction file AND register its session-start
-hook where one exists (Claude Code also gets the ``url_gate.py`` Stop hook; all
-default on; ``hooks=False`` is the opt-out).
+"""Machine-wide EpicSpine install: for every detected harness, write a pointer to
+the live ``assets/global-block.md`` into its user-level instruction file AND
+register its session-start hook where one exists (Claude Code also gets the
+``url_gate.py`` Stop hook; all default on; ``hooks=False`` is the opt-out).
 Stdlib only, Python 3.10+. Harness-neutral: one block, one marker pair, one
 adapter table; no harness is privileged.
 """
@@ -34,6 +34,12 @@ def read_version() -> str:
 
 def render_global() -> str:
     return GLOBAL_TEMPLATE.read_text(encoding="utf-8").replace("{version}", read_version())
+
+
+def render_pointer() -> str:
+    """Pasted into instruction files: a pointer to the live block, never a copy."""
+    return ("<!-- epicspine:begin pointer -->\nEpicSpine is installed. Before your first reply, follow "
+            f"`{GLOBAL_TEMPLATE}` (read it unless already injected at session start).\n<!-- epicspine:end -->\n")
 
 
 def hook_payload() -> str:
@@ -213,7 +219,7 @@ def run(action: str, home: Path, env: dict, claude_dirs: list[str], hooks: bool 
         artifact_host: str | None = None) -> int:
     """action: install | check | uninstall. Prints one line per harness.
     ``artifact_host`` (install, Claude only): None leaves settings env alone, "" removes it."""
-    block, code, present = render_global(), 0, 0
+    block, code, present = render_pointer(), 0, 0
     for label, detect, target, explicit, settings in harnesses(home, env, claude_dirs):
         if not (detect.exists() or (explicit and action == "install")):
             print(f"{label}: not detected ({detect} absent)")

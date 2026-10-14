@@ -2,14 +2,14 @@
 """Install and verify the EpicSpine always-on block (per repo, or machine-wide).
 
 Stdlib only, Python 3.10+. Repo ``install``/``check``/``uninstall`` write the
-rendered ``assets/agents-block.md`` into AGENTS.md (Codex, OpenCode, Windsurf,
-Copilot, Cursor read it) and into every other harness's repo file: CLAUDE.md and
-GEMINI.md get an ``@AGENTS.md`` pointer, ``.cursor/rules/epicspine.mdc`` and
-``.github/copilot-instructions.md`` get a full copy. Existing content is kept;
-reruns change nothing. Machine-wide ``install-global``/``check-global``/
-``uninstall-global`` write the global block plus each harness's session-start
-hook (``--no-hooks`` opts out); see global_install.py. ``print-hook`` and
-``print-global`` emit the block for hooks and humans.
+thin ``assets/agents-block.md`` (repo facts + pointer; shared rules live in the
+live global block) into AGENTS.md (Codex, OpenCode, Windsurf, Copilot, Cursor read
+it) and every other harness's repo file: CLAUDE.md and GEMINI.md get an
+``@AGENTS.md`` pointer, ``.cursor/rules/epicspine.mdc`` and
+``.github/copilot-instructions.md`` get a copy. ``install`` also migrates an old
+full block. Existing content is kept; reruns change nothing. ``*-global`` write a
+pointer to the global block plus each harness's session-start hook (``--no-hooks``
+opts out); see global_install.py. ``print-hook``/``print-global`` emit the live block.
 """
 
 from __future__ import annotations
@@ -25,7 +25,6 @@ import global_install  # noqa: E402
 
 SKILL_DIR = Path(__file__).resolve().parent.parent
 TEMPLATE = SKILL_DIR / "assets" / "agents-block.md"
-VERSION_FILE = SKILL_DIR / "VERSION"
 AGENTS_NAME = "AGENTS.md"
 POINTERS = ("CLAUDE.md", "GEMINI.md")
 COPIES = (".cursor/rules/epicspine.mdc", ".github/copilot-instructions.md")
@@ -35,25 +34,38 @@ BEGIN_RE = re.compile(r"<!-- epicspine:begin (.*?) -->")
 PROFILE_RE = re.compile(r"^Dispatch profile:[ \t]*(\S.*?)[ \t]*$", re.MULTILINE)
 MACHINE_FILE = ".agents/epicspine-profile.md"
 ROOT_RE = re.compile(r"^Root spine: (.*?)\. Read its", re.MULTILINE)
+# Old full blocks: rules 3 (workers) and 4 (integrate) that are not the stock text are repo-specific.
+CUSTOM_RULE_RE = re.compile(
+    r"^(?!3\. Workers: use the root spine's|4\. Integrate: verify diff and checks yourself, "
+    r"fast-forward main, run tests, revert on red, remove the worktree\.$)[34]\. .*$", re.MULTILINE)
+CARRIED_HEAD = "Carried over from the old EpicSpine block (repo-specific; fold into the root spine's `Dispatch profile:` / `Integration policy:`, then delete):"
 
 
-def read_version() -> str:
-    return VERSION_FILE.read_text(encoding="utf-8").strip()
+def block_id() -> str:
+    """Marker id: stable across skill releases; bump it in the template only when the text changes."""
+    return BEGIN_RE.search(TEMPLATE.read_text(encoding="utf-8")).group(1).strip()
 
 
-def render(root_spine: str, version: str | None = None) -> str:
-    text = TEMPLATE.read_text(encoding="utf-8")
-    text = text.replace("{version}", version or read_version())
-    return text.replace("{root_spine}", root_spine)
+def render(root_spine: str) -> str:
+    return TEMPLATE.read_text(encoding="utf-8").replace("{root_spine}", root_spine)
 
 
-def pointer(version: str | None = None) -> str:
-    return f"<!-- epicspine:begin {version or read_version()} -->\n@{AGENTS_NAME}\n<!-- epicspine:end -->\n"
+def pointer() -> str:
+    return f"<!-- epicspine:begin {block_id()} -->\n@{AGENTS_NAME}\n<!-- epicspine:end -->\n"
 
 
-def install(repo: Path, root_spine: str) -> int:
-    block = render(root_spine)
-    global_install.upsert(repo / AGENTS_NAME, block)
+def install(repo: Path, root_spine: str | None = None) -> int:
+    agents = repo / AGENTS_NAME
+    old = BLOCK_RE.search(agents.read_text(encoding="utf-8")) if agents.is_file() else None
+    root = ROOT_RE.search(old.group(0)) if old else None
+    if root_spine is None and not root:
+        sys.exit("install: no existing 'Root spine:' line; pass --root-spine")
+    block = render(root_spine or root.group(1))
+    carried = CUSTOM_RULE_RE.findall(old.group(0)) if old else []
+    note = "\n" + CARRIED_HEAD + "\n" + "\n".join("- " + c for c in carried) if carried else ""
+    global_install.upsert(agents, block.rstrip("\n") + note + "\n")
+    if carried:
+        print(f"{AGENTS_NAME}: carried over {len(carried)} repo-specific rule(s) from the old block")
     for name in POINTERS:
         global_install.upsert(repo / name, pointer())
     for name in COPIES:
@@ -85,11 +97,11 @@ def check(repo: Path) -> int:
 
     problems: list[str] = []
     block = match.group(0)
-    version = read_version()
+    version = block_id()
     begin = BEGIN_RE.search(block)
     block_version = begin.group(1).strip() if begin else ""
     if block_version != version:
-        problems.append(f"block version {block_version!r} differs from VERSION {version!r}")
+        problems.append(f"block id {block_version!r} differs from current {version!r}")
     root = ROOT_RE.search(block)
     expected_full = None
     if not root:
@@ -98,14 +110,14 @@ def check(repo: Path) -> int:
         root_spine = root.group(1)
         if not (repo / root_spine).exists():
             problems.append(f"root spine path does not exist: {root_spine}")
-        expected_full = render(root_spine, version)
+        expected_full = render(root_spine)
         if block.rstrip("\n") + "\n" != expected_full:
             problems.append("block text differs from the rendered template")
     # Mirror files are optional, but any that carry a block must match.
     for name in (*POINTERS, *COPIES):
         path = repo / name
         found = BLOCK_RE.search(path.read_text(encoding="utf-8")) if path.is_file() else None
-        want = pointer(version) if name in POINTERS else expected_full
+        want = pointer() if name in POINTERS else expected_full
         if found and want and found.group(0) + "\n" != want:
             problems.append(f"{name}: block is stale or edited")
     for problem in problems:
@@ -147,7 +159,7 @@ def build_parser() -> argparse.ArgumentParser:
         cmd = sub.add_parser(name, help=f"{name} the repo files (AGENTS.md + every harness file)")
         cmd.add_argument("--repo", type=Path, default=Path("."))
         if name == "install":
-            cmd.add_argument("--root-spine", required=True)
+            cmd.add_argument("--root-spine", help="default: the one in the existing block")
     for name in ("install-global", "check-global", "uninstall-global"):
         cmd = sub.add_parser(name, help=f"{name.split('-')[0]} the machine-wide block and hooks")
         cmd.add_argument("--home", type=Path, help="override the home directory (tests)")

@@ -50,6 +50,16 @@ class GlobalInstallTest(unittest.TestCase):
             self.assertIn("print-hook", json.dumps(data["hooks"]["SessionStart"]))
         self.assertFalse((self.home / ".codex/settings.json").exists())
 
+    def test_pasted_file_is_pointer_to_live_block(self) -> None:
+        self.run_cmd("install-global")
+        live = SCRIPT.parent.parent / "assets" / "global-block.md"
+        for f in self.files():
+            text = f.read_text(encoding="utf-8")
+            self.assertIn(f"`{live.resolve()}`", text, f)
+            self.assertLessEqual(len(text.splitlines()), 4, f)
+            self.assertNotIn("never implements", text, f)
+        self.assertIn("never implements", ab.global_install.render_global())
+
     def test_undetected_and_unsupported_reported(self) -> None:
         _, out = self.run_cmd("install-global")
         self.assertIn("windsurf: not detected", out)
@@ -153,7 +163,7 @@ class GlobalInstallTest(unittest.TestCase):
         self.run_cmd("install-global")
         self.assertEqual(self.run_cmd("check-global")[0], 0)
         f = self.files()[2]
-        f.write_text(f.read_text().replace("never implements", "tampered"))
+        f.write_text(f.read_text().replace("Before your first reply", "tampered"))
         code, out = self.run_cmd("check-global")
         self.assertEqual(code, 1)
         self.assertIn("stale", out)
@@ -258,23 +268,31 @@ class GlobalInstallTest(unittest.TestCase):
 
 
 class FirstMessageTest(unittest.TestCase):
-    def test_both_blocks_bootstrap_on_first_message(self) -> None:
-        for name in ("agents-block.md", "global-block.md"):
-            text = (SCRIPT.parent.parent / "assets" / name).read_text(encoding="utf-8")
-            self.assertIn("whatever the message", text, name)
-            self.assertIn("`Delivery manager · EpicSpine · Learnings in force:", text, name)
-            self.assertIn("final answer", text, name)
-            self.assertIn("What do you want?", text, name)
-            self.assertIn("http://<host>:<port>/<file>", text, name)
-            self.assertIn("never a path or `file://`", text, name)
-            self.assertIn("Stop hook", text, name)
-            self.assertIn("≤4 lines", text, name)
+    def asset(self, name: str) -> str:
+        return (SCRIPT.parent.parent / "assets" / name).read_text(encoding="utf-8")
 
-    def test_blocks_name_machine_dispatcher_and_opt_out(self) -> None:
-        for name in ("agents-block.md", "global-block.md"):
-            text = (SCRIPT.parent.parent / "assets" / name).read_text(encoding="utf-8")
-            self.assertIn("EPICSPINE_DISPATCHER", text, name)
-            self.assertIn("local-only", text, name)
+    def test_global_block_carries_every_shared_rule(self) -> None:
+        text = self.asset("global-block.md")
+        for needle in ("whatever the message", "`Delivery manager · EpicSpine · Learnings in force:", "final answer",
+                       "What do you want?", "≤4 lines", "http://<host>:<port>/<file>", "never a path or `file://`",
+                       "Stop hook", "EPICSPINE_DISPATCHER", "local-only", "never implements", "Integrate:",
+                       "revert on red", "Record:", "Issue Ledger", "agents_block.py check --repo .",
+                       "agents_block.py install --repo ."):
+            self.assertIn(needle, text, needle)
+
+    def test_global_block_supersedes_repo_copies_of_shared_rules(self) -> None:
+        text = self.asset("global-block.md")
+        for needle in ("only repo values apply", "`Dispatch profile:`", "`Integration policy:`", "`Skill updates:`",
+                       "its copies of shared rules (bind, dispatch, integrate, record, links/HTML, dispatcher) "
+                       "are superseded by this live block"):
+            self.assertIn(needle, text, needle)
+
+    def test_repo_block_has_no_shared_rule_text(self) -> None:
+        text = self.asset("agents-block.md")
+        for needle in ("Bind first", "Delivery manager", "EPICSPINE_", "file://", "http://", "never implements",
+                       "Integrate:", "Record:", "pick", "Stop hook"):
+            self.assertNotIn(needle, text, needle)
+        self.assertLessEqual(len(text.splitlines()), 8)
 
 
 class RepoFilesTest(unittest.TestCase):
@@ -318,7 +336,7 @@ class RepoFilesTest(unittest.TestCase):
     def test_check_flags_stale_mirror(self) -> None:
         ab.install(self.repo, "docs/s.md")
         p = self.repo / ".github/copilot-instructions.md"
-        p.write_text(p.read_text().replace("never implements", "tampered"))
+        p.write_text(p.read_text().replace("override skill defaults", "tampered"))
         out = io.StringIO()
         with contextlib.redirect_stdout(out):
             code = ab.check(self.repo)

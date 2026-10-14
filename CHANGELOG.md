@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased — live rules
+
+- Shared rules now live only in the skill: `assets/global-block.md` (injected live by the session hook) carries bind, dispatch, integrate, record, HTML/artifact-host, machine-dispatcher and a migrate line. `assets/agents-block.md` is a thin repo block (root spine, pointer, repo-values override, precedence) with a stable id (`repo-1`) instead of the skill version, so releases never stale it. `install-global` writes a short pointer to the live global block (absolute skill path) instead of a pasted copy. `agents_block.py install --repo .` migrates an old full block (root spine kept, `--root-spine` optional; non-stock worker/integrate lines carried over below the block) and `check` reports old blocks as stale. Skill 2026.10.14.3.
+
 ## Unreleased — artifact host
 
 - Env `EPICSPINE_ARTIFACT_HOST` (`tailscale` or a hostname) makes artifacts serve on the tailnet/private address and be reported as `http://<host>:<port>/<file>`, for headless hosts read from another device; optional `EPICSPINE_ARTIFACT_BIND`; never binds `0.0.0.0` or a public address (falls back to `127.0.0.1`). New `scripts/artifact_host.py`; `url_gate.py` accepts that host and rejects loopback-only replies when set; unset is unchanged. `install-global --artifact-host VALUE` persists it in each Claude `settings.json` `env`. Both always-on blocks reword the HTML line. Skill 2026.10.14.2.

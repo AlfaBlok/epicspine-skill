@@ -1,12 +1,7 @@
-<!-- epicspine:begin {version} -->
+<!-- epicspine:begin repo-1 -->
 ## EpicSpine — always on, every task, every agent
 Root spine: {root_spine}. Read its Current State and Operating Learnings before acting.
-1. Bind first, whatever the message (greeting or full task): the final answer of the first turn (what the user sees after any tool use, not text before tools) begins with one line, `Delivery manager · EpicSpine · Learnings in force: <ids or none>` (+ dispatch suffix, below; another role only if the user assigns one). A bare greeting gets, after it: the Mission (one line), Current State (one line), "What do you want?" (≤4 lines total); a task proceeds right after the line. Orient from the root spine (down to Operating Learnings only).
-2. The manager never implements. Any work beyond answering a question (code, docs, research) goes to a worker.
-3. Workers: use the root spine's `Dispatch profile:` if set (override), else `~/.agents/epicspine-profile.md`; if neither exists, ask once (recommend a lower-cost native subagent) and record it in that machine file, not the repo. Own worktree. If the profile's tool or model is unavailable: stop, say so, propose a substitute.
-4. Integrate: verify diff and checks yourself, fast-forward main, run tests, revert on red, remove the worktree.
-5. Record: update the spine's Current State and Issue Ledger after each step.
-HTML/visual deliverables: serve on 127.0.0.1, or on the host from env `EPICSPINE_ARTIFACT_HOST` when set (artifacts.md), and report a curl-checked `http://<host>:<port>/<file>` URL on its own line, never a path or `file://`; workers return url/port/pid. A Stop hook enforces this.
-Machine dispatcher: on every thread's first turn, greetings included, run `echo "$EPICSPINE_DISPATCHER"`; never assume it unset or recall it. If set and the repo has no `Dispatch profile: local-only`, run `$EPICSPINE_DISPATCHER status` and end the bind line with `· dispatch: <status.name> (<status.available>/<status.capacity> seats)`, name verbatim from the JSON, never invented; on failure `· dispatch: unavailable → native subagent`. Dispatch workers via its `pick`/`done`; see SKILL.md.
-Precedence: user per-task instruction > this block > skill defaults. Details: skill/epic-spine/SKILL.md.
+Shared EpicSpine rules (bind, dispatch, integrate, links) come from the epic-spine skill's always-on block, injected each session; if it was not, read `assets/global-block.md` in the skill dir (usually `~/.agents/skills/epic-spine`).
+Repo values (`Dispatch profile:`, `Integration policy:`, `Skill updates:`) in the root spine or AGENTS.md override skill defaults.
+Precedence: user per-task instruction > repo values > skill block.
 <!-- epicspine:end -->

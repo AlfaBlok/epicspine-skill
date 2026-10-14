@@ -1544,7 +1544,7 @@
     </header>
     <div class="body">
       <div class="dg"><svg viewBox="0 0 1200 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="alwayson-title alwayson-desc"><title id="alwayson-title">Always-on bind on every harness</title>
-        <desc id="alwayson-desc">Architecture: install-global writes the bind block into every harness's user-level file and a session-start hook, install writes the repo block and pointer files, and both make the first reply open with the bind line.</desc>
+        <desc id="alwayson-desc">Architecture: install-global writes a pointer to the live global block into every harness's user-level file plus a session-start hook that injects it, install writes the thin repo block and pointer files, and both make the first reply open with the bind line.</desc>
         <defs><marker id="alwayson-ar-m" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto-start-reverse"><polygon points="0 0, 8 3, 0 6" class="fm"/>
         </marker>
         <marker id="alwayson-ar-a" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto-start-reverse"><polygon points="0 0, 8 3, 0 6" class="fa"/>
@@ -1585,7 +1585,7 @@
         <text x="164" y="319" class="sl" text-anchor="middle">per repo</text>
         <rect x="344" y="248" width="396" height="96" rx="6" class="fp"/>
         <rect x="344" y="248" width="396" height="96" rx="6" class="fw5 sm" stroke-width="1"/>
-        <text x="542" y="282" class="nn" text-anchor="middle">AGENTS.md block + pointers</text>
+        <text x="542" y="282" class="nn" text-anchor="middle">Thin AGENTS.md block + pointers</text>
         <text x="542" y="303" class="sl" text-anchor="middle">CLAUDE.md, GEMINI.md point at it;</text>
         <text x="542" y="319" class="sl" text-anchor="middle">Cursor and Copilot get a copy</text>
         <rect x="904" y="144" width="256" height="112" rx="6" class="fp"/>

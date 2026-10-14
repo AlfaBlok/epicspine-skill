@@ -49,7 +49,7 @@ class AgentsBlockTest(unittest.TestCase):
         text = self.install()
         self.assertTrue(text.startswith("<!-- epicspine:begin"))
         self.assertIn("Root spine: docs/spine.md.", text)
-        self.assertIn(agents_block.read_version(), text)
+        self.assertIn(agents_block.block_id(), text)
         self.assertTrue(text.rstrip().endswith("<!-- epicspine:end -->"))
 
     def test_appends_keeping_existing_text(self) -> None:
@@ -95,11 +95,11 @@ class AgentsBlockTest(unittest.TestCase):
     def test_check_version_differs(self) -> None:
         self.make_spine()
         text = self.install()
-        text = text.replace(agents_block.read_version(), "0.0.0", 1)
+        text = text.replace(agents_block.block_id(), "0.0.0", 1)
         (self.repo / "AGENTS.md").write_text(text, encoding="utf-8")
         code, out = self.run_check()
         self.assertEqual(code, 1)
-        self.assertIn("version", out)
+        self.assertIn("block id", out)
 
     def test_check_root_spine_missing(self) -> None:
         self.install("docs/absent.md")
@@ -110,11 +110,66 @@ class AgentsBlockTest(unittest.TestCase):
     def test_check_text_differs(self) -> None:
         self.make_spine()
         text = self.install()
-        text = text.replace("The manager never implements.", "Tampered.", 1)
+        text = text.replace("override skill defaults", "Tampered", 1)
         (self.repo / "AGENTS.md").write_text(text, encoding="utf-8")
         code, out = self.run_check()
         self.assertEqual(code, 1)
         self.assertIn("differs", out)
+
+    # ------------------------------------------------------------------ #
+    # thin block + migration
+    # ------------------------------------------------------------------ #
+
+    OLD_FULL = (
+        "# Proj\n\n<!-- epicspine:begin 2026.10.09 -->\n## EpicSpine — always on, every task, every agent\n"
+        "Root spine: docs/spine.md. Read its Current State and Operating Learnings before acting.\n"
+        "1. Bind first: first reply names role (default: delivery manager) and `Learnings in force:`.\n"
+        "2. The manager never implements. Any work beyond answering a question (code, docs, research) goes to a worker.\n"
+        "3. Workers: T3 delegate_task -> OpenCode instance, own worktree. Do not use native subagent tools.\n"
+        "4. Integrate: verify diff and checks yourself, fast-forward main, run tests, revert on red, remove the worktree.\n"
+        "5. Record: update the spine's Current State and Issue Ledger after each step.\n"
+        "Precedence: user per-task instruction > this block > skill defaults.\n"
+        "<!-- epicspine:end -->\n\nTail text.\n"
+    )
+
+    def test_block_is_thin_and_version_independent(self) -> None:
+        text = self.install()
+        block = text[text.index("<!--"):]
+        self.assertLessEqual(len(block.splitlines()), 8)
+        for shared in ("Bind first", "never implements", "EPICSPINE_", "file://", "Integrate:", "Stop hook"):
+            self.assertNotIn(shared, block)
+        for kept in ("Root spine: docs/spine.md.", "Current State and Operating Learnings", "global-block.md",
+                     "Dispatch profile:", "Integration policy:", "Skill updates:", "Precedence:"):
+            self.assertIn(kept, block)
+        self.assertNotIn("{", block)
+
+    def test_install_migrates_old_full_block_keeping_root_spine(self) -> None:
+        self.make_spine()
+        agents = self.repo / "AGENTS.md"
+        agents.write_text(self.OLD_FULL, encoding="utf-8")
+        self.assertEqual(self.run_check()[0], 1)
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            agents_block.install(self.repo)  # no root spine given: kept from the old block
+        text = agents.read_text(encoding="utf-8")
+        self.assertEqual(text.count("<!-- epicspine:begin"), 1)
+        self.assertIn("Root spine: docs/spine.md.", text)
+        self.assertNotIn("Bind first", text)
+        self.assertIn("# Proj", text)
+        self.assertIn("Tail text.", text)
+        self.assertEqual(self.run_check(), (0, ""))
+        self.assertIn("carried over 1", out.getvalue())
+        # the repo-specific worker rule survives outside the markers; stock rule 4 does not
+        tail = text[text.index("<!-- epicspine:end -->"):]
+        self.assertIn("- 3. Workers: T3 delegate_task -> OpenCode", tail)
+        self.assertNotIn("4. Integrate", tail)
+        again = agents_block.install(self.repo)
+        self.assertEqual(again, 0)
+        self.assertEqual(text, agents.read_text(encoding="utf-8"))
+
+    def test_install_without_root_spine_needs_existing_block(self) -> None:
+        with self.assertRaises(SystemExit):
+            agents_block.install(self.repo)
 
 
 if __name__ == "__main__":

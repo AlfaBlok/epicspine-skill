@@ -9,6 +9,7 @@ VENDOR_RE = re.compile(r"deepseek|opencode", re.I)
 SHIPPED = (
     "skill/epic-spine/SKILL.md",
     "skill/epic-spine/assets/agents-block.md",
+    "skill/epic-spine/assets/global-block.md",
     "skill/epic-spine/references/roles-and-dispatch.md",
 )
 
@@ -25,6 +26,10 @@ class DefaultBehaviorsTest(unittest.TestCase):
         return body[: body.index(end)]
 
     def agents_block(self) -> str:
+        """The shared rules, as injected: the live global block (repo blocks are thin pointers)."""
+        return read("skill/epic-spine/assets/global-block.md")
+
+    def repo_block(self) -> str:
         return self.between(read("AGENTS.md"), "<!-- epicspine:begin", "<!-- epicspine:end -->")
 
     def card(self) -> str:
@@ -44,7 +49,7 @@ class DefaultBehaviorsTest(unittest.TestCase):
         for region in (self.agents_block(), self.card()):
             self.assertIn("Dispatch profile:", region)
             self.assertIn("ask once", region)
-            self.assertIn("record", region)
+            self.assertRegex(region, "record|save")
             self.assertIn("~/.agents/epicspine-profile.md", region)
         self.assertIn("lower-cost", self.default_table())
         refs = read("skill/epic-spine/references/roles-and-dispatch.md")
@@ -53,11 +58,9 @@ class DefaultBehaviorsTest(unittest.TestCase):
         self.assertIn("~/.agents/epicspine-profile.md", refs)
         self.assertIn("not the repo", refs)
         self.assertIn("optional override only", refs)
-        self.assertIn("~/.agents/epicspine-profile.md", read("skill/epic-spine/assets/global-block.md"))
 
     def test_url_rule_in_always_loaded_blocks_and_handoff(self) -> None:
-        for name, text in (("AGENTS.md block", self.agents_block()),
-                           ("global-block", read("skill/epic-spine/assets/global-block.md"))):
+        for name, text in (("global-block", self.agents_block()),):
             self.assertIn("http://<host>:<port>/<file>", text, name)
             self.assertIn("EPICSPINE_ARTIFACT_HOST", text, name)
             self.assertIn("never a path or `file://`", text, name)
@@ -66,6 +69,14 @@ class DefaultBehaviorsTest(unittest.TestCase):
         for field in ("`url`", "`port`", "`pid`", "not complete"):
             self.assertIn(field, preamble)
         self.assertIn("`Stop` hook", read("skill/epic-spine/references/artifacts.md"))
+
+    def test_repo_block_is_thin_pointer_without_shared_rules(self) -> None:
+        for name, text in (("template", read("skill/epic-spine/assets/agents-block.md")), ("AGENTS.md", self.repo_block())):
+            self.assertLessEqual(len(text.strip().splitlines()), 8, name)
+            self.assertIn("global-block.md", text, name)
+            self.assertIn("Dispatch profile:", text, name)
+            for shared in ("Bind first", "never implements", "EPICSPINE_", "file://", "http://", "Integrate:"):
+                self.assertNotIn(shared, text, name)
 
     def test_b_manager_never_implements(self) -> None:
         self.assertIn("never implements", self.agents_block().lower())

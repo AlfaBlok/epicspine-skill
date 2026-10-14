@@ -14,6 +14,15 @@ from pathlib import Path
 from unittest import mock
 
 GATE = Path(__file__).parents[1] / "skill" / "epic-spine" / "scripts" / "url_gate.py"
+HOST_VARS = ("EPICSPINE_ARTIFACT_HOST", "EPICSPINE_ARTIFACT_BIND")
+# The gate runs as a subprocess, so `artifact_host.resolve` cannot be patched there:
+# an explicit loopback host is the equivalent of resolve() returning the loopback dict.
+LOOPBACK = {"EPICSPINE_ARTIFACT_HOST": "127.0.0.1"}
+
+
+def hermetic_env(env: dict | None = None) -> dict:
+    """Process env minus the artifact-host vars, then the test's own."""
+    return {**{k: v for k, v in os.environ.items() if k not in HOST_VARS}, **(env or {})}
 
 
 class UrlGateTest(unittest.TestCase):
@@ -44,7 +53,7 @@ class UrlGateTest(unittest.TestCase):
              "last_assistant_message": message, **extra})
         proc = subprocess.run(
             [sys.executable, "-B", str(GATE)], input=payload, text=True,
-            capture_output=True, timeout=30, env={**os.environ, **(env or {})})
+            capture_output=True, timeout=30, env=hermetic_env({**LOOPBACK, **(env or {})}))
         out = proc.stdout.strip()
         return proc.returncode, (json.loads(out) if out else None)
 
@@ -137,6 +146,13 @@ class UrlGateTest(unittest.TestCase):
 class UrlGateArtifactHostTest(unittest.TestCase):
     """EPICSPINE_ARTIFACT_HOST set: tailnet host accepted, loopback-only is missing."""
 
+    def setUp(self) -> None:
+        patcher = mock.patch.dict(os.environ)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        for var in HOST_VARS:
+            os.environ.pop(var, None)
+
     @classmethod
     def setUpClass(cls) -> None:
         spec = importlib.util.spec_from_file_location("url_gate_t", GATE)
@@ -170,7 +186,7 @@ class UrlGateArtifactHostTest(unittest.TestCase):
     def test_subprocess_literal_host_blocks_loopback_only(self) -> None:
         proc = subprocess.run(
             [sys.executable, "-B", str(GATE)], text=True, capture_output=True, timeout=30,
-            env={**os.environ, "EPICSPINE_ARTIFACT_HOST": "100.64.0.5"},
+            env=hermetic_env({"EPICSPINE_ARTIFACT_HOST": "100.64.0.5"}),
             input=json.dumps({"session_id": self.id(), "last_assistant_message":
                               "Open http://127.0.0.1:8091/x.html"}))
         self.assertIn("100.64.0.5", json.loads(proc.stdout)["reason"])

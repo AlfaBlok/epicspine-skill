@@ -3,6 +3,7 @@ from __future__ import annotations
 import contextlib
 import importlib.util
 import io
+import os
 import subprocess
 import sys
 import unittest
@@ -25,6 +26,13 @@ def fake_ts(ip: str = "100.104.206.10\nfd7a::1\n"):
 
 
 class ArtifactHostTest(unittest.TestCase):
+    def setUp(self) -> None:
+        patcher = mock.patch.dict(os.environ)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        for var in ("EPICSPINE_ARTIFACT_HOST", "EPICSPINE_ARTIFACT_BIND"):
+            os.environ.pop(var, None)
+
     def resolve(self, env: dict) -> tuple[dict, str]:
         err = io.StringIO()
         with contextlib.redirect_stderr(err):
