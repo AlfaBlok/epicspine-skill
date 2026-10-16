@@ -73,5 +73,36 @@ class OperatingLearningsTests(unittest.TestCase):
                 self.assertFalse(any("learn" in message.lower() for message in document.warnings))
 
 
+class SaveImmediatelyTests(unittest.TestCase):
+    """Learnings are written at once and announced; no propose-and-wait, no throttling."""
+
+    SKILL = ROOT / "skill/epic-spine"
+
+    def test_reference_says_save_announce_undo(self) -> None:
+        text = (self.SKILL / "references/learnings.md").read_text()
+        self.assertIn("Saved learning L-<n>: <the rule> (say 'undo' to remove)", text)
+        self.assertIn("without asking", text)
+        for gone in ("Propose learning", "record it?", "never writes a learning silently", "none in consecutive replies"):
+            self.assertNotIn(gone, text)
+
+    def test_global_block_and_skill_carry_the_rule(self) -> None:
+        block = (self.SKILL / "assets/global-block.md").read_text()
+        skill = (self.SKILL / "SKILL.md").read_text()
+        for text in (block, skill):
+            self.assertIn("Saved learning L-", text)
+            self.assertIn("undo", text)
+            self.assertNotIn("propose sparingly", text)
+        self.assertIn("always/never/I prefer", block)
+        self.assertIn("repeats a correction", block)
+
+    def test_installed_empty_section_follows_the_documented_shape(self) -> None:
+        import sys
+        sys.path.insert(0, str(self.SKILL / "scripts"))
+        import repo_sync
+        self.assertIn("**Always**", repo_sync.LEARNINGS)
+        self.assertIn("**Scoped index**", repo_sync.LEARNINGS)
+        self.assertEqual(sum(1 for line in repo_sync.LEARNINGS.splitlines() if line.startswith("- L-")), 0)
+
+
 if __name__ == "__main__":
     unittest.main()
