@@ -52,6 +52,19 @@ class GlobalInstallTest(unittest.TestCase):
             self.assertIn("print-hook", json.dumps(data["hooks"]["SessionStart"]))
         self.assertFalse((self.home / ".codex/settings.json").exists())
 
+    def test_install_notices_missing_machine_profile_and_profile_flag_writes_it(self) -> None:
+        notice = "machine dispatch profile missing (~/.agents/epicspine-profile.md)"
+        profile = self.home / ".agents" / "epicspine-profile.md"
+        code, out = self.run_cmd("install-global")
+        self.assertIn(notice, out)
+        self.assertFalse(profile.exists())  # never a default model
+        code, out = self.run_cmd("install-global", "--profile", "model: sonnet")
+        self.assertNotIn(notice, out)
+        self.assertIn("Dispatch profile: model: sonnet", out)
+        self.assertEqual(profile.read_text(), "Dispatch profile: model: sonnet\n")
+        self.assertNotIn(notice, self.run_cmd("install-global")[1])
+        self.assertNotIn(notice, self.run_cmd("check-global")[1])
+
     def test_pasted_file_is_pointer_to_live_block(self) -> None:
         self.run_cmd("install-global")
         live = SCRIPT.parent.parent / "assets" / "global-block.md"
@@ -438,6 +451,18 @@ class HookHealTest(unittest.TestCase):
         self.file.unlink()
         self.file.mkdir()  # CLAUDE.md is a directory: read fails
         self.hook()
+
+    def test_missing_machine_profile_warns_present_does_not(self) -> None:
+        warn = ab.global_install.PROFILE_WARNING
+        ctx = self.hook()["hookSpecificOutput"]["additionalContext"]
+        self.assertTrue(ctx.endswith(warn + "\n"))
+        self.assertIn("~/.agents/epicspine-profile.md", warn)
+        profile = Path(self._tmp.name) / ".agents" / "epicspine-profile.md"
+        profile.parent.mkdir()
+        profile.write_text("Dispatch profile: x\n")
+        ctx = self.hook()["hookSpecificOutput"]["additionalContext"]
+        self.assertNotIn("Machine dispatch profile missing", ctx)
+        self.assertEqual(ctx, ab.global_install.render_global())
 
     def test_hook_payload_without_env_never_writes(self) -> None:
         self.file.write_text(self.OLD)

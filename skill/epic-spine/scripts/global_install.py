@@ -22,6 +22,10 @@ HOOK_MARK = 'agents_block.py" print-hook'
 GATE_MARK = 'url_gate.py"'
 HOOK_EVENTS = (("SessionStart", HOOK_MARK), ("Stop", GATE_MARK))
 ENV_KEY = "EPICSPINE_ARTIFACT_HOST"
+MACHINE_FILE = ".agents/epicspine-profile.md"
+PROFILE_WARNING = (f"Machine dispatch profile missing (~/{MACHINE_FILE}): before the first dispatch, ask the user once "
+                   "which worker model to use and save it with `agents_block.py profile --set`; until then do not "
+                   "let workers silently inherit the manager's model.")
 UNSUPPORTED = {
     "cursor (user level)": "user rules live in the app settings UI, not a file; repo install writes .cursor/rules",
     "aider": "no user-level instruction file; needs a read: entry in .aider.conf.yml",
@@ -44,11 +48,17 @@ def render_pointer() -> str:
             f"`{GLOBAL_TEMPLATE}` (read it unless already injected at session start).\n<!-- epicspine:end -->\n")
 
 
+def profile_missing(home: Path | None = None) -> bool:
+    return not ((home or Path.home()) / MACHINE_FILE).is_file()
+
+
 def hook_payload(env: dict | None = None) -> str:
     """SessionStart JSON; given ``env`` (the hook), also heal the user-level pasted copy."""
     if env is not None:
         heal(env)
     ctx = render_global()
+    if profile_missing():
+        ctx = ctx.rstrip("\n") + "\n" + PROFILE_WARNING + "\n"
     return json.dumps({"hookSpecificOutput": {"hookEventName": "SessionStart", "additionalContext": ctx}})
 
 

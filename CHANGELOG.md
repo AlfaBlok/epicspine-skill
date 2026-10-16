@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased — machine profile gap
+
+- The SessionStart hook (`print-hook`) appends a warning line when `~/.agents/epicspine-profile.md` is missing (ask the user once, save with `profile --set`; workers must not silently inherit the manager's model); no warning when it exists. `install-global` prints a notice when it is missing, and `--profile TEXT` writes it via the `profile --set` path; no default model is ever written. Skill 2026.10.16.2.
+
 ## Unreleased — machine-read contract
 
 - Spine docs/templates state the machine-read contract (`spine-model.md`): dashboards read only DoD checkboxes, Current State `Status:`/`Waiting on:`, and the Issue Ledger's Issue/Title/Owner/Status (draft/ready/active/blocked/done/deferred). `validate_spine.py` warns (advisory) when Definition Of Done has no checkbox line. Skill 2026.10.16.1.

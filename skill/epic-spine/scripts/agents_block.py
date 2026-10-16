@@ -31,7 +31,7 @@ CURSOR_HEAD = "---\ndescription: EpicSpine always-on bind\nalwaysApply: true\n--
 BLOCK_RE = global_install.BLOCK_RE
 BEGIN_RE = re.compile(r"<!-- epicspine:begin (.*?) -->")
 PROFILE_RE = re.compile(r"^Dispatch profile:[ \t]*(\S.*?)[ \t]*$", re.MULTILINE)
-MACHINE_FILE = ".agents/epicspine-profile.md"
+MACHINE_FILE = global_install.MACHINE_FILE
 ROOT_RE = re.compile(r"^Root spine: (.*?)\. Read its", re.MULTILINE)
 # Old full blocks: rules 3 (workers) and 4 (integrate) that are not the stock text are repo-specific.
 CUSTOM_RULE_RE = re.compile(
@@ -165,6 +165,8 @@ def build_parser() -> argparse.ArgumentParser:
         cmd.add_argument("--home", type=Path, help="override the home directory (tests)")
         cmd.add_argument("--claude-dir", "--config-dir", dest="claude_dir", action="append", default=[], help="Claude config dir; repeatable")
         cmd.add_argument("--no-hooks", action="store_true", help="skip session-start hooks")
+        if name == "install-global":
+            cmd.add_argument("--profile", metavar="TEXT", help="also write the machine dispatch profile (as `profile --set`)")
         cmd.add_argument("--artifact-host", metavar="VALUE", help="override only (auto-detected otherwise): set env EPICSPINE_ARTIFACT_HOST (local, tailscale or a hostname) in each Claude settings.json ('' removes)")
     cmd = sub.add_parser("profile", help="print the effective dispatch profile; exit 3 if unset")
     cmd.add_argument("--repo", type=Path, default=Path("."))
@@ -193,7 +195,15 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     home = args.home or Path.home()
     env = dict(os.environ) if args.home is None else {}
-    return global_install.run(args.command.split("-")[0], home, env, args.claude_dir, not args.no_hooks, args.artifact_host)
+    action = args.command.split("-")[0]
+    code = global_install.run(action, home, env, args.claude_dir, not args.no_hooks, args.artifact_host)
+    if action == "install":
+        if args.profile is not None:
+            profile(Path("."), home, args.profile)
+        if global_install.profile_missing(home):
+            print(f"machine dispatch profile missing (~/{MACHINE_FILE}): set it with `agents_block.py profile --set TEXT` "
+                  "or `install-global --profile TEXT`; until then workers may inherit the manager's model")
+    return code
 
 
 if __name__ == "__main__":

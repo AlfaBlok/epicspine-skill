@@ -72,7 +72,7 @@ python3 ~/.agents/skills/epic-spine/scripts/skill_update.py upgrade
 Skills load only when a request matches, so a first message like "fix the login bug" never loads one. Run once per machine, and once per repo. The shared rules live only in the skill's `assets/global-block.md`: the machine files hold a pointer to it (Claude Code also injects it each session), and a repo's `AGENTS.md` holds a thin block of repo facts, so neither goes stale. Run:
 
 ```sh
-python3 ~/.agents/skills/epic-spine/scripts/agents_block.py install-global   # --config-dir DIR (alias --claude-dir; repeatable), --no-hooks, --artifact-host VALUE, --home
+python3 ~/.agents/skills/epic-spine/scripts/agents_block.py install-global   # --config-dir DIR (alias --claude-dir; repeatable), --no-hooks, --artifact-host VALUE, --profile TEXT, --home
 python3 ~/.agents/skills/epic-spine/scripts/agents_block.py install --root-spine docs/SPINE.md   # in a repo; add --mirrors to also create CLAUDE.md, GEMINI.md, Cursor, Copilot files
 ```
 
@@ -95,6 +95,7 @@ On a new Claude seat or account, run `install-global --config-dir ~/.claude_seat
 
 - Merge to `main` and the skill is live everywhere: seats link to the checkout, and `Skill updates: auto` refreshes copies.
 - Shared rules propagate with it: the session hook injects the live block, and the pasted files only point at it. Old full copies on other machines heal on the next Claude Code session (the hook rewrites the stale block in the user-level `CLAUDE.md`).
+- Set the worker profile once per machine (`agents_block.py profile --set TEXT`, or `install-global --profile TEXT`); the session hook warns and `install-global` prints a notice while `~/.agents/epicspine-profile.md` is missing.
 - Run `install-global` once per machine, or when machine settings change (`--artifact-host`, a new seat via `--config-dir`).
 - Repos self-migrate: an old full `AGENTS.md` block is replaced by the thin one on the next session (`install --repo .`, no `--root-spine` needed); repo-specific worker/integrate lines are carried over under the block for you to fold into the spine.
 
