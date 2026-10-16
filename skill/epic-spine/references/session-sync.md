@@ -1,5 +1,7 @@
 # Session self-sync
 
+Why: the user's agents run on several machines (a VPS, a laptop) that share each repo only through GitHub, so uncommitted or unpushed work is invisible to the other machines' agents and makes clones diverge. Agents commit each coherent step as soon as it passes and push it (the Stop hook does the push; it never commits); session start pulls.
+
 `scripts/session_sync.py` runs from the SessionStart hook, so no agent has to remember to upgrade (`EPICSPINE_SYNC=off` disables it; one 10 s deadline, short per-call timeouts, never raises, never forces):
 
 - **Skill**, at most once per 10 minutes (stamp `~/.agents/epicspine-sync.stamp`): a source checkout (skill dir is `<repo>/skill/epic-spine`) is fetched and fast-forwarded when its tree is clean and only behind; a pinned or unpinned installed copy uses `skill_update.py`'s verified upgrade when `ls-remote` shows a new commit. Vendored copies are left to `SYNC.md`; a repo `Skill updates: off|manual` skips it. Context line: `EpicSpine sync: skill 2026.10.16.3 -> 2026.10.16.4`.
