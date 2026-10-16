@@ -1,14 +1,17 @@
 from __future__ import annotations
 
+import datetime
 import functools
 import importlib.util
 import http.server
 import json
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
 import threading
+import time
 import unittest
 from pathlib import Path
 from unittest import mock
@@ -153,6 +156,73 @@ class UrlGateTest(unittest.TestCase):
                      "See http://127.0.0.1:9/x.html"):
             with self.subTest(text=text):
                 self.assertBlocks(self.RULE + "\n\n" + text)
+
+    # --- only HTML touched this turn (or reported as a deliverable) triggers -------------------
+
+    def turn(self, files: dict[str, float | None], reply: str, tool_paths: tuple[str, ...] = ()) -> tuple[Path, dict]:
+        """A cwd with ``files`` (name -> mtime offset in seconds from now) and a transcript whose last user
+        prompt is 60 s ago; returns (cwd, payload extras) for ``gate``."""
+        base = Path(tempfile.mkdtemp(prefix="epicspine-turn-"))
+        self.addCleanup(shutil.rmtree, base, ignore_errors=True)
+        now = time.time()
+        for name, offset in files.items():
+            path = base / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text("<p>x</p>")
+            os.utime(path, (now + (offset or 0), now + (offset or 0)))
+
+        def stamp(offset: float) -> str:
+            return datetime.datetime.fromtimestamp(now + offset, datetime.timezone.utc).isoformat()
+        rows = [
+            {"type": "user", "timestamp": stamp(-9999), "message": {"content": "earlier prompt"}},
+            {"type": "user", "timestamp": stamp(-60), "message": {"content": [{"type": "text", "text": "do it"}]}},
+            {"type": "assistant", "timestamp": stamp(-30), "message": {"content": [
+                {"type": "tool_use", "name": "Write", "input": {"file_path": str(base / p)}} for p in tool_paths]
+                + [{"type": "text", "text": reply}]}},
+            {"type": "user", "timestamp": stamp(-20), "message": {"content": [{"type": "tool_result", "content": "ok"}]}},
+        ]
+        transcript = base / "t.jsonl"
+        transcript.write_text("\n".join(json.dumps(r) for r in rows))
+        return base, {"cwd": str(base), "transcript_path": str(transcript)}
+
+    def test_mentioning_an_untouched_html_file_allows(self) -> None:
+        """The false positive: naming assets/shortlist.template.html as a source file."""
+        reply = "I built the shortlist from assets/shortlist.template.html and kept its structure."
+        _, extra = self.turn({"assets/shortlist.template.html": -3600}, reply)
+        self.assertAllows(reply, **extra)
+
+    def test_html_modified_this_turn_still_blocks(self) -> None:
+        reply = "Wrote out/shortlist.html with the new rows."
+        _, extra = self.turn({"out/shortlist.html": -5}, reply)
+        self.assertBlocks(reply, **extra)
+
+    def test_html_written_by_a_tool_call_blocks_even_with_an_old_mtime(self) -> None:
+        reply = "Updated out/report.html."
+        _, extra = self.turn({"out/report.html": -3600}, reply, tool_paths=("out/report.html",))
+        self.assertBlocks(reply, **extra)
+
+    def test_untouched_file_reported_as_deliverable_blocks(self) -> None:
+        for reply in ("Please open docs/old-report.html to see it.", "Deliverable: docs/old-report.html"):
+            with self.subTest(reply=reply):
+                _, extra = self.turn({"docs/old-report.html": -3600}, reply)
+                self.assertBlocks(reply, **extra)
+
+    def test_untouched_png_and_file_url_rules(self) -> None:
+        _, extra = self.turn({"docs/shot.png": -3600}, "Docs reference docs/shot.png for the layout.")
+        self.assertAllows("Docs reference docs/shot.png for the layout.", **extra)
+        _, extra = self.turn({"docs/shot.png": -3600}, "see file:///tmp/x/out.html")
+        self.assertBlocks("see file:///tmp/x/out.html", **extra)  # file:// links are always a handover
+
+    def test_untouched_mention_beside_a_served_url_allows(self) -> None:
+        reply = f"Source: assets/a.template.html (unchanged).\n\n{self.url()}\n"
+        _, extra = self.turn({"assets/a.template.html": -3600}, reply)
+        self.assertAllows(reply, **extra)
+
+    def test_transcript_without_timestamps_keeps_legacy_behavior(self) -> None:
+        with tempfile.TemporaryDirectory() as d:
+            path = Path(d) / "t.jsonl"
+            path.write_text(json.dumps({"type": "user", "message": {"content": "hi"}}))
+            self.assertBlocks("Open /tmp/x.html", transcript_path=str(path))
 
     def test_env_off_allows(self) -> None:
         self.assertAllows("Open /tmp/x.html", env={"EPICSPINE_URL_GATE": "off"})
