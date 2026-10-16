@@ -113,7 +113,7 @@ ACTIVE_STATUSES = {"active", "blocked", "review", "testing"}
 LEDGER_STATUSES = {"draft", "ready", "active", "blocked", "review", "testing", "done", "superseded", "deferred"}
 DECISION_OUTCOMES = {"accepted", "rejected", "superseded"}
 CHECKBOX_RE = re.compile(r"(?m)^\s*- \[[ xX]\]")
-TRACKABLE_STATUSES = {"draft", "ready", "active", "blocked", "done", "deferred"}
+TRACKABLE_STATUSES = ("draft", "ready", "active", "blocked", "done", "deferred")
 ID = r"[A-Z][A-Z0-9]*-\d+"
 CRITERION_RE = re.compile(rf"- \[[ xX]\] ({ID})(?=\s|$)")
 ITEM_RE = re.compile(r"(?:[-*]|\d+[.)])[ \t]+\S")
@@ -718,6 +718,8 @@ def validate_local(path: Path, *, dialect: str = "auto", ticket_source: Path | N
     text = path.read_text(encoding="utf-8")
     fields = parse_fields(text)
     sections = parse_sections(text)
+    if "Status" not in fields and (moved := parse_key_values(sections.get("Current State", "")).get("Status")):
+        fields["Status"] = moved  # --fix moves a header Status into Current State; either place satisfies the field
     profile = normalize(fields.get("Spine profile", "full")).lower()
     compact = profile == "compact"
     if profile not in {"full", "compact"}:
@@ -1039,7 +1041,9 @@ def trackable(path: Path) -> dict[str, object]:
         return {"path": str(path), "trackable": False, "missing": ["not a spine or ticket (no ## Current State)"], "warnings": []}
     status = parse_key_values(sections.get("Current State", "")).get("Status", "") if spine else fields.get("Status", "")
     where = "Current State Status" if spine else "Status"
-    missing = [] if trackable_status(status) else [f"{where} {'is not' if status else 'missing:'} draft/ready/active/blocked/done/deferred" + (f" (got '{' '.join(status.split()[:3])}')" if status else "")]
+    allowed = "|".join(TRACKABLE_STATUSES)
+    shown = status if len(status) <= 60 else status[:57] + "..."
+    missing = [] if trackable_status(status) else [f"{where} '{shown}': start it with one of {allowed}" if status else f"{where} missing: add 'Status: <{allowed}>'"]
     if spine and names[0] != "Definition Of Done":
         missing.append(f"heading '## {alias}' must be '## Definition Of Done'")
     items, heads = criteria(text, names), "/".join(names)

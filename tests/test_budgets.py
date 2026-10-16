@@ -51,7 +51,7 @@ EXISTING_BUDGETS = {
     "scripts/migrate_spine.py": 170,
     "scripts/rollup_spine.py": 398,
     "scripts/skill_update.py": 485,  # raised: tree-based freshness + symlink resolution, 2026-10-10
-    "scripts/validate_spine.py": 1125,  # raised +43: criterion-ID rule, criteria()/doc_kind helpers and --fix wiring (logic lives in spine_fix.py), 2026-10-16; +45 earlier: --trackable machine-read contract check, 2026-10-16 (+2 earlier: DoD-checkbox warning)
+    "scripts/validate_spine.py": 1126,  # raised +1: header-Status acceptance for --fix-moved Status (hint rewrite is line-neutral), 2026-10-16; +43 earlier: criterion-ID rule, criteria()/doc_kind helpers and --fix wiring (logic lives in spine_fix.py), 2026-10-16; +45 earlier: --trackable machine-read contract check, 2026-10-16 (+2 earlier: DoD-checkbox warning)
 }
 
 # Files authored by the lean-kernel change: hard-capped instead of pinned.

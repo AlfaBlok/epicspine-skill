@@ -3,8 +3,9 @@
 
 Fixes criteria (numbered/bullet/unchecked/ID-less items under Definition Of Done or ticket Acceptance become
 ``- [ ] <ID> <text>``; existing IDs kept, new ones continue the file's most common ID prefix, else DOD/AC),
-spine alias headings (``## Exit Test...``, ``## Acceptance`` -> ``## Definition Of Done``) and unambiguous
-Status synonyms (SYNONYMS). It never invents a Status line/column or criteria, and leaves unknown statuses alone."""
+spine alias headings (``## Exit Test...``, ``## Acceptance`` -> ``## Definition Of Done``), unambiguous Status
+synonyms (SYNONYMS) and a lone preamble ``Status:`` line with none in Current State (moved there, not copied).
+It never invents a Status line/column or criteria, and leaves unknown statuses alone."""
 
 from __future__ import annotations
 
@@ -15,14 +16,18 @@ from pathlib import Path
 
 import validate_spine as v
 
-# canonical status -> synonyms (case-insensitive; space and hyphen interchangeable). Anything else is left alone.
+# canonical status -> synonyms (case-insensitive; space and hyphen interchangeable); the one place the map lives.
+# Only a leading word that unambiguously means one status is mapped; "current", "generic", "prior", "guest" and the
+# like stay unmapped, so --trackable blocks on them instead of guessing.
 SYNONYMS = {
     "active": "in progress|wip|doing|in review|review|testing",
     "ready": "todo|to do|planned|open|backlog",
-    "done": "closed|complete|completed|shipped|merged",
+    "done": "closed|complete|completed|delivered|superseded|shipped|merged",
     "deferred": "on hold|paused|parked",
+    "draft": "proposed",
 }
 SYNONYM = re.compile(r"(?i)[*_`\s]*(?:" + "|".join(f"(?P<{k}>{p.replace(' ', '[ -]?')})" for k, p in SYNONYMS.items()) + r")(?![A-Za-z])")
+HEADER_STATUS = re.compile(r"(?:\*\*Status:\*\*|\*\*Status\*\*:|Status:)[ \t]*(\S.*)$")
 ITEM = re.compile(r"(?:[-*]|\d+[.)])[ \t]+(?:\[([ xX])\][ \t]+)?(.*)$")
 ID_AT = re.compile(rf"[*_`(\[]*({v.ID})[*_`)\]]*[:.]?(?=\s|$)\s*")
 
@@ -85,12 +90,35 @@ def fix_statuses(lines: list[str], spine: bool) -> list[str]:
     return list(dict.fromkeys(done))
 
 
+def move_header_status(lines: list[str]) -> list[str]:
+    """Move the single preamble ``Status:`` line into Current State when that has none (fix_statuses then maps it)."""
+    heads = [i for i, line in enumerate(lines) if line.startswith("## ")]
+    found = [(i, m) for i, line in enumerate(lines[: heads[0] if heads else len(lines)]) if (m := HEADER_STATUS.match(line))]
+    state = next((i for i in heads if v.normalize(lines[i][3:]) == "Current State"), None)
+    if len(found) != 1 or state is None:
+        return []
+    end = next((i for i in heads if i > state), len(lines))
+    if any(line.startswith("Status:") for line in lines[state + 1 : end]):
+        return []
+    index, match = found[0]
+    del lines[index]
+    if index and index < len(lines) and not lines[index - 1].strip() and not lines[index].strip():
+        del lines[index]
+    state = next(i for i, line in enumerate(lines) if line.startswith("## ") and v.normalize(line[3:]) == "Current State")
+    at = state + 1
+    while at < len(lines) and not lines[at].strip():
+        at += 1
+    follows = at < len(lines) and re.match(r"[A-Za-z][A-Za-z ]+:", lines[at])
+    lines[at:at] = [""] * (at == state + 1) + [f"Status: {match.group(1)}"] + [""] * (not follows)
+    return ["Status moved from header to Current State"]
+
+
 def fix_text(text: str) -> tuple[str, list[str]]:
     """(fixed text, what changed); a non-spine/ticket is returned unchanged."""
     kind, lines = v.doc_kind(text), text.split("\n")
     if kind is None:
         return text, []
-    done = fix_criteria(lines, kind == "spine") + fix_statuses(lines, kind == "spine")
+    done = fix_criteria(lines, kind == "spine") + (move_header_status(lines) if kind == "spine" else []) + fix_statuses(lines, kind == "spine")
     return "\n".join(lines), done
 
 

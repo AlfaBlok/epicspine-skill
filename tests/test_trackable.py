@@ -117,7 +117,7 @@ class TrackableTests(unittest.TestCase):
         for head in ("Acceptance", "Acceptance Criteria"):
             self.assertTrue(self.check(TICKET.format(status="ready", head=head, body="- [x] AC-1 y"))["trackable"], head)
         result = self.check(TICKET.format(status="wip", head="Acceptance", body="prose"))
-        self.assertEqual(["Status is not draft/ready/active/blocked/done/deferred (got 'wip')", "criteria `- [ ] ID text` under ## Acceptance Criteria/Acceptance"], result["missing"])
+        self.assertEqual(["Status 'wip': start it with one of draft|ready|active|blocked|done|deferred", "criteria `- [ ] ID text` under ## Acceptance Criteria/Acceptance"], result["missing"])
         self.assertEqual([], result["warnings"])
         self.assertFalse(self.check("# Notes\n\nJust text.\n")["trackable"])
         self.assertFalse(v.trackable(self.dir / "nope.md")["trackable"])
@@ -207,6 +207,71 @@ class FixTests(unittest.TestCase):
         no_column = self.spine("- [ ] A-1 a").replace("| Status", "| State")
         self.assertEqual((no_column, []), self.fix(no_column))
         self.assertEqual(("# Notes\n\nStatus: wip\n- a\n", []), self.fix("# Notes\n\nStatus: wip\n- a\n"))
+
+    def test_extended_synonyms_and_ambiguous_words_left_blocking(self) -> None:
+        cases = {"delivered (pending acceptance)": "done", "SUPERSEDED FOR EXECUTION — by X": "done", "complete / continue": "done",
+                 "ON HOLD — do not dispatch": "deferred", "proposed archetype": "draft"}
+        for old, want in cases.items():
+            self.assertIn(f"\nStatus: {want}", self.fix(self.spine("- [ ] A-1 a", status=old))[0], old)
+        for word in ("current — verified", "SHIP candidate — x", "generic call intent", "prior search", "guest contract", "Non-binding hypothesis"):
+            text = self.spine("- [ ] A-1 a", status=word)
+            self.assertEqual((text, []), self.fix(text), word)
+            self.assertFalse(self.trackable_text(text)["trackable"], word)
+
+    def trackable_text(self, text: str) -> dict:
+        path = Path(tempfile.mkdtemp()) / "s.md"
+        path.write_text(text)
+        return v.trackable(path)
+
+    def header(self, line: str, state: str = "Waiting on: none") -> str:
+        text = self.spine("- [ ] A-1 a").replace("Spine ID: t\n", f"Spine ID: t\n{line}\n")
+        return text.replace("Status: active\nWaiting on: none", state)
+
+    def test_header_status_is_moved_into_current_state(self) -> None:
+        before = self.header("Status: ON HOLD — do not dispatch")
+        new, what = self.fix(before)
+        self.assertEqual(["Status moved from header to Current State", "Status 'ON HOLD' -> deferred"], what)
+        self.assertEqual(self.spine("- [ ] A-1 a", status="deferred — do not dispatch").replace("Spine ID: t\n", "Spine ID: t\n"), new)
+        self.assertEqual(1, new.count("Status:"))
+        self.assertTrue(self.trackable_text(new)["trackable"])
+        self.assertEqual((new, []), self.fix(new))
+
+    def test_header_status_forms_and_placement(self) -> None:
+        for line in ("**Status:** active — x", "**Status**: active — x", "Status: active — x"):
+            new, _ = self.fix(self.header(line))
+            self.assertIn("## Current State\n\nStatus: active — x\nWaiting on: none\n", new, line)
+            self.assertEqual(1, new.count("Status:"), line)
+        empty = "# E\n\nSpine ID: e\nStatus: draft\n\n## Current State\n\n## Definition Of Done\n\n- [ ] A-1 a\n"
+        self.assertIn("## Current State\n\nStatus: draft\n\n## Definition", self.fix(empty)[0])
+        prose = empty.replace("## Current State\n\n", "## Current State\n\nSome prose.\n\n")
+        self.assertIn("Status: draft\n\nSome prose.", self.fix(prose)[0])
+
+    def test_unmappable_header_status_is_still_moved_and_then_blocks_with_hint(self) -> None:
+        new, what = self.fix(self.header("Status: SHIP candidate — manager journey complete"))
+        self.assertEqual(["Status moved from header to Current State"], what)
+        self.assertIn("Status: SHIP candidate — manager journey complete", new)
+        self.assertEqual(["Current State Status 'SHIP candidate — manager journey complete': start it with one of draft|ready|active|blocked|done|deferred"],
+                         self.trackable_text(new)["missing"][:1])
+
+    def test_header_status_left_alone_when_ambiguous(self) -> None:
+        for text in (self.header("Status: active\nStatus: done"), self.header("Status: active", state="Status: ready\nWaiting on: none"),
+                     self.header("Status: active").replace("## Current State", "## State"), "# E\n\nSpine ID: e\nStatus: active\n\n## Mission\n\nx\n"):
+            self.assertEqual(text, self.fix(text)[0])
+
+    def test_moved_header_status_validates_like_before(self) -> None:
+        for name in ("examples/EPIC-0-CLI-EXAMPLE.md", "docs/EPIC-0-AUDIT-REMEDIATION.md", "examples/EPIC-GITHUB-TICKETS.md"):
+            original = (VALIDATOR_PATH.parents[3] / name).read_text(encoding="utf-8")
+            state = original.split("\n## Current State\n")[1].split("\n## ")[0]
+            stripped = original.replace(state, "\n".join(line for line in state.split("\n") if not line.startswith("Status:")))
+            moved, what = self.fix(stripped)
+            self.assertIn("Status moved from header to Current State", what, name)
+            path = Path(tempfile.mkdtemp()) / "moved.md"
+            outcomes = []
+            for text in (stripped, moved):
+                path.write_text(text)
+                doc = v.validate_local(path)
+                outcomes.append((doc.errors, doc.warnings, doc.fails(strict=True)))
+            self.assertEqual(outcomes[0], outcomes[1], name)
 
     def test_ledger_and_ticket_status_cells(self) -> None:
         text = self.spine("- [ ] A-1 a").replace("| draft | A | me | draft |", "| a | A | me | In Progress |\n| b | B | me | weird |\n| c | C | me | review: waiting |")
@@ -343,7 +408,7 @@ class PreCommitHookTests(unittest.TestCase):
         self.install()
         blocked = self.commit("docs/S.md", SPINE.format(**{**GOOD, "status": "x"}).replace("Status: x\n", ""))
         self.assertNotEqual(0, blocked.returncode)
-        self.assertIn("Current State Status missing: draft/ready/active/blocked/done/deferred", blocked.stderr)
+        self.assertIn("Current State Status missing: add 'Status: <draft|ready|active|blocked|done|deferred>'", blocked.stderr)
         self.assertNotIn("epicspine: fixed", blocked.stderr)
 
     def test_fix_leaving_it_untrackable_still_blocks(self) -> None:
@@ -351,7 +416,7 @@ class PreCommitHookTests(unittest.TestCase):
         blocked = self.commit("docs/S.md", SPINE.format(**{**GOOD, "status": "planning", "done": "- ship"}))
         self.assertNotEqual(0, blocked.returncode)
         self.assertIn("epicspine: fixed docs/S.md: 1 criteria", blocked.stderr)
-        self.assertIn("Current State Status is not draft/ready/active/blocked/done/deferred (got 'planning')", blocked.stderr)
+        self.assertIn("Current State Status 'planning': start it with one of draft|ready|active|blocked|done|deferred", blocked.stderr)
         self.assertNotIn("criteria `", blocked.stderr)
 
 
