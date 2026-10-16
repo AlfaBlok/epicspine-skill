@@ -20,7 +20,8 @@ ab = importlib.util.module_from_spec(SPEC)
 sys.modules[SPEC.name] = ab
 SPEC.loader.exec_module(ab)
 
-import codex_hooks  # noqa: E402  (scripts dir is on sys.path once agents_block is loaded)
+import codex_hooks  # noqa: E402
+import fake_bin  # noqa: E402
 
 REAL_LIST_HOOKS = codex_hooks.list_hooks
 MARK = "<!-- epicspine:begin"
@@ -30,6 +31,7 @@ class GlobalInstallTest(unittest.TestCase):
     def setUp(self) -> None:
         self._tmp = tempfile.TemporaryDirectory(prefix="epicspine-g-")
         self.home = Path(self._tmp.name)
+        self.addCleanup(fake_bin.install(self.home.parent / (self.home.name + "-fakebin")).stop)  # never the real crontab/launchctl
         for d in (".claude", ".claude_acct2/projects", ".codex", ".config/opencode", ".gemini"):
             (self.home / d).mkdir(parents=True)
         patch = mock.patch("codex_hooks.list_hooks", return_value=None)  # never start the real codex app-server

@@ -22,6 +22,8 @@ import repo_sync  # noqa: E402
 import stop_push  # noqa: E402
 import session_sync as ss  # noqa: E402
 import skill_update as su  # noqa: E402
+import fake_bin  # noqa: E402
+import sync_schedule  # noqa: E402
 from test_validate_spine import validate_spine as v  # noqa: E402
 
 GIT_ENV = {"GIT_AUTHOR_NAME": "T", "GIT_AUTHOR_EMAIL": "t@example.com", "GIT_COMMITTER_NAME": "T",
@@ -51,6 +53,7 @@ class Base(unittest.TestCase):
         self.addCleanup(self._tmp.cleanup)
         self.tmp = Path(self._tmp.name)
         self.clock = ss.Clock(30)
+        self.addCleanup(fake_bin.install(self.tmp / "fakebin", sync_schedule.cron_line(ss.SKILL_DIR) + "\n").stop)  # fake crontab already scheduled; never the real one
 
     def remote_and_clone(self, name: str, seed: dict[str, str] | None = None) -> tuple[Path, Path]:
         """A bare origin plus one clone seeded with ``seed`` on branch main."""

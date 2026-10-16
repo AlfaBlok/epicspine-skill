@@ -127,12 +127,12 @@ def install(top: Path, clock: Clock) -> list[str]:
     return notes
 
 
-def sync(top: Path, clock: Clock) -> list[str]:
+def sync(top: Path, clock: Clock, fetch_seconds: float = 5.0, push_seconds: float = 8.0) -> list[str]:
     def run(*args: str, seconds: float = 4.0) -> str | None:
         return out(git(list(args), top, clock, seconds))
 
     branch = run("symbolic-ref", "--short", "-q", "HEAD")
-    if not branch or run("remote", "get-url", "origin") is None or run("fetch", "--quiet", "origin", seconds=5) is None:
+    if not branch or run("remote", "get-url", "origin") is None or run("fetch", "--quiet", "origin", seconds=fetch_seconds) is None:
         return []
     if any((top / (run("rev-parse", "--git-path", name) or "-")).exists() for name in BUSY):
         return []
@@ -161,7 +161,7 @@ def sync(top: Path, clock: Clock) -> list[str]:
         return attention(f"{branch} diverged from origin/{branch} ({ahead} ahead, {behind} behind)")
     if (field(text, "Integration policy") or "").lower() == "pr-approval":
         return attention(f"{ahead} unpushed commit(s) on {branch} but Integration policy is pr-approval")
-    pushed = git(["push", "--quiet", "origin", branch], top, clock, 8)
+    pushed = git(["push", "--quiet", "origin", branch], top, clock, push_seconds)
     if pushed is not None and pushed.returncode == 0:
         return [f"EpicSpine sync: repo {name} pushed {ahead} commit(s) to origin/{branch}"]
     return attention(f"{ahead} unpushed commit(s) on {branch} and the push failed")

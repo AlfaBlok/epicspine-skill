@@ -89,22 +89,28 @@ def sync(env: dict) -> list[str]:
 
 
 def heal_repo() -> None:
-    """Best-effort, silent: in a git repo that uses EpicSpine (AGENTS.md block, or a ``Root spine:`` line naming a
-    file) install the pre-commit trackable gate; idempotent, never replaces a foreign hook, never raises."""
+    """Best-effort, silent: in the current git repo, see ``ensure_gate``; never raises."""
     try:
         top = subprocess.run(["git", "rev-parse", "--show-toplevel"], capture_output=True, text=True, timeout=5).stdout.strip()
-        agents = Path(top) / "AGENTS.md" if top else None
-        text = agents.read_text(encoding="utf-8") if agents and agents.is_file() else ""
-        root = re.search(r"Root spine: \[?`?([^`\]\s)]+)", text)
-        import repo_sync
-        if repo_sync.opted_out(Path(top)):
-            return
-        if BLOCK_RE.search(text) or root and (Path(top) / root.group(1).rstrip(".")).is_file():
-            import agents_block
-            with contextlib.redirect_stdout(io.StringIO()):
-                agents_block.install_hook(Path(top))
+        if top:
+            ensure_gate(Path(top))
     except Exception:
         pass
+
+
+def ensure_gate(top: Path) -> None:
+    """In a repo that uses EpicSpine (AGENTS.md block, or a ``Root spine:`` line naming a file) install the
+    pre-commit trackable gate; idempotent, never replaces a foreign hook, skips opted-out repos. May raise."""
+    agents = top / "AGENTS.md"
+    text = agents.read_text(encoding="utf-8") if agents.is_file() else ""
+    root = re.search(r"Root spine: \[?`?([^`\]\s)]+)", text)
+    import repo_sync
+    if repo_sync.opted_out(top):
+        return
+    if BLOCK_RE.search(text) or root and (top / root.group(1).rstrip(".")).is_file():
+        import agents_block
+        with contextlib.redirect_stdout(io.StringIO()):
+            agents_block.install_hook(top)
 
 
 def upsert(path: Path, block: str) -> str:
@@ -345,6 +351,11 @@ def run(action: str, home: Path, env: dict, claude_dirs: list[str], hooks: bool 
             code |= bad
             line += f"; skill link {state}"
         print(line)
+    if not only and (action == "uninstall" or (present and hooks)):  # machine-wide, not per harness
+        import sync_schedule
+        line, bad = sync_schedule.apply(action, home)
+        code |= bad
+        print(f"background sync: {line}")
     for name, reason in UNSUPPORTED.items():
         print(f"{name}: unsupported: {reason}")
     if not present:

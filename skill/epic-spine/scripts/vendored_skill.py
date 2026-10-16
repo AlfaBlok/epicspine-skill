@@ -54,11 +54,11 @@ def copies(top: Path, clock: Clock, skill_dir: Path) -> list[Path]:
     return sorted(found)
 
 
-def check(top: Path, clock: Clock, home: Path, skill_dir: Path) -> list[str]:
-    """One attention line per vendored epic-spine copy older than the installed skill."""
+def check(top: Path, clock: Clock, home: Path, skill_dir: Path, throttle: bool = True) -> list[str]:
+    """One attention line per vendored epic-spine copy older than the installed skill (``throttle=False``: always look)."""
     want = version_key(read_version(skill_dir))
     stamp = f".agents/epicspine-vendored/{hashlib.sha1(str(top).encode()).hexdigest()[:12]}.stamp"
-    if want is None or not due(home, name=stamp):
+    if want is None or (throttle and not due(home, name=stamp)):
         return []
     installed, notes = read_version(skill_dir), []
     for copy in copies(top, clock, skill_dir):

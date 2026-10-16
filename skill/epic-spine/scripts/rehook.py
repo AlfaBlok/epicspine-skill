@@ -7,6 +7,7 @@ Claude Code (``CLAUDE_CONFIG_DIR`` or ``~/.claude``) and Codex (``CODEX_HOME`` o
 ``codex`` binary), as a subprocess of the on-disk (possibly just-updated) script. Only config dirs that already
 carry EpicSpine are touched; a hook registered from another checkout is never repointed; the skill dir is this
 script's real path, as for install-global. Staleness-triggered runs are throttled.
+Also keeps the machine-wide background sync scheduled (``ensure_schedule``; sync_schedule.py).
 Bounded (Codex trust asks ``codex app-server``, capped), silent unless something changed, never raises.
 """
 
@@ -25,6 +26,7 @@ import global_install as gi  # noqa: E402
 from session_sync import due  # noqa: E402
 
 STAMP = ".agents/epicspine-rehook.stamp"
+SCHEDULE_STAMP = ".agents/epicspine-sched.stamp"
 COMMAND_RE = re.compile(r'python3 "([^"]*agents_block\.py)" print-hook')
 LIMITS = {"claude-code": 6.0, "codex": 9.0}  # seconds per subprocess; codex trust itself is capped by CODEX_TRUST_SECONDS
 CODEX_TRUST_SECONDS = "5"  # cap on the codex app-server trust lookup inside the subprocess
@@ -109,6 +111,19 @@ def heal_one(harness: str, cdir: Path, hooks_file: Path, instr: Path, stop: tupl
     return added if harness == "claude-code" else f"{harness}: {added}"
 
 
+def ensure_schedule(env: dict, home: Path, skill_dir: Path, updated: bool) -> str | None:
+    """Keep the machine-wide background sync scheduled (sync_schedule.py): missing or stale entry (throttled, local
+    check) or after a skill update (the new script re-writes it). Returns a note only when it was not current."""
+    import sync_schedule as sched
+    if str(env.get("EPICSPINE_SYNC", "")).strip().lower() == "off" or sched.kind() is None or home.resolve() != Path.home().resolve():
+        return None
+    state = sched.cron_state(skill_dir) if sched.kind() == "cron" else sched.launchd_state(home, skill_dir)
+    if state == "unreadable" or (not updated and (state == "current" or not due(home, name=SCHEDULE_STAMP))):
+        return None
+    launch([sys.executable, "-B", str(skill_dir / "scripts" / "sync_schedule.py"), "ensure"], {**os.environ, "HOME": str(home)}, LIMITS["claude-code"])
+    return "background sync scheduled" if state != "current" else None
+
+
 def run(env: dict, home: Path, skill_dir: Path, updated: bool) -> str | None:
     """One note like ``hooks re-registered (Stop push added)``, or None. Never raises."""
     parts: list[str] = []
@@ -119,4 +134,9 @@ def run(env: dict, home: Path, skill_dir: Path, updated: bool) -> str | None:
             part = None
         if part:
             parts.append(part)
-    return f"hooks re-registered ({'; '.join(parts)})" if parts else None
+    note = f"hooks re-registered ({'; '.join(parts)})" if parts else None
+    try:
+        sched = ensure_schedule(env, home, skill_dir, updated)
+    except Exception:
+        sched = None
+    return "; ".join(filter(None, (note, sched))) or None

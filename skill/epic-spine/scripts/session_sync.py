@@ -4,7 +4,8 @@
 Called by the SessionStart hook (``global_install.hook_payload``); returns one-line notes for the
 hook's additionalContext. Stdlib only, Python 3.10+. Contract: never raises, never blocks (one overall
 deadline, every git call short-timeout), never forces (ff-only, no force push, no dirty-tree writes).
-``EPICSPINE_SYNC=off`` disables everything. Repo steps live in repo_sync.py.
+``EPICSPINE_SYNC=off`` disables everything. Repo steps live in repo_sync.py; background_sync.py (cron/launchd) syncs
+every other repo and the hook prints its attention lines.
 """
 
 from __future__ import annotations
@@ -180,6 +181,8 @@ def run(env: dict, home: Path | None = None, cwd: Path | None = None, skill_dir:
             notes.append("EpicSpine sync: " + "; ".join(done))
         import repo_sync
         notes += repo_sync.run(cwd, clock, home, skill_dir)
+        import background_sync
+        notes += background_sync.attention_lines(home, cwd)  # repos the machine-wide background sync flagged
     except Exception:
         pass
     return notes
