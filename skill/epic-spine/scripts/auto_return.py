@@ -3,11 +3,12 @@
 
 1. Auto-merge, only in repos declaring ``Integration policy: main-direct`` and not opted out (``EPICSPINE_AUTOMERGE=off`` or
    ``Auto-merge: off`` in AGENTS.md): a local or origin branch is merged when ALL hold: its tip commit carries the trailer
-   ``Ready: yes``; its diff against the merge-base only ADDS files (no M/D/R/T; none under ``.github/`` or named ``.git*``);
-   ``git merge-tree --write-tree origin/<integration> <tip>`` is clean; ``gh pr list --head <branch> --state open`` runs and
-   is empty (no ``gh`` or an error: no merge); the tip is >= 2 h old; its worktree, if any, is clean with no process inside.
-   Then: ``--no-ff`` merge in a temporary detached worktree, ``git push`` fast-forward only to origin (rejected: stop and report),
-   then the worktree, the local branch and the origin branch are removed (<= 3 merges per run).
+   ``Ready: yes``; its diff against the merge-base only ADDS files (no M/D/R/T; none under ``.github/`` or named ``.git*``) and
+   touches no ``Deploy gate:`` entry; the repo's gate value is only paths/globs and its Integration policy text mentions no PR
+   or CI (else the whole repo is blocked, see ``deploy_gate.py``); ``git merge-tree --write-tree origin/<integration> <tip>``
+   is clean; ``gh pr list --head <branch> --state open`` runs and is empty; the tip is >= 2 h old; its worktree, if any, is clean
+   with no process inside. Then: ``--no-ff`` merge in a temporary detached worktree, ``git push`` ff-only (rejected: stop and
+   report), then the worktree, local and origin branch are removed (<= 3 merges per run).
 2. Already in main: a branch merged into ``origin/<integration>`` with no worktree is deleted locally; on origin only when named
    ``wt/*`` (others: one "merged - safe to delete" line). A branch whose tip IS the integration tip is kept (may be brand new).
 3. Everything else is report only: Ready but blocked (with the reason); unmerged and idle >= 3 d, one line; >= 14 d, one line
@@ -25,6 +26,7 @@ import subprocess
 import tempfile
 from pathlib import Path
 
+import deploy_gate
 import repo_sync
 from session_sync import Clock, git, out
 
@@ -73,7 +75,7 @@ def listing(top: Path, clock: Clock, base: str, integration: str) -> dict[str, d
     return found
 
 
-def why_not(top: Path, clock: Clock, base: str, name: str, info: dict, now: float, wt: Path | None) -> str | None:
+def why_not(top: Path, clock: Clock, base: str, name: str, info: dict, now: float, wt: Path | None, gate: list[str]) -> str | None:
     """None when ``name`` may be merged automatically, else the reason it may not."""
     tip = info.get("local") or info.get("remote")
     if info.get("local") and info.get("remote") and info["local"] != info["remote"]:
@@ -83,6 +85,8 @@ def why_not(top: Path, clock: Clock, base: str, name: str, info: dict, now: floa
     mb = out(git(["merge-base", base, tip], top, clock, 4))
     diff = git(["diff", "--name-status", "-M", mb or base, tip], top, clock, 5)
     lines = diff.stdout.splitlines() if diff is not None and diff.returncode == 0 and mb else []
+    if hit := deploy_gate.touched(gate, [p for ln in lines for p in ln.split("\t")[1:]]):
+        return f"touches Deploy gate {hit}"
     if not lines or any(not ln.startswith("A\t") or DENY.search(ln[2:]) for ln in lines):
         return "it changes or deletes existing files (not purely additive)"
     tree = git(["merge-tree", "--write-tree", base, tip], top, clock, 8)
@@ -157,6 +161,8 @@ def run(top: Path, clock: Clock, env: dict, text: str, integration: str, trees: 
     if out(git(["fetch", "--quiet", "--prune", "origin"], top, clock, 15)) is None or not out(git(["rev-parse", "--verify", "-q", base], top, clock, 3)):
         return result
     policy = (repo_sync.field(text, "Integration policy") or "").lower()
+    gate, bad = deploy_gate.gate(text)
+    stop = deploy_gate.policy_problem(text) or bad
     on = policy == "main-direct" and str(env.get("EPICSPINE_AUTOMERGE", "")).strip().lower() != "off" \
         and (repo_sync.field(text, "Auto-merge") or "").lower() != "off"
     head, base_tip = (out(git(args, top, clock, 3)) for args in (["symbolic-ref", "--short", "-q", "HEAD"], ["rev-parse", base]))
@@ -171,8 +177,8 @@ def run(top: Path, clock: Clock, env: dict, text: str, integration: str, trees: 
             if (info.get("remote") and not (on and name.startswith("wt/"))) or (info.get("local") and not on):
                 safe.append(name)
         elif info["ready"] and policy != "pr-approval":
-            reason = "auto-merge is off or the Integration policy is not main-direct" if not on else "it is checked out" if name == head \
-                else "no merge slot left this run" if merges >= MAX_MERGES else why_not(top, clock, base, name, info, now, by_branch.get(name))
+            reason = "auto-merge is off or the Integration policy is not main-direct" if not on else f"auto-merge is blocked for this repo: {stop}" if stop else "it is checked out" if name == head \
+                else "no merge slot left this run" if merges >= MAX_MERGES else why_not(top, clock, base, name, info, now, by_branch.get(name), gate)
             if reason:
                 blocked.append(f"{name} ({reason})")
                 continue
