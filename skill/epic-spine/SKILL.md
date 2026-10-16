@@ -49,7 +49,7 @@ Binding fields, one compact line: role | bound spine | bound issue | steward | h
 | Role protocols, gates, branches, bootstrapping | `references/role-protocols.md`, `references/dispatch-prompts.md` |
 | Sprint dialect v2 / SHIP-HARDEN | `references/sprint-dialect-v2.md` |
 | Ticket backend and issues | `references/ticket-backends.md`, `assets/github-issue-template.md` |
-| Structural validation and diagnostics | `references/structural-validation.md`, `scripts/validate_spine.py` |
+| Structural validation and diagnostics | `references/structural-validation.md`, `scripts/validate_spine.py`, `scripts/spine_fix.py` |
 | Operating learnings | `references/learnings.md` |
 | Git, worktrees, integration, rollback | `references/git-doctrine.md` |
 | Hygiene and sweeps | `references/hygiene.md`, `assets/sweep-brief.md` |
@@ -60,7 +60,7 @@ Binding fields, one compact line: role | bound spine | bound issue | steward | h
 | A shortlist / selection of candidates is a key deliverable | `references/shortlists.md`, `scripts/build_shortlist.py`, `assets/shortlist.template.html`, `assets/shortlist-sample.json` |
 | Repairing a spine or changing the workflow itself | `references/operating-model.md` |
 | Any worker dispatch | `assets/dispatch-prompt-preamble.md` |
-| Always-on block: repo files, or once per machine (`install-global`: per-harness pointer + session hook) | `assets/agents-block.md`, `assets/global-block.md`, `scripts/agents_block.py`, `scripts/global_install.py`, `scripts/url_gate.py`, `scripts/pre_commit.py` (repo hook: staged spines/tickets must pass `validate_spine.py --trackable`) |
+| Always-on block: repo files, or once per machine (`install-global`: per-harness pointer + session hook) | `assets/agents-block.md`, `assets/global-block.md`, `scripts/agents_block.py`, `scripts/global_install.py`, `scripts/url_gate.py`, `scripts/pre_commit.py` (repo hook, self-installed each session: staged spines/tickets are auto-fixed or must pass `validate_spine.py --trackable`) |
 
 ## Machine Dispatcher
 
@@ -71,4 +71,4 @@ Every thread's first turn, greetings included, check the env (`echo "$EPICSPINE_
 A spine declares a stable Spine ID, Repository, Primary document, Integration branch and (once connected) Spine Type, Root spine, and Parent spine; it contains Mission, Non-Goals, Current State, Definition Of Done, Issue Ledger, Decisions, and Operating Learnings when it owns rules.
 Dashboards read only DoD checkboxes, `Status:`/`Waiting on:` and the Issue Ledger's Issue/Title/Owner/Status (`references/spine-model.md`).
 `Current State` carries: Owner, Status, Last attempted, Result, Evidence, Waiting on, Approved work, Next action, Source revision, Verified at.
-Validate with `scripts/validate_spine.py --strict <spine.md>`; add `--graph` across the affected local spine family.
+Validate with `scripts/validate_spine.py --strict <spine.md>`; add `--graph` across the affected local spine family. Criteria are `- [ ] <ID> ...` lines (`references/spine-model.md`); `--fix` repairs the format.

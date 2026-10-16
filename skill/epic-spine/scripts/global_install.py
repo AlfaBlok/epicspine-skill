@@ -9,9 +9,12 @@ adapter table; no harness is privileged.
 
 from __future__ import annotations
 
+import contextlib
+import io
 import json
 import os
 import re
+import subprocess
 import tempfile
 from pathlib import Path
 
@@ -56,10 +59,27 @@ def hook_payload(env: dict | None = None) -> str:
     """SessionStart JSON; given ``env`` (the hook), also heal the user-level pasted copy."""
     if env is not None:
         heal(env)
+        heal_repo()
     ctx = render_global()
     if profile_missing():
         ctx = ctx.rstrip("\n") + "\n" + PROFILE_WARNING + "\n"
     return json.dumps({"hookSpecificOutput": {"hookEventName": "SessionStart", "additionalContext": ctx}})
+
+
+def heal_repo() -> None:
+    """Best-effort, silent: in a git repo that uses EpicSpine (AGENTS.md block, or a ``Root spine:`` line naming a
+    file) install the pre-commit trackable gate; idempotent, never replaces a foreign hook, never raises."""
+    try:
+        top = subprocess.run(["git", "rev-parse", "--show-toplevel"], capture_output=True, text=True, timeout=5).stdout.strip()
+        agents = Path(top) / "AGENTS.md" if top else None
+        text = agents.read_text(encoding="utf-8") if agents and agents.is_file() else ""
+        root = re.search(r"Root spine: \[?`?([^`\]\s)]+)", text)
+        if BLOCK_RE.search(text) or root and (Path(top) / root.group(1).rstrip(".")).is_file():
+            import agents_block
+            with contextlib.redirect_stdout(io.StringIO()):
+                agents_block.install_hook(Path(top))
+    except Exception:
+        pass
 
 
 def upsert(path: Path, block: str) -> str:

@@ -114,6 +114,10 @@ LEDGER_STATUSES = {"draft", "ready", "active", "blocked", "review", "testing", "
 DECISION_OUTCOMES = {"accepted", "rejected", "superseded"}
 CHECKBOX_RE = re.compile(r"(?m)^\s*- \[[ xX]\]")
 TRACKABLE_STATUSES = {"draft", "ready", "active", "blocked", "done", "deferred"}
+ID = r"[A-Z][A-Z0-9]*-\d+"
+CRITERION_RE = re.compile(rf"- \[[ xX]\] ({ID})(?=\s|$)")
+ITEM_RE = re.compile(r"(?:[-*]|\d+[.)])[ \t]+\S")
+DOD_ALIAS_RE = re.compile(r"(?i)exit test.*|acceptance( criteria)?|definition of done")
 EMPTY_VALUES = {"", "-", "none", "n/a", "tbd", "<sha>", "<task/thread/agent>"}
 
 
@@ -1000,20 +1004,54 @@ def trackable_status(value: str) -> bool:
     return bool(word) and word.group() in TRACKABLE_STATUSES and "|" not in value
 
 
+def doc_kind(text: str) -> str | None:
+    fields, sections = parse_fields(text), parse_sections(text)
+    return "spine" if "Current State" in sections or "Spine ID" in fields else "ticket" if "Ticket ID" in fields else None
+
+
+def criteria(text: str, names: tuple[str, ...]) -> list[tuple[int, str]]:
+    """Top-level list items (line index, line) under the named ``##`` sections; indented lines continue an item,
+    other prose, tables, HTML comments and code fences are not criteria."""
+    items, section, comment, fence = [], "", False, False
+    for index, line in enumerate(text.split("\n")):
+        if heading := re.match(r"## (.+?)[ \t]*$", line):
+            section = normalize(heading.group(1))
+        elif comment or line.lstrip().startswith("<!--"):
+            comment = "-->" not in line.split("<!--")[-1]
+        elif line.lstrip().startswith("```"):
+            fence = not fence
+        elif section in names and not fence and ITEM_RE.match(line):
+            items.append((index, line))
+    return items
+
+
 def trackable(path: Path) -> dict[str, object]:
     """Check the machine-read contract (spine-model.md) of a spine or ticket; independent of --strict, tolerant of malformed docs."""
     if not path.is_file():
         return {"path": str(path), "trackable": False, "missing": ["file not found"], "warnings": []}
     text = path.read_text(encoding="utf-8", errors="replace")
     fields, sections = parse_fields(text), parse_sections(text)
-    spine = "Current State" in sections or "Spine ID" in fields
-    status = parse_key_values(sections.get("Current State", "")).get("Status", "") if spine else fields.get("Status", "")
-    names = ("Definition Of Done",) if spine else ("Acceptance Criteria", "Acceptance")
-    if not spine and not ("Ticket ID" in fields or "Status" in fields or any(name in sections for name in names)):
+    kind = doc_kind(text)
+    spine = kind == "spine"
+    alias = next((name for name in sections if DOD_ALIAS_RE.fullmatch(name)), None)
+    names = (alias if alias and "Definition Of Done" not in sections else "Definition Of Done",) if spine else ("Acceptance Criteria", "Acceptance")
+    if not (kind or "Status" in fields or any(name in sections for name in names)):
         return {"path": str(path), "trackable": False, "missing": ["not a spine or ticket (no ## Current State)"], "warnings": []}
-    missing = [] if trackable_status(status) else [("Current State " if spine else "") + "Status (draft/ready/active/blocked/done/deferred)"]
-    if not any(CHECKBOX_RE.search(sections.get(name, "")) for name in names):
-        missing.append(f"checkbox under ## {names[0]}")
+    status = parse_key_values(sections.get("Current State", "")).get("Status", "") if spine else fields.get("Status", "")
+    where = "Current State Status" if spine else "Status"
+    missing = [] if trackable_status(status) else [f"{where} {'is not' if status else 'missing:'} draft/ready/active/blocked/done/deferred" + (f" (got '{' '.join(status.split()[:3])}')" if status else "")]
+    if spine and names[0] != "Definition Of Done":
+        missing.append(f"heading '## {alias}' must be '## Definition Of Done'")
+    items, heads = criteria(text, names), "/".join(names)
+    matches = [(index, CRITERION_RE.match(line)) for index, line in items]
+    bad = [index + 1 for index, match in matches if not match]
+    ids = [match.group(1) for _, match in matches if match]
+    if not items:
+        missing.append(f"criteria `- [ ] ID text` under ## {heads}")
+    if bad:
+        missing.append(f"{len(bad)} criteria under ## {heads} not `- [ ] ID text` (lines {', '.join(map(str, bad[:5]))})")
+    if dups := sorted({i for i in ids if ids.count(i) > 1}):
+        missing.append("duplicate criterion IDs: " + ", ".join(dups))
     if spine and "Issue Ledger" in sections:
         header, rows = parse_table(sections["Issue Ledger"])
         if normalize(fields.get("Ticket backend", "github")).lower() != "local":
@@ -1041,8 +1079,13 @@ def main() -> int:
         help="Validate local parent/root links, reciprocal registration, cycles, IDs, and multiple roots across all paths",
     )
     parser.add_argument("--trackable", action="store_true", help="Check only the machine-read contract (Status, DoD/acceptance checkbox, ledger Status); exit 0 iff all pass")
+    parser.add_argument("--fix", action="store_true", help="Rewrite the given spines/tickets in place to the trackable contract (see spine_fix.py); never invents Status or criteria")
     parser.add_argument("--json", action="store_true", help="Emit machine-readable results")
     args = parser.parse_args()
+
+    if args.fix:
+        import spine_fix
+        return spine_fix.main(args.paths)
 
     if args.trackable:
         results = [trackable(path) for path in args.paths]

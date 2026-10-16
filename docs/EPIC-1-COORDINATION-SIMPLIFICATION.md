@@ -36,11 +36,11 @@ Reduce duplicated current state and manual synchronization while preserving evid
 
 ## Definition Of Done
 
-- [x] One authoritative current-state block with compatible legacy conflict detection and a compact active profile.
-- [x] Explicit GitHub and local ticket references without competing mutable ledgers.
-- [x] Deterministic direct-child rollup checks/previews, truthful freshness and authority-aware apply/proposal behavior.
-- [x] Strict validation rejects objective defects and unresolved required data; prose guidance remains advisory.
-- [x] Synthetic examples, focused regression suite, independent review and reviewable PR pass on a named revision.
+- [x] DOD-1 One authoritative current-state block with compatible legacy conflict detection and a compact active profile.
+- [x] DOD-2 Explicit GitHub and local ticket references without competing mutable ledgers.
+- [x] DOD-3 Deterministic direct-child rollup checks/previews, truthful freshness and authority-aware apply/proposal behavior.
+- [x] DOD-4 Strict validation rejects objective defects and unresolved required data; prose guidance remains advisory.
+- [x] DOD-5 Synthetic examples, focused regression suite, independent review and reviewable PR pass on a named revision.
 
 ## Current State
 
@@ -81,10 +81,10 @@ Next action: none; closed by user decision 2026-10-09. Reopen only if delivery s
 
 | Issue | Role | Owner / Assignment | Title | Status | Depends On | PR/Branch | Base | Acceptance | Latest Evidence | Last Verified | Next Action |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| [#18](https://github.com/AlfaBlok/epicspine-skill/issues/18) | Ticket worker | /root/parser | Compact authoritative state | review | PR #16 pinned | codex/compact-state | 6f63d378e0ed8e8adffdda89039f8a0c16069909 | #18 criteria | 17b2a8 accepted; integrated 48 tests pass | 2026-09-06 | PR #22 review |
-| [#19](https://github.com/AlfaBlok/epicspine-skill/issues/19) | Ticket worker | /root/parser | Explicit ticket backends | review | #18 candidate pinned; review pending | codex/ticket-backends | 6512dce8c202ff9bc79730adc2f83ec8e5835ddd | #19 criteria | 54c44e1 accepted; integrated 60 tests pass | 2026-09-06 | PR #22 review |
-| [#20](https://github.com/AlfaBlok/epicspine-skill/issues/20) | Ticket worker | /root/parser | Freshness-aware rollups | review | #19 candidate pinned; review pending | codex/execution-rollups | 89b3c1477a2419281c5733f7e3e7cbccf4e0e620 | #20 criteria | fe6a638 independently accepted; integrated 73 tests pass | 2026-09-06 | PR #22 review |
-| [#21](https://github.com/AlfaBlok/epicspine-skill/issues/21) | Ticket worker | /root/workflow | Structural strictness | review | #18, #19 accepted | codex/structural-validation | 54c44e163190857264198153ba725b5c4365d932 | #21 criteria | 5d840a3 accepted; combined 85 tests and cross-version review pass | 2026-09-06 | PR #22 review |
+| [#18](https://github.com/AlfaBlok/epicspine-skill/issues/18) | Ticket worker | /root/parser | Compact authoritative state | active | PR #16 pinned | codex/compact-state | 6f63d378e0ed8e8adffdda89039f8a0c16069909 | #18 criteria | 17b2a8 accepted; integrated 48 tests pass | 2026-09-06 | PR #22 review |
+| [#19](https://github.com/AlfaBlok/epicspine-skill/issues/19) | Ticket worker | /root/parser | Explicit ticket backends | active | #18 candidate pinned; review pending | codex/ticket-backends | 6512dce8c202ff9bc79730adc2f83ec8e5835ddd | #19 criteria | 54c44e1 accepted; integrated 60 tests pass | 2026-09-06 | PR #22 review |
+| [#20](https://github.com/AlfaBlok/epicspine-skill/issues/20) | Ticket worker | /root/parser | Freshness-aware rollups | active | #19 candidate pinned; review pending | codex/execution-rollups | 89b3c1477a2419281c5733f7e3e7cbccf4e0e620 | #20 criteria | fe6a638 independently accepted; integrated 73 tests pass | 2026-09-06 | PR #22 review |
+| [#21](https://github.com/AlfaBlok/epicspine-skill/issues/21) | Ticket worker | /root/workflow | Structural strictness | active | #18, #19 accepted | codex/structural-validation | 54c44e163190857264198153ba725b5c4365d932 | #21 criteria | 5d840a3 accepted; combined 85 tests and cross-version review pass | 2026-09-06 | PR #22 review |
 
 ## Branch And Integration
 

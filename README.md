@@ -73,7 +73,7 @@ Skills load only when a request matches, so a first message like "fix the login 
 
 ```sh
 python3 ~/.agents/skills/epic-spine/scripts/agents_block.py install-global   # --config-dir DIR (alias --claude-dir; repeatable), --no-hooks, --artifact-host VALUE, --profile TEXT, --home
-python3 ~/.agents/skills/epic-spine/scripts/agents_block.py install --root-spine docs/SPINE.md   # in a repo; add --mirrors to also create CLAUDE.md, GEMINI.md, Cursor, Copilot files; also installs a pre-commit hook (staged spines/tickets must pass `validate_spine.py --trackable`; `--strict` advisory)
+python3 ~/.agents/skills/epic-spine/scripts/agents_block.py install --root-spine docs/SPINE.md   # in a repo; add --mirrors to also create CLAUDE.md, GEMINI.md, Cursor, Copilot files; also installs a pre-commit hook (the SessionStart hook does it too, so no per-repo step): staged spines/tickets are auto-fixed (`validate_spine.py --fix`) or must pass `--trackable`; `--strict` advisory
 ```
 
 Both are idempotent and keep existing content; repo `install` always writes `AGENTS.md` and refreshes only the harness mirrors that already exist; `check-global`, `check`, `uninstall-global`, `uninstall` mirror them. Output names every harness it wrote, skipped, or cannot support.

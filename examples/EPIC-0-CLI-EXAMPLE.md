@@ -66,15 +66,15 @@ SHIP — the manager personally executes this CLI journey: run → first failure
 Acceptance outcome: The documented validator commands return their expected results.
 Evidence method: cli: Save the invocation, supplied fixture, return status and terminal transcript.
 
-- [ ] 1. Run `python3 skill/epic-spine/scripts/validate_spine.py --help`; expect usage text and exit code 0 — PORT from the existing validator.
-- [ ] 2. Run `python3 skill/epic-spine/scripts/validate_spine.py --strict examples/EPIC-0-CLI-EXAMPLE.md`; expect `OK` and exit code 0 — PORT from the existing local validation command.
-- [ ] 3. Run `python3 skill/epic-spine/scripts/validate_spine.py --strict --graph examples/EPIC-0-CLI-EXAMPLE.md`; expect `OK` and exit code 0 for this standalone root — PORT from the existing graph validator.
-- [ ] 4. Run `python3 -B -m unittest discover -s tests -v`; expect all tests passing and exit code 0 — PORT from the existing regression suite.
-- [ ] 5. Test package: record personally verified steps, exact commit from `git rev-parse HEAD`, named environment from `python3 --version`, command results and remaining limits. Inputs are the tracked example and tests. The local commands do not verify GitHub state or launch a product. These unchecked steps do not claim completion.
+- [ ] DOD-1 Run `python3 skill/epic-spine/scripts/validate_spine.py --help`; expect usage text and exit code 0 — PORT from the existing validator.
+- [ ] DOD-2 Run `python3 skill/epic-spine/scripts/validate_spine.py --strict examples/EPIC-0-CLI-EXAMPLE.md`; expect `OK` and exit code 0 — PORT from the existing local validation command.
+- [ ] DOD-3 Run `python3 skill/epic-spine/scripts/validate_spine.py --strict --graph examples/EPIC-0-CLI-EXAMPLE.md`; expect `OK` and exit code 0 for this standalone root — PORT from the existing graph validator.
+- [ ] DOD-4 Run `python3 -B -m unittest discover -s tests -v`; expect all tests passing and exit code 0 — PORT from the existing regression suite.
+- [ ] DOD-5 Test package: record personally verified steps, exact commit from `git rev-parse HEAD`, named environment from `python3 --version`, command results and remaining limits. Inputs are the tracked example and tests. The local commands do not verify GitHub state or launch a product. These unchecked steps do not claim completion.
 
 HARDEN — deferred until the human approves SHIP:
 
-- [ ] Add performance benchmarks for large spine graphs.
+- [ ] DOD-6 Add performance benchmarks for large spine graphs.
 
 ## Current State
 

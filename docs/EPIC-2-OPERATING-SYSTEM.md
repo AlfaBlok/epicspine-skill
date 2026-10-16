@@ -58,9 +58,9 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 
 ## Definition Of Done
 
-- [ ] A cold agent binds in three hops (AGENTS.md → this root spine → the branch matching its task), reading ≲ 100 lines before acting.
-- [ ] The lean SKILL.md kernel and its Default Behaviors card are landed and installed copies re-synced.
-- [ ] Strict graph validation and `python3 -B -m unittest discover -s tests` are green on main.
+- [ ] DOD-1 A cold agent binds in three hops (AGENTS.md → this root spine → the branch matching its task), reading ≲ 100 lines before acting.
+- [ ] DOD-2 The lean SKILL.md kernel and its Default Behaviors card are landed and installed copies re-synced.
+- [ ] DOD-3 Strict graph validation and `python3 -B -m unittest discover -s tests` are green on main.
 
 ## Issue Ledger
 

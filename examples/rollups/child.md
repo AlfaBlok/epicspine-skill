@@ -40,7 +40,7 @@ One scoped learning for work inside this branch. One line per learning: `L-<n> |
 
 ## Definition Of Done
 
-- [ ] Run `python3 skill/epic-spine/scripts/validate_spine.py --strict examples/EPIC-COMPACT-EXAMPLE.md` from the package root and record the exit code against the tested revision.
+- [ ] DOD-1 Run `python3 skill/epic-spine/scripts/validate_spine.py --strict examples/EPIC-COMPACT-EXAMPLE.md` from the package root and record the exit code against the tested revision.
 
 ## Issue Ledger
 

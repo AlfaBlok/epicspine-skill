@@ -43,7 +43,7 @@ Demonstrate the existing GitHub ticket backend using a synthetic offline issue s
 
 ## Definition Of Done
 
-- [ ] Graph validation passes.
+- [ ] DOD-1 Graph validation passes.
 
 ## Current State
 

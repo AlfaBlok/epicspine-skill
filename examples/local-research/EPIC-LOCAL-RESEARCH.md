@@ -32,7 +32,7 @@ No real dataset, private repository import, remote issue update or profitability
 
 ## Definition Of Done
 
-- [ ] Run `python3 skill/epic-spine/scripts/validate_spine.py --strict examples/local-research/EPIC-LOCAL-RESEARCH.md`; expect local ticket references to resolve with exit code 0.
+- [ ] DOD-1 Run `python3 skill/epic-spine/scripts/validate_spine.py --strict examples/local-research/EPIC-LOCAL-RESEARCH.md`; expect local ticket references to resolve with exit code 0.
 
 ## Issue Ledger
 
