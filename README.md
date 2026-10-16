@@ -83,7 +83,7 @@ On a new Claude seat or account, run `install-global --config-dir ~/.claude_seat
 | Harness | Global (install-global) | Repo (install) | Confidence |
 |---|---|---|---|
 | Claude Code | `<config dir>/CLAUDE.md` for `$CLAUDE_CONFIG_DIR`, `~/.claude`, `~/.claude*` dirs with settings; plus SessionStart hook in `settings.json` | `CLAUDE.md` (`@AGENTS.md`) | file high; hook high |
-| Codex | `~/.codex/AGENTS.md` (`$CODEX_HOME`) | `AGENTS.md` | file high; no hook |
+| Codex | `~/.codex/AGENTS.md` (`$CODEX_HOME`); SessionStart + Stop hooks in `~/.codex/hooks.json`, trusted via a managed block in `config.toml` (Codex 0.131+; without the `codex` binary the pointer tells the agent to run `print-hook` first) | `AGENTS.md` | file high; hook high |
 | OpenCode | `~/.config/opencode/AGENTS.md` | `AGENTS.md` | file high; no hook (needs JS plugin) |
 | Gemini CLI | `~/.gemini/GEMINI.md`; SessionStart hook in `~/.gemini/settings.json` | `GEMINI.md` (`@AGENTS.md`) | file high; hook low |
 | Cursor | unsupported (user rules are UI-only) | `.cursor/rules/epicspine.mdc` (`alwaysApply`) + `AGENTS.md` | repo medium |

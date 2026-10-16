@@ -1,6 +1,8 @@
 """SessionStart self-sync: skill, dispatch profile, current repo, repo self-install. Local git only, no network."""
 from __future__ import annotations
 
+import contextlib
+import io
 import json
 import os
 import subprocess
@@ -16,6 +18,7 @@ sys.path.insert(0, str(SCRIPTS))
 import agents_block as ab  # noqa: E402
 import global_install  # noqa: E402
 import repo_sync  # noqa: E402
+import stop_push  # noqa: E402
 import session_sync as ss  # noqa: E402
 import skill_update as su  # noqa: E402
 from test_validate_spine import validate_spine as v  # noqa: E402
@@ -335,10 +338,66 @@ class RepoInstallTest(Base):
         self.assertEqual(ab.check(repo), 0)
         self.assertIn("# Mine", (repo / "AGENTS.md").read_text())
 
-    def test_repo_without_a_spine_is_left_alone(self) -> None:
+    def test_repo_without_a_spine_gets_a_none_block_when_it_has_an_origin(self) -> None:
         repo = self.repo({"README.md": "x\n", "AGENTS.md": "# Mine\n"})
-        self.assertEqual(repo_sync.install(repo, self.clock), [])
+        self.assertEqual(repo_sync.install(repo, self.clock), [])  # no origin: left alone
         self.assertEqual((repo / "AGENTS.md").read_text(), "# Mine\n")
+        git(repo, "remote", "add", "origin", str(self.tmp / "nowhere.git"))
+        (note,) = repo_sync.install(repo, self.clock)
+        self.assertIn("AGENTS.md block (Root spine: none)", note)
+        text = (repo / "AGENTS.md").read_text()
+        self.assertTrue(text.startswith("# Mine"))
+        self.assertIn("Root spine: none. Read the README's first screen before acting.", text)
+        self.assertEqual(ab.check(repo), 0)
+        self.assertEqual(repo_sync.install(repo, self.clock), [])  # idempotent
+        with contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(ab.profile(repo, self.tmp / "nohome", None), 3)  # `none` is not read as a spine path
+
+    def test_epic_without_current_state_counts_as_no_spine(self) -> None:
+        repo = self.repo({"EPIC.md": "# EPIC: Poly\n\n## Mission\nx\n"})  # poly-maker shape
+        git(repo, "remote", "add", "origin", str(self.tmp / "nowhere.git"))
+        (note,) = repo_sync.install(repo, self.clock)
+        self.assertIn("(Root spine: none)", note)
+        self.assertEqual(ab.check(repo), 0)
+
+    def test_none_block_upgrades_when_a_spine_appears(self) -> None:
+        repo = self.repo({"README.md": "x\n"})
+        git(repo, "remote", "add", "origin", str(self.tmp / "nowhere.git"))
+        repo_sync.install(repo, self.clock)
+        commit(repo, "docs/EPIC.md", SPINE)
+        (note,) = repo_sync.install(repo, self.clock)
+        self.assertIn("AGENTS.md block and Operating Learnings in docs/EPIC.md", note)
+        self.assertIn("Root spine: docs/EPIC.md. Read its Current State", (repo / "AGENTS.md").read_text())
+
+    def test_ambiguous_spines_get_a_none_block_and_a_question(self) -> None:
+        legacy = SPINE.replace("Spine Type: root\n", "")
+        repo = self.repo({"docs/EPIC-A.md": legacy, "docs/EPIC-B.md": legacy})
+        git(repo, "remote", "add", "origin", str(self.tmp / "nowhere.git"))
+        first = repo_sync.install(repo, self.clock)
+        self.assertIn("(Root spine: none)", first[0])
+        self.assertTrue(first[1].startswith("EpicSpine attention:") and "docs/EPIC-A.md, docs/EPIC-B.md" in first[1])
+        self.assertIn("--root-spine", first[1])
+        again = repo_sync.install(repo, self.clock)  # asked every session until the user decides
+        self.assertEqual(len(again), 1)
+        self.assertTrue(again[0].startswith("EpicSpine attention:"))
+
+    def test_opt_out_skips_install_and_sync(self) -> None:
+        for marker in (".epicspine-off", "AGENTS.md"):
+            repo = self.tmp / marker.strip(".")
+            git(self.tmp, "init", "-q", "-b", "main", str(repo))
+            commit(repo, "docs/EPIC.md", SPINE)
+            git(repo, "remote", "add", "origin", str(self.tmp / "nowhere.git"))
+            (repo / marker).write_text("EpicSpine: off\n" if marker == "AGENTS.md" else "")
+            self.assertTrue(repo_sync.opted_out(repo))
+            self.assertEqual(repo_sync.run(repo, self.clock), [])
+            self.assertEqual((repo / "AGENTS.md").read_text() if (repo / "AGENTS.md").exists() else "", "EpicSpine: off\n" if marker == "AGENTS.md" else "")
+
+    def test_worktree_is_left_to_the_primary_checkout(self) -> None:
+        repo = self.repo({"README.md": "x\n"})
+        git(repo, "remote", "add", "origin", str(self.tmp / "nowhere.git"))
+        git(repo, "worktree", "add", "-q", str(self.tmp / "wt"), "-b", "wt/x")
+        self.assertEqual(repo_sync.install(self.tmp / "wt", self.clock), [])
+        self.assertFalse((self.tmp / "wt" / "AGENTS.md").exists())
 
     def test_child_and_ambiguous_spines_are_not_guessed(self) -> None:
         child = SPINE.replace("Spine Type: root", "Spine Type: child").replace("Root spine: self", "Root spine: docs/EPIC.md")
@@ -355,6 +414,122 @@ class RepoInstallTest(Base):
         repo = self.repo({"docs/EPIC.md": SPINE, "docs/OTHER-EPIC.md": SPINE.replace("demo", "other"),
                           "AGENTS.md": "<!-- epicspine:begin repo-1 -->\nRoot spine: docs/OTHER-EPIC.md. Read its x\n<!-- epicspine:end -->\n"})
         self.assertEqual(repo_sync.find_spine(repo, self.clock), repo / "docs/OTHER-EPIC.md")
+
+
+class StopPushTest(Base):
+    def setUp(self) -> None:
+        super().setUp()
+        self.bare, self.repo = self.remote_and_clone("proj", {"docs/EPIC.md": SPINE, "AGENTS.md": "Integration policy: main-direct\n"})
+        self.home = self.tmp / "home"
+        self.now = 1000.0
+
+    def push(self, repo: Path | None = None) -> str | None:
+        self.now += 100  # past the throttle unless a test says otherwise
+        return stop_push.push(repo or self.repo, self.clock, self.home, now=self.now)
+
+    def remote_head(self) -> str:
+        return git(self.bare, "rev-parse", "main")
+
+    def test_pushes_committed_work_on_the_integration_branch(self) -> None:
+        commit(self.repo, "a.txt", "a")
+        self.assertEqual(self.push(), "pushed")
+        self.assertEqual(self.remote_head(), git(self.repo, "rev-parse", "HEAD"))
+        self.assertIsNone(self.push())  # nothing left to push
+
+    def test_untracked_files_do_not_block_but_tracked_edits_do(self) -> None:
+        commit(self.repo, "a.txt", "a")
+        (self.repo / "scratch.txt").write_text("u")
+        (self.repo / "AGENTS.md").write_text("dirty\n")
+        self.assertIsNone(self.push())  # mid-edit: the agent has not finished
+        self.assertNotEqual(self.remote_head(), git(self.repo, "rev-parse", "HEAD"))
+        git(self.repo, "checkout", "-q", "AGENTS.md")
+        self.assertEqual(self.push(), "pushed")
+
+    def test_never_commits_dirty_files(self) -> None:
+        (self.repo / "AGENTS.md").write_text("dirty\n")
+        before = git(self.repo, "rev-parse", "HEAD")
+        self.push()
+        self.assertEqual(git(self.repo, "rev-parse", "HEAD"), before)
+        self.assertIn("AGENTS.md", git(self.repo, "status", "--porcelain"))
+
+    def test_pr_approval_opt_out_and_feature_branches_never_push(self) -> None:
+        commit(self.repo, "AGENTS.md", "Integration policy: pr-approval\n")
+        self.assertIsNone(self.push())
+        commit(self.repo, "AGENTS.md", "Integration policy: main-direct\nEpicSpine: off\n")
+        self.assertIsNone(self.push())
+        commit(self.repo, "AGENTS.md", "Integration policy: main-direct\n")
+        (self.repo / ".epicspine-off").write_text("")
+        self.assertIsNone(self.push())
+        (self.repo / ".epicspine-off").unlink()
+        git(self.repo, "checkout", "-q", "-b", "wt/task")
+        commit(self.repo, "w.txt", "w")
+        self.assertIsNone(self.push())
+        self.assertEqual(git(self.bare, "for-each-ref", "--format=%(refname:short)", "refs/heads").split(), ["main"])
+
+    def test_diverged_is_silent_and_never_forced(self) -> None:
+        other = self.second_clone(self.bare, "dev")
+        commit(other, "d.txt", "d")
+        git(other, "push", "-q", "origin", "main")
+        commit(self.repo, "a.txt", "a")
+        git(self.repo, "fetch", "-q", "origin")  # the local ref now knows it is behind
+        self.assertIsNone(self.push())
+        self.assertEqual(self.remote_head(), git(other, "rev-parse", "HEAD"))
+        # stale ref (no fetch): the server rejects the non-fast-forward; still never forced
+        git(self.repo, "update-ref", "refs/remotes/origin/main", git(self.repo, "rev-parse", "HEAD~1"))
+        self.assertEqual(self.push(), "failed")
+        self.assertEqual(self.remote_head(), git(other, "rev-parse", "HEAD"))
+
+    def test_same_head_is_not_retried_within_a_minute(self) -> None:
+        commit(self.repo, "a.txt", "a")
+        hook = self.bare / "hooks" / "pre-receive"
+        hook.write_text("#!/bin/sh\nexit 1\n")
+        hook.chmod(0o755)
+        self.assertEqual(stop_push.push(self.repo, self.clock, self.home, now=5000.0), "failed")
+        self.assertIsNone(stop_push.push(self.repo, self.clock, self.home, now=5030.0))
+        self.assertEqual(stop_push.push(self.repo, self.clock, self.home, now=5070.0), "failed")  # a minute later
+        commit(self.repo, "b.txt", "b")
+        self.assertEqual(stop_push.push(self.repo, self.clock, self.home, now=5071.0), "failed")  # new HEAD: tries at once
+
+    def test_busy_repo_and_no_origin_are_left_alone(self) -> None:
+        commit(self.repo, "a.txt", "a")
+        (self.repo / ".git" / "MERGE_HEAD").write_text(git(self.repo, "rev-parse", "HEAD") + "\n")
+        self.assertIsNone(self.push())
+        lone = self.tmp / "lone"
+        git(self.tmp, "init", "-q", "-b", "main", str(lone))
+        commit(lone, "x", "x")
+        self.assertIsNone(self.push(lone))
+        self.assertIsNone(self.push(self.tmp))  # not a repo at all
+
+    def run_hook(self, payload: dict, **env: str) -> subprocess.CompletedProcess:
+        return subprocess.run([sys.executable, "-B", str(SCRIPTS / "stop_push.py")], input=json.dumps(payload), text=True,
+                              capture_output=True, timeout=30, env={**os.environ, "HOME": str(self.home), **env})
+
+    def test_hook_process_pushes_silently_and_always_allows_stop(self) -> None:
+        commit(self.repo, "a.txt", "a")
+        t0 = time.monotonic()
+        proc = self.run_hook({"cwd": str(self.repo), "hook_event_name": "Stop"})
+        self.assertLess(time.monotonic() - t0, 8)
+        self.assertEqual((proc.returncode, proc.stdout, proc.stderr), (0, "", ""))
+        self.assertEqual(self.remote_head(), git(self.repo, "rev-parse", "HEAD"))
+
+    def test_hook_process_survives_garbage_and_honors_sync_off(self) -> None:
+        commit(self.repo, "a.txt", "a")
+        for stdin in ("", "not json", "[]"):
+            proc = subprocess.run([sys.executable, "-B", str(SCRIPTS / "stop_push.py")], input=stdin, text=True, capture_output=True,
+                                  cwd=self.tmp, timeout=30, env={**os.environ, "HOME": str(self.home)})
+            self.assertEqual((proc.returncode, proc.stdout), (0, ""))
+        self.assertNotEqual(self.remote_head(), git(self.repo, "rev-parse", "HEAD"))
+        self.run_hook({"cwd": str(self.repo)}, EPICSPINE_SYNC="off")
+        self.assertNotEqual(self.remote_head(), git(self.repo, "rev-parse", "HEAD"))
+
+    def test_repo_sync_pulls_and_pushes_without_any_spine(self) -> None:
+        bare, repo = self.remote_and_clone("plain", {"README.md": "x\n"})
+        dev = self.second_clone(bare, "plaindev")
+        commit(dev, "d.txt", "d")
+        git(dev, "push", "-q", "origin", "main")
+        self.assertEqual(repo_sync.sync(repo, self.clock), ["EpicSpine sync: repo plain main fast-forwarded 1 commit(s)"])
+        commit(repo, "a.txt", "a")
+        self.assertEqual(repo_sync.sync(repo, self.clock), ["EpicSpine sync: repo plain pushed 1 commit(s) to origin/main"])
 
 
 class HookIntegrationTest(Base):

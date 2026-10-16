@@ -2,7 +2,8 @@
 """Machine-wide EpicSpine install: for every detected harness, write a pointer to
 the live ``assets/global-block.md`` into its user-level instruction file AND
 register its session-start hook where one exists (Claude Code also gets the
-``url_gate.py`` Stop hook; all default on; ``hooks=False`` is the opt-out).
+``url_gate.py`` Stop hook; Claude Code and Codex get the ``stop_push.py`` Stop hook; Codex hooks also need
+trust, see codex_hooks.py; all default on; ``hooks=False`` is the opt-out).
 Stdlib only, Python 3.10+. Harness-neutral: one block, one marker pair, one
 adapter table; no harness is privileged.
 """
@@ -24,7 +25,9 @@ GLOBAL_TEMPLATE = SKILL_DIR / "assets" / "global-block.md"
 BLOCK_RE = re.compile(r"<!-- epicspine:begin [^>]*-->.*?<!-- epicspine:end -->", re.DOTALL)
 HOOK_MARK = 'agents_block.py" print-hook'
 GATE_MARK = 'url_gate.py"'
-HOOK_EVENTS = (("SessionStart", HOOK_MARK), ("Stop", GATE_MARK))
+PUSH_MARK = 'stop_push.py"'
+HOOK_EVENTS = (("SessionStart", HOOK_MARK), ("Stop", GATE_MARK), ("Stop", PUSH_MARK))
+STOPS = {"claude-code": ("url_gate.py", "stop_push.py"), "codex": ("stop_push.py",)}  # harness -> managed Stop hook scripts
 ENV_KEY = "EPICSPINE_ARTIFACT_HOST"
 MACHINE_FILE = ".agents/epicspine-profile.md"
 LOCAL_FILE = ".agents/epicspine-profile.local.md"  # machine override; the hook never overwrites ~/.agents/epicspine-profile.md while it exists
@@ -34,7 +37,6 @@ PROFILE_WARNING = (f"Machine dispatch profile missing (~/{MACHINE_FILE}): before
 UNSUPPORTED = {
     "cursor (user level)": "user rules live in the app settings UI, not a file; repo install writes .cursor/rules",
     "aider": "no user-level instruction file; needs a read: entry in .aider.conf.yml",
-    "codex hook": "no verified session-start hook mechanism; instruction file only",
     "opencode hook": "hooks need a JS plugin; instruction file only",
 }
 
@@ -47,10 +49,13 @@ def render_global() -> str:
     return GLOBAL_TEMPLATE.read_text(encoding="utf-8").replace("{version}", read_version())
 
 
-def render_pointer() -> str:
-    """Pasted into instruction files: a pointer to the live block, never a copy."""
+def render_pointer(hookless: bool = False) -> str:
+    """Pasted into instruction files: a pointer to the live block, never a copy. ``hookless``: the harness hook
+    may be unregistered or untrusted, so the first command runs the hook by hand (sync included)."""
+    tail = (f"If the block was not injected at session start, run `python3 {SKILL_DIR / 'scripts' / 'agents_block.py'} "
+            "print-hook` first and follow its output (it also syncs the skill and this repo).\n") if hookless else ""
     return ("<!-- epicspine:begin pointer -->\nEpicSpine is installed. Before your first reply, follow "
-            f"`{GLOBAL_TEMPLATE}` (read it unless already injected at session start).\n<!-- epicspine:end -->\n")
+            f"`{GLOBAL_TEMPLATE}` (read it unless already injected at session start).\n{tail}<!-- epicspine:end -->\n")
 
 
 def profile_missing(home: Path | None = None) -> bool:
@@ -91,6 +96,9 @@ def heal_repo() -> None:
         agents = Path(top) / "AGENTS.md" if top else None
         text = agents.read_text(encoding="utf-8") if agents and agents.is_file() else ""
         root = re.search(r"Root spine: \[?`?([^`\]\s)]+)", text)
+        import repo_sync
+        if repo_sync.opted_out(Path(top)):
+            return
         if BLOCK_RE.search(text) or root and (Path(top) / root.group(1).rstrip(".")).is_file():
             import agents_block
             with contextlib.redirect_stdout(io.StringIO()):
@@ -173,7 +181,7 @@ def harnesses(home: Path, env: dict, claude_dirs: list[str]):
     xdg = Path(env.get("XDG_CONFIG_HOME") or home / ".config")
     codex = Path(env.get("CODEX_HOME") or home / ".codex")
     gem, ws = home / ".gemini", home / ".codeium" / "windsurf"
-    yield "codex", codex, codex / "AGENTS.md", False, None
+    yield "codex", codex, codex / "AGENTS.md", False, codex / "hooks.json"
     yield "opencode", xdg / "opencode", xdg / "opencode" / "AGENTS.md", False, None
     yield "gemini-cli", gem, gem / "GEMINI.md", False, gem / "settings.json"
     yield "windsurf", ws, ws / "memories" / "global_rules.md", False, None
@@ -220,18 +228,17 @@ def _save(settings: Path, data: dict) -> None:
         settings.unlink()
 
 
-def set_hook(settings: Path, on: bool, stop: bool = False) -> str:
-    """Add/remove managed hooks (SessionStart; plus url_gate Stop if ``stop``), merging."""
+def set_hook(settings: Path, on: bool, stop: tuple[str, ...] = ()) -> str:
+    """Add/remove managed hooks (SessionStart; plus the Stop scripts named in ``stop``), merging."""
     try:
         data = _load(settings)
     except (ValueError, OSError) as exc:
         return f"error: cannot merge {settings}: {exc}"
     had = _strip_hook(data)
     if on:
-        cmds = {"SessionStart": f'python3 "{Path(__file__).with_name("agents_block.py")}" print-hook'}
-        if stop:
-            cmds["Stop"] = f'python3 "{Path(__file__).with_name("url_gate.py")}"'
-        for event, command in cmds.items():
+        cmds = [("SessionStart", f'python3 "{Path(__file__).with_name("agents_block.py")}" print-hook')]
+        cmds += [("Stop", f'python3 "{Path(__file__).with_name(name)}"') for name in stop]
+        for event, command in cmds:
             data.setdefault("hooks", {}).setdefault(event, []).append(
                 {"hooks": [{"type": "command", "command": command}]})
     elif not had:
@@ -261,12 +268,13 @@ def set_env(settings: Path, value: str) -> str:
     return f"set {value}" if value else "removed"
 
 
-def has_hook(settings: Path, stop: bool = False) -> bool:
+def has_hook(settings: Path, stop: tuple[str, ...] = ()) -> bool:
+    """SessionStart hook present, and each Stop script named in ``stop``."""
     try:
         hooks = str(_load(settings).get("hooks", {}))
     except (ValueError, OSError):
         return False
-    return HOOK_MARK in hooks and (not stop or GATE_MARK in hooks)
+    return HOOK_MARK in hooks and all(f'{name}"' in hooks for name in stop)
 
 
 def skill_link(action: str, cdir: Path) -> tuple[str, int]:
@@ -293,12 +301,13 @@ def run(action: str, home: Path, env: dict, claude_dirs: list[str], hooks: bool 
         artifact_host: str | None = None) -> int:
     """action: install | check | uninstall. Prints one line per harness.
     ``artifact_host`` (install, Claude only): None leaves settings env alone, "" removes it."""
-    block, code, present = render_pointer(), 0, 0
+    code, present = 0, 0
     for label, detect, target, explicit, settings in harnesses(home, env, claude_dirs):
         if not (detect.exists() or (explicit and action == "install")):
             print(f"{label}: not detected ({detect} absent)")
             continue
         present += 1
+        block = render_pointer(hookless=label == "codex")
         if action == "install":
             line = f"{label}: {upsert(target, block)} {target}"
         elif action == "uninstall":
@@ -310,14 +319,20 @@ def run(action: str, home: Path, env: dict, claude_dirs: list[str], hooks: bool 
             code |= state != "current"
             line = f"{label}: {state} {target}"
         if settings is not None:
-            stop = label.startswith("claude-code")
+            stop = STOPS.get(label.split("[")[0], ())
             if action == "check" and hooks:
                 ok = has_hook(settings, stop)
                 code |= not ok
                 line += f"; hook {'present' if ok else 'missing'}"
+                if label == "codex":  # advisory: without trust Codex lists the hooks as "needs review"
+                    import codex_hooks
+                    line += f"; trust {'present' if codex_hooks.trust_present(detect) else 'not set (re-run install-global, or approve in Codex /hooks)'}"
             elif action == "uninstall" or (action == "install" and hooks):
                 result = set_hook(settings, action == "install", stop)
-                code |= result.startswith("error")
+                if label == "codex" and not result.startswith("error"):
+                    import codex_hooks
+                    result += "; " + codex_hooks.sync_trust(detect, settings, (HOOK_MARK, *(f'{n}"' for n in stop)), action == "install")
+                code |= result.startswith("error") or "error:" in result
                 line += f"; hook {result}"
         if label.startswith("claude-code"):
             if action == "uninstall" or (action == "install" and artifact_host is not None):

@@ -5,11 +5,13 @@ import importlib.util
 import io
 import json
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 SCRIPT = Path(__file__).parents[1] / "skill" / "epic-spine" / "scripts" / "agents_block.py"
 SPEC = importlib.util.spec_from_file_location("agents_block_g", SCRIPT)
@@ -18,6 +20,9 @@ ab = importlib.util.module_from_spec(SPEC)
 sys.modules[SPEC.name] = ab
 SPEC.loader.exec_module(ab)
 
+import codex_hooks  # noqa: E402  (scripts dir is on sys.path once agents_block is loaded)
+
+REAL_LIST_HOOKS = codex_hooks.list_hooks
 MARK = "<!-- epicspine:begin"
 
 
@@ -27,6 +32,9 @@ class GlobalInstallTest(unittest.TestCase):
         self.home = Path(self._tmp.name)
         for d in (".claude", ".claude_acct2/projects", ".codex", ".config/opencode", ".gemini"):
             (self.home / d).mkdir(parents=True)
+        patch = mock.patch("codex_hooks.list_hooks", return_value=None)  # never start the real codex app-server
+        patch.start()
+        self.addCleanup(patch.stop)
 
     def tearDown(self) -> None:
         self._tmp.cleanup()
@@ -281,6 +289,128 @@ class GlobalInstallTest(unittest.TestCase):
         self.assertEqual((real / "SKILL.md").read_text(), "mine")
         self.assertTrue(foreign.is_symlink())
         self.assertEqual(foreign.resolve(), (self.home / ".codex").resolve())
+
+
+class CodexHooksTest(unittest.TestCase):
+    """Codex 0.131 runs $CODEX_HOME/hooks.json hooks once trusted; `codex app-server hooks/list` is mocked here."""
+
+    def setUp(self) -> None:
+        self._tmp = tempfile.TemporaryDirectory(prefix="epicspine-cx-")
+        self.addCleanup(self._tmp.cleanup)
+        self.home = Path(self._tmp.name)
+        self.codex = self.home / ".codex"
+        self.codex.mkdir()
+        self.hooks, self.config = self.codex / "hooks.json", self.codex / "config.toml"
+        patch = mock.patch("codex_hooks.list_hooks", side_effect=self.fake_codex)
+        self.listed = patch.start()
+        self.addCleanup(patch.stop)
+
+    def fake_codex(self, codex_dir: Path, seconds: float = 20.0) -> list[dict]:
+        out = []
+        for event, groups in json.loads(self.hooks.read_text())["hooks"].items():
+            for i, group in enumerate(groups):
+                for j, hook in enumerate(group["hooks"]):
+                    snake = {"SessionStart": "session_start", "Stop": "stop"}.get(event, event.lower())
+                    key = f"{self.hooks}:{snake}:{i}:{j}"
+                    out.append({"key": key, "command": hook["command"], "sourcePath": str(self.hooks), "currentHash": "sha256:" + str(abs(hash(key)) % 10**8), "trustStatus": "untrusted"})
+        return out
+
+    def run_cmd(self, *args: str) -> tuple[int, str]:
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            code = ab.main([*args, "--home", str(self.home)])
+        return code, out.getvalue()
+
+    def commands(self) -> dict[str, list[str]]:
+        data = json.loads(self.hooks.read_text())["hooks"]
+        return {event: [h["command"] for g in groups for h in g["hooks"]] for event, groups in data.items()}
+
+    def test_install_registers_sessionstart_and_push_stop_but_not_the_claude_gate(self) -> None:
+        code, out = self.run_cmd("install-global")
+        self.assertEqual(code, 0, out)
+        cmds = self.commands()
+        self.assertEqual(len(cmds["SessionStart"]), 1)
+        self.assertIn('agents_block.py" print-hook', cmds["SessionStart"][0])
+        self.assertEqual(len(cmds["Stop"]), 1)
+        self.assertIn('stop_push.py"', cmds["Stop"][0])
+        self.assertNotIn("url_gate", json.dumps(cmds))
+        self.assertIn("trusted 2 hook(s)", out)
+
+    def test_trust_block_matches_codexs_own_hashes_and_is_idempotent(self) -> None:
+        self.run_cmd("install-global")
+        text = self.config.read_text()
+        for entry in self.fake_codex(self.codex):
+            self.assertIn(f'[hooks.state.{json.dumps(entry["key"])}]\ntrusted_hash = "{entry["currentHash"]}"', text)
+        self.assertIn("epicspine:begin hooks-trust", text)
+        self.run_cmd("install-global")
+        self.assertEqual(self.config.read_text(), text)
+        self.assertEqual(self.run_cmd("check-global")[0], 0)
+        self.assertIn("trust present", self.run_cmd("check-global")[1])
+
+    def test_foreign_hooks_and_config_survive_and_are_never_trusted(self) -> None:
+        self.config.write_text('model = "gpt-5"\n\n[projects."/x"]\ntrust_level = "trusted"\n')
+        stale = f'\n[hooks.state.{json.dumps(f"{self.hooks}:session_start:1:0")}]\ntrusted_hash = "sha256:old"\n'
+        self.config.write_text(self.config.read_text() + stale)
+        self.hooks.write_text(json.dumps({"hooks": {"PreToolUse": [{"hooks": [{"type": "command", "command": "mine"}]}],
+                                                    "SessionStart": [{"hooks": [{"type": "command", "command": "other"}]}]}}))
+        self.run_cmd("install-global")
+        text = self.config.read_text()
+        self.assertIn('model = "gpt-5"', text)
+        self.assertIn('[projects."/x"]', text)
+        self.assertNotIn("sha256:old", text)  # our key was rewritten, not duplicated
+        self.assertEqual(text.count(f'{self.hooks}:session_start:1:0'), 1)
+        self.assertNotIn("pre_tool_use:0:0", text)  # foreign hooks are not trusted for the user
+        self.assertNotIn(f"{self.hooks}:session_start:0:0", text)
+        cmds = self.commands()
+        self.assertEqual(cmds["PreToolUse"], ["mine"])
+        self.assertIn("other", cmds["SessionStart"])
+
+    def test_uninstall_removes_hooks_trust_and_pointer_only(self) -> None:
+        self.config.write_text('model = "gpt-5"\n')
+        agents = self.codex / "AGENTS.md"
+        agents.write_text("# Mine\n")
+        self.run_cmd("install-global")
+        self.assertIn("print-hook", agents.read_text())
+        self.run_cmd("uninstall-global")
+        self.assertEqual(self.config.read_text(), 'model = "gpt-5"\n')
+        self.assertFalse(self.hooks.exists())
+        self.assertEqual(agents.read_text(), "# Mine\n")
+
+    def test_uninstall_deletes_a_config_that_only_held_our_block(self) -> None:
+        self.run_cmd("install-global")
+        self.assertTrue(self.config.is_file())
+        self.run_cmd("uninstall-global")
+        self.assertFalse(self.config.exists())
+
+    def test_without_a_codex_binary_hooks_stay_unreviewed_and_pointer_covers_it(self) -> None:
+        self.listed.side_effect, self.listed.return_value = None, None
+        code, out = self.run_cmd("install-global")
+        self.assertEqual(code, 0, out)
+        self.assertIn("trust not set", out)
+        self.assertFalse(self.config.exists())
+        self.assertIn("print-hook", (self.codex / "AGENTS.md").read_text())
+        self.assertIn("trust not set", self.run_cmd("check-global")[1])
+
+    def test_no_hooks_flag_leaves_codex_hooks_alone_but_pointer_is_written(self) -> None:
+        self.run_cmd("install-global", "--no-hooks")
+        self.assertFalse(self.hooks.exists())
+        self.assertFalse(self.config.exists())
+
+    def test_only_codex_pointer_carries_the_manual_print_hook_instruction(self) -> None:
+        self.assertNotIn("print-hook", global_install_pointer(False))
+        self.assertIn("print-hook", global_install_pointer(True))
+
+    @unittest.skipUnless(os.environ.get("EPICSPINE_TEST_CODEX") == "1" and shutil.which("codex"), "set EPICSPINE_TEST_CODEX=1 with codex installed")
+    def test_real_codex_app_server_reports_our_hooks_as_trusted(self) -> None:
+        self.listed.side_effect = REAL_LIST_HOOKS
+        self.run_cmd("install-global")
+        listed = [h for h in REAL_LIST_HOOKS(self.codex) or [] if "agents_block.py" in h["command"] or "stop_push.py" in h["command"]]
+        self.assertEqual(len(listed), 2)
+        self.assertEqual({h["trustStatus"] for h in listed}, {"trusted"})
+
+
+def global_install_pointer(hookless: bool) -> str:
+    return sys.modules["global_install"].render_pointer(hookless)
 
 
 class FirstMessageTest(unittest.TestCase):

@@ -34,7 +34,8 @@ BEGIN_RE = re.compile(r"<!-- epicspine:begin (.*?) -->")
 PROFILE_RE = re.compile(r"^Dispatch profile:[ \t]*(\S.*?)[ \t]*$", re.MULTILINE)
 MACHINE_FILE = global_install.MACHINE_FILE
 LOCAL_FILE = global_install.LOCAL_FILE
-ROOT_RE = re.compile(r"^Root spine: (.*?)\. Read its", re.MULTILINE)
+ROOT_RE = re.compile(r"^Root spine: (.*?)\. Read ", re.MULTILINE)
+NO_SPINE = "none"  # a repo with no root spine yet: the block still carries the bind, learnings and sync rules
 # Old full blocks: rules 3 (workers) and 4 (integrate) that are not the stock text are repo-specific.
 CUSTOM_RULE_RE = re.compile(
     r"^(?!3\. Workers: use the root spine's|4\. Integrate: verify diff and checks yourself, "
@@ -50,7 +51,8 @@ def block_id() -> str:
 
 
 def render(root_spine: str) -> str:
-    return TEMPLATE.read_text(encoding="utf-8").replace("{root_spine}", root_spine)
+    read = "the README's first screen" if root_spine == NO_SPINE else "its Current State and Operating Learnings"
+    return TEMPLATE.read_text(encoding="utf-8").replace("{root_spine}", root_spine).replace("{read}", read)
 
 
 def pointer() -> str:
@@ -140,7 +142,7 @@ def check(repo: Path) -> int:
         problems.append("block has no 'Root spine:' line")
     else:
         root_spine = root.group(1)
-        if not (repo / root_spine).exists():
+        if root_spine != NO_SPINE and not (repo / root_spine).exists():
             problems.append(f"root spine path does not exist: {root_spine}")
         expected_full = render(root_spine)
         if block.rstrip("\n") + "\n" != expected_full:
@@ -172,7 +174,7 @@ def profile(repo: Path, home: Path, text: str | None) -> int:
     agents = repo / AGENTS_NAME
     files = [agents]
     root = ROOT_RE.search(agents.read_text(encoding="utf-8")) if agents.is_file() else None
-    if root:
+    if root and root.group(1) != NO_SPINE:
         files.insert(0, repo / root.group(1))
     sources = [(f, f"repo {f.relative_to(repo) if f.is_relative_to(repo) else f}") for f in files]
     sources += [(local, f"local ~/{LOCAL_FILE}"), (machine, f"machine ~/{MACHINE_FILE}")]
