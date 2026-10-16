@@ -42,6 +42,15 @@ Saved learning L-<n>: <the rule> (say 'undo' to remove)
 - `undo` (or "remove that") deletes the line; no trace. A reversed preference supersedes the old line (`supersedes L-<n>`).
 - Commit it with the next spine update, per `Integration policy:`. Never throttle; one-off task instructions are not learnings.
 
+## Reversals: sweep the repo for the old rule
+
+Repo text outranks the skill (repo values > global block), so a reversed rule that survives anywhere in the repo keeps steering agents (2026-10-16: a profile still said "always dispatch to DeepSeek" long after the user dropped it). When a saved learning changes or reverses an earlier rule (a model choice, a dispatch target, a process step):
+
+- In the same commit, search the repo (`git grep -i`) for the old rule and fix every **current** instruction that still says it: spines (Next action, Operating Learnings, Current State), operator profiles, `AGENTS.md` / `CLAUDE.md` / `GEMINI.md`, dispatch briefs, templates, scripts' help text.
+- Leave history alone (logs, closed ledger rows, changelog, decision records), but if a history line could read as current guidance, mark it `superseded` or `(historical)`.
+- Vendored copies of the skill itself are not edited by hand; SessionStart flags old ones (`references/session-sync.md`) for the user to update or remove.
+- Name what was fixed in the `Saved learning` reply.
+
 ## Promotion and pruning
 
 - A scoped learning confirmed in 2+ sibling branches is promoted to the parent by the steward.

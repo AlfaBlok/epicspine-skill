@@ -34,7 +34,7 @@ EXISTING_BUDGETS = {
     "references/execution-rollups.md": 70,
     "references/git-doctrine.md": 65,
     "references/hygiene.md": 50,
-    "references/learnings.md": 75,  # raised: save-immediately rule replaces propose-and-wait, 2026-10-16
+    "references/learnings.md": 80,  # raised +5: reversal sweep section (fix stale current repo rules), 2026-10-16; earlier: save-immediately rule replaces propose-and-wait, 2026-10-16
     "references/operating-model.md": 497,
     "references/roles-and-dispatch.md": 105,  # raised: ask-once-and-record rule (dispatch defaults)
     "references/skill-update.md": 60,  # +5: central-install note, 2026-10-09; +5: session self-sync pointer, 2026-10-16

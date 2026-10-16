@@ -179,7 +179,7 @@ def run(env: dict, home: Path | None = None, cwd: Path | None = None, skill_dir:
         if done:
             notes.append("EpicSpine sync: " + "; ".join(done))
         import repo_sync
-        notes += repo_sync.run(cwd, clock)
+        notes += repo_sync.run(cwd, clock, home, skill_dir)
     except Exception:
         pass
     return notes

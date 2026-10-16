@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased — stale repo rules
+
+- **Why agents kept using DeepSeek after the user cleaned up.** The skill only updates its own files. Repos keep their own copies of rules the skill never touches, and repo text outranks the skill (repo values > global block): abnb-agent's operator profile said "always dispatch to opencode deepseek 41" (fixed in abnb-agent 79d3b7c), sismic's Next action still recommended opencode_2/deepseek, and zenod vendors an old copy of the skill (VERSION 2026.10.09) that still names DeepSeek.
+- **A reversing learning now sweeps the repo.** Global block rule 7, SKILL.md rule 5 and `references/learnings.md`: when a saved learning changes or reverses an earlier rule (e.g. a model choice), fix every current instruction in the repo that still says the old thing (spines, profiles, AGENTS/CLAUDE/GEMINI files, briefs, templates) in the same commit; leave history but mark it superseded.
+- **SessionStart flags old vendored copies of the skill.** New `scripts/vendored_skill.py` (from `repo_sync.py`): a directory in the current repo (depth <= 4, bounded count and time; not `.git`, `node_modules`, worktrees, nested repos) with an `epic-spine` SKILL.md and a VERSION older than the installed skill prints `EpicSpine attention: <repo>: old copy of the epic-spine skill at <relpath> (<v>, installed <v>); agents reading it get stale rules — update or remove it`. Report only, throttled per repo (10 min), respects the opt-outs. Skill 2026.10.16.8.
+
 ## Unreleased — multi-machine: commit and push often
 
 - **The always-on block now says why and how often.** The user's agents run on several machines (VPS, laptop) that share each repo only through GitHub, so uncommitted or unpushed work is invisible to the other machines' agents. Global block rule 6 and the Sync line: commit each coherent step as soon as it passes (small commits, never end a turn with finished work uncommitted), the Stop hook pushes (push yourself with no hook), session start pulls. Same rationale in `references/session-sync.md` and SKILL.md rule 6. Skill 2026.10.16.7.

@@ -8,6 +8,8 @@
    root spine without ``## Operating Learnings`` gets an empty section. Both stay uncommitted; one line
    asks the agent to commit them per Integration policy. A repo with no root spine (or an ambiguous one)
    but an origin gets the block with ``Root spine: none``; ambiguous also adds an attention line.
+3. vendored skill: an old copy of the epic-spine skill inside the repo gets an ``EpicSpine attention:`` line
+   (vendored_skill.py; report only).
 Opt-out: a ``.epicspine-off`` file or an ``EpicSpine: off`` line in AGENTS.md skips both steps (and the
 Stop-hook push). Stdlib only; never raises.
 """
@@ -19,7 +21,8 @@ import io
 import re
 from pathlib import Path
 
-from session_sync import Clock, git, out
+import vendored_skill
+from session_sync import SKILL_DIR, Clock, git, out
 
 LEARNINGS = ("## Operating Learnings\n\n**Always** (every task; read in full at bind):\n\n- (none yet)\n\n"
              "**Scoped index** (follow only when the trigger matches):\n\n- (none yet)\n\n")
@@ -164,12 +167,14 @@ def sync(top: Path, clock: Clock) -> list[str]:
     return attention(f"{ahead} unpushed commit(s) on {branch} and the push failed")
 
 
-def run(cwd: Path, clock: Clock) -> list[str]:
+def run(cwd: Path, clock: Clock, home: Path | None = None, skill_dir: Path = SKILL_DIR) -> list[str]:
     notes: list[str] = []
     top = out(git(["rev-parse", "--show-toplevel"], cwd, clock, 3))
     if not top or opted_out(Path(top)):
         return notes
-    for step in (sync, install):
+    steps = (lambda: sync(Path(top), clock), lambda: install(Path(top), clock),
+             lambda: vendored_skill.check(Path(top), clock, home or Path.home(), skill_dir))
+    for step in steps:
         with contextlib.suppress(Exception):
-            notes += step(Path(top), clock)
+            notes += step()
     return notes
