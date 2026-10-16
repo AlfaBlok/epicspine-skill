@@ -32,7 +32,7 @@ class VendoredBase(Base):
         git(self.tmp, "init", "-q", "-b", "main", str(self.repo))
         commit(self.repo, "README.md", "x\n")
 
-    def vendor(self, rel: str, version: str | None = "2026.10.09", front: str = FRONT) -> None:
+    def vendor(self, rel: str, version: str | None = "2026.10.01", front: str = FRONT) -> None:
         folder = self.repo / rel
         folder.mkdir(parents=True, exist_ok=True)
         (folder / "SKILL.md").write_text(front)
@@ -46,11 +46,19 @@ class VendoredBase(Base):
 class VendoredSkillTest(VendoredBase):
     def test_old_copies_are_named_with_path_and_both_versions(self) -> None:
         self.vendor("skills/epic-spine")
-        self.vendor("docs/epicspine-public-repo/skill/epic-spine", "2026.10.15.2")
+        self.vendor("docs/epicspine-public-repo/skill/epic-spine", "2026.10.02.5")
         self.assertEqual(self.check(), [
-            line("zenod", "docs/epicspine-public-repo/skill/epic-spine", "2026.10.15.2", "2026.10.16.8"),
-            line("zenod", "skills/epic-spine", "2026.10.09", "2026.10.16.8"),
+            line("zenod", "docs/epicspine-public-repo/skill/epic-spine", "2026.10.02.5", "2026.10.16.8"),
+            line("zenod", "skills/epic-spine", "2026.10.01", "2026.10.16.8"),
         ])
+
+    def test_a_copy_within_seven_days_of_the_installed_skill_is_tolerated(self) -> None:
+        # installed 2026.10.16.8: zenod's pinned 2026.10.16.9-style neighbours and anything up to 7 days back are fine
+        for rel, version in (("a/epic-spine", "2026.10.16.1"), ("b/epic-spine", "2026.10.15.2"), ("c/epic-spine", "2026.10.09.9")):
+            self.vendor(rel, version)
+        self.assertEqual(self.check(), [])
+        self.vendor("d/epic-spine", "2026.10.08.9")  # 8 days older: flagged
+        self.assertEqual(self.check(home=self.tmp / "h2"), [line("zenod", "d/epic-spine", "2026.10.08.9", "2026.10.16.8")])
 
     def test_current_newer_foreign_and_broken_copies_are_silent(self) -> None:
         self.vendor("a/epic-spine", "2026.10.16.8")
@@ -69,11 +77,11 @@ class VendoredSkillTest(VendoredBase):
         (self.repo / "nested" / ".git").mkdir()  # a nested repo / linked worktree owns its own copy
         self.assertEqual(self.check(), [])
         self.vendor("a/b/c/epic-spine")  # depth 4 is still scanned
-        self.assertEqual(self.check(home=self.tmp / "h2"), [line("zenod", "a/b/c/epic-spine", "2026.10.09", "2026.10.16.8")])
+        self.assertEqual(self.check(home=self.tmp / "h2"), [line("zenod", "a/b/c/epic-spine", "2026.10.01", "2026.10.16.8")])
         # the installed skill living inside the repo (a source checkout) is never reported
         (self.repo / "skill").mkdir()
         (self.repo / "skill" / "epic-spine").symlink_to(self.installed)
-        self.assertEqual(self.check(home=self.tmp / "h3"), [line("zenod", "a/b/c/epic-spine", "2026.10.09", "2026.10.16.8")])
+        self.assertEqual(self.check(home=self.tmp / "h3"), [line("zenod", "a/b/c/epic-spine", "2026.10.01", "2026.10.16.8")])
 
     def test_throttled_per_repo(self) -> None:
         self.vendor("skills/epic-spine")
@@ -106,7 +114,7 @@ class SessionStartIntegrationTest(VendoredBase):
     def test_session_start_prints_the_attention_line(self) -> None:
         self.vendor("skills/epic-spine")
         notes = [n for n in self.run_start() if "old copy" in n]
-        self.assertEqual(notes, [line("zenod", "skills/epic-spine", "2026.10.09", "2026.10.16.8")])
+        self.assertEqual(notes, [line("zenod", "skills/epic-spine", "2026.10.01", "2026.10.16.8")])
         self.assertEqual([n for n in self.run_start() if "old copy" in n], [])  # throttled
 
     def test_off_switch_and_repo_opt_out_are_silent(self) -> None:

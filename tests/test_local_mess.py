@@ -176,7 +176,7 @@ class BackupPushTest(MessBase):
         _, clone = self.repo("a")
         git(clone, "checkout", "-q", "-b", "wt/t")
         commit(clone, "t", "1")
-        self.assertEqual(local_mess.MESS_SECONDS, 25.0)
+        self.assertEqual(local_mess.MESS_SECONDS, 40.0)
         result = local_mess.guard(clone, ss.Clock(0), {}, time.time(), [], {})
         self.assertEqual((result["branches_pushed"], result["attention"], result["mess"]), (0, [], []))
 

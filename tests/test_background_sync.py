@@ -230,11 +230,11 @@ class SyncTest(Base):
         self.assertFalse((off / ".git" / "hooks" / "pre-commit").exists())
 
     def test_old_vendored_copy_is_attention_every_run(self) -> None:
-        _, clone = self.repo("v", {"skills/epic-spine/SKILL.md": "---\nname: epic-spine\n---\nx\n", "skills/epic-spine/VERSION": "2026.10.09\n"})
+        _, clone = self.repo("v", {"skills/epic-spine/SKILL.md": "---\nname: epic-spine\n---\nx\n", "skills/epic-spine/VERSION": "2026.10.01\n"})
         for _ in range(2):  # not throttled, so it never flickers off between runs
             att = self.entry(clone)["attention"]
             self.assertEqual(len(att), 1)
-            self.assertIn("v: old copy of the epic-spine skill at skills/epic-spine (2026.10.09", att[0])
+            self.assertIn("v: old copy of the epic-spine skill at skills/epic-spine (2026.10.01", att[0])
 
     def test_one_failing_repo_does_not_stop_the_rest(self) -> None:
         _, a = self.repo("a")

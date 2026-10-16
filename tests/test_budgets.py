@@ -32,8 +32,8 @@ EXISTING_BUDGETS = {
     "references/book-companion.md": 155,
     "references/compact-state.md": 60,
     "references/execution-rollups.md": 70,
-    "references/git-doctrine.md": 65,
-    "references/hygiene.md": 50,
+    "references/git-doctrine.md": 75,  # raised +10: additive-straight-to-main, Ready marker, soft return, declare Integration policy/Deployed from, 2026-10-16
+    "references/hygiene.md": 65,  # raised +15: cleanup safety checklist from the 2026-10-16 VPS cleanup + auto-return summary
     "references/learnings.md": 80,  # raised +5: reversal sweep section (fix stale current repo rules), 2026-10-16; earlier: save-immediately rule replaces propose-and-wait, 2026-10-16
     "references/operating-model.md": 497,
     "references/roles-and-dispatch.md": 105,  # raised: ask-once-and-record rule (dispatch defaults)

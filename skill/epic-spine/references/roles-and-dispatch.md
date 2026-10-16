@@ -16,7 +16,7 @@ Read this when launching an agent or harness, choosing how to dispatch work, or 
 
 - Purpose: execute exactly one assigned task and hand it off. Bound to one task, one bound spine or issue, and one worktree.
 - Authority: edit only the files and sections inside the assigned scope, and only inside its own worktree.
-- Must: create its local worktree branch `wt/<task>` first; commit in the worktree; implement and run the assigned checks; return a structured handoff of branch, commits, and evidence.
+- Must: when the task edits existing code or config, create its local worktree branch `wt/<task>` first and commit there (purely additive, no-risk work, e.g. new docs or research files, commits and pushes straight to `main`: `references/git-doctrine.md`); mark a finished branch with the commit trailer `Ready: yes`; implement and run the assigned checks; return a structured handoff of branch, commits, and evidence.
 - Must not: widen scope; take another task; edit the shared clone; push, open a PR, or merge unless told; dispatch other workers.
 - Handoff: bound task, worktree path, branch, commits, commands and results, blocker, next action.
 
@@ -38,7 +38,7 @@ A dispatch profile is the per-task set of dispatch choices:
 | Model | The model id and variant. |
 | Reasoning | The reasoning-effort variant. |
 | Runtime mode | The manager's runtime mode; inherited by default. |
-| Isolation | Execution isolation; worktree-first is mandatory. |
+| Isolation | Execution isolation; worktree-first for work that edits existing code or config. |
 | Parallelism | How many workers run at once and how disjoint their file surfaces must be. |
 | Review | Who verifies; approval required only under `Integration policy: pr-approval` or a per-task reservation. |
 
@@ -50,7 +50,7 @@ A dispatch profile is the per-task set of dispatch choices:
 | Model | A lower-cost, faster tier than the manager, chosen from what the harness offers |
 | Reasoning | The harness default |
 | Runtime mode | inherited from the manager |
-| Isolation | worktree-first |
+| Isolation | worktree-first (additive-only work: straight to `main`) |
 | Parallelism | disjoint waves only; sequence tasks that may touch the same files |
 | Review | manager verifies on two axes (repo standards and the spec) against the repository, branch, and checks, then integrates to `main` under `references/git-doctrine.md` |
 

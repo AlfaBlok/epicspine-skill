@@ -3,14 +3,14 @@
 
 Roots: ``EPICSPINE_REPO_ROOTS`` (os.pathsep list) else ``~/github``, ``~/Documents/GitHub``, ``~/code``, ``~/src``
 (existing ones only). Main checkouts at depth <= 2 (linked worktrees and submodules have a ``.git`` file: skipped) with an
-``origin`` and a commit (any ref) in the last 90 days; ``.epicspine-off`` / ``EpicSpine: off`` repos are skipped. Per repo,
-the SessionStart logic: ``repo_sync.sync`` (fetch, ff-only when clean and behind, push committed integration-branch work
-per Integration policy; never force, never commit, never touch dirty files), the pre-commit gate where a spine/AGENTS
-block exists (``global_install.ensure_gate``), the vendored-copy check and local_mess.py (backup-push local-only branches;
-report idle/merged worktrees, long-uncommitted changes, stale servers). No AGENTS.md blocks are installed here (that would
-leave uncommitted files). Bounded: 20 s per repo (+25 s local_mess), 5 min total, least recently synced first; no prompts; a flock lock stops overlap. Writes ``~/.agents/epicspine-sync-status.json``; SessionStart prints ``EpicSpine attention:`` lines
-from it for any repo. ``EPICSPINE_SYNC=off`` disables. Silent (cron mail) unless ``-v``. Stdlib only; never raises.
-"""
+``origin`` and a commit (any ref) in the last 90 days; ``.epicspine-off`` / ``EpicSpine: off`` repos are skipped. Per repo:
+``repo_sync.sync`` (fetch, ff-only when clean and behind, push committed integration-branch work per Integration policy;
+never force/commit, dirty files untouched), the pre-commit gate (``global_install.ensure_gate``), the vendored-copy check and
+local_mess.py (backup-push local-only branches; auto_return.py merges ``Ready: yes`` additive branches and deletes merged ones;
+report idle/merged worktrees, old uncommitted changes, stale servers; repo_state.py counts). No AGENTS.md blocks are installed
+(they would be uncommitted files). 20 s per repo (+40 s local_mess), 5 min total, least recently synced first, no prompts, flock.
+Writes ``~/.agents/epicspine-sync-status.json``; SessionStart prints its ``EpicSpine attention:`` lines for any repo.
+``EPICSPINE_SYNC=off`` disables. Silent (cron mail) unless ``-v``. Stdlib only; never raises."""
 
 from __future__ import annotations
 
@@ -99,14 +99,14 @@ def sync_repo(top: Path, home: Path, skill_dir: Path, total: Clock, env: dict | 
     pulled, pushed = (int(m.group(1)) if m else 0 for m in (re.search(r"fast-forwarded (\d+)", text), re.search(r"pushed (\d+) commit", text)))
     mess = {}
     with contextlib.suppress(Exception):
-        mess = local_mess.guard(top, Clock(max(0.0, min(local_mess.MESS_SECONDS, total.cap(local_mess.MESS_SECONDS)))), env or {}, time.time(), procs or [], previous or {})
+        mess = local_mess.guard(top, Clock(max(0.0, min(local_mess.MESS_SECONDS, total.cap(local_mess.MESS_SECONDS)))), env or {}, time.time(), procs or [], previous or {}, online=clock.ok())
     attention = list(mess.get("attention", []))
     for note in (n for n in notes if n.startswith("EpicSpine attention:")):
         why = re.match(r"EpicSpine attention: repo (\S+) \((.*?)\) needs the user: (.*?)\. Tell the user", note)
         attention.append(f"{why.group(1)} ({why.group(2)}): {why.group(3)}" if why else note.removeprefix("EpicSpine attention: "))
     return {"name": top.name, "last_run": now_iso(), "branch": branch, "ahead": ahead, "behind": behind, "pulled": pulled,
             "pushed": pushed, "timed_out": not clock.ok(), "attention": attention, "branches_pushed": mess.get("branches_pushed", 0),
-            "mess": mess.get("mess", []), "dirty_since": mess.get("dirty_since")}
+            "mess": mess.get("mess", []), "dirty_since": mess.get("dirty_since"), "auto": mess.get("auto", []), "state": mess.get("state", {})}
 
 
 def load(home: Path) -> dict:
@@ -158,7 +158,7 @@ def run(env: dict, home: Path, skill_dir: Path = SKILL_DIR, verbose: bool = Fals
     if verbose:
         for top, info in repos.items():
             print(f"{top}: {info.get('branch')} ahead {info.get('ahead')} behind {info.get('behind')} pulled {info.get('pulled')} "
-                  f"pushed {info.get('pushed')} branches {info.get('branches_pushed')}" + "".join(f"\n  attention: {a}" for a in info.get("attention", [])))
+                  f"pushed {info.get('pushed')} branches {info.get('branches_pushed')}" + "".join(f"\n  {key}: {line}" for key in ("attention", "auto") for line in info.get(key, [])))
     if lock:
         lock.close()
     return 0

@@ -181,6 +181,8 @@ def run(env: dict, home: Path | None = None, cwd: Path | None = None, skill_dir:
             notes.append("EpicSpine sync: " + "; ".join(done))
         import repo_sync
         notes += repo_sync.run(cwd, clock, home, skill_dir)
+        import repo_state
+        notes += repo_state.session_lines(cwd, clock)  # `EpicSpine state:` line + worktree cap
         import background_sync
         notes += background_sync.attention_lines(home, cwd)  # repos the machine-wide background sync flagged
     except Exception:

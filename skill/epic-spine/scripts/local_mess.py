@@ -1,14 +1,17 @@
 #!/usr/bin/env python3
 """Local-mess guard (called per repo by background_sync.py): work that exists on one machine is invisible to the others.
 
-Non-destructive: never deletes, forces, commits, touches dirty files or kills processes.
+Never forces, commits, touches dirty files or kills processes. Deletes only what is provably in origin/<integration>.
 1. Backup push: every local branch except the integration branch with commits on no origin branch is pushed
    (``refs/heads/b:refs/heads/b``, upstream set only when none; <= 10 per run, 10 s each). Diverged from origin or rejected:
    an attention line, never retried with force. Off: ``EPICSPINE_PUSH_BRANCHES=off`` or ``Push branches: off`` in AGENTS.md.
-2. Report only (lines for the status file's ``mess``, <= 3 per kind per repo): linked worktrees idle > 3 d and not merged into
-   origin/<integration>; merged + clean ones idle > 1 d (safe to remove); tracked changes in the main checkout for > 24 h
-   (oldest changed-file mtime or first seen dirty by an earlier run); http servers running > 24 h from inside a linked
-   worktree (``/proc`` on Linux, ``ps`` + ``lsof`` on macOS, best effort). Idle = newest of last commit, dir and dirty-file mtimes.
+2. Return to main (auto_return.py): merge ``Ready: yes`` additive branches in main-direct repos, delete branches already in
+   main, report the rest (Ready but blocked; idle >= 3 d; idle >= 14 d: ask once keep / park / drop). Off: ``EPICSPINE_AUTOMERGE=off``.
+3. Report only (lines for the status file's ``mess``, <= 3 per kind per repo): linked worktrees idle > 3 d and not merged into
+   origin/<integration> (>= 14 d: ask the user once); merged + clean ones idle > 1 d (safe to remove); tracked changes in the
+   main checkout for > 24 h (oldest changed-file mtime or first seen dirty by an earlier run); http servers running > 24 h from
+   inside a linked worktree (``/proc`` on Linux, ``ps`` + ``lsof`` on macOS, best effort). Idle = newest of last commit, dir and
+   dirty-file mtimes. 4. ``state`` (repo_state.py) and the worktree cap (> 3 linked: attention line) go to the status file.
 """
 
 from __future__ import annotations
@@ -16,12 +19,14 @@ from __future__ import annotations
 import contextlib
 from pathlib import Path
 
+import auto_return
 import local_servers
+import repo_state
 import repo_sync
 from session_sync import Clock, git, out
 
-MESS_SECONDS, PUSH_MAX, PUSH_SECONDS, PER_KIND = 25.0, 10, 10.0, 3
-WT_IDLE, MERGED_IDLE, DIRTY_AFTER = 3 * 86400, 86400, 24 * 3600
+MESS_SECONDS, PUSH_MAX, PUSH_SECONDS, PER_KIND = 40.0, 10, 10.0, 3  # 40 s: +15 s for auto_return's fetch, merge and push
+WT_IDLE, WT_ASK, MERGED_IDLE, DIRTY_AFTER = 3 * 86400, 14 * 86400, 86400, 24 * 3600
 
 
 def mtime(path: Path) -> float:
@@ -87,7 +92,8 @@ def worktree_lines(top: Path, clock: Clock, integration: str, now: float, trees:
             if not files and idle > MERGED_IDLE:
                 lines.append(f"{top.name}: worktree {path} already merged — safe to remove (git worktree remove {path})")
         elif idle > WT_IDLE:
-            lines.append(f"{top.name}: worktree {path} ({branch}) idle {int(idle // 86400)}d, not merged — merge it or remove it")
+            ask = " — ask the user once: keep / park / drop (references/hygiene.md)" if idle >= WT_ASK else " — merge it or remove it"
+            lines.append(f"{top.name}: worktree {path} ({branch}) idle {int(idle // 86400)}d, not merged{ask}")
     return capped(lines, top.name, "worktrees")
 
 
@@ -106,9 +112,9 @@ def capped(lines: list[str], name: str, what: str) -> list[str]:
     return lines[:PER_KIND] + ([f"{name}: {len(lines) - PER_KIND} more {what} (see git worktree list, ps)"] if len(lines) > PER_KIND else [])
 
 
-def guard(top: Path, clock: Clock, env: dict, now: float, procs: list[local_servers.Proc], previous: dict) -> dict:
+def guard(top: Path, clock: Clock, env: dict, now: float, procs: list[local_servers.Proc], previous: dict, online: bool = True) -> dict:
     """Push local-only branches, then report; each part is isolated so one failure never hides the rest."""
-    result: dict = {"branches_pushed": 0, "attention": [], "mess": [], "dirty_since": None}
+    result: dict = {"branches_pushed": 0, "attention": [], "mess": [], "dirty_since": None, "auto": [], "state": {}}
     text, integration, trees = "", "main", []
     with contextlib.suppress(Exception):
         text = repo_sync.repo_text(top, repo_sync.find_spine(top, clock))
@@ -116,6 +122,14 @@ def guard(top: Path, clock: Clock, env: dict, now: float, procs: list[local_serv
         trees = linked_worktrees(top, clock)
     with contextlib.suppress(Exception):
         result["branches_pushed"], result["attention"] = push_branches(top, clock, integration, env, text)
+    with contextlib.suppress(Exception):
+        back = auto_return.run(top, clock, env, text, integration, trees, now) if online else {"auto": [], "mess": [], "gone": []}
+        result["auto"], result["mess"] = back["auto"], back["mess"]
+        trees = [t for t in trees if t[0] not in back["gone"]]
+    with contextlib.suppress(Exception):
+        result["state"] = repo_state.collect(top, clock, integration, trees)
+        if cap := repo_state.cap_line(top.name, len(trees)):
+            result["attention"].append(cap)
     with contextlib.suppress(Exception):
         result["mess"] += worktree_lines(top, clock, integration, now, trees)
     with contextlib.suppress(Exception):

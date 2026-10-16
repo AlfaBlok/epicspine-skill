@@ -4,7 +4,19 @@ A **sweep** is a cheap standard WORKER task that reclaims disk from finished git
 
 Normal-path hygiene is not a sweep: after integrating a worker, the manager stops any server started from its worktree, then removes the worktree and local branch (`git worktree remove`, `git branch -d`, `git worktree prune`). A worker branch not integrated by task end is pushed to origin (`git push -u origin <branch>`) and reported, never left local-only: other machines see only what is pushed. A sweep is the backstop for what slipped through.
 
-The 15-minute background job (`scripts/local_mess.py`) backs this up without deleting anything: it pushes local-only branches (never forced; `EPICSPINE_PUSH_BRANCHES=off` or `Push branches: off` in AGENTS.md opts out) and reports as `EpicSpine attention:` lines worktrees idle > 3 days and unmerged, merged clean ones (safe to remove), tracked changes uncommitted > 24 h and http servers running > 24 h inside a worktree. Act on them: merge or remove, commit or discard, stop the server.
+The 15-minute background job (`scripts/local_mess.py`, `scripts/auto_return.py`) backs this up. It pushes local-only branches (never forced; `EPICSPINE_PUSH_BRANCHES=off` or `Push branches: off` in AGENTS.md opts out). In `Integration policy: main-direct` repos it merges a branch whose tip carries `Ready: yes` when the diff only adds files, nothing conflicts, no PR is open (needs `gh`), the tip is >= 2 h old and its worktree is clean with no process inside (`--no-ff`, ff-only push, then branch and worktree removed; `EPICSPINE_AUTOMERGE=off` or `Auto-merge: off` opts out); it deletes branches already in `main` that have no worktree (origin only `wt/*`). Everything else is reported as `EpicSpine attention:`: idle worktrees and branches (3 days: reminder; 14 days: ask the user once keep / park / drop), tracked changes uncommitted > 24 h, http servers > 24 h in a worktree, more than 3 open worktrees (finish or merge one first). SessionStart prints `EpicSpine state:`; `scripts/repo_state.py` prints a table of every repo. Act on the lines: merge or remove, commit or discard, stop the server.
+
+## Cleanup Safety Checklist
+
+Learned in the 2026-10-16 VPS cleanup (`docs/hygiene/2026-10-16-cleanup.md`). Before deleting any branch or worktree:
+
+1. `git fetch --prune` again right before each delete: concurrent workers move `main`.
+2. A MERGED PR does not prove the branch is in `main`: compare the PR's `headRefOid` with the branch tip (commits pushed after a squash merge are NOT in `main`) and check the PR base is `main` (a stacked PR merges into another branch).
+3. `gh pr list` truncates: ask per branch with `--head <branch>`.
+4. Deployed code may run from containers or root-owned checkouts: read the repo's `Deployed from:` line and the running processes before touching anything that might be live.
+5. Not an ancestor of `main` and not wanted: push an annotated tag `archive/<name>`, verify it on origin, then delete. Never delete without the tag.
+6. Files a cron job or timer writes must not stay tracked and dirty in a primary checkout: commit them from the job or gitignore them.
+7. Never squash: merge with history (ff or `--no-ff`).
 
 ## When To Dispatch A Sweep
 
