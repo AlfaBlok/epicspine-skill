@@ -418,6 +418,31 @@ class LedgerValidationTests(unittest.TestCase):
         result = self.document(issue="not-an-issue", status="active", changes={"Title": "<title>"})
         self.assertTrue(any("has invalid Issue:" in error for error in result.errors))
 
+    def spine(self, replace=None):
+        source = spine_text(spine_id="root", spine_type="root", root="self", parent="none")
+        for old, new in (replace or {}).items():
+            self.assertIn(old, source)
+            source = source.replace(old, new)
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "root.md"
+            path.write_text(source, encoding="utf-8")
+            return validate_spine.validate_local(path)
+
+    def test_machine_read_contract_checkbox_warning(self):
+        message = "Definition Of Done has no '- [ ]'/'- [x]' checkbox lines; dashboards read only those"
+        self.assertNotIn(message, self.spine().warnings)
+        for body in ("- [x] Graph validation passes.", "- [ ] Graph validation passes."):
+            self.assertNotIn(message, self.spine({"- [ ] Graph validation passes.": body}).warnings)
+        result = self.spine({"- [ ] Graph validation passes.": "Graph validation passes."})
+        self.assertIn(message, result.warnings)
+        self.assertEqual([], result.errors)
+        self.assertFalse(result.fails(strict=True))
+        self.assertEqual("advisory", next(d for d in result.diagnostics if d["message"] == message)["category"])
+
+    def test_ledger_without_status_column_still_errors(self):
+        result = self.spine({"| Title | Status |": "| Title | State |"})
+        self.assertIn("Issue Ledger missing column: Status", result.errors)
+
     def test_deliberate_draft_template_status_warns(self):
         result = self.document(issue="draft", status="<status>")
         self.assertEqual([], result.errors)

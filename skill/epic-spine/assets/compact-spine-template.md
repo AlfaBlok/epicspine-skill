@@ -40,6 +40,7 @@ Optional. One line per learning: `L-<n> | applies when | the rule, imperative | 
 - L-1 | <applies when> | <imperative rule> | <why, ≤ 8 words> | confirmed YYYY-MM-DD
 
 ## Definition Of Done
+<!-- Machine-read contract (checkboxes here, Status/Waiting on, Issue Ledger columns): ../references/spine-model.md. -->
 
 - [ ] <observable acceptance and evidence required>
 

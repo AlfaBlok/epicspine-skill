@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased — machine-read contract
+
+- Spine docs/templates state the machine-read contract (`spine-model.md`): dashboards read only DoD checkboxes, Current State `Status:`/`Waiting on:`, and the Issue Ledger's Issue/Title/Owner/Status (draft/ready/active/blocked/done/deferred). `validate_spine.py` warns (advisory) when Definition Of Done has no checkbox line. Skill 2026.10.16.1.
+
 ## Unreleased — install scope
 
 - `agents_block.py install --repo` now always writes `AGENTS.md` but updates a harness mirror (`CLAUDE.md`, `GEMINI.md`, `.cursor/rules/epicspine.mdc`, `.github/copilot-instructions.md`) only if it already exists; new `--mirrors` creates the missing ones. Self-migrating an old repo (the global block's Migrate line) no longer litters it with untracked files. `check` only looks at mirrors that exist; `uninstall` is unchanged. Skill 2026.10.14.6.

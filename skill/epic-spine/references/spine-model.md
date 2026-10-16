@@ -25,6 +25,17 @@ Declare `Ticket backend: github|local` (omission defaults to github). GitHub mod
 - Put deep ticket discussion in the GitHub issue or PR, then summarize only the durable consequence back into the spine.
 - If an issue discussion changes intent, scope, acceptance, dependency, or current state, write that change back into the bound spine.
 
+## Machine-Read Contract
+
+Dashboards and tools read only these; keep them exact, and write everything else for humans:
+
+- `## Definition Of Done`: `- [ ]` / `- [x]` checkbox lines.
+- `## Current State`: the `Status:` and `Waiting on:` lines.
+- `## Issue Ledger`: the table with columns Issue, Title, Owner (`Owner / Assignment` is fine) and Status; Status is one of draft / ready / active / blocked / done / deferred. A local-backend ledger is reference-only and carries no Status.
+- Other work tables are not read.
+
+`validate_spine.py` warns when Definition Of Done has no checkbox; a github ledger without Status already fails (`references/structural-validation.md`).
+
 ## Authority By Artifact
 
 Do not treat one artifact as authoritative for every kind of truth:

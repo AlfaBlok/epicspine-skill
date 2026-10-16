@@ -69,5 +69,6 @@ Every thread's first turn, greetings included, check the env (`echo "$EPICSPINE_
 ## Spine Document Minimums
 
 A spine declares a stable Spine ID, Repository, Primary document, Integration branch and (once connected) Spine Type, Root spine, and Parent spine; it contains Mission, Non-Goals, Current State, Definition Of Done, Issue Ledger, Decisions, and Operating Learnings when it owns rules.
+Dashboards read only DoD checkboxes, `Status:`/`Waiting on:` and the Issue Ledger's Issue/Title/Owner/Status (`references/spine-model.md`).
 `Current State` carries: Owner, Status, Last attempted, Result, Evidence, Waiting on, Approved work, Next action, Source revision, Verified at.
 Validate with `scripts/validate_spine.py --strict <spine.md>`; add `--graph` across the affected local spine family.

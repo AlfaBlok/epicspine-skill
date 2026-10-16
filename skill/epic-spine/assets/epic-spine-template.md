@@ -91,7 +91,7 @@ State the outcome in one paragraph. Write for a capable teammate who has not see
 
 ## Definition Of Done
 
-<!-- See ../references/structural-validation.md for strict data checks and advisory prose. -->
+<!-- See ../references/structural-validation.md for strict data checks and advisory prose. Machine-read contract (checkboxes here, Status/Waiting on, Issue Ledger columns): ../references/spine-model.md. -->
 
 SHIP — one observable journey with as many steps as the outcome requires on the declared Acceptance surface (choose one header value). The epic worker personally executes it: run → first failure → dispatch a scoped fix → prepare the updated surface → restart from step 1, until one uninterrupted clean pass. Deploy only when required and authorized.
 

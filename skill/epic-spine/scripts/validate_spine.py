@@ -764,6 +764,8 @@ def validate_local(path: Path, *, dialect: str = "auto", ticket_source: Path | N
     for name in ("Mission", "Definition Of Done", *(() if compact else ("Validation Evidence",))):
         if name in sections and is_empty(sections[name]):
             warnings.append(f"unresolved required section: {name}")
+    if not is_empty(done := sections.get("Definition Of Done", "")) and not re.search(r"(?m)^\s*- \[[ xX]\]", done):
+        warnings.append("Definition Of Done has no '- [ ]'/'- [x]' checkbox lines; dashboards read only those")
 
     spine_type = normalize(fields.get("Spine Type", "")).lower()
     root_spine = normalize(fields.get("Root spine", "")).lower()
