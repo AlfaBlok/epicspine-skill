@@ -203,6 +203,7 @@ def build_parser() -> argparse.ArgumentParser:
         cmd.add_argument("--home", type=Path, help="override the home directory (tests)")
         cmd.add_argument("--claude-dir", "--config-dir", dest="claude_dir", action="append", default=[], help="Claude config dir; repeatable")
         cmd.add_argument("--no-hooks", action="store_true", help="skip session-start hooks")
+        cmd.add_argument("--only", action="append", default=[], metavar="HARNESS", help="only this harness (claude-code, codex, ...); repeatable (used by the SessionStart self-heal)")
         if name == "install-global":
             cmd.add_argument("--profile", metavar="TEXT", help="also write the machine dispatch profile (as `profile --set`)")
         cmd.add_argument("--artifact-host", metavar="VALUE", help="override only (auto-detected otherwise): set env EPICSPINE_ARTIFACT_HOST (local, tailscale or a hostname) in each Claude settings.json ('' removes)")
@@ -234,7 +235,7 @@ def main(argv: list[str] | None = None) -> int:
     home = args.home or Path.home()
     env = dict(os.environ) if args.home is None else {}
     action = args.command.split("-")[0]
-    code = global_install.run(action, home, env, args.claude_dir, not args.no_hooks, args.artifact_host)
+    code = global_install.run(action, home, env, args.claude_dir, not args.no_hooks, args.artifact_host, tuple(args.only))
     if action == "install":
         if args.profile is not None:
             profile(Path("."), home, args.profile)

@@ -28,11 +28,12 @@ BLOCK_RE = re.compile(rf"^{re.escape(BEGIN)}\n.*?^{re.escape(END)}\n?", re.MULTI
 TABLE_RE = re.compile(r'^\[hooks\.state\.(?:"((?:[^"\\]|\\.)*)"|\'([^\']*)\')\][ \t]*(?:#.*)?$')
 
 
-def list_hooks(codex_dir: Path, seconds: float = 20.0) -> list[dict] | None:
+def list_hooks(codex_dir: Path, seconds: float | None = None) -> list[dict] | None:
     """Every hook Codex discovers for ``codex_dir`` (key, command, sourcePath, currentHash, trustStatus), or None."""
     exe = shutil.which("codex")
     if not exe:
         return None
+    seconds = seconds or float(os.environ.get("EPICSPINE_CODEX_SECONDS") or 20.0)  # the SessionStart self-heal caps this
     msgs = [{"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {"clientInfo": {"name": "epicspine", "version": "1"}}},
             {"jsonrpc": "2.0", "method": "initialized"},
             {"jsonrpc": "2.0", "id": 2, "method": "hooks/list", "params": {"cwds": [str(codex_dir)]}}]

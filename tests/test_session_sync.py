@@ -17,6 +17,7 @@ SCRIPTS = Path(__file__).parents[1] / "skill" / "epic-spine" / "scripts"
 sys.path.insert(0, str(SCRIPTS))
 import agents_block as ab  # noqa: E402
 import global_install  # noqa: E402
+import rehook  # noqa: E402
 import repo_sync  # noqa: E402
 import stop_push  # noqa: E402
 import session_sync as ss  # noqa: E402
@@ -530,6 +531,145 @@ class StopPushTest(Base):
         self.assertEqual(repo_sync.sync(repo, self.clock), ["EpicSpine sync: repo plain main fast-forwarded 1 commit(s)"])
         commit(repo, "a.txt", "a")
         self.assertEqual(repo_sync.sync(repo, self.clock), ["EpicSpine sync: repo plain pushed 1 commit(s) to origin/main"])
+
+
+class RehookTest(Base):
+    """After a skill update (or whenever a hook is missing) the SessionStart hook re-runs install-global, as a subprocess."""
+
+    def setUp(self) -> None:
+        super().setUp()
+        self.home = self.tmp / "home"
+        self.cfg = self.tmp / "cfg"
+        self.cx = self.tmp / "cx"
+        self.skill = ss.SKILL_DIR
+        self.env = {"CLAUDE_CONFIG_DIR": str(self.cfg), "CODEX_HOME": str(self.cx)}
+        self.settings = self.cfg / "settings.json"
+        self.bin = self.tmp / "bin"
+        self.bin.mkdir()
+        patch = mock.patch.dict(os.environ, {"PATH": f"{self.bin}{os.pathsep}{os.environ['PATH']}", "HOME": str(self.home)})
+        patch.start()
+        self.addCleanup(patch.stop)
+
+    def old_install(self, foreign: bool = True) -> None:
+        """What 2026.10.16.4 left behind: SessionStart + url_gate, no Stop push."""
+        self.cfg.mkdir()
+        self.settings.write_text(json.dumps({"hooks": {"PreToolUse": [{"hooks": [{"type": "command", "command": "mine.sh"}]}]}} if foreign else {}))
+        self.assertEqual(global_install.set_hook(self.settings, True, ("url_gate.py",)), "set")
+
+    def heal(self, updated: bool = False) -> str | None:
+        return rehook.run(self.env, self.home, self.skill, updated)
+
+    def stops(self) -> list[str]:
+        return [h["command"] for g in json.loads(self.settings.read_text())["hooks"]["Stop"] for h in g["hooks"]]
+
+    def test_missing_stop_push_is_registered_once_and_foreign_hooks_survive(self) -> None:
+        self.old_install()
+        self.assertEqual(self.heal(), "hooks re-registered (Stop push added)")
+        self.assertEqual(sorted(Path(c.split('"')[1]).name for c in self.stops()), ["stop_push.py", "url_gate.py"])
+        self.assertTrue(all(str(self.skill) in c for c in self.stops()))  # real skill dir, no temp or foreign path
+        self.assertIn("mine.sh", self.settings.read_text())
+        with mock.patch.object(rehook, "launch", side_effect=AssertionError("current hooks need no subprocess")):
+            self.assertIsNone(self.heal())
+
+    def test_update_note_joins_the_skill_line_and_current_hooks_stay_silent(self) -> None:
+        self.old_install()
+        with mock.patch.object(ss, "sync_skill", return_value="skill 2026.10.16.5 -> 2026.10.16.6"):
+            notes = ss.run(self.env, home=self.home, cwd=self.tmp, clock=self.clock)
+        self.assertEqual(notes, ["EpicSpine sync: skill 2026.10.16.5 -> 2026.10.16.6; dispatch profile synced; hooks re-registered (Stop push added)"])
+        before = self.settings.read_bytes()
+        self.assertIsNone(self.heal(updated=True))  # re-runs install-global after another update: nothing changed, nothing said
+        self.assertEqual(self.settings.read_bytes(), before)
+
+    def test_only_dirs_that_already_carry_epicspine_are_touched(self) -> None:
+        self.assertIsNone(self.heal(updated=True))  # config dir absent
+        self.assertFalse(self.cfg.exists())
+        self.cfg.mkdir()
+        self.settings.write_text('{"model": "x"}')
+        (self.cfg / "CLAUDE.md").write_text("mine\n")
+        self.assertIsNone(self.heal(updated=True))
+        self.assertEqual(self.settings.read_text(), '{"model": "x"}')
+
+    def test_a_hook_registered_from_another_checkout_is_never_repointed(self) -> None:
+        other = self.tmp / "other" / "scripts"
+        other.mkdir(parents=True)
+        (other / "agents_block.py").write_text("")
+        self.cfg.mkdir()
+        self.settings.write_text(json.dumps({"hooks": {"SessionStart": [{"hooks": [{"type": "command", "command": f'python3 "{other / "agents_block.py"}" print-hook'}]}]}}))
+        before = self.settings.read_bytes()
+        self.assertIsNone(self.heal(updated=True))
+        self.assertEqual(self.settings.read_bytes(), before)
+
+    def test_failed_or_slow_install_is_silent_and_retried_at_most_every_ten_minutes(self) -> None:
+        self.old_install()
+        with mock.patch.object(rehook, "launch", return_value=False) as launch:
+            self.assertIsNone(self.heal())
+            self.assertIsNone(self.heal())
+        self.assertEqual(launch.call_count, 1)
+        with mock.patch.object(rehook, "launch", side_effect=RuntimeError("boom")), mock.patch.object(ss, "sync_skill", return_value="skill 1 -> 2"):
+            self.assertIsNone(self.heal(updated=True))  # an update is never throttled, and never raises
+            self.assertEqual(ss.run(self.env, home=self.home, cwd=self.tmp, clock=self.clock), ["EpicSpine sync: skill 1 -> 2; dispatch profile synced"])
+
+    def test_launch_kills_a_hung_process_group_at_the_deadline(self) -> None:
+        t0 = time.monotonic()
+        self.assertFalse(rehook.launch([sys.executable, "-c", "import time; time.sleep(30)"], dict(os.environ), 0.5))
+        self.assertLess(time.monotonic() - t0, 5)
+        self.assertTrue(rehook.launch([sys.executable, "-c", ""], dict(os.environ), 5))
+
+    def test_off_switch_skips_it(self) -> None:
+        self.old_install()
+        with mock.patch.object(rehook, "launch", side_effect=AssertionError("must not run")):
+            self.assertEqual(ss.run({**self.env, "EPICSPINE_SYNC": "off"}, home=self.home, cwd=self.tmp, clock=self.clock), [])
+
+    def fake_codex(self, hang: bool = False) -> None:
+        """A `codex` whose app-server answers hooks/list from $CODEX_HOME/hooks.json (or never answers)."""
+        script = self.bin / "codex"
+        script.write_text("#!%s\nimport json, os, sys, time\n%s"
+                          "hooks = os.path.join(os.environ['CODEX_HOME'], 'hooks.json')\n"
+                          "for line in sys.stdin:\n    if json.loads(line).get('id') == 2:\n"
+                          "        out = [{'key': f'{hooks}:{ev}:{i}:0', 'command': g['hooks'][0]['command'], 'sourcePath': hooks, 'currentHash': f'sha256:{ev}{i}'}\n"
+                          "               for ev, gs in json.load(open(hooks))['hooks'].items() for i, g in enumerate(gs)]\n"
+                          "        print(json.dumps({'id': 2, 'result': {'data': [{'hooks': out}]}}), flush=True)\n"
+                          % (sys.executable, "time.sleep(60)\n" if hang else ""))
+        script.chmod(0o755)
+
+    def old_codex(self) -> None:
+        self.cx.mkdir()
+        (self.cx / "AGENTS.md").write_text(global_install.render_pointer(hookless=True))
+        global_install.set_hook(self.cx / "hooks.json", True)  # SessionStart only: pre-.5
+
+    def test_codex_gets_hooks_and_trust_from_the_mocked_app_server(self) -> None:
+        self.fake_codex()
+        self.old_codex()
+        self.assertEqual(self.heal(), "hooks re-registered (codex: Stop push added)")
+        self.assertIn("stop_push.py", (self.cx / "hooks.json").read_text())
+        self.assertEqual((self.cx / "config.toml").read_text().count("trusted_hash"), 2)
+        self.assertFalse(self.cfg.exists())
+        with mock.patch.object(rehook, "launch", side_effect=AssertionError("current")):
+            self.assertIsNone(self.heal())
+
+    def test_codex_that_never_answers_is_skipped_without_hanging(self) -> None:
+        self.fake_codex(hang=True)
+        self.old_codex()
+        t0 = time.monotonic()
+        with mock.patch.object(rehook, "CODEX_TRUST_SECONDS", "1"):
+            self.assertEqual(self.heal(), "hooks re-registered (codex: Stop push added)")
+        self.assertLess(time.monotonic() - t0, 8)
+        self.assertFalse((self.cx / "config.toml").exists())  # untrusted: Codex /hooks or the pointer fallback covers it
+
+    def test_without_a_codex_binary_codex_is_left_alone(self) -> None:
+        self.old_codex()
+        before = (self.cx / "hooks.json").read_bytes()
+        with mock.patch("shutil.which", return_value=None):
+            self.assertIsNone(self.heal(updated=True))
+        self.assertEqual((self.cx / "hooks.json").read_bytes(), before)
+
+    def test_the_real_hook_process_registers_the_stop_push_hook(self) -> None:
+        self.old_install()
+        proc = subprocess.run([sys.executable, "-B", str(SCRIPTS / "agents_block.py"), "print-hook"], cwd=self.tmp, text=True, capture_output=True,
+                              timeout=60, env={**os.environ, **self.env, "HOME": str(self.home)})
+        self.assertEqual((proc.returncode, proc.stderr), (0, ""))
+        self.assertIn("hooks re-registered (Stop push added)", json.loads(proc.stdout)["hookSpecificOutput"]["additionalContext"])
+        self.assertIn("stop_push.py", self.settings.read_text())
 
 
 class HookIntegrationTest(Base):

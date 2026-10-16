@@ -100,6 +100,14 @@ class GlobalInstallTest(unittest.TestCase):
         self.assertEqual(sett, (self.home / ".claude/settings.json").read_text())
         self.assertEqual(snap[self.files()[0]].count(MARK), 1)
 
+    def test_only_limits_install_to_the_named_harness(self) -> None:
+        code, out = self.run_cmd("install-global", "--only", "codex")
+        self.assertEqual(code, 0, out)
+        self.assertTrue((self.home / ".codex/hooks.json").is_file())
+        self.assertFalse((self.home / ".claude/settings.json").exists())
+        self.assertFalse((self.home / ".claude/CLAUDE.md").exists())
+        self.assertNotIn("claude-code", out)
+
     def test_no_hooks_flag(self) -> None:
         self.run_cmd("install-global", "--no-hooks")
         self.assertFalse((self.home / ".claude/settings.json").exists())

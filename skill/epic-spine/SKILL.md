@@ -53,7 +53,7 @@ Binding fields, one compact line: role | bound spine | bound issue | steward | h
 | Operating learnings | `references/learnings.md` |
 | Git, worktrees, integration, rollback | `references/git-doctrine.md` |
 | Hygiene and sweeps | `references/hygiene.md`, `assets/sweep-brief.md` |
-| Skill freshness and upgrades; session self-sync | `references/skill-update.md`, `references/session-sync.md`, `scripts/skill_update.py`, `scripts/session_sync.py`, `scripts/repo_sync.py`, `scripts/stop_push.py`, `scripts/codex_hooks.py`, `assets/epicspine-profile.md` |
+| Skill freshness and upgrades; session self-sync | `references/skill-update.md`, `references/session-sync.md`, `scripts/skill_update.py`, `scripts/session_sync.py`, `scripts/repo_sync.py`, `scripts/stop_push.py`, `scripts/codex_hooks.py`, `scripts/rehook.py`, `assets/epicspine-profile.md` |
 | A machine dispatcher is configured (`EPICSPINE_DISPATCHER`) | `references/machine-dispatcher.md` |
 | Book companion | `references/book-companion.md`, `assets/book-companion-contract.md` |
 | Serving HTML/visual artifacts | `references/artifacts.md`, `scripts/artifact_host.py`, `scripts/url_gate.py` |

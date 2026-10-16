@@ -59,9 +59,9 @@ def out(proc: subprocess.CompletedProcess | None) -> str | None:
     return proc.stdout.strip() if proc is not None and proc.returncode == 0 else None
 
 
-def due(home: Path, now: float | None = None) -> bool:
-    """Throttle: True (and re-stamp) at most once per THROTTLE_SECONDS."""
-    stamp, now = home / STAMP, now if now is not None else time.time()
+def due(home: Path, now: float | None = None, name: str = STAMP) -> bool:
+    """Throttle: True (and re-stamp) at most once per THROTTLE_SECONDS (per stamp ``name``)."""
+    stamp, now = home / name, now if now is not None else time.time()
     try:
         if now - float(stamp.read_text().strip()) < THROTTLE_SECONDS:
             return False
@@ -143,6 +143,12 @@ def sync_profile(home: Path, canonical: Path = CANONICAL_PROFILE) -> str | None:
         return None
 
 
+def heal_hooks(env: dict, home: Path, skill_dir: Path, updated: bool) -> str | None:
+    """Re-register this machine's harness hooks after a skill update or when they are missing (rehook.py)."""
+    import rehook as rh
+    return rh.run(env, home, skill_dir, updated)
+
+
 def skills_blocked(cwd: Path) -> bool:
     """A repo ``Skill updates: off|manual`` line keeps the hook from touching the skill."""
     try:
@@ -163,7 +169,8 @@ def run(env: dict, home: Path | None = None, cwd: Path | None = None, skill_dir:
         home, cwd, clock = home or Path.home(), cwd or Path.cwd(), clock or Clock()
         done: list[str] = []
         steps = (lambda: sync_skill(skill_dir, clock) if due(home) and not skills_blocked(cwd) else None,
-                 lambda: sync_profile(home))
+                 lambda: sync_profile(home),
+                 lambda: heal_hooks(env, home, skill_dir, bool(done and done[0].startswith("skill "))))
         for step in steps:
             with contextlib.suppress(Exception):
                 result = step()

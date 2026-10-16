@@ -298,11 +298,13 @@ def skill_link(action: str, cdir: Path) -> tuple[str, int]:
 
 
 def run(action: str, home: Path, env: dict, claude_dirs: list[str], hooks: bool = True,
-        artifact_host: str | None = None) -> int:
-    """action: install | check | uninstall. Prints one line per harness.
+        artifact_host: str | None = None, only: tuple[str, ...] = ()) -> int:
+    """action: install | check | uninstall. Prints one line per harness (``only``: just these, e.g. ``codex``).
     ``artifact_host`` (install, Claude only): None leaves settings env alone, "" removes it."""
     code, present = 0, 0
     for label, detect, target, explicit, settings in harnesses(home, env, claude_dirs):
+        if only and label.split("[")[0] not in only:
+            continue
         if not (detect.exists() or (explicit and action == "install")):
             print(f"{label}: not detected ({detect} absent)")
             continue
