@@ -427,7 +427,7 @@ class SessionStartInstallTests(unittest.TestCase):
         self.addCleanup(self._tmp.cleanup)
         self.cwd = os.getcwd()
         self.addCleanup(os.chdir, self.cwd)
-        self.env = {"CLAUDE_CONFIG_DIR": str(self.root / "cfg")}
+        self.env = {"CLAUDE_CONFIG_DIR": str(self.root / "cfg"), "EPICSPINE_SYNC": "off"}  # hermetic: no network, no real ~/.agents
 
     def repo(self, name: str, agents: str | None) -> Path:
         path = self.root / name
