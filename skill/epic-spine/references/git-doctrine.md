@@ -48,7 +48,7 @@ Never force a merge on a branch that is not ready. The background job (`scripts/
 
 ## Pull Requests
 
-Pull requests are optional, not default. On GitHub repos set `delete branch on merge` and allow `merge commit` / `rebase`, not squash (a squash drops the branch's history and makes it look unmerged). Open one only when the user asks for review, the repository declares `Integration policy: pr-approval`, or CI-gating on a branch is genuinely needed. Even then the manager merges it when checks pass and the user has not reserved the decision.
+Pull requests are optional, not default. On GitHub repos set `delete branch on merge` and allow `merge commit` / `rebase`, not squash (a squash drops the branch's history and makes it look unmerged). Open one only when the user asks for review, the repository declares `Integration policy: pr-approval`, the change touches a declared `Deploy gate:`, or CI-gating on a branch is genuinely needed. Even then the manager merges it when checks pass and the user has not reserved the decision.
 
 ## Clean Repo Contract
 
@@ -66,7 +66,7 @@ The manager audits this at the end of each task and fixes drift before declaring
 
 This doctrine is the standing grant for the manager to merge verified work to `main`.
 
-- A repository declares `Integration policy: main-direct` (default for new setups) or `Integration policy: pr-approval` in its root spine or `AGENTS.md`, and, if it deploys, `Deployed from: <branch/host/path>` so agents can tell what is live before cleaning. Under `pr-approval` the manager opens a PR and waits for the user.
+- A repository declares `Integration policy: main-direct` (default for new setups) or `Integration policy: pr-approval` in its root spine or `AGENTS.md`, and, if it deploys, `Deployed from: <branch/host/path>` so agents can tell what is live before cleaning. Under `pr-approval` the manager opens a PR and waits for the user. `main-direct` is the default for every repo; the only exception is a push to main that forces a complex production deployment (e.g. zenod: push-to-main rolls production), declared as `Deploy gate: <paths/workflows/branches>` next to `Deployed from:`: PR/CI applies to those alone, never the whole repo when the deploy can be gated narrowly; docs-only, additive and research changes that do not trigger the deploy stay main-direct.
 - A per-task user instruction overrides both.
 - Never merge work that failed its checks. Never merge into a branch other than the declared integration branch.
 

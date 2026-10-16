@@ -8,7 +8,7 @@ Primary document: <path to this file>
 Spine ID: <stable-id>
 Integration branch: main
 Integration policy: main-direct
-<!-- Optional: main-direct (default) or pr-approval. The delivery manager merges verified work to the integration branch itself under ../references/git-doctrine.md. -->
+<!-- Optional: main-direct (default) or pr-approval (a deploy-triggering path is gated with `Deploy gate:` next to `Deployed from:`, not the whole repo). The delivery manager merges verified work to the integration branch itself under ../references/git-doctrine.md. -->
 Dispatch profile: default
 <!-- Optional: overrides merge field by field over the built-in default; `template:<name>` is reserved and not yet defined. See ../references/roles-and-dispatch.md. -->
 

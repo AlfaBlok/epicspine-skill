@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.10.16.12 — Deploy exception
+
+- **`main-direct` stays the default for every repo; a PR/CI gate is the narrow exception.** The only case where main-direct is not advisable is a push to main that forces a complex production deployment (zenod: push-to-main rolls production). Such a repo declares `Deploy gate: <paths/workflows/branches>` next to `Deployed from:`; only those go via PR/CI, never the whole repo when the deploy can be gated narrowly, and docs-only, additive and research changes that do not trigger the deploy stay main-direct. Global block rules 2 and 5, SKILL.md rule 4, `references/git-doctrine.md`, the policy comment in both spine templates. Text only: `auto_return.py` does not read `Deploy gate:` yet. Skill 2026.10.16.12.
+
 ## 2026.10.16.11 — Return to main
 
 - **Everything in main; worktrees only for substantial work.** After the 2026-10-16 VPS cleanup (`docs/hygiene/2026-10-16-cleanup.md`): purely additive, no-risk work (new docs, research, shortlists, files) commits and pushes straight to main; work editing existing code/config uses `wt/<task>`, merged as soon as each step passes (ff or `--no-ff`, never squash) and removed right after. No branch outlives its task (unmergeable work is pushed and reported with a one-line reason; follow-ups go on a NEW branch). A finished branch carries the commit trailer `Ready: yes`; nothing without it is merged automatically. Repos declare `Integration policy:` (new setups main-direct) and, if they deploy, `Deployed from:`. Global block rules 2, 4, 5 and the Sync line, SKILL.md rules 3/4/7, `git-doctrine.md`, `roles-and-dispatch.md`, `role-protocols.md`, the dispatch preamble. GitHub repos: `delete branch on merge`, merge commit / rebase, not squash.

@@ -8,7 +8,7 @@ Ticket backend: github
 Dispatch profile: default
 <!-- Optional: optional repo override; the machine profile `~/.agents/epicspine-profile.md` applies when unset or `default`, else a lower-cost native subagent. Override per task or name a reserved template: template:<name>. See ../references/roles-and-dispatch.md. -->
 Integration policy: main-direct
-<!-- Optional: main-direct (default) or pr-approval. The delivery manager merges verified work to the integration branch itself under ../references/git-doctrine.md. -->
+<!-- Optional: main-direct (default) or pr-approval (a deploy-triggering path is gated with `Deploy gate:` next to `Deployed from:`, not the whole repo). The delivery manager merges verified work to the integration branch itself under ../references/git-doctrine.md. -->
 
 Status: draft | ready | active | pending — DISPATCH ONLY AFTER <condition> | CLOSED | ON HOLD | SUPERSEDED by <path> — do not execute from this document
 Created: YYYY-MM-DD
