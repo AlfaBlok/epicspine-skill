@@ -34,10 +34,10 @@ EXISTING_BUDGETS = {
     "references/execution-rollups.md": 70,
     "references/git-doctrine.md": 65,
     "references/hygiene.md": 50,
-    "references/learnings.md": 70,
+    "references/learnings.md": 75,  # raised: save-immediately rule replaces propose-and-wait, 2026-10-16
     "references/operating-model.md": 497,
     "references/roles-and-dispatch.md": 105,  # raised: ask-once-and-record rule (dispatch defaults)
-    "references/skill-update.md": 55,  # +5: central-install note, 2026-10-09
+    "references/skill-update.md": 60,  # +5: central-install note, 2026-10-09; +5: session self-sync pointer, 2026-10-16
     "references/structural-validation.md": 60,
     "references/ticket-backends.md": 80,
     "assets/book-companion-contract.md": 25,
@@ -46,10 +46,11 @@ EXISTING_BUDGETS = {
     "assets/epic-spine-template.md": 293,  # raised +1: Current State Status line (machine-read contract), 2026-10-16
     "assets/github-issue-template.md": 85,
     "assets/sweep-brief.md": 25,
-    "scripts/global_install.py": 320,  # raised: SessionStart self-installs the pre-commit gate in EpicSpine repos (heal_repo), 2026-10-16; machine-profile warning in SessionStart hook, 2026-10-16; --artifact-host settings env, 2026-10-14; live-block pointer, 2026-10-14; atomic upsert + SessionStart self-heal, 2026-10-14
-    "scripts/agents_block.py": 245,  # raised: pre-commit hook install/uninstall/check, 2026-10-16 (after install-global --profile + missing-profile notice, 2026-10-16)
+    "scripts/global_install.py": 340,  # raised: SessionStart self-sync hook + local profile override, 2026-10-16; SessionStart self-installs the pre-commit gate in EpicSpine repos (heal_repo), 2026-10-16; machine-profile warning in SessionStart hook, 2026-10-16; --artifact-host settings env, 2026-10-14; live-block pointer, 2026-10-14; atomic upsert + SessionStart self-heal, 2026-10-14
+    "scripts/agents_block.py": 250,  # raised: profile --set writes the local override + install-global syncs the canonical profile, 2026-10-16; pre-commit hook install/uninstall/check, 2026-10-16 (after install-global --profile + missing-profile notice, 2026-10-16)
     "scripts/migrate_spine.py": 170,
     "scripts/rollup_spine.py": 398,
+    "scripts/url_gate.py": 220,  # raised from the 200 new-file cap: only files touched this turn trigger (turn_activity), 2026-10-16
     "scripts/skill_update.py": 485,  # raised: tree-based freshness + symlink resolution, 2026-10-10
     "scripts/validate_spine.py": 1126,  # raised +1: header-Status acceptance for --fix-moved Status (hint rewrite is line-neutral), 2026-10-16; +43 earlier: criterion-ID rule, criteria()/doc_kind helpers and --fix wiring (logic lives in spine_fix.py), 2026-10-16; +45 earlier: --trackable machine-read contract check, 2026-10-16 (+2 earlier: DoD-checkbox warning)
 }
