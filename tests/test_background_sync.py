@@ -21,6 +21,7 @@ sys.path.insert(0, str(SCRIPTS))
 import agents_block as ab  # noqa: E402
 import background_sync as bg  # noqa: E402
 import fake_bin  # noqa: E402
+import local_servers  # noqa: E402
 import rehook  # noqa: E402
 import session_sync as ss  # noqa: E402
 import sync_schedule as sched  # noqa: E402
@@ -58,6 +59,9 @@ class Base(unittest.TestCase):
         patch.start()
         self.addCleanup(patch.stop)
         self.skill = ss.SKILL_DIR
+        patch = mock.patch.object(local_servers, "scan", return_value=[])  # never read the real process table
+        patch.start()
+        self.addCleanup(patch.stop)
 
     def repo(self, name: str, seed: dict[str, str] | None = None, parent: Path | None = None) -> tuple[Path, Path]:
         """A bare origin plus a clone under ``parent`` (default ~/github), seeded on main."""
@@ -199,12 +203,13 @@ class SyncTest(Base):
         self.assertEqual({c: git(c, "rev-parse", "HEAD") for c in heads}, heads)
         self.assertEqual((dirty / "README.md").read_text(), "edited\n")
 
-    def test_worker_branches_are_never_pushed_or_flagged(self) -> None:
+    def test_worker_branches_are_backed_up_not_flagged(self) -> None:
         bare, clone = self.repo("w")
         git(clone, "checkout", "-q", "-b", "wt-task")
         commit(clone, "mine", "x")
-        self.assertEqual(self.entry(clone)["attention"], [])
-        self.assertEqual(git(bare, "branch", "--list", "wt-task"), "")
+        entry = self.entry(clone)
+        self.assertEqual((entry["attention"], entry["branches_pushed"]), ([], 1))
+        self.assertEqual(git(bare, "rev-parse", "wt-task"), git(clone, "rev-parse", "wt-task"))
 
     def test_gate_installed_only_where_epicspine_is_used_and_no_blocks_are_written(self) -> None:
         with_spine = self.repo("spine", {"docs/EPIC.md": SPINE, "AGENTS.md": "Root spine: docs/EPIC.md. Read it.\n"})[1]

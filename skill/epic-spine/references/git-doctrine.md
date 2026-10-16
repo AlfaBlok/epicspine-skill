@@ -6,10 +6,10 @@ Stay in `main`. One integration line — `main` — is where every accepted chan
 
 ## Worker Flow
 
-- Start from a clean `main` and create one local worktree: `git worktree add ../wt-<task> -b wt/<task> main`. No remote branch by default.
+- Start from a clean `main` and create one local worktree: `git worktree add ../wt-<task> -b wt/<task> main`. No remote branch while it is in flight; one not integrated by task end is pushed (`git push -u origin wt/<task>`) and reported, never left local-only.
 - Do all edits, commits, and checks only in the worktree. Never edit the primary checkout.
 - Commit with conventional, scoped messages; keep each commit coherent.
-- Hand off the branch name, commit SHAs, and verification evidence. Do not push, open a PR, or merge unless the manager or user says so.
+- Hand off the branch name, commit SHAs, and verification evidence. Do not push, open a PR, or merge unless the manager or user says so; the manager pushes a branch that is not integrated by task end.
 - Keep the branch short-lived. It exists only until the manager integrates or discards it.
 
 ## Manager Integration Flow

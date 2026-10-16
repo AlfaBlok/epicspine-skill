@@ -2,7 +2,9 @@
 
 A **sweep** is a cheap standard WORKER task that reclaims disk from finished git worktrees and local branches. It is not a role and not part of integration. The delivery manager owns the schedule and the record; the user only talks to the manager.
 
-Normal-path hygiene is not a sweep: after integrating a worker, the manager removes its worktree and local branch (`git worktree remove`, `git branch -d`, `git worktree prune`). A sweep is the backstop for what slipped through.
+Normal-path hygiene is not a sweep: after integrating a worker, the manager stops any server started from its worktree, then removes the worktree and local branch (`git worktree remove`, `git branch -d`, `git worktree prune`). A worker branch not integrated by task end is pushed to origin (`git push -u origin <branch>`) and reported, never left local-only: other machines see only what is pushed. A sweep is the backstop for what slipped through.
+
+The 15-minute background job (`scripts/local_mess.py`) backs this up without deleting anything: it pushes local-only branches (never forced; `EPICSPINE_PUSH_BRANCHES=off` or `Push branches: off` in AGENTS.md opts out) and reports as `EpicSpine attention:` lines worktrees idle > 3 days and unmerged, merged clean ones (safe to remove), tracked changes uncommitted > 24 h and http servers running > 24 h inside a worktree. Act on them: merge or remove, commit or discard, stop the server.
 
 ## When To Dispatch A Sweep
 
