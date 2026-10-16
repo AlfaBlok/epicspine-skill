@@ -52,18 +52,19 @@ class GlobalInstallTest(unittest.TestCase):
             self.assertIn("print-hook", json.dumps(data["hooks"]["SessionStart"]))
         self.assertFalse((self.home / ".codex/settings.json").exists())
 
-    def test_install_notices_missing_machine_profile_and_profile_flag_writes_it(self) -> None:
-        notice = "machine dispatch profile missing (~/.agents/epicspine-profile.md)"
+    def test_install_syncs_canonical_profile_and_profile_flag_is_a_local_override(self) -> None:
         profile = self.home / ".agents" / "epicspine-profile.md"
+        local = self.home / ".agents" / "epicspine-profile.local.md"
+        canonical = (ab.SKILL_DIR / "assets" / "epicspine-profile.md").read_text()
         code, out = self.run_cmd("install-global")
-        self.assertIn(notice, out)
-        self.assertFalse(profile.exists())  # never a default model
+        self.assertIn("machine dispatch profile installed from the skill", out)
+        self.assertEqual(profile.read_text(), canonical)
+        self.assertNotIn("installed from the skill", self.run_cmd("install-global")[1])
         code, out = self.run_cmd("install-global", "--profile", "model: sonnet")
-        self.assertNotIn(notice, out)
         self.assertIn("Dispatch profile: model: sonnet", out)
-        self.assertEqual(profile.read_text(), "Dispatch profile: model: sonnet\n")
-        self.assertNotIn(notice, self.run_cmd("install-global")[1])
-        self.assertNotIn(notice, self.run_cmd("check-global")[1])
+        self.assertEqual(local.read_text(), "Dispatch profile: model: sonnet\n")
+        self.assertEqual(profile.read_text(), canonical)
+        self.assertNotIn("missing", self.run_cmd("check-global")[1])
 
     def test_pasted_file_is_pointer_to_live_block(self) -> None:
         self.run_cmd("install-global")
@@ -406,7 +407,7 @@ class HookHealTest(unittest.TestCase):
     def hook(self, **env: str) -> dict:
         proc = subprocess.run(
             [sys.executable, "-B", str(SCRIPT), "print-hook"], text=True, capture_output=True, timeout=30,
-            env={**os.environ, "HOME": self._tmp.name, "CLAUDE_CONFIG_DIR": str(self.cdir), **env})
+            env={**os.environ, "HOME": self._tmp.name, "CLAUDE_CONFIG_DIR": str(self.cdir), "EPICSPINE_SYNC": "off", **env})
         self.assertEqual((proc.returncode, proc.stderr), (0, ""))
         out = json.loads(proc.stdout)
         self.assertEqual(out["hookSpecificOutput"]["hookEventName"], "SessionStart")
@@ -425,7 +426,7 @@ class HookHealTest(unittest.TestCase):
         file.write_text(self.OLD)
         subprocess.run([sys.executable, "-B", str(SCRIPT), "print-hook"], capture_output=True, timeout=30,
                        env={**{k: v for k, v in os.environ.items() if k != "CLAUDE_CONFIG_DIR"},
-                            "HOME": self._tmp.name})
+                            "HOME": self._tmp.name, "EPICSPINE_SYNC": "off"})
         self.assertEqual(file.read_text(), ab.global_install.render_pointer())
 
     def test_current_pointer_untouched(self) -> None:
@@ -463,6 +464,9 @@ class HookHealTest(unittest.TestCase):
         ctx = self.hook()["hookSpecificOutput"]["additionalContext"]
         self.assertNotIn("Machine dispatch profile missing", ctx)
         self.assertEqual(ctx, ab.global_install.render_global())
+        profile.unlink()
+        profile.with_name("epicspine-profile.local.md").write_text("Dispatch profile: mine\n")
+        self.assertNotIn("Machine dispatch profile missing", self.hook()["hookSpecificOutput"]["additionalContext"])
 
     def test_hook_payload_without_env_never_writes(self) -> None:
         self.file.write_text(self.OLD)

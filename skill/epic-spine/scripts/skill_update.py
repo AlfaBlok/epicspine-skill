@@ -347,7 +347,8 @@ def cmd_upgrade(args) -> int:
 
     pf = pin_path(skill_dir)
     pin = read_pin(pf)
-    tree, head, error = tree_info(args.source, args.ref, timeout=180)
+    timeout = getattr(args, "timeout", 180)
+    tree, head, error = tree_info(args.source, args.ref, timeout=timeout)
     if error:
         sys.stderr.write(f"upgrade failed: {error}\n")
         return 1
@@ -364,7 +365,7 @@ def cmd_upgrade(args) -> int:
     try:
         proc = git(
             ["clone", "--depth", "1", "--branch", args.ref, "--single-branch", args.source, str(clone)],
-            timeout=180,
+            timeout=timeout,
         )
         if proc.returncode != 0:
             sys.stderr.write(f"upgrade failed: clone error: {proc.stderr.strip()}\n")

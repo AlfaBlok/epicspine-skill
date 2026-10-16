@@ -16,7 +16,13 @@ Harnesses do not share a skills folder. To run one copy everywhere, keep the rea
 - `unknown` — network or git failure. Exit 0, nothing modified, never raises.
 - `linked` — the real (symlink-resolved) skill dir is inside a git work tree (source checkout or vendored copy in a repo), or a `.SOURCE` pin marks a vendored copy. Report only; never upgraded here.
 
+## Session self-sync
+
+The SessionStart hook already updates the skill, the machine profile and the current repo, so an agent rarely upgrades by hand: `references/session-sync.md`.
+
 ## Automatic policy
+
+The hook handles the routine path; this section applies to a manual check.
 
 The delivery manager runs `skill_update.py status` at bind. It is cheap: at most one remote check per window (default 1 day, tunable with `--window-days`; `--force` ignores it); within the window the answer is the pin's last verdict (`latest:` vs `tree:`) with no network call. A check is a blobless clone (`--filter=blob:none --no-checkout`) reading `HEAD:skill/epic-spine`. Setting `Skill updates:` in the root spine or `AGENTS.md`:
 

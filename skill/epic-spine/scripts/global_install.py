@@ -15,6 +15,7 @@ import json
 import os
 import re
 import subprocess
+import sys
 import tempfile
 from pathlib import Path
 
@@ -26,6 +27,7 @@ GATE_MARK = 'url_gate.py"'
 HOOK_EVENTS = (("SessionStart", HOOK_MARK), ("Stop", GATE_MARK))
 ENV_KEY = "EPICSPINE_ARTIFACT_HOST"
 MACHINE_FILE = ".agents/epicspine-profile.md"
+LOCAL_FILE = ".agents/epicspine-profile.local.md"  # machine override; the hook never overwrites ~/.agents/epicspine-profile.md while it exists
 PROFILE_WARNING = (f"Machine dispatch profile missing (~/{MACHINE_FILE}): before the first dispatch, ask the user once "
                    "which worker model to use and save it with `agents_block.py profile --set`; until then do not "
                    "let workers silently inherit the manager's model.")
@@ -52,18 +54,33 @@ def render_pointer() -> str:
 
 
 def profile_missing(home: Path | None = None) -> bool:
-    return not ((home or Path.home()) / MACHINE_FILE).is_file()
+    home = home or Path.home()
+    return not ((home / MACHINE_FILE).is_file() or (home / LOCAL_FILE).is_file())
 
 
 def hook_payload(env: dict | None = None) -> str:
     """SessionStart JSON; given ``env`` (the hook), also heal the user-level pasted copy."""
+    notes: list[str] = []
     if env is not None:
         heal(env)
+        notes = sync(env)
         heal_repo()
     ctx = render_global()
     if profile_missing():
         ctx = ctx.rstrip("\n") + "\n" + PROFILE_WARNING + "\n"
+    if notes:
+        ctx = ctx.rstrip("\n") + "\n" + "\n".join(notes) + "\n"
     return json.dumps({"hookSpecificOutput": {"hookEventName": "SessionStart", "additionalContext": ctx}})
+
+
+def sync(env: dict) -> list[str]:
+    """SessionStart self-sync (skill, dispatch profile, current repo; see session_sync.py): context lines, never raises."""
+    try:
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        import session_sync
+        return session_sync.run(env)
+    except Exception:
+        return []
 
 
 def heal_repo() -> None:

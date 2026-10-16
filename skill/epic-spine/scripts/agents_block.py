@@ -33,6 +33,7 @@ BLOCK_RE = global_install.BLOCK_RE
 BEGIN_RE = re.compile(r"<!-- epicspine:begin (.*?) -->")
 PROFILE_RE = re.compile(r"^Dispatch profile:[ \t]*(\S.*?)[ \t]*$", re.MULTILINE)
 MACHINE_FILE = global_install.MACHINE_FILE
+LOCAL_FILE = global_install.LOCAL_FILE
 ROOT_RE = re.compile(r"^Root spine: (.*?)\. Read its", re.MULTILINE)
 # Old full blocks: rules 3 (workers) and 4 (integrate) that are not the stock text are repo-specific.
 CUSTOM_RULE_RE = re.compile(
@@ -160,13 +161,13 @@ def check(repo: Path) -> int:
 
 
 def profile(repo: Path, home: Path, text: str | None) -> int:
-    """Print the effective dispatch profile (repo override, machine file, unset); exit 3 if unset."""
-    machine = home / MACHINE_FILE
-    if text is not None:
+    """Print the effective dispatch profile (repo override, local override, synced machine file, unset); exit 3 if unset."""
+    machine, local = home / MACHINE_FILE, home / LOCAL_FILE
+    if text is not None:  # an explicit local choice; the SessionStart sync never overwrites it
         line = "Dispatch profile: " + " ".join(text.split())
-        machine.parent.mkdir(parents=True, exist_ok=True)
-        machine.write_text(line + "\n", encoding="utf-8")
-        print(f"{line} (wrote ~/{MACHINE_FILE})")
+        local.parent.mkdir(parents=True, exist_ok=True)
+        local.write_text(line + "\n", encoding="utf-8")
+        print(f"{line} (wrote ~/{LOCAL_FILE})")
         return 0
     agents = repo / AGENTS_NAME
     files = [agents]
@@ -174,10 +175,10 @@ def profile(repo: Path, home: Path, text: str | None) -> int:
     if root:
         files.insert(0, repo / root.group(1))
     sources = [(f, f"repo {f.relative_to(repo) if f.is_relative_to(repo) else f}") for f in files]
-    sources.append((machine, f"machine ~/{MACHINE_FILE}"))
+    sources += [(local, f"local ~/{LOCAL_FILE}"), (machine, f"machine ~/{MACHINE_FILE}")]
     for path, label in sources:
         match = PROFILE_RE.search(path.read_text(encoding="utf-8")) if path.is_file() else None
-        if match and (path == machine or match.group(1).lower() != "default"):
+        if match and (path in (machine, local) or match.group(1).lower() != "default"):
             print(f"Dispatch profile: {match.group(1)} (source: {label})")
             return 0
     print("unset")
@@ -235,6 +236,9 @@ def main(argv: list[str] | None = None) -> int:
     if action == "install":
         if args.profile is not None:
             profile(Path("."), home, args.profile)
+        import session_sync
+        if session_sync.sync_profile(home):
+            print(f"machine dispatch profile installed from the skill (~/{MACHINE_FILE})")
         if global_install.profile_missing(home):
             print(f"machine dispatch profile missing (~/{MACHINE_FILE}): set it with `agents_block.py profile --set TEXT` "
                   "or `install-global --profile TEXT`; until then workers may inherit the manager's model")
