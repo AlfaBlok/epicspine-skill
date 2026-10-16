@@ -78,6 +78,7 @@ HARDEN — deferred until the human approves SHIP:
 
 ## Current State
 
+Status: ready
 Phase: planning
 Fresh base commit: d6a6d026430bab11430986a9258f85844564f8b4
 Pinned-base rule: pinned; no rebases until the journey passes.

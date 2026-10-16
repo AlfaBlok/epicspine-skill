@@ -50,6 +50,7 @@ Acceptance is the local Python CLI and documentation package. No live product ex
 
 ## Current State
 
+Status: done
 Phase: review
 Integration target: codex/audit-remediation
 Fresh base commit: df3908e568b12f10abb3182027f9c6f1a35d4699 (frozen implementation acceptance revision)

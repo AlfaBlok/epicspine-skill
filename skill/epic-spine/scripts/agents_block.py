@@ -6,7 +6,7 @@ Stdlib only, Python 3.10+. Repo ``install``/``check``/``uninstall`` write the th
 block) into AGENTS.md. ``install`` also refreshes harness mirrors that already exist
 (CLAUDE.md, GEMINI.md: ``@AGENTS.md`` pointer; ``.cursor/rules/epicspine.mdc``,
 ``.github/copilot-instructions.md``: copy) and creates them only with ``--mirrors``;
-it migrates an old full block. Existing content is kept; reruns change nothing.
+it migrates an old full block and installs a pre-commit hook (gate: ``--trackable``). Existing content is kept; reruns change nothing.
 ``*-global`` write a pointer to the global block plus each harness's session-start hook
 (``--no-hooks`` opts out); see global_install.py. ``print-hook``/``print-global`` emit the live block.
 """
@@ -16,6 +16,7 @@ from __future__ import annotations
 import argparse
 import os
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -37,6 +38,8 @@ ROOT_RE = re.compile(r"^Root spine: (.*?)\. Read its", re.MULTILINE)
 CUSTOM_RULE_RE = re.compile(
     r"^(?!3\. Workers: use the root spine's|4\. Integrate: verify diff and checks yourself, "
     r"fast-forward main, run tests, revert on red, remove the worktree\.$)[34]\. .*$", re.MULTILINE)
+HOOK_MARK = "# epicspine:pre-commit"
+HOOK_SKILLS = ('"$HOME/.agents/skills/epic-spine"',)  # stable fallback if the install-time path moves
 CARRIED_HEAD = "Carried over from the old EpicSpine block (repo-specific; fold into the root spine's `Dispatch profile:` / `Integration policy:`, then delete):"
 
 
@@ -51,6 +54,31 @@ def render(root_spine: str) -> str:
 
 def pointer() -> str:
     return f"<!-- epicspine:begin {block_id()} -->\n@{AGENTS_NAME}\n<!-- epicspine:end -->\n"
+
+
+def hook_path(repo: Path) -> Path | None:
+    """The repo's pre-commit hook path (honors core.hooksPath); None outside a git repo."""
+    done = subprocess.run(["git", "-C", str(repo), "rev-parse", "--git-path", "hooks/pre-commit"], capture_output=True, text=True)
+    return repo / done.stdout.strip() if done.returncode == 0 and done.stdout.strip() else None
+
+
+def hook_text() -> str:
+    skills = " ".join((f'"{SKILL_DIR}"', *HOOK_SKILLS))
+    return (f"#!/bin/sh\n{HOOK_MARK} (managed by agents_block.py; logic lives in the skill; commits need --trackable spines/tickets)\n"
+            f'for s in {skills}; do\n  [ -f "$s/scripts/pre_commit.py" ] && exec python3 "$s/scripts/pre_commit.py" "$@"\ndone\nexit 0\n')
+
+
+def install_hook(repo: Path) -> None:
+    hook = hook_path(repo)
+    if hook is None:
+        return
+    old = hook.read_text(encoding="utf-8", errors="replace") if hook.is_file() else None
+    if old is not None and HOOK_MARK not in old:
+        print(f"pre-commit: foreign hook at {hook}; EpicSpine trackable gate not installed")
+    elif old != hook_text():
+        hook.parent.mkdir(parents=True, exist_ok=True)
+        hook.write_text(hook_text(), encoding="utf-8")
+        hook.chmod(0o755)
 
 
 def install(repo: Path, root_spine: str | None = None, mirrors: bool = False) -> int:
@@ -74,6 +102,7 @@ def install(repo: Path, root_spine: str | None = None, mirrors: bool = False) ->
             path.write_text(CURSOR_HEAD + block, encoding="utf-8")
         else:
             global_install.upsert(path, pointer() if name in POINTERS else block)
+    install_hook(repo)
     return 0
 
 
@@ -83,6 +112,9 @@ def uninstall(repo: Path) -> int:
         global_install.remove(path)
         if name.endswith(".mdc") and path.is_file() and path.read_text(encoding="utf-8") == CURSOR_HEAD.rstrip("\n") + "\n":
             path.unlink()
+    hook = hook_path(repo)
+    if hook and hook.is_file() and HOOK_MARK in hook.read_text(encoding="utf-8", errors="replace"):
+        hook.unlink()
     return 0
 
 
@@ -119,6 +151,9 @@ def check(repo: Path) -> int:
         want = pointer() if name in POINTERS else expected_full
         if found and want and found.group(0) + "\n" != want:
             problems.append(f"{name}: block is stale or edited")
+    hook = hook_path(repo)
+    if hook and not hook.exists():
+        print("note: pre-commit trackable gate not installed (run install); not a failure")
     for problem in problems:
         print(problem)
     return 1 if problems else 0

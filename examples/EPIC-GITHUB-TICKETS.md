@@ -47,6 +47,7 @@ Demonstrate the existing GitHub ticket backend using a synthetic offline issue s
 
 ## Current State
 
+Status: ready
 Phase: implementation
 Next action: Run validation.
 

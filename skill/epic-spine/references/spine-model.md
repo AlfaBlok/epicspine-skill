@@ -34,7 +34,7 @@ Dashboards and tools read only these; keep them exact, and write everything else
 - `## Issue Ledger`: the table with columns Issue, Title, Owner (`Owner / Assignment` is fine) and Status; Status is one of draft / ready / active / blocked / done / deferred. A local-backend ledger is reference-only and carries no Status.
 - Other work tables are not read.
 
-`validate_spine.py` warns when Definition Of Done has no checkbox; a github ledger without Status already fails (`references/structural-validation.md`).
+Enforcement is `validate_spine.py --trackable` (valid Status, a DoD/acceptance checkbox, a ledger Status column — or valid ticket-file Status for local), run by the repo's pre-commit hook; `--strict` stays advisory there. `validate_spine.py` also warns when Definition Of Done has no checkbox; a github ledger without Status already fails (`references/structural-validation.md`).
 
 ## Authority By Artifact
 

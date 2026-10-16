@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased — trackable gate
+
+- `validate_spine.py --trackable [--json]` checks only the machine-read contract: Current State `Status:` (tickets: `Status:`) in draft/ready/active/blocked/done/deferred, ≥1 checkbox under Definition Of Done (tickets: `## Acceptance`/`## Acceptance Criteria`), and a ledger Status column (local backend: every referenced ticket file has a valid Status instead). Independent of `--strict`; exit 0 iff all pass; JSON is a per-file list of `path`/`trackable`/`missing`/`warnings`.
+- `agents_block.py install` writes a pre-commit hook (honors `core.hooksPath`, never replaces a foreign hook, `uninstall` removes only ours; `check` notes its absence without failing) that runs the new `scripts/pre_commit.py`: staged spine/ticket `.md` must be trackable (blocks); `--strict` is printed as advice only. Local-ticket examples and four fixtures gained a Status/checkbox. Skill 2026.10.16.3.
+
 ## Unreleased — machine profile gap
 
 - The SessionStart hook (`print-hook`) appends a warning line when `~/.agents/epicspine-profile.md` is missing (ask the user once, save with `profile --set`; workers must not silently inherit the manager's model); no warning when it exists. `install-global` prints a notice when it is missing, and `--profile TEXT` writes it via the `profile --set` path; no default model is ever written. Skill 2026.10.16.2.

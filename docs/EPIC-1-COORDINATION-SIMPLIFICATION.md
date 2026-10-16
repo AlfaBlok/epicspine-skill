@@ -44,6 +44,7 @@ Reduce duplicated current state and manual synchronization while preserving evid
 
 ## Current State
 
+Status: done
 Phase: review
 Last verified: 2026-09-06
 Integration target: codex/coordination-simplification
