@@ -22,9 +22,9 @@ Status: active
 Last attempted: 2026-10-19 epic log (handoff docs/handoffs/2026-10-19-spine-conformance.md): goal definition, `spine_new`, tree gate and `spines --json` dispatched to a worker on wt/epic-log. Release history lives in CHANGELOG.md; the long state text before this date is in this file's git history.
 Result: main @ 7c49977: 488 tests OK (1 skipped).
 Evidence: CHANGELOG.md 2026.10.16.13
-Waiting on: EPIC-3 (worker wt/epic-log round 2)
-Approved work: EPIC-3 Epic log (its ledger holds the tickets)
-Next action: drive EPIC-3; then align this root's DoD with the tree model.
+Waiting on: EPIC-3 (merge of wt/epic-log round 2) and EPIC-4 step 1 (Doctrine 2 text)
+Approved work: EPIC-3 Epic log and EPIC-4 Doctrine 2 (their ledgers hold the tickets)
+Next action: orchestrate EPIC-3 and EPIC-4 from this thread; then bring this root to Doctrine 2 (EPIC-4 step 5).
 Source revision: main @ 7c49977
 Verified at: 2026-10-19
 
@@ -53,6 +53,7 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 - L-11 | reviewing | Verify worker output on two independent axes—repo standards (tests, validators, conventions, lean) and the spec (the ticket's acceptance)—against the repository and diff, never from the worker's summary | user approved comparison adoption | confirmed 2026-10-09
 - L-12 | integrating | `main-direct` is the default for every repo; PR/CI only for the declared `Deploy gate:` paths/workflows/branches whose push to main rolls a complex production deployment (e.g. zenod), never the whole repo; docs-only, additive and research changes stay main-direct | user doctrine 2026-10-16 | confirmed 2026-10-16
 - L-13 | any task | The delivery manager keeps the epic tree and the Book coherent: every new ask is placed in the tree (an existing goal, or a new leaf under the right parent) before work starts; at every launch, dispatch and record it resolves contradictions and writes the reasoning (Decisions) and current state | user doctrine 2026-10-19 | confirmed 2026-10-19
+- L-14 | doctrine | epicspine-skill owns the EpicSpine doctrine and orchestrates it from here; agent_team complies when its console reads repos; each repo applies the doctrine to its own spines in its own thread; learn what we are trying to accomplish here | Jordi 2026-10-19 | confirmed 2026-10-19
 
 **Scoped index**: none yet.
 
@@ -153,3 +154,4 @@ Landing exceptions: No slide for quick answers, transient status, raw logs, tick
 | epicspine-audit-remediation | child | [EPIC-0 Audit remediation](EPIC-0-AUDIT-REMEDIATION.md) | Audit remediation delivery | done | none | PR #16 | 2026-10-09 | Reference only; reopen if scope resumes |
 | epicspine-coordination-simplification | child | [EPIC-1 Coordination simplification](EPIC-1-COORDINATION-SIMPLIFICATION.md) | Compact state and trustworthy rollups | done | none | PR #22 | 2026-10-09 | Reference only; reopen if scope resumes |
 | epicspine-epic-log | child | [EPIC-3 Epic log](EPIC-3-EPIC-LOG.md) | Every goal is a coded EPIC in one tree per repo, kept true by agents | active | none | wt/epic-log r2 | 2026-10-19 | verify r2, merge, migrate poly-maker |
+| epicspine-doctrine-2 | child | [EPIC-4 Doctrine 2 semantic goal tree](EPIC-4-DOCTRINE-2.md) | Contributes the human layer: each spine says what it achieves, how it serves its parent and what its children add; agent_team shows it | ready | none | none | 2026-10-19 | step 1: Doctrine 2 text for Jordi's approval |
