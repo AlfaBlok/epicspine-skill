@@ -18,7 +18,11 @@ How to create and register a spine, roll up children, keep the execution cursor,
 
 ## Spine Creation And Registration
 
-Creating a spine is a relationship change, not just a file write:
+Creating a spine is a relationship change, not just a file write. Every goal doc (plan, proposal, epic, `E<n>-*`) is a goal file from its first commit, and the scaffold does steps 2-5 and the registration in one command:
+
+`python3 scripts/spine_new.py --repo . --parent <parent spine path or Spine ID> --path <new file> --title "<title>" [--purpose "<p>"]`
+
+It writes a valid v1 compact header (Spine Type `branch`, Root/Parent spine), `Status: draft`, a checkbox Definition Of Done and Issue Ledger, and adds the Spine Map row (creating the section). It never overwrites an existing file; run again to register an existing spine. A goal small enough to be one DoD line in its parent is not a file (`references/spine-model.md`, Epic Log). The steps below are the rules it follows and what you fill in afterwards:
 
 1. Search the existing Spine Maps and choose the narrowest parent whose mission contains the new work.
 2. Prefer branching under the canonical root. Create another root only when the ambition is intentionally independent, and record an Additional Root Rationale.

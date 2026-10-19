@@ -3,7 +3,8 @@
 ``validate_spine.py --trackable``. A fixable file with no unstaged changes is fixed (``--fix``) and re-staged; with
 unstaged changes it blocks with the exact fix command; it also blocks when only a guess would fix it. ``--strict``
 is advisory (printed, never blocks). A staged ``.md`` is a spine if it has ``## Current State`` or ``Spine ID:``,
-a ticket if it has ``Ticket ID:``."""
+a ticket if it has ``Ticket ID:``. A goal doc (``spines.is_goal``) must also be a consistent node of the epic log: a
+v1 header, reachable from the root, agreeing with its parent's Spine Map (``spine_new.py``); a repo with no root spine only warns."""
 
 from __future__ import annotations
 
@@ -15,6 +16,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import spine_fix  # noqa: E402
+import spines  # noqa: E402
 import validate_spine as v  # noqa: E402
 
 
@@ -30,7 +32,7 @@ def main() -> int:
     top = git("rev-parse", "--show-toplevel").stdout.strip()
     if top:
         os.chdir(top)
-    blocked = False
+    blocked, cache, warned = False, {}, False
     for name in filter(None, git("diff", "--cached", "--name-only", "--diff-filter=ACMR", "-z").stdout.split("\0")):
         path = Path(name)
         if not (name.endswith(".md") and path.is_file()):
@@ -38,6 +40,14 @@ def main() -> int:
         raw = path.read_bytes()
         text = raw.decode("utf-8", errors="replace")
         kind = v.doc_kind(text)
+        if spines.is_goal(Path.cwd(), path, text):
+            tree = spines.problems(Path.cwd(), path, cache)
+            if tree is None and not warned:
+                warned = True
+                say("no root spine: goal docs are not checked against the epic log")
+            elif tree:
+                blocked = True
+                say(f"{name}: not in the epic log: " + "; ".join(tree) + f". Fix: python3 {HERE / 'spine_new.py'} --repo . --parent <parent spine> --path {name} --title <title> (new doc), or add the v1 header + a parent Spine Map row (existing doc)")
         if kind is None:
             continue
         result, hint = v.trackable(path), ""

@@ -41,7 +41,7 @@ Binding fields, one compact line: role | bound spine | bound issue | steward | h
 
 | Read when the task involves… | Load |
 |---|---|
-| Creating a spine | `references/spine-creation.md`, `assets/epic-spine-template.md`, `assets/compact-spine-template.md` |
+| Creating a spine, any plan/proposal/epic/goal doc, or listing the repo's goals | `references/spine-creation.md`, `scripts/spine_new.py`, `scripts/spines.py`, `assets/epic-spine-template.md`, `assets/compact-spine-template.md` |
 | Hierarchy, authority, write scope, profiles | `references/spine-model.md` |
 | Compact profile, state API, migration | `references/compact-state.md`, `scripts/migrate_spine.py` |
 | Rollups and projections | `references/execution-rollups.md`, `scripts/rollup_spine.py` |
@@ -60,11 +60,16 @@ Binding fields, one compact line: role | bound spine | bound issue | steward | h
 | A shortlist / selection of candidates is a key deliverable | `references/shortlists.md`, `scripts/build_shortlist.py`, `assets/shortlist.template.html`, `assets/shortlist-sample.json` |
 | Repairing a spine or changing the workflow itself | `references/operating-model.md` |
 | Any worker dispatch | `assets/dispatch-prompt-preamble.md` |
-| Always-on block: repo files, or once per machine (`install-global`: per-harness pointer + session hook) | `assets/agents-block.md`, `assets/global-block.md`, `scripts/agents_block.py`, `scripts/global_install.py`, `scripts/url_gate.py`, `scripts/pre_commit.py` (repo hook, self-installed each session: staged spines/tickets are auto-fixed or must pass `validate_spine.py --trackable`) |
+| Always-on block: repo files, or once per machine (`install-global`: per-harness pointer + session hook) | `assets/agents-block.md`, `assets/global-block.md`, `scripts/agents_block.py`, `scripts/global_install.py`, `scripts/url_gate.py`, `scripts/pre_commit.py` (repo hook, self-installed each session: staged spines/tickets are auto-fixed or must pass `validate_spine.py --trackable`; a goal doc must also sit in the epic log) |
 
 ## Machine Dispatcher
 
 Every thread's first turn, greetings included, check the env (`echo "$EPICSPINE_DISPATCHER"`; never assume unset). If set, run it directly: `status` at thread start, bind suffix `· dispatch: <status.name> (<status.available>/<status.capacity> seats)` with the name verbatim, never invented; per worker `pick --task TEXT`, `delegate_task` with its `providerInstanceId`, then `done <id>` (`--fail --signal TEXT` on failure). `id: null` = queue and retry. Command fails or prints garbage: say so, use a native subagent. Repo `Dispatch profile: local-only` opts out. Contract: `references/machine-dispatcher.md`.
+
+## Epic Log
+
+A repo has one **epic log**: a tree of goals hung from the root spine (the trunk, which states the purpose). A goal is a node under the root or another goal. It gets its own spine **file** when it has its own DoD, children, or spans sessions; otherwise it is a `- [ ] <ID> text` DoD line inside its parent. The child's `Parent spine:` header decides its place; the parent's Spine Map must agree (checked, not trusted); parent state rolls up from children.
+Create every goal file (plan, proposal, epic, `E<n>-*`) with `scripts/spine_new.py`, from its first commit, never by hand; `scripts/spines.py [--json]` lists the tree, orphans and mismatches; the pre-commit gate blocks a goal doc outside the tree. "On latest EpicSpine" means installed **and** docs conform. `references/spine-model.md`
 
 ## Spine Document Minimums
 

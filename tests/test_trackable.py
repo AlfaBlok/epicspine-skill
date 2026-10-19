@@ -306,8 +306,8 @@ class PreCommitHookTests(unittest.TestCase):
         cmd = ["git", "-c", "user.name=t", "-c", "user.email=t@t", *args]
         return subprocess.run(cmd, cwd=self.repo, capture_output=True, text=True)
 
-    def install(self) -> None:
-        agents_block.install(self.repo, "docs/EPIC.md")
+    def install(self, root: str = "docs/EPIC.md") -> None:
+        agents_block.install(self.repo, root)
 
     @property
     def hook(self) -> Path:
@@ -355,7 +355,7 @@ class PreCommitHookTests(unittest.TestCase):
         self.assertEqual(0, code)
 
     def test_commit_gated_on_trackable_only(self) -> None:
-        self.install()
+        self.install("none")  # no root spine: the epic-log tree gate only warns (test_epic_log.py), this tests the trackable gate
         self.git("add", "-A")
         self.assertEqual(0, self.git("commit", "-m", "base").returncode)
         spine = self.repo / "docs/S.md"
@@ -380,7 +380,7 @@ class PreCommitHookTests(unittest.TestCase):
         return subprocess.run(cmd, cwd=cwd or self.repo, capture_output=True, text=True)
 
     def test_auto_fix_commits_compliant_text(self) -> None:
-        self.install()
+        self.install("none")  # no root spine: the epic-log tree gate only warns (test_epic_log.py), this tests the trackable gate
         sub = self.repo / "docs"
         done = self.commit("docs/S.md", SPINE.format(**{**GOOD, "done": "1. ship\n- verify", "status": "in progress"}), cwd=sub)
         self.assertEqual(0, done.returncode, done.stderr)

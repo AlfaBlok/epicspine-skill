@@ -15,6 +15,24 @@ Treat every EpicSpine as a node in a canonical ownership hierarchy:
 
 `AGENTS.md`, repository instructions, and launch prompts may route a cold start to the root spine. They must not duplicate live project state. The root spine is the canonical starting point; agents follow its active-branch links until reaching the spine bound to their work.
 
+## Epic Log
+
+Wording: the root spine is the trunk; a goal (epic) is a node; the **epic log** is the one tree per repo. Files and header fields keep their names.
+
+- A goal hangs from the root spine (which states the repo's purpose) or from another goal. It gets its own spine file when it has its own DoD, its own children, or spans sessions; otherwise it is a `- [ ] <ID> text` line in its parent's Definition Of Done.
+- The child's `Parent spine:` header is the structural authority; the parent's Spine Map must list it with the same Spine ID. A disagreement (either way, or a row pointing at a missing file) is a mismatch. Parent state rolls up from children (blocked wins; all children and criteria done = done; any progress = active).
+- Goal doc = a file with a `Spine ID:` line or named `E<n>-*`, `EPIC*`, `*SPINE*`, `*PLAN*` (not under `archive/`, `node_modules`, dot-dirs, `handoffs/`, `examples/`, `fixtures/`, or a vendored skill). One not in the tree is an orphan.
+- Create with `spine_new.py` (`references/spine-creation.md`); `pre_commit.py` blocks a new or changed goal doc that has no valid header, is not reachable from the root, or disagrees with its parent's map (`--trackable` + tree only; `--strict` stays advisory). A repo with `Root spine: none` is warned, never blocked.
+- `spines.py --json --repo DIR` is the discovery contract (console pickers consume it; always exit 0):
+
+```
+{"root": "<path>" | null,
+ "nodes": [{"id", "path", "title", "type", "parent": "<path>" | null, "status", "rollup_status",
+            "dod": [{"id", "text", "done"}], "children": ["<path>", ...]}],   # depth-first from the root; paths are repo-relative
+ "orphans": [{"path", "title", "reason"}],      # goal docs outside the tree
+ "mismatches": [{"path", "parent", "problem"}]} # header/map disagreement, missing map target
+```
+
 ## Spine Versus Issues
 
 Declare `Ticket backend: github|local` (omission defaults to github). GitHub mode retains the existing offline URL/status checks and clearly unverified ledger snapshots. Local mode declares `Ticket root`, uses a reference/dependency-only Issue Ledger, and puts Ticket ID, Status, Owner and Evidence in each authoritative ticket file. Never maintain both a mutable local ticket and copied status cells in its spine. Read `references/ticket-backends.md` for path boundaries, normalized records and verification semantics. No backend choice implies remote access, record migration or new read authority.
