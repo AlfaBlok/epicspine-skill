@@ -41,7 +41,7 @@ Binding fields, one compact line: role | bound spine | bound issue | steward | h
 
 | Read when the task involves… | Load |
 |---|---|
-| Creating a spine, any plan/proposal/epic/goal doc, or listing the repo's goals | `references/spine-creation.md`, `scripts/spine_new.py`, `scripts/spines.py`, `assets/epic-spine-template.md`, `assets/compact-spine-template.md` |
+| Creating a spine, any plan/proposal/epic/goal doc, or listing the repo's goals | `references/spine-creation.md`, `scripts/spine_new.py`, `scripts/spines.py`, `scripts/epic_log.py`, `assets/epic-spine-template.md`, `assets/compact-spine-template.md` |
 | Hierarchy, authority, write scope, profiles | `references/spine-model.md` |
 | Compact profile, state API, migration | `references/compact-state.md`, `scripts/migrate_spine.py` |
 | Rollups and projections | `references/execution-rollups.md`, `scripts/rollup_spine.py` |
