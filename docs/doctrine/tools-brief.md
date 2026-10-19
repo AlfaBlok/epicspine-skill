@@ -34,3 +34,11 @@ Page of [EPIC-4](../EPIC-4-DOCTRINE-2.md), step 3. This is a spec page, not a go
 - `spines.py --json --repo .` on this repo shows EPIC-4's goal, serves, done_means and pages.
 
 **Release:** CHANGELOG, VERSION bump, MANIFEST regenerated from a clean tree (no `__pycache__`). Add `Ready: yes`.
+
+**Handover notes (EPIC-3, 2026-10-19, main 7f9643c):**
+- E3-2 is merged, and the three tool files now belong to EPIC-4.
+- `scripts/epic_log.py` already provides rollup, `--active`, stale, the next code and render. Put page discovery there or in `spines.py`.
+- `background_sync.py` now has a `stale` field per repo.
+- Guard `pre_commit.goal_notes`: a `Superseded by:` link that points outside the repo raises in `Path.relative_to`.
+- Rule 6 of global-block.md already carries the record behaviours and the living-tree rules: `Goal: EPIC-<n>` per ask, close or supersede, stale after 14 days, a warning when Current State passes 12 lines. Do not restate them.
+- Run tests only with an isolated config env until step 9 merges: `env CLAUDE_CONFIG_DIR=$(mktemp -d) CODEX_HOME=$(mktemp -d) XDG_CONFIG_HOME=$(mktemp -d)`.
