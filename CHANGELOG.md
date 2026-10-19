@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026.10.19.3 — Living tree
+
+- **Agents keep the epic log true.** Always-on rule 6 (`global-block.md`): every new ask is placed in the tree before work starts (the reply states `Goal: EPIC-<n>`, an open goal from `spines.py --active` or a new spine from `spine_new.py`); a done goal closes (`Status: done`, parent rolls up); a replaced one gets `Superseded by:`; stale goals flagged at SessionStart are reported, never closed silently.
+- **`spine_new.py` assigns the code**: title `# EPIC-<n>: <title>`, n = highest code among the repo's goal titles (legacy `E4`/`EPIC 0` counted) + 1, never 0 (the root is EPIC-0); `--code N` overrides; DoD IDs `E<n>-`; the parent's (or AGENTS.md) `Integration policy:` is copied.
+- **`spines.py`**: `--active` lists open goals; node JSON gains `superseded_by`, top level gains `stale: [{path, title, days}]` (active/blocked, file's last commit 14+ days old). New helper `epic_log.py` holds rollup, the text views, code and stale logic (spines.py 200 -> under 170 lines).
+- **Gates**: pre-commit blocks a `Superseded by:` link that is no goal doc and warns (never blocks) when a goal's Current State exceeds 12 lines. `session_sync.py` prints one `EpicSpine attention:` line for stale goals (skipped without a root spine). Tests: `tests/test_living_tree.py`. Skill 2026.10.19.3.
+
 ## 2026.10.19.2 — Epic log wording
 
 - **Spines are nested markdowns; leaf-vs-DoD-line is judgment.** Progress within a goal goes in that goal's spine; a new measurable objective worked over iterative pushes (sprint/plan) gets a leaf markdown linked from its parent, a small one-push item stays a DoD line. Every goal is `EPIC-<n>: <short name>`, with a one-line goal and measurable success criteria. **Status words**: `Status:` is the only status source (`Waiting on:` is context, never blocked); `ready` = defined, not started, launching a persona makes it `active`; `deferred` = paused by the user; `blocked` = a named external dependency. SKILL.md Epic Log, `references/spine-model.md`.
