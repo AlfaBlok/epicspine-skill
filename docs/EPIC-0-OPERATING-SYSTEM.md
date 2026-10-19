@@ -1,10 +1,10 @@
-# EPIC-2: EpicSpine operating system
+# EPIC-0: EpicSpine operating system
 
 Spine profile: compact
 Ticket backend: github
 Spine dialect: v1
 Repository: AlfaBlok/epicspine-skill
-Primary document: docs/EPIC-2-OPERATING-SYSTEM.md
+Primary document: docs/EPIC-0-OPERATING-SYSTEM.md
 Spine ID: epicspine-operating-system
 Spine Type: root
 Root spine: self
@@ -34,7 +34,7 @@ Make EpicSpine the lean, automatic-default common ground for agent-assisted work
 
 ## Non-Goals
 
-Not a product or runtime; not a general issue tracker; do not restate the skill's behaviors here (see its Default Behaviors card). EPIC-0 and EPIC-1 keep their own content and history.
+Not a product or runtime; not a general issue tracker; do not restate the skill's behaviors here (see its Default Behaviors card). EPIC-1 and EPIC-2 keep their own content and history.
 
 ## Operating Learnings
 
@@ -54,8 +54,7 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 - L-12 | integrating | `main-direct` is the default for every repo; PR/CI only for the declared `Deploy gate:` paths/workflows/branches whose push to main rolls a complex production deployment (e.g. zenod), never the whole repo; docs-only, additive and research changes stay main-direct | user doctrine 2026-10-16 | confirmed 2026-10-16
 - L-13 | any task | The delivery manager keeps the epic tree and the Book coherent: every new ask is placed in the tree (an existing goal, or a new leaf under the right parent) before work starts; at every launch, dispatch and record it resolves contradictions and writes the reasoning (Decisions) and current state | user doctrine 2026-10-19 | confirmed 2026-10-19
 - L-14 | doctrine | epicspine-skill owns the EpicSpine doctrine and orchestrates it from here; agent_team complies when its console reads repos; each repo applies the doctrine to its own spines in its own thread; learn what we are trying to accomplish here | Jordi 2026-10-19 | confirmed 2026-10-19
-- L-15 | doctrine | The root spine is always EPIC-0 in every repo; child goals are EPIC-1, 2, 3… in creation order; this repo swaps its root (EPIC-2 to EPIC-0) and the done audit epic (EPIC-0 to EPIC-2) | Jordi 2026-10-19 | confirmed 2026-10-19
-- L-16 | doctrine | One abstract tree of objectives AND facts hanging from EPIC-0. Every linked thing is a leaf, and any leaf may have children (epics or pages, any depth). Each leaf has one home parent (where it hangs); other links are references. Unlinked = orphan. Stamping a leaf EPIC-<n> (a.k.a. spine; "milestone" = epic) declares a goal we seek to accomplish and requires the epic sections; an unstamped leaf is a page (facts/notes, no required structure). Anything stating an intent or goal must be an epic, never just a page (advisory check). Status rolls up to the nearest epic ancestor. Learnings are distinct assets (L-<n>, scoped to their epic; on closing an epic each is promoted to the parent or retired). A step is an independently testable mid-outcome required for its epic's measurable outcome, closed only with evidence. No doctrine version line | Jordi 2026-10-19 | confirmed 2026-10-19
+- L-15..L-17 superseded: now skill doctrine (references/spine-model.md, global-block)
 
 **Scoped index**: none yet.
 
@@ -110,8 +109,8 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 | 2026-10-09 | accepted | Learnings tree | Root Always list plus a scoped index; depth is scope. | user decision 2026-10-09 | Learning model changes |
 | 2026-10-09 | accepted | Sweep as a worker brief | Hygiene is a dispatched brief, not a third base role. | user decision 2026-10-09 | Sweep needs its own role |
 | 2026-10-09 | accepted | Skill updates auto | `Skill updates: auto` is the default; upgrade between tasks. | user decision 2026-10-09 | User prefers manual |
-| 2026-10-09 | accepted | EPIC-0 and EPIC-1 closed | Both prior epics are done children of this root; their content is preserved. | user decision 2026-10-09 | Delivery scope resumes |
-| 2026-10-09 | accepted | Root wiring | This compact spine is the single root; EPIC-0 and EPIC-1 are its direct children. | user decision 2026-10-09 | Hierarchy needs re-scoping |
+| 2026-10-09 | accepted | EPIC-2 and EPIC-1 closed | Both prior epics are done children of this root; their content is preserved. | user decision 2026-10-09 | Delivery scope resumes |
+| 2026-10-09 | accepted | Root wiring | This compact spine is the single root; EPIC-2 and EPIC-1 are its direct children. | user decision 2026-10-09 | Hierarchy needs re-scoping |
 | 2026-10-09 | accepted | No unrequested model changes | Every subagent, reviewers included, uses the default profile unless the user asks; fresh context gives review independence. | user decision 2026-10-09 | User names another model |
 | 2026-10-09 | accepted | Serialize MANIFEST-changing merges | One writer per spine and one MANIFEST merge at a time: agents-block landed first, kernel rebases second; the second merge regenerates MANIFEST. | thread collision a0380f46 vs 441c3c64 | Two branches touch MANIFEST |
 | 2026-10-09 | accepted | Comparison adoption fork | Adopt L-9 (resolve decisions before dispatch), L-10 (ready frontier), L-11 (two-axis verification) in our own words from the Pocock/poteto comparison. Guarded by tags checkpoint/pre-adoption (b620d50) and checkpoint/post-adoption, plus contract tests and a dry-run smoke test. Revert = `git revert b620d50..HEAD`, then re-sync the installed skill; never reset public main. | user decision 2026-10-09; thread a0380f46 | Smoke or contract tests regress |
@@ -153,7 +152,7 @@ Landing exceptions: No slide for quick answers, transient status, raw logs, tick
 
 | Spine ID | Relationship | Spine | Purpose | Status | Health / Blocker | Latest Evidence | Last Rolled Up | Next Action |
 |---|---|---|---|---|---|---|---|---|
-| epicspine-audit-remediation | child | [EPIC-0 Audit remediation](EPIC-0-AUDIT-REMEDIATION.md) | Audit remediation delivery | done | none | PR #16 | 2026-10-09 | Reference only; reopen if scope resumes |
+| epicspine-audit-remediation | child | [EPIC-2 Audit remediation](EPIC-2-AUDIT-REMEDIATION.md) | Audit remediation delivery | done | none | PR #16 | 2026-10-09 | Reference only; reopen if scope resumes |
 | epicspine-coordination-simplification | child | [EPIC-1 Coordination simplification](EPIC-1-COORDINATION-SIMPLIFICATION.md) | Compact state and trustworthy rollups | done | none | PR #22 | 2026-10-09 | Reference only; reopen if scope resumes |
 | epicspine-epic-log | child | [EPIC-3 Epic log](EPIC-3-EPIC-LOG.md) | Every goal is a coded EPIC in one tree per repo, kept true by agents | active | none | wt/epic-log r2 | 2026-10-19 | verify r2, merge, migrate poly-maker |
 | epicspine-doctrine-2 | child | [EPIC-4 Doctrine 2 semantic goal tree](EPIC-4-DOCTRINE-2.md) | Contributes the human layer: each spine says what it achieves, how it serves its parent and what its children add; agent_team shows it | ready | none | none | 2026-10-19 | step 1: Doctrine 2 text for Jordi's approval |

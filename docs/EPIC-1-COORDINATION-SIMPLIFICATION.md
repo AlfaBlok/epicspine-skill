@@ -6,8 +6,8 @@ Repository: AlfaBlok/epicspine-skill
 Primary document: docs/EPIC-1-COORDINATION-SIMPLIFICATION.md
 Spine ID: epicspine-coordination-simplification
 Spine Type: branch
-Root spine: [Operating system root](EPIC-2-OPERATING-SYSTEM.md)
-Parent spine: [Operating system root](EPIC-2-OPERATING-SYSTEM.md)
+Root spine: [Operating system root](EPIC-0-OPERATING-SYSTEM.md)
+Parent spine: [Operating system root](EPIC-0-OPERATING-SYSTEM.md)
 Additional root rationale: n/a
 Spine dialect: v1
 Integration branch: codex/coordination-simplification

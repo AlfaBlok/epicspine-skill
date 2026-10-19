@@ -1,6 +1,6 @@
 # EPIC: Local CLI validation example
 
-This is an illustrative, fully populated v2 spine for learning the workflow. Its roles and draft ticket are examples, not actual assignments. Unchecked SHIP steps deliberately make no delivery-completion claim. For live project execution, use [the audit delivery spine](../docs/EPIC-0-AUDIT-REMEDIATION.md).
+This is an illustrative, fully populated v2 spine for learning the workflow. Its roles and draft ticket are examples, not actual assignments. Unchecked SHIP steps deliberately make no delivery-completion claim. For live project execution, use [the audit delivery spine](../docs/EPIC-2-AUDIT-REMEDIATION.md).
 
 Status: ready
 Created: 2026-09-06
