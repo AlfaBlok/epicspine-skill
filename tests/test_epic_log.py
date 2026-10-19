@@ -200,11 +200,29 @@ class DiscoveryTests(EpicLogCase):
         self.write("vendor/epic-spine/assets/t.md", "Spine ID: <id>\n")
         self.write("docs/handoffs/2026-spine-gap.md", "# handoff\n")
         self.write("docs/E7-linked.md", "# linked\n")
+        self.write("console/server/test/real/SPINE-fixture.md", "# fixture\n")
+        self.write("tests/E1-fixture.md", E4)
         self.write("docs/loose.md", "# Loose\n\nSpine ID: loose\n\n## Spine Map\n\n" + MAP_HEAD.split("\n\n", 1)[1] + "| e7 | child | [E7](E7-linked.md) | p | draft | none | none | d | n |\n")
         orphans = {o["path"]: o["reason"] for o in self.log()["orphans"]}
         self.assertEqual({
             "docs/E4-ONE-LOGGER.md": "no Spine ID header", "docs/loose.md": "not reachable from the root",
             "docs/plans/PLAN-x.md": "no Spine ID header", "docs/E7-linked.md": "no Spine ID header"}, orphans)
+
+    def test_repo_relative_links_resolve_like_agent_team(self) -> None:
+        self.new()
+        row = "| e4-one-logger | child | [E4 one logger](docs/spines/m2.md) |"
+        root = (self.repo / "docs/root.md").read_text().replace("| e4-one-logger | child | [E4 one logger](E4-one-logger.md) |", row)
+        child = (self.repo / "docs/E4-one-logger.md").read_text().replace("Parent spine: [Root](root.md)", "Parent spine: docs/spines/root.md")
+        (self.repo / "docs/root.md").unlink()
+        (self.repo / "docs/E4-one-logger.md").unlink()
+        self.write("AGENTS.md", "Root spine: docs/spines/root.md. Read its Current State.\n")
+        self.write("docs/spines/root.md", root)
+        self.write("docs/spines/m2.md", child)
+        log = self.log()
+        self.assertEqual(("docs/spines/root.md", [], []), (log["root"], log["orphans"], log["mismatches"]))
+        by = {n["path"]: n for n in log["nodes"]}
+        self.assertEqual(["docs/spines/m2.md"], by["docs/spines/root.md"]["children"])
+        self.assertEqual("docs/spines/root.md", by["docs/spines/m2.md"]["parent"])
 
     def test_mismatches(self) -> None:
         self.new()
@@ -280,6 +298,36 @@ class PreCommitTreeTests(EpicLogCase):
         self.git("reset", "-q")
         self.write("docs/E8-loose.md", (self.repo / "docs/E4-one-logger.md").read_text().replace("Parent spine: [Root](root.md)", "Parent spine: none"))
         self.assertIn("Parent spine missing or not a file", self.commit("docs/E8-loose.md").stderr)
+
+    def legacy_head(self, name: str = "docs/E4-ONE-LOGGER.md") -> None:
+        self.write(name, E4)
+        self.git("add", "-A")
+        self.assertEqual(0, self.git("commit", "--no-verify", "-m", "legacy").returncode)
+
+    def test_modified_legacy_goal_doc_warns_and_passes(self) -> None:
+        self.legacy_head()
+        done = self.commit("docs/E4-ONE-LOGGER.md", E4 + "\nmore\n")
+        self.assertEqual(0, done.returncode, done.stderr)
+        self.assertIn("docs/E4-ONE-LOGGER.md: not in the epic log", done.stderr)
+        self.assertIn("legacy goal doc, not blocked", done.stderr)
+        self.assertIn("spine_new.py", done.stderr)
+
+    def test_renamed_legacy_goal_doc_is_blocked(self) -> None:
+        self.legacy_head()
+        self.git("mv", "docs/E4-ONE-LOGGER.md", "docs/E5-ONE-LOGGER.md")
+        blocked = self.git("commit", "-m", "mv")
+        self.assertNotEqual(0, blocked.returncode)
+        self.assertIn("docs/E5-ONE-LOGGER.md: not in the epic log", blocked.stderr)
+
+    def test_root_without_spine_id_warns_and_passes(self) -> None:
+        self.write("docs/EPIC.md", "# EPIC\n\n## Current State\n\nOwner: me\n")
+        self.write("AGENTS.md", (self.repo / "AGENTS.md").read_text().replace("Root spine: docs/root.md.", "Root spine: docs/EPIC.md."))
+        self.git("add", "-A")
+        self.assertEqual(0, self.git("commit", "--no-verify", "-m", "legacy root").returncode)
+        done = self.commit("docs/E4-ONE-LOGGER.md", E4)
+        self.assertEqual(0, done.returncode, done.stderr)
+        self.assertIn("root spine has no Spine ID header: migrate the root first", done.stderr)
+        self.assertEqual(1, done.stderr.count("migrate the root first"))
 
     def test_non_goal_docs_pass(self) -> None:
         self.assertEqual(0, self.commit("docs/notes.md", "# notes\n").returncode)

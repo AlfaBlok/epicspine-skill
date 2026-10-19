@@ -69,7 +69,7 @@ Every thread's first turn, greetings included, check the env (`echo "$EPICSPINE_
 ## Epic Log
 
 A repo has one **epic log**: a tree of goals hung from the root spine (the trunk, which states the purpose). A goal is a node under the root or another goal. It gets its own spine **file** when it has its own DoD, children, or spans sessions; otherwise it is a `- [ ] <ID> text` DoD line inside its parent. The child's `Parent spine:` header decides its place; the parent's Spine Map must agree (checked, not trusted); parent state rolls up from children.
-Create every goal file (plan, proposal, epic, `E<n>-*`) with `scripts/spine_new.py`, from its first commit, never by hand; `scripts/spines.py [--json]` lists the tree, orphans and mismatches; the pre-commit gate blocks a goal doc outside the tree. "On latest EpicSpine" means installed **and** docs conform. `references/spine-model.md`
+Create every goal file (plan, proposal, epic, `E<n>-*`) with `scripts/spine_new.py`, from its first commit, never by hand; `scripts/spines.py [--json]` lists the tree, orphans and mismatches; the pre-commit gate blocks a new or already-migrated goal doc outside the tree (legacy ones only warn). "On latest EpicSpine" means installed **and** docs conform. `references/spine-model.md`
 
 ## Spine Document Minimums
 

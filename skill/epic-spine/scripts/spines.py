@@ -2,10 +2,10 @@
 """The epic log: one tree of goals per repo, hung from the root spine (references/spine-model.md).
 
 ``spines.py [--json] --repo DIR`` finds the root (AGENTS.md ``Root spine:``, else a root-typed header), walks children
-(a child's ``Parent spine:`` header decides its parent; the parent's Spine Map must agree) and lists goal docs outside
-the tree as orphans. Goal doc = a file with a ``Spine ID:`` line or an E<n>-*/EPIC*/*SPINE*/*PLAN* name; skipped:
-archive/, node_modules, dot-dirs, handoffs/, examples/, fixtures/, and any folder holding a SKILL.md (vendored skill).
-Also the library for ``spine_new.py`` and the pre-commit gate. Exits 0 always; a repo with ``Root spine: none`` has root null."""
+(a child's ``Parent spine:`` header decides its parent; the parent's Spine Map must agree; links resolve against the
+file's folder, else the repo root) and lists goal docs outside the tree as orphans. Goal doc = a file with a ``Spine ID:``
+line or an E<n>-*/EPIC*/*SPINE*/*PLAN* name; skipped: archive/, node_modules, dot-dirs, handoffs/, examples/, fixtures/,
+test/, tests/, any folder holding a SKILL.md (vendored skill). Library for ``spine_new.py`` and the pre-commit gate. Exits 0."""
 
 from __future__ import annotations
 
@@ -19,7 +19,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import validate_spine as v  # noqa: E402
 
-SKIP = {"archive", "node_modules", "vendor", "wt", "worktrees", "handoffs", "examples", "fixtures", "__pycache__"}
+SKIP = {"archive", "node_modules", "vendor", "wt", "worktrees", "handoffs", "examples", "fixtures", "test", "tests", "__pycache__"}
 NAMED = re.compile(r"(?i)^(e\d+[-_]|epic)|(^|[-_ ])(spine|plan)($|[-_ 0-9])")
 ID_LINE = re.compile(r"(?m)^Spine ID:")
 ROOT_LINE = re.compile(r"Root spine: \[?`?([^`\]\s)]+)")
@@ -42,15 +42,18 @@ def is_goal(repo: Path, rel: Path, text: str) -> bool:
 def goal_docs(repo: Path) -> list[Path]:
     found = []
     for top, dirs, files in os.walk(repo):
-        dirs[:] = sorted(d for d in dirs if d not in SKIP and not d.startswith("."))
-        if "SKILL.md" in files:
-            dirs[:] = []
-            continue
-        for name in sorted(files):
-            path = Path(top, name)
-            if name.endswith(".md") and (NAMED.search(path.stem) or ID_LINE.search(read(path))):
-                found.append(path)
+        vendored = "SKILL.md" in files
+        dirs[:] = [] if vendored else sorted(d for d in dirs if d not in SKIP and not d.startswith("."))
+        if not vendored:
+            found += [p for p in (Path(top, n) for n in sorted(files)) if p.suffix == ".md" and (NAMED.search(p.stem) or ID_LINE.search(read(p)))]
     return found
+
+
+def link(path: Path, value: str, cache: dict) -> Path | None:
+    """A header/map link target: relative to the file's folder, else to the repo root (cache[None])."""
+    target = v.resolve_local_link(path, value)
+    alt = v.resolve_local_link(cache[None] / "-", value) if target and not target.exists() else None
+    return alt if alt and alt.exists() else target
 
 
 def meta(path: Path, cache: dict) -> dict | None:
@@ -58,22 +61,19 @@ def meta(path: Path, cache: dict) -> dict | None:
     if path not in cache:
         text = read(path) if path.is_file() else None
         fields, sections = v.parse_fields(text or ""), v.parse_sections(text or "")
-        rows = [(r.get("Spine ID", ""), v.resolve_local_link(path, r.get("Spine", ""))) for r in v.table_rows(sections.get("Spine Map", ""))]
+        rows = [(r.get("Spine ID", ""), link(path, r.get("Spine", ""), cache)) for r in v.table_rows(sections.get("Spine Map", ""))]
         cache[path] = None if text is None else {"path": path, "text": text, "fields": fields, "sections": sections, "id": fields.get("Spine ID", ""),
-                                                  "parent": v.resolve_local_link(path, fields.get("Parent spine", "")), "rows": rows}
+                                                  "parent": link(path, fields.get("Parent spine", ""), cache), "rows": rows}
     return cache[path]
 
 
 def find_root(repo: Path, cache: dict, docs: list[Path] | None = None) -> Path | None:
+    repo = cache.setdefault(None, repo.resolve())
     declared = ROOT_LINE.search(read(repo / "AGENTS.md"))
     if declared:
-        path = repo / declared.group(1).rstrip(".")
-        return path.resolve() if path.is_file() else None
-    for path in docs if docs is not None else goal_docs(repo):
-        f = meta(path, cache)["fields"]
-        if f.get("Spine Type", "").lower() == "root" or f.get("Root spine", "").lower() == "self":
-            return path.resolve()
-    return None
+        return next((p.resolve() for p in [repo / declared.group(1).rstrip(".")] if p.is_file()), None)
+    roots = (p for p in docs or goal_docs(repo) if (f := meta(p, cache)["fields"]).get("Spine Type", "").lower() == "root" or f.get("Root spine", "").lower() == "self")
+    return next((p.resolve() for p in roots), None)
 
 
 def parent_file(path: Path, cache: dict) -> Path | None:
@@ -118,7 +118,7 @@ def rollup(own: str, kids: list[str], dod: list[dict]) -> str:
 
 
 def scan(repo: Path) -> dict:
-    repo, cache = repo.resolve(), {}
+    cache = {None: (repo := repo.resolve())}
     docs = [p.resolve() for p in goal_docs(repo)]
     root = find_root(repo, cache, docs)
     rel = lambda p: os.path.relpath(p, repo)  # noqa: E731

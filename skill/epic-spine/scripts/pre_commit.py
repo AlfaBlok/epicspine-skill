@@ -4,7 +4,9 @@
 unstaged changes it blocks with the exact fix command; it also blocks when only a guess would fix it. ``--strict``
 is advisory (printed, never blocks). A staged ``.md`` is a spine if it has ``## Current State`` or ``Spine ID:``,
 a ticket if it has ``Ticket ID:``. A goal doc (``spines.is_goal``) must also be a consistent node of the epic log: a
-v1 header, reachable from the root, agreeing with its parent's Spine Map (``spine_new.py``); a repo with no root spine only warns."""
+v1 header, reachable from the root, agreeing with its parent's Spine Map (``spine_new.py``). Blocks only a newly added or
+renamed goal doc, and a modified one whose HEAD version already had ``Spine ID:`` (migrated). Warns, never blocks: a
+modified legacy goal doc (no ``Spine ID:`` at HEAD), a root spine without a ``Spine ID:`` header, and ``Root spine: none``."""
 
 from __future__ import annotations
 
@@ -28,11 +30,32 @@ def say(message: str) -> None:
     print(f"epicspine: {message}", file=sys.stderr)
 
 
+def tree_check(name: str, added: set[str], cache: dict, told: set[str]) -> tuple[bool, str]:
+    """(blocks, message) for one staged goal doc; a root-level notice is given once."""
+    cwd = Path.cwd()
+    root = spines.find_root(cwd, cache)
+    notice = "no root spine: goal docs are not checked against the epic log" if root is None else \
+        "" if spines.meta(root, cache)["id"] else "root spine has no Spine ID header: migrate the root first (goal docs are not checked against the epic log yet)"
+    if notice:
+        first = notice not in told
+        told.add(notice)
+        return False, notice if first else ""
+    tree = spines.problems(cwd, Path(name), cache)
+    if not tree:
+        return False, ""
+    legacy = name not in added and not spines.ID_LINE.search(git("show", f"HEAD:{name}").stdout)
+    why = f"{name}: not in the epic log: " + "; ".join(tree)
+    if legacy:
+        return False, f"{why} (legacy goal doc, not blocked; migrate with {HERE / 'spines.py'} / {HERE / 'spine_new.py'})"
+    return True, why + f". Fix: python3 {HERE / 'spine_new.py'} --repo . --parent <parent spine> --path {name} --title <title> (new doc), or add the v1 header + a parent Spine Map row (existing doc)"
+
+
 def main() -> int:
     top = git("rev-parse", "--show-toplevel").stdout.strip()
     if top:
         os.chdir(top)
-    blocked, cache, warned = False, {}, False
+    blocked, cache, told = False, {}, set()
+    added = set(filter(None, git("diff", "--cached", "--name-only", "--diff-filter=AR", "-z").stdout.split("\0")))
     for name in filter(None, git("diff", "--cached", "--name-only", "--diff-filter=ACMR", "-z").stdout.split("\0")):
         path = Path(name)
         if not (name.endswith(".md") and path.is_file()):
@@ -41,13 +64,10 @@ def main() -> int:
         text = raw.decode("utf-8", errors="replace")
         kind = v.doc_kind(text)
         if spines.is_goal(Path.cwd(), path, text):
-            tree = spines.problems(Path.cwd(), path, cache)
-            if tree is None and not warned:
-                warned = True
-                say("no root spine: goal docs are not checked against the epic log")
-            elif tree:
-                blocked = True
-                say(f"{name}: not in the epic log: " + "; ".join(tree) + f". Fix: python3 {HERE / 'spine_new.py'} --repo . --parent <parent spine> --path {name} --title <title> (new doc), or add the v1 header + a parent Spine Map row (existing doc)")
+            stop, note = tree_check(name, added, cache, told)
+            blocked = blocked or stop
+            if note:
+                say(note)
         if kind is None:
             continue
         result, hint = v.trackable(path), ""
