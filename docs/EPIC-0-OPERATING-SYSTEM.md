@@ -20,11 +20,11 @@ Skill updates: auto
 Owner: /root delivery manager
 Status: active
 Last attempted: 2026-10-19 EPIC-4 major finding: console personas got no doctrine (tests leak CLAUDE_CONFIG_DIR; installer pinned the global pointer to a worktree); fix is EPIC-4 step 9, agent_team reinstalling seat1 and ~/.claude from the canonical checkout. Root swap done (ef15cfa).
-Result: seat1 repointed to the canonical checkout; ~/.claude/CLAUDE.md still points at wt/living-tree
+Result: seat1 and ~/.claude both point at the canonical checkout; E3-2 merged (release 2026.10.19.3, 7f9643c), wt/living-tree removed
 Evidence: EPIC-4 Decisions "Personas lost the doctrine" (845e6ff)
-Waiting on: Jordi's EPIC-4 approval page; EPIC-3 E3-2 round 2; EPIC-4 step 9
+Waiting on: Jordi's EPIC-4 approval page; EPIC-4 step 9 (wt/config-isolation)
 Approved work: EPIC-3 Epic log and EPIC-4 Doctrine 2 (their ledgers hold the tickets)
-Next action: keep wt/living-tree until ~/.claude points at the canonical checkout; then E3-2 merge, step 3 tools, poly-maker migration; bring this root to Doctrine 2 (EPIC-4 step 6).
+Next action: E3-2 live proof (3 fresh sessions); step 3 tools on Jordi's approval; poly-maker migration; bring this root to Doctrine 2 (EPIC-4 step 6).
 Source revision: main
 Verified at: 2026-10-19
 
