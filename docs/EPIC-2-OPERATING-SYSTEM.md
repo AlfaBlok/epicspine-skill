@@ -1,4 +1,4 @@
-# EPIC: EpicSpine operating system
+# EPIC-2: EpicSpine operating system
 
 Spine profile: compact
 Ticket backend: github
@@ -22,9 +22,9 @@ Status: active
 Last attempted: 2026-10-19 epic log (handoff docs/handoffs/2026-10-19-spine-conformance.md): goal definition, `spine_new`, tree gate and `spines --json` dispatched to a worker on wt/epic-log. Release history lives in CHANGELOG.md; the long state text before this date is in this file's git history.
 Result: main @ 7c49977: 488 tests OK (1 skipped).
 Evidence: CHANGELOG.md 2026.10.16.13
-Waiting on: worker wt/epic-log round 2 (link resolution, gate rollout safety, test dirs)
-Approved work: epic-log ticket, then living-tree ticket, then one migration thread per repo (poly-maker first)
-Next action: verify and merge wt/epic-log; create the epic-log child goal with `spine_new` and re-home its ledger rows there; align this root's DoD with the tree model.
+Waiting on: EPIC-3 (worker wt/epic-log round 2)
+Approved work: EPIC-3 Epic log (its ledger holds the tickets)
+Next action: drive EPIC-3; then align this root's DoD with the tree model.
 Source revision: main @ 7c49977
 Verified at: 2026-10-19
 
@@ -97,8 +97,6 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 | draft | Ticket worker | worker (Sonnet 5.5, native) | Return to main: additive no-risk work straight to main, `Ready: yes` marker, no branch outlives its task, soft 3 d/14 d escalation, cleanup safety checklist; `auto_return.py` auto-merges Ready additive branches in main-direct repos and deletes merged ones, `repo_state.py` state line + worktree cap + repo table, vendored-copy 7-day tolerance; cleanup report `docs/hygiene/2026-10-16-cleanup.md`; skill 2026.10.16.11 | draft | none | feat/return-to-main | main | 478 tests green, manifest regenerated, release 2026.10.16.11 | 2026-10-16 | none |
 | draft | Ticket worker | worker (Sonnet 5.5, native) | Deploy exception: `main-direct` default for every repo; PR/CI only for a declared `Deploy gate:` (paths/workflows/branches whose push to main rolls a complex production deployment, e.g. zenod), never the whole repo; global block 2/5, SKILL.md 4, git-doctrine, templates, L-12; skill 2026.10.16.12 (auto_return gap closed in the .13 row) | draft | none | feat/deploy-exception | main | tests green, manifest regenerated, release 2026.10.16.12 | 2026-10-16 | none |
 | draft | Ticket worker | worker (Sonnet 5.5, native) | Deploy gate in auto-merge: `auto_return.py` blocks branches touching a `Deploy gate:` path/glob, blocks the repo when the gate is unparseable or the Integration policy mentions PR/CI (`scripts/deploy_gate.py`, `tests/test_deploy_gate.py`); git-doctrine, session-sync; skill 2026.10.16.13 | draft | none | fix/automerge-deploy-gate | main | tests green, manifest regenerated, release 2026.10.16.13 | 2026-10-16 | none |
-| draft | Ticket worker | worker (Sonnet 5.5, seat pool) | Epic log: goal definition, `spine_new` scaffold, tree-consistency + trackable gate (strict advisory), `spines --json` discovery with roll-up and orphans; release | active | none | wt/epic-log | main | r1 b19f284: 503 tests OK; manager review: repo-relative Parent spine unresolved (agent_team m2-m5 orphaned), gate would block legacy-doc edits in unmigrated repos, test fixtures counted; r2 dispatched | 2026-10-19 | verify r2, merge, then launch per-repo migration threads (poly-maker first) |
-| draft | Ticket worker | unassigned | Living tree: always-on rule that every ask is placed in the tree (existing goal or new leaf, one `Goal:` line in the reply); Record-step duties (new goal -> `spine_new`, done -> roll up, replaced -> `Superseded by:`); lifecycle + `spines --active`; stale active goals (14 d) flagged by background sync; lean Current State limit; console Milestone = goal with its own file | draft | epic-log ticket | none | main | queued 2026-10-19 by user | 2026-10-19 | dispatch after wt/epic-log merges |
 ## Decisions
 
 | Date | Outcome | Decision / Attempt | Durable Summary | Evidence | Revisit When |
@@ -154,3 +152,4 @@ Landing exceptions: No slide for quick answers, transient status, raw logs, tick
 |---|---|---|---|---|---|---|---|---|
 | epicspine-audit-remediation | child | [EPIC-0 Audit remediation](EPIC-0-AUDIT-REMEDIATION.md) | Audit remediation delivery | done | none | PR #16 | 2026-10-09 | Reference only; reopen if scope resumes |
 | epicspine-coordination-simplification | child | [EPIC-1 Coordination simplification](EPIC-1-COORDINATION-SIMPLIFICATION.md) | Compact state and trustworthy rollups | done | none | PR #22 | 2026-10-09 | Reference only; reopen if scope resumes |
+| epicspine-epic-log | child | [EPIC-3 Epic log](EPIC-3-EPIC-LOG.md) | Every goal is a coded EPIC in one tree per repo, kept true by agents | active | none | wt/epic-log r2 | 2026-10-19 | verify r2, merge, migrate poly-maker |

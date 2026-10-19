@@ -1,4 +1,4 @@
-# EPIC: Compact state and trustworthy rollups
+# EPIC-1: Compact state and trustworthy rollups
 
 Status: done
 Updated: 2026-10-09

@@ -1,4 +1,4 @@
-# EPIC 0: Audit remediation
+# EPIC-0: Audit remediation
 
 Status: done
 Created: 2026-09-06
