@@ -54,6 +54,7 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 - L-12 | integrating | `main-direct` is the default for every repo; PR/CI only for the declared `Deploy gate:` paths/workflows/branches whose push to main rolls a complex production deployment (e.g. zenod), never the whole repo; docs-only, additive and research changes stay main-direct | user doctrine 2026-10-16 | confirmed 2026-10-16
 - L-13 | any task | The delivery manager keeps the epic tree and the Book coherent: every new ask is placed in the tree (an existing goal, or a new leaf under the right parent) before work starts; at every launch, dispatch and record it resolves contradictions and writes the reasoning (Decisions) and current state | user doctrine 2026-10-19 | confirmed 2026-10-19
 - L-14 | doctrine | epicspine-skill owns the EpicSpine doctrine and orchestrates it from here; agent_team complies when its console reads repos; each repo applies the doctrine to its own spines in its own thread; learn what we are trying to accomplish here | Jordi 2026-10-19 | confirmed 2026-10-19
+- L-15 | doctrine | The root spine is always EPIC-0 in every repo; child goals are EPIC-1, 2, 3… in creation order; this repo swaps its root (EPIC-2 to EPIC-0) and the done audit epic (EPIC-0 to EPIC-2) | Jordi 2026-10-19 | confirmed 2026-10-19
 
 **Scoped index**: none yet.
 
