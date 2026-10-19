@@ -32,14 +32,14 @@ Done means (until step 2 makes `## Done means` a recognised heading, the outcome
 
 ## Current State
 
-Owner: EPIC-4 delivery manager (to be launched from the epicspine-skill orchestrator thread)
+Owner: EPIC-4 delivery manager (thread mcp:61d2777c-071a-4feb-93e3-4db440b5d6ac)
 Status: ready
-Last attempted: 2026-10-19 EPIC-4 created by Jordi's decision; Doctrine 2 items moved here from EPIC-3
-Result: spine written, no ticket started
-Evidence: EPIC-2 Decisions 2026-10-19 "Doctrine ownership"
+Last attempted: 2026-10-19 ledger split into define (1) and plan enforcement (2) before tools, per Jordi
+Result: spine re-staged, no ticket started
+Evidence: EPIC-2 Decisions 2026-10-19 "Doctrine ownership"; Decisions 2026-10-19 "Define, then plan, then build"
 Waiting on: none
 Approved work: E4-1 to E4-4 (Jordi, 2026-10-19)
-Next action: write the Doctrine 2 text in references/spine-model.md and get Jordi's approval (step 1)
+Next action: draft the Doctrine 2 text in plain language plus the open questions, and show Jordi (step 1)
 Source revision: main
 Verified at: 2026-10-19
 
@@ -49,15 +49,16 @@ No change to Doctrine 1 spines: they stay valid and readable. No rename of exist
 
 ## Issue Ledger
 
-Steps run in this order; each one unblocks the next.
+Steps run in this order; each one unblocks the next. Steps 1 and 2 are approval gates: no tool work before Jordi approves both.
 
 | Issue | Role | Owner / Assignment | Title | Status | Depends On | PR/Branch | Base | Latest Evidence | Last Verified | Next Action |
 |---|---|---|---|---|---|---|---|---|---|---|
-| draft | Delivery manager | EPIC-4 delivery manager | 1. Doctrine 2 text in spine-model.md (sections, Doctrine 1 vs 2 table, `Doctrine:` header, status words); Jordi approves | draft | none | none | main | none | 2026-10-19 | draft the text with a worker; show Jordi |
-| draft | Ticket worker | worker (Sonnet 5.5) | 2. Tools: `spine_new` writes Doctrine 2 by default; `## Done means` accepted as the DoD heading; `spines --json` fields; commit check for new spines; template; release | draft | step 1, EPIC-3 E3-1 merged | none | main | EPIC-3 round 2 at 3bad60f (tools base) | 2026-10-19 | dispatch after step 1 |
-| draft | agent_team delivery manager | agent_team thread | 3. Console reads Doctrine 2 from `spines --json` and shows Goal, Serves chain, children, Done means first | draft | step 2 | none | main | no console commits since 2026-10-18 | 2026-10-19 | hand the contract to agent_team after step 2 |
-| draft | poly-maker delivery manager | fresh poly-maker thread | 4. Compliance test: "make Epic 4 compliant with the latest EpicSpine doctrine", nothing more; console shows it | draft | steps 2-3 | none | main | none | 2026-10-19 | launch a fresh thread in the poly-maker project |
-| draft | Delivery manager | EPIC-4 delivery manager | 5. Make this repo's own spines (EPIC-2, EPIC-3) Doctrine 2 | draft | step 2 | none | main | EPIC-4 is the first Doctrine 2 spine | 2026-10-19 | after step 2 |
+| draft | Delivery manager | EPIC-4 delivery manager | 1. Define the doctrine: Doctrine 2 text in plain language (what a spine must say, and why; Doctrine 1 vs 2 table; `Doctrine:` header; status words) plus open ambiguities as concrete questions, one at a time, each with a recommendation; Jordi approves | draft | none | none | main | Jordi not yet sure the doctrine is clear (2026-10-19) | 2026-10-19 | draft the text with a worker; show Jordi; ask the open questions one by one |
+| draft | Delivery manager | EPIC-4 delivery manager | 2. Plan enforcement: short plan for Jordi covering scaffold (new spines Doctrine 2 by default), commit check (violations caught), version visibility (`spines --json`, console), migration ("make it compliant" path); Jordi approves before any tool work | draft | step 1 | none | main | none | 2026-10-19 | write the plan after step 1 is approved |
+| draft | Ticket worker | worker (Sonnet 5.5) | 3. Tools: `spine_new` writes Doctrine 2 by default; `## Done means` accepted as the DoD heading; `spines --json` fields; commit check for new spines; template; release | draft | step 2, EPIC-3 E3-1 merged | none | main | EPIC-3 round 2 at 3bad60f (tools base) | 2026-10-19 | dispatch after step 2 is approved and E3-1 has merged |
+| draft | agent_team delivery manager | agent_team thread | 4. Console reads Doctrine 2 from `spines --json` and shows Goal, Serves chain, children, Done means first | draft | step 3 | none | main | no console commits since 2026-10-18 | 2026-10-19 | hand the contract to agent_team after step 3 |
+| draft | poly-maker delivery manager | fresh poly-maker thread | 5. Compliance test: "make Epic 4 compliant with the latest EpicSpine doctrine", nothing more; console shows it | draft | steps 3-4 | none | main | none | 2026-10-19 | launch a fresh thread in the poly-maker project |
+| draft | Delivery manager | EPIC-4 delivery manager | 6. Make this repo's own spines (EPIC-2, EPIC-3) Doctrine 2 | draft | step 3 | none | main | EPIC-4 is the first Doctrine 2 spine | 2026-10-19 | after step 3 |
 
 ## Decisions
 
@@ -67,3 +68,4 @@ Steps run in this order; each one unblocks the next.
 | 2026-10-19 | accepted | One version line: `Doctrine: <n>` | Replaces both proposals ("Spine format: n" and "Doctrine: <skill release>"). An integer: absent = 1. spine-model.md maps each number to its sections and to the skill release that introduced it. | Jordi asked for a recorded doctrine version; one line is enough | a third doctrine |
 | 2026-10-19 | accepted | Doctrine 2 extends 1 | Jordi likes Doctrine 1. Doctrine 2 adds Goal (Mission still counts), Serves, a contributes sentence per child, Done means above the tickets, an `EPIC-<n>:` title and one status. | Jordi 2026-10-19 | never |
 | 2026-10-19 | accepted | Start order | Launching a persona on a spine from the console is the start order; the persona carries the goal to completion. Status reads ready before the launch and active after it. | Jordi 2026-10-19 | never |
+| 2026-10-19 | accepted | Define, then plan, then build | Jordi is not yet sure the doctrine is clear. Step 1 defines it in plain language and resolves ambiguities one question at a time; step 2 is an enforcement plan (scaffold, commit check, version visibility, migration) he approves before any tool work. Former steps 2-5 became 3-6. | Jordi via orchestrator 2026-10-19 | never |
