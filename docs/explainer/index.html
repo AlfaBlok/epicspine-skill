@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EpicSpine — what it is and how a spine works</title>
+<style>
+  :root{--bg:#f7f7f5;--fg:#1d1d1b;--mute:#6b6b66;--card:#fff;--line:#e3e2dc;--acc:#2f5bd3;--ok:#2e7d4f;--warn:#b26a00;--code:#f0efe9}
+  @media (prefers-color-scheme:dark){:root{--bg:#141413;--fg:#ecebe6;--mute:#9d9c95;--card:#1e1e1c;--line:#33332f;--acc:#7f9dff;--ok:#6cc08c;--warn:#e0a94a;--code:#262623}}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif}
+  main{max-width:1040px;margin:0 auto;padding:40px 24px 80px}
+  h1{font-size:34px;margin:0 0 6px;letter-spacing:-.02em}
+  h2{font-size:22px;margin:48px 0 12px;letter-spacing:-.01em}
+  h3{font-size:16px;margin:0 0 6px}
+  p.lead{font-size:19px;color:var(--mute);margin:0 0 24px;max-width:780px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px}
+  .grid{display:grid;gap:14px}
+  .g3{grid-template-columns:repeat(3,1fr)} .g2{grid-template-columns:repeat(2,1fr)}
+  @media (max-width:780px){.g3,.g2{grid-template-columns:1fr}}
+  .tag{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:99px;border:1px solid var(--line);color:var(--mute);margin-right:6px}
+  .t-intent{color:#7a3fd1;border-color:#7a3fd155}.t-fact{color:var(--acc);border-color:#2f5bd355}.t-state{color:var(--ok);border-color:#2e7d4f55}.t-learn{color:var(--warn);border-color:#b26a0055}.t-link{color:#b0306a;border-color:#b0306a55}
+  code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px}
+  code{background:var(--code);padding:1px 5px;border-radius:4px}
+  pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow:auto;line-height:1.45;margin:0}
+  .muted{color:var(--mute)} .small{font-size:14px}
+  table{width:100%;border-collapse:collapse;font-size:14.5px}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--mute)}
+  .tree{font-family:ui-monospace,Menlo,monospace;font-size:14px;line-height:1.7}
+  .tree .n{display:inline-block;padding:1px 8px;border-radius:6px;border:1px solid var(--line);background:var(--card)}
+  .s{font-size:11px;font-weight:700;padding:1px 6px;border-radius:4px;margin-left:6px}
+  .s-active{background:#2e7d4f22;color:var(--ok)} .s-done{background:#6b6b6622;color:var(--mute)} .s-ready{background:#2f5bd322;color:var(--acc)}
+  .flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .flow .step{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-width:140px}
+  .flow .arr{color:var(--mute)}
+  .anat{display:grid;grid-template-columns:1.15fr 1fr;gap:16px}
+  @media (max-width:860px){.anat{grid-template-columns:1fr}}
+  .sec{border-left:3px solid var(--line);padding:6px 0 6px 12px;margin-bottom:10px}
+  .sec b{display:block}
+  .now{border-left:3px solid var(--ok)} .soon{border-left:3px solid var(--warn)}
+</style>
+</head>
+<body><main>
+
+<h1>EpicSpine</h1>
+<p class="lead">A repository's living memory, written as a tree of short markdown files. Any agent, or you, can drop in cold, read about a hundred lines, and know <b>what we're trying to achieve, where it stands, what's next, and where to look for more</b>. Then it pulls in extra context only as it needs it.</p>
+
+<div class="grid g3">
+  <div class="card"><h3>The problem it solves</h3><p class="small muted">Agents start every session with no memory. Without a shared record they redo work, contradict past decisions, and lose track of what "done" means.</p></div>
+  <div class="card"><h3>The idea</h3><p class="small muted">Put intent, facts, state, decisions and learnings in one place per goal, in plain markdown that lives in git, next to the code.</p></div>
+  <div class="card"><h3>The promise</h3><p class="small muted">A fresh agent binds in three hops: repo entry, root spine, then the spine for its task. It knows how to keep going without asking you where things are.</p></div>
+</div>
+
+<h2>1 · Three layers: say each rule once, at the right level</h2>
+<div class="grid g3">
+  <div class="card"><span class="tag">machine</span><h3>The skill (EpicSpine itself)</h3><p class="small">Behaviours every agent follows everywhere: bind, place the ask in the tree, dispatch workers, verify, integrate, record, learn. Hooks inject these each session, and the dispatcher picks worker seats.</p></div>
+  <div class="card"><span class="tag">repo</span><h3>AGENTS.md + root spine</h3><p class="small">Values specific to this repo: where the root is, how work reaches main (<code>Integration policy</code>, <code>Deploy gate</code>), worker profile, repo-wide learnings.</p></div>
+  <div class="card"><span class="tag">spine</span><h3>Each goal's spine</h3><p class="small">Only what belongs to <i>this</i> goal: its intent, state, steps, decisions and exceptions. It never restates the defaults above.</p></div>
+</div>
+
+<h2>2 · Spines form a tree of goals (the epic log)</h2>
+<div class="grid g2">
+  <div class="card tree">
+    <span class="n">EPIC-2 EpicSpine operating system</span><span class="s s-active">root</span><br>
+    &nbsp;├─ <span class="n">EPIC-0 Audit remediation</span><span class="s s-done">done</span><br>
+    &nbsp;├─ <span class="n">EPIC-1 Compact state &amp; rollups</span><span class="s s-done">done</span><br>
+    &nbsp;├─ <span class="n">EPIC-3 Epic log</span><span class="s s-active">active</span><br>
+    &nbsp;│&nbsp;&nbsp;&nbsp;└─ <span class="muted">E3-1 … E3-5: checkboxes = smaller goals</span><br>
+    &nbsp;└─ <span class="n">EPIC-4 Doctrine 2</span><span class="s s-ready">ready</span>
+    <p class="small muted" style="margin-top:10px">This repo's real tree, today.</p>
+  </div>
+  <div class="card small">
+    <p><b>Root</b>: states the repo's purpose. Everything hangs from it.</p>
+    <p><b>Epic (goal)</b>: a measurable objective worked over several pushes. It gets its own markdown file with a code (<code>EPIC-&lt;n&gt;: name</code>) and is linked from its parent.</p>
+    <p><b>Smaller goals</b>: progress inside one epic is a checkbox line in that epic, not a new file. Choosing between the two is a judgment call.</p>
+    <p><b>Links both ways</b>: the child names its parent (<code>Parent spine:</code>), and the parent lists the child in its <i>Spine Map</i>. A commit check keeps the two in agreement. <code>spines.py --json</code> returns the whole tree to any reader, including the agent_team console.</p>
+  </div>
+</div>
+
+<h2>3 · Inside one spine</h2>
+<p class="muted">Five kinds of information, each in a fixed place, so humans and machines know where to look:
+<span class="tag t-intent">intent</span><span class="tag t-fact">facts</span><span class="tag t-state">state</span><span class="tag t-learn">learnings</span><span class="tag t-link">links</span></p>
+<div class="anat">
+<div>
+  <div class="sec"><b>Header <span class="tag t-link">links</span><span class="tag t-fact">facts</span></b><span class="small muted">Identity and place in the tree: Spine ID, root, parent, integration branch, doctrine version.</span></div>
+  <div class="sec now"><b>Goal (Mission) <span class="tag t-intent">intent</span></b><span class="small muted">In plain words: what changes, and why it matters. Readable without knowing the code.</span></div>
+  <div class="sec soon"><b>Serves <span class="tag t-intent">intent</span><span class="tag t-link">links</span></b><span class="small muted">How this goal serves its parent's goal, so the tree reads as one story. <i>(Doctrine 2, being defined)</i></span></div>
+  <div class="sec now"><b>Current State <span class="tag t-state">state</span></b><span class="small muted">The snapshot, about ten lines: owner, status, last attempt, result, evidence, waiting on, approved work, <b>next action</b>, verified at. Overwritten each step; history lives in git.</span></div>
+  <div class="sec now"><b>Definition of Done ("Done means") <span class="tag t-intent">intent</span><span class="tag t-state">state</span></b><span class="small muted">2–5 measurable outcomes as checkboxes <code>- [ ] ID text</code>, ticked only with evidence. Outcomes, not a copy of the ticket list.</span></div>
+  <div class="sec now"><b>Issue Ledger <span class="tag t-state">state</span><span class="tag t-link">links</span></b><span class="small muted">The steps toward done: one row each, with owner, status, dependency, branch, evidence and next action.</span></div>
+  <div class="sec now"><b>Decisions <span class="tag t-fact">facts</span></b><span class="small muted">What is settled and why, including what was tried and rejected, so no one reopens it by accident.</span></div>
+  <div class="sec now"><b>Operating Learnings <span class="tag t-learn">learnings</span></b><span class="small muted">Rules learned from you ("always / never…"), one line each, stored in the deepest spine they apply to.</span></div>
+  <div class="sec now"><b>Spine Map <span class="tag t-link">links</span></b><span class="small muted">Its children: status, health and next action, plus (Doctrine 2) one sentence on what each child contributes.</span></div>
+  <p class="small muted">Green bar = exists today. Amber = being defined in EPIC-4.</p>
+</div>
+<div>
+<pre># EPIC-4: Doctrine 2 semantic goal tree
+Spine ID: epicspine-doctrine-2
+Parent spine: [EPIC-2 …](EPIC-2-OPERATING-SYSTEM.md)
+Doctrine: 2
+
+## Goal
+Every spine says in plain words what it achieves
+and why, how it serves its parent, and what each
+child contributes…
+
+## Serves
+EPIC-2 wants spines to be the repo's living memory…
+
+## Definition Of Done   (Done means)
+- [ ] E4-1 New epics are Doctrine 2 by default…
+- [ ] E4-2 The doctrine is versioned and written…
+- [ ] E4-3 agent_team shows Goal, Serves, children…
+- [ ] E4-4 poly-maker makes its E4 compliant unaided
+
+## Current State
+Owner: EPIC-4 delivery manager
+Status: ready
+Last attempted: 2026-10-19 coherence pass recorded
+Waiting on: Jordi's answer to the first doctrine question
+Next action: draft the doctrine page
+
+## Issue Ledger
+| Step | Owner | Status | Depends on | Evidence | Next |
+| 1. Define the doctrine | manager | draft | none | … | … |
+| 2. Plan enforcement    | manager | draft | 1    | … | … |
+
+## Decisions
+| 2026-10-19 | accepted | Roles | skill owns doctrine… |</pre>
+<p class="small muted" style="margin-top:8px">Abridged from <code>docs/EPIC-4-DOCTRINE-2.md</code>: the first spine written in the new shape.</p>
+</div>
+</div>
+
+<h2>4 · How an agent uses it: read little, then pull what it needs</h2>
+<div class="flow">
+  <div class="step"><b>1 · AGENTS.md</b><br><span class="small muted">Names the root and the repo rules</span></div><span class="arr">→</span>
+  <div class="step"><b>2 · Root spine</b><br><span class="small muted">Current State + learnings</span></div><span class="arr">→</span>
+  <div class="step"><b>3 · Parent chain</b><br><span class="small muted">Follows the active branch down</span></div><span class="arr">→</span>
+  <div class="step"><b>4 · Its spine</b><br><span class="small muted">Goal, state, next action</span></div><span class="arr">→</span>
+  <div class="step"><b>5 · On demand</b><br><span class="small muted">Decisions, linked docs, tickets, code</span></div>
+</div>
+<p class="small muted">Everything after step 4 is pulled only when the task needs it. A spine is a map, not an encyclopedia.</p>
+
+<h2>5 · The maintenance loop the agent runs</h2>
+<div class="flow">
+  <div class="step"><b>Bind</b><br><span class="small muted">Name role and learnings</span></div><span class="arr">→</span>
+  <div class="step"><b>Place</b><br><span class="small muted">Put the ask in the tree: existing goal or new leaf</span></div><span class="arr">→</span>
+  <div class="step"><b>Dispatch</b><br><span class="small muted">Manager hands work to workers; it never implements</span></div><span class="arr">→</span>
+  <div class="step"><b>Verify &amp; integrate</b><br><span class="small muted">Check diff and tests, merge to main with history</span></div><span class="arr">→</span>
+  <div class="step"><b>Record</b><br><span class="small muted">Update Current State, ledger, boxes; commit and push</span></div><span class="arr">→</span>
+  <div class="step"><b>Learn</b><br><span class="small muted">Your always/never becomes a learning line</span></div>
+</div>
+<p class="small muted">Pushing after each step is what lets agents on other machines (VPS, laptop) see the same truth.</p>
+
+<h2>6 · Spine vs tickets</h2>
+<table>
+  <tr><th></th><th>Spine</th><th>Ticket (ledger row, optionally a GitHub issue)</th></tr>
+  <tr><td><b>Answers</b></td><td>Why, what outcome, how the pieces fit, where we are, what's next</td><td>How to do one concrete step</td></tr>
+  <tr><td><b>Holds</b></td><td>Intent, state snapshot, decisions, learnings, links</td><td>Code paths, logs, blockers, review discussion</td></tr>
+  <tr><td><b>Lifespan</b></td><td>As long as the goal</td><td>One step</td></tr>
+  <tr><td><b>Rule</b></td><td colspan="2">Deep discussion stays in the ticket; only the durable consequence (changed intent, state or decision) is written back into the spine.</td></tr>
+</table>
+
+<h2>7 · Where we are honestly</h2>
+<table>
+  <tr><th>Works today</th><th>Being fixed now</th></tr>
+  <tr>
+    <td class="small">Always-on rules injected in every session · repo sync and push · the tree commands <code>spine_new</code> and <code>spines --json</code>, plus a commit check (released 2026.10.19.1) · agent_team console picks spines</td>
+    <td class="small"><b>EPIC-3</b>: every repo's goals placed in the tree (about 125 goal docs are still outside it) · <b>EPIC-4</b>: Doctrine 2 (plain Goal, Serves, children's contributions, Done means), one short doctrine page replacing scattered skill text, console showing it, then the poly-maker E4 compliance test</td>
+  </tr>
+</table>
+<p class="small muted" style="margin-top:28px">Source: github.com/AlfaBlok/epicspine-skill · docs/explainer/index.html · 2026-10-19</p>
+</main></body></html>
