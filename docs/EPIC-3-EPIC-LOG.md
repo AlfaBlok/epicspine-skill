@@ -16,10 +16,10 @@ Integration branch: main
 
 Owner: EPIC-3 delivery manager (thread mcp:e9568396-d334-4a6b-bc0c-ab93b4a0fb6b)
 Status: active
-Last attempted: 2026-10-19 E3-2 running as a native Sonnet subagent (seat pool failed twice to start a turn: seat1 provider start failure, seat2 CLI timeout, host load 8-27, 2 GB RAM free; no work lost); EPIC-4 told SKILL.md/spine-model.md are free; E3-1 done (release 2026.10.19.2)
-Result: main @ 20b4602: 503 of 508 OK on a loaded host (load 27): the 5 test_url_gate subprocess timeouts pass alone; manifest matches a clean tree
+Last attempted: 2026-10-19 E3-2 verification: code reviewed; 2 real test failures fixed (4bb779d); regression found: stale check scanned the repo on every SessionStart (+2-9 s: poly-maker 8.8 s), round 2 moves it to the 15-min background sync
+Result: E3-2 branch: 39 targeted tests OK; test_url_gate fails on main too (pre-existing, load); test_session_sync timing fails only on the branch (the regression above)
 Evidence: docs/handoffs/2026-10-19-spine-conformance.md
-Waiting on: E3-2 worker (wt/living-tree)
+Waiting on: E3-2 round 2 (worker, wt/living-tree)
 Approved work: E3-1 to E3-5 (user, 2026-10-19)
 Next action: verify and merge E3-2; send EPIC-4 the living-tree rules (5 lines or fewer); launch the poly-maker migration (never mentioning E4); agent_team reports E3-4
 Source revision: main
