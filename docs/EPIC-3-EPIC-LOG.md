@@ -7,8 +7,8 @@ Repository: AlfaBlok/epicspine-skill
 Primary document: docs/EPIC-3-EPIC-LOG.md
 Spine ID: epicspine-epic-log
 Spine Type: branch
-Root spine: [EPIC-2 EpicSpine operating system](EPIC-2-OPERATING-SYSTEM.md)
-Parent spine: [EPIC-2 EpicSpine operating system](EPIC-2-OPERATING-SYSTEM.md)
+Root spine: [EPIC-0 EpicSpine operating system](EPIC-0-OPERATING-SYSTEM.md)
+Parent spine: [EPIC-0 EpicSpine operating system](EPIC-0-OPERATING-SYSTEM.md)
 Additional root rationale: n/a
 Integration branch: main
 
@@ -41,7 +41,7 @@ No rename of existing files or header fields. Migration changes structure only (
 - [ ] E3-2 Agents keep it true: every new ask is answered with a `Goal: EPIC-<n>` line and lands in the tree; done or replaced goals close; goals active but untouched 14 days are flagged. Measured by tests plus 3 fresh sessions in different repos.
 - [ ] E3-3 Every repo conforms: `spines.py --json` on each repo on vps1 shows 0 orphans and 0 mismatches, or each exception is recorded in that repo; repos without a root were offered one and the answer is recorded. Proof: a published before/after table.
 - [ ] E3-4 The console sees it: the agent_team milestone picker lists poly-maker E4, read from `spines.py --json`.
-- [ ] E3-5 "On latest EpicSpine" means installed and conforming (E3-3 green): an Operating Learning in EPIC-2, and no current instruction says otherwise.
+- [ ] E3-5 "On latest EpicSpine" means installed and conforming (E3-3 green): an Operating Learning in EPIC-0, and no current instruction says otherwise.
 
 ## Issue Ledger
 
@@ -61,7 +61,7 @@ Goal / Done means and doctrine versioning moved to [EPIC-4](EPIC-4-DOCTRINE-2.md
 
 | Date | Outcome | Decision / Attempt | Durable Summary | Evidence | Revisit When |
 |---|---|---|---|---|---|
-| 2026-10-19 | accepted | Nested markdowns, judgment | Progress inside a goal is written in its spine; a new measurable objective worked over several pushes gets a new spine markdown linked from its parent (L-16 wording). Full decision in EPIC-2 Decisions. | user 2026-10-19 | never |
+| 2026-10-19 | accepted | Nested markdowns, judgment | Progress inside a goal is written in its spine; a new measurable objective worked over several pushes gets a new spine markdown linked from its parent (L-16 wording). Full decision in EPIC-0 Decisions. | user 2026-10-19 | never |
 | 2026-10-19 | accepted | Every goal has a code | A goal is named `EPIC-<n>: <short name>`, states its goal in one line and lists measurable success criteria; without a code it cannot be discussed. | user 2026-10-19 | never |
 | 2026-10-19 | superseded | Goal and Done means open every spine | Right after the header: `## Goal` (1-2 plain sentences: what changes and why it matters to Jordi, readable without the code), then `## Done means` (2-5 measurable outcomes in human terms) = the DoD's top criteria; tickets live in the Issue Ledger, ticket boxes only under the outcomes. Commit check (trackable) requires a non-empty Goal on new and migrated spines; ticket-copy DoD is advisory; `## Mission` accepted as alias. Cause: console showed poly-maker E4 as 15 tickets with no purpose, Mission a technical target, DoD 1:1 tickets, status contradictory. | user 2026-10-19 via previous manager thread | never |
 | 2026-10-19 | superseded by `Spine format` | Spines record their doctrine | New header line `Doctrine: <skill release that defined the section set>`, kept separate from `Spine dialect:` (that governs the acceptance workflow, not sections). `spine_new` writes it, migrations set it, absent = legacy (pre-Goal). spine-model.md holds a table of required sections per doctrine; `spines --json` emits `doctrine`, `expected_sections`, `missing_sections` so the console renders what the version promises and flags gaps. | user 2026-10-19 via agent_team manager | a second shape change needs a migration path |
@@ -71,5 +71,5 @@ Goal / Done means and doctrine versioning moved to [EPIC-4](EPIC-4-DOCTRINE-2.md
 | 2026-10-19 | superseded by L-14 (a poly-maker thread writes E4) | E4 single writer | Jordi's agent_team thread "E4 test in polymaker" (d14c8f2e) owns E4's content; EPIC-3 checks only E4's structure and format, never its intent. | Jordi 2026-10-19 | never |
 | 2026-10-19 | accepted | Launch is the start order | Launching a persona on a spine from the console is the start order: before launch Status is `ready`, launch makes it `active`, the persona carries the goal to completion. Written where status is defined in the skill. | Jordi 2026-10-19 | never |
 | 2026-10-19 | accepted | Jordi talks to EPIC-3's manager directly | From now on EPIC-3 and spine-format questions come straight to this thread, not via the previous manager. | Jordi 2026-10-19 | never |
-| 2026-10-19 | accepted | Scope split with EPIC-4 | EPIC-4 (Doctrine 2, own manager) owns Goal, Serves, children's contributes, Done means and `Doctrine: <n>` (absent = 1). EPIC-3 keeps the tree tools, the EPIC code rule, wording alignment, status words, every repo's conformance, the console picker and the "on latest" learning. Merge order: EPIC-3 round 2 (+ trimmed round 3) first, then EPIC-4 gets spines.py/spine_new.py/pre_commit.py; never two workers on them at once. Roles per EPIC-2 L-14; poly-maker E4 is EPIC-4's compliance test, so EPIC-3 never briefs it. | Jordi 2026-10-19 via orchestrator | never |
+| 2026-10-19 | accepted | Scope split with EPIC-4 | EPIC-4 (Doctrine 2, own manager) owns Goal, Serves, children's contributes, Done means and `Doctrine: <n>` (absent = 1). EPIC-3 keeps the tree tools, the EPIC code rule, wording alignment, status words, every repo's conformance, the console picker and the "on latest" learning. Merge order: EPIC-3 round 2 (+ trimmed round 3) first, then EPIC-4 gets spines.py/spine_new.py/pre_commit.py; never two workers on them at once. Roles per EPIC-0 L-14; poly-maker E4 is EPIC-4's compliance test, so EPIC-3 never briefs it. | Jordi 2026-10-19 via orchestrator | never |
 | 2026-10-19 | accepted | Split write surfaces with EPIC-4 | While E3-2 runs, EPIC-4 writes SKILL.md and spine-model.md (doctrine page), and EPIC-3 writes the scripts, global-block.md and spine-creation.md; the doctrine points to the living-tree mechanics and does not restate them. Never two workers on one file (L-10). | Jordi's merge order 2026-10-19; EPIC-4 handback 277d585 | EPIC-4 step 2 approved |

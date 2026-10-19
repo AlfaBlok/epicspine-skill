@@ -259,7 +259,7 @@ class FixTests(unittest.TestCase):
             self.assertEqual(text, self.fix(text)[0])
 
     def test_moved_header_status_validates_like_before(self) -> None:
-        for name in ("examples/EPIC-0-CLI-EXAMPLE.md", "docs/EPIC-0-AUDIT-REMEDIATION.md", "examples/EPIC-GITHUB-TICKETS.md"):
+        for name in ("examples/EPIC-0-CLI-EXAMPLE.md", "docs/EPIC-2-AUDIT-REMEDIATION.md", "examples/EPIC-GITHUB-TICKETS.md"):
             original = (VALIDATOR_PATH.parents[3] / name).read_text(encoding="utf-8")
             state = original.split("\n## Current State\n")[1].split("\n## ")[0]
             stripped = original.replace(state, "\n".join(line for line in state.split("\n") if not line.startswith("Status:")))

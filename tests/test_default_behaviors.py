@@ -98,13 +98,13 @@ class DefaultBehaviorsTest(unittest.TestCase):
         self.assertIn("final answer", block)
 
     def test_e_always_learnings_l1_to_l8_in_order(self) -> None:
-        always = self.between(read("docs/EPIC-2-OPERATING-SYSTEM.md"), "**Always**", "**Scoped index**")
+        always = self.between(read("docs/EPIC-0-OPERATING-SYSTEM.md"), "**Always**", "**Scoped index**")
         ids = [int(n) for n in re.findall(r"L-(\d+)\s*\|", always)]
         # 1..8 present, in order; later scoped/Always additions may append after 8.
         self.assertEqual(ids[:8], list(range(1, 9)))
 
     def test_f_adopted_learnings_l9_to_l11(self) -> None:
-        always = self.between(read("docs/EPIC-2-OPERATING-SYSTEM.md"), "**Always**", "**Scoped index**")
+        always = self.between(read("docs/EPIC-0-OPERATING-SYSTEM.md"), "**Always**", "**Scoped index**")
         ids = [int(n) for n in re.findall(r"L-(\d+)\s*\|", always)]
         for n in (9, 10, 11):
             self.assertIn(n, ids)

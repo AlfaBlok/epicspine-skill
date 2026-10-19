@@ -1,14 +1,14 @@
-# EPIC-0: Audit remediation
+# EPIC-2: Audit remediation
 
 Status: done
 Created: 2026-09-06
 Updated: 2026-10-09
 Repository: AlfaBlok/epicspine-skill
-Primary document: docs/EPIC-0-AUDIT-REMEDIATION.md
+Primary document: docs/EPIC-2-AUDIT-REMEDIATION.md
 Spine ID: epicspine-audit-remediation
 Spine Type: branch
-Root spine: [Operating system root](EPIC-2-OPERATING-SYSTEM.md)
-Parent spine: [Operating system root](EPIC-2-OPERATING-SYSTEM.md)
+Root spine: [Operating system root](EPIC-0-OPERATING-SYSTEM.md)
+Parent spine: [Operating system root](EPIC-0-OPERATING-SYSTEM.md)
 Additional root rationale: n/a
 Spine dialect: v1
 Acceptance surface: cli
