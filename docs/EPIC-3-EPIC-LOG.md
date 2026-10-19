@@ -21,7 +21,7 @@ Result: main @ 88f00fa: 507 tests OK (1 skipped; test_url_gate localhost flakes 
 Evidence: docs/handoffs/2026-10-19-spine-conformance.md
 Waiting on: E3-1 round 3 worker
 Approved work: E3-1 to E3-5 (user, 2026-10-19)
-Next action: verify and merge round 3, then tell EPIC-4 SKILL.md/spine-model.md are free; dispatch E3-2; send the E3-4 contract to agent_team d14c8f2e; launch the poly-maker migration (never mentioning E4)
+Next action: verify and merge round 3, then tell EPIC-4 SKILL.md/spine-model.md are free; dispatch E3-2; launch the poly-maker migration (never mentioning E4)
 Source revision: main
 Verified at: 2026-10-19
 
@@ -52,7 +52,7 @@ No rename of existing files or header fields. Migration changes structure only (
 | draft | Repo delivery manager | poly-maker thread | E3-3 migrate poly-maker (EPIC.md, EPIC0.md, 31 orphans); E4 excluded: a poly-maker thread brings E4 to Doctrine 2 as EPIC-4's compliance test (E4-4), so this brief never mentions E4 (L-14); coordinate with the one-logger session | draft | E3-1 | none | main | 31 orphans, root without Spine ID | 2026-10-19 | launch thread in the poly-maker project |
 | draft | Repo delivery manager | per-repo threads | E3-3 migrate zenod (46), idea_scraper (25, no root), infra-vps (11 + 1 mismatch), obsidian-brain (8, no root), abnb-agent (2), zenod-cloud (1, no root) | draft | E3-1 | none | main | counts from r1 scan 2026-10-19 | 2026-10-19 | launch after poly-maker proves the brief |
 | draft | Delivery manager | /root delivery manager | E3-3 conformance table, before/after per repo | draft | E3-3 migrations | none | main | before column: r1 scan 2026-10-19 | 2026-10-19 | publish when migrations land |
-| draft | Repo delivery manager | agent_team thread d14c8f2e | E3-4 console picker reads `spines.py --json`; badge from `Status:` only (Goal/Done means view is EPIC-4 E4-3) | draft | E3-1 | none | main | picker guesses by path (repos.ts:163); console shows E4 as 15 tickets + state, no purpose (2026-10-19) | 2026-10-19 | after E3-1 merges: send the `spines.py --json` field list + poly-maker example to agent_team thread d14c8f2e |
+| draft | Repo delivery manager | agent_team thread d14c8f2e | E3-4 console picker reads `spines.py --json`; badge from `Status:` only (Goal/Done means view is EPIC-4 E4-3) | draft | E3-1 | none | main | picker guesses by path (repos.ts:163); console shows E4 as 15 tickets + state, no purpose (2026-10-19) | 2026-10-19 | contract + poly-maker example sent 2026-10-19 (picker must list flagged orphans so E4 stays visible before migration); await agent_team report |
 | draft | Delivery manager | /root delivery manager | E3-5 learning "on latest = installed and conforming" + supersede sweep | draft | E3-3 | none | main | none | 2026-10-19 | write when the table is green |
 
 ## Decisions
