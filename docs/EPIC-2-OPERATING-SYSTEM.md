@@ -20,12 +20,12 @@ Skill updates: auto
 Owner: /root delivery manager
 Status: active
 Last attempted: 2026-10-19 epic log (handoff docs/handoffs/2026-10-19-spine-conformance.md): goal definition, `spine_new`, tree gate and `spines --json` dispatched to a worker on wt/epic-log. Release history lives in CHANGELOG.md; the long state text before this date is in this file's git history.
-Result: main @ 7c49977: 488 tests OK (1 skipped).
+Result: main @ 88f00fa: 507 tests OK (1 skipped); epic log tools merged (EPIC-3 E3-1 r1+r2).
 Evidence: CHANGELOG.md 2026.10.16.13
-Waiting on: EPIC-3 (merge of wt/epic-log round 2) and EPIC-4 step 1 (Doctrine 2 text)
+Waiting on: EPIC-3 round 3 (skill wording only; spines.py, spine_new.py, pre_commit.py are free for EPIC-4) and EPIC-4 step 1 (Doctrine 2 text)
 Approved work: EPIC-3 Epic log and EPIC-4 Doctrine 2 (their ledgers hold the tickets)
 Next action: orchestrate EPIC-3 and EPIC-4 from this thread; then bring this root to Doctrine 2 (EPIC-4 step 5).
-Source revision: main @ 7c49977
+Source revision: main @ 88f00fa
 Verified at: 2026-10-19
 
 ## Mission
