@@ -138,6 +138,23 @@ class SkillUpdateTest(unittest.TestCase):
         python = skill_update.generate_manifest(REPO_ROOT, "skill/epic-spine")
         self.assertEqual(shell.stdout, python)
 
+    def test_manifest_excludes_pycache(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="epicspine-manifest-") as tmp:
+            root = Path(tmp)
+            (root / "tools").mkdir()
+            shutil.copy(SHELL_TOOL, root / "tools" / SHELL_TOOL.name)
+            scripts = root / "skill" / "epic-spine" / "scripts"
+            (scripts / "__pycache__").mkdir(parents=True)
+            (scripts / "a.py").write_text("x = 1\n")
+            (scripts / "a.pyc").write_bytes(b"\0")
+            (scripts / "__pycache__" / "a.cpython-312.pyc").write_bytes(b"\0")
+            shell = subprocess.run(
+                ["bash", str(root / "tools" / SHELL_TOOL.name), "skill/epic-spine"],
+                cwd=str(root), capture_output=True, text=True, check=True,
+            ).stdout
+            self.assertEqual(["skill/epic-spine/scripts/a.py"], [line.split("  ")[1] for line in shell.splitlines()])
+            self.assertEqual(shell, skill_update.generate_manifest(root, "skill/epic-spine"))
+
     # ------------------------------------------------------------------ #
     # status
     # ------------------------------------------------------------------ #

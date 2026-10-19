@@ -4,7 +4,7 @@
 # Usage: tools/epicspine-manifest.sh [skill-dir]
 #
 # Output is one "<sha256>  <path>" line per file, sorted by path, suitable for
-# committing as MANIFEST.sha256. Consumers vendor this tree and pin the manifest
+# committing as MANIFEST.sha256 (__pycache__ and *.pyc are never listed). Consumers vendor this tree and pin the manifest
 # so drift becomes visible instead of silent.
 set -euo pipefail
 
@@ -21,6 +21,6 @@ hash_file() {
 
 export -f hash_file
 
-find "$dir" -type f | LC_ALL=C sort | while IFS= read -r file; do
+find "$dir" -type f -not -path '*/__pycache__/*' -not -name '*.pyc' | LC_ALL=C sort | while IFS= read -r file; do
   printf '%s  %s\n' "$(hash_file "$file")" "$file"
 done
