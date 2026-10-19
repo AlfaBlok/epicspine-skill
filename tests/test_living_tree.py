@@ -8,12 +8,12 @@ import sys
 import time
 import unittest
 from pathlib import Path
-from unittest import mock
 
 import test_epic_log as T
 from test_agents_block import agents_block
 
 sys.path.insert(0, str(T.SCRIPTS))
+import background_sync as bg  # noqa: E402
 import epic_log  # noqa: E402
 import session_sync as ss  # noqa: E402
 
@@ -112,15 +112,20 @@ class StaleTests(LivingCase):
         lines = self.run_script("spines.py", "--active").stdout.splitlines()
         self.assertEqual(["Root — active — docs/root.md", "EPIC-1: alpha — active — docs/a.md — STALE 30d", "EPIC-2: beta — ready — docs/b.md"], lines)
 
-    def test_session_line_only_with_stale_goals_and_a_root(self) -> None:
-        line = "EpicSpine attention: " + self.repo.name + ": 1 goals active but untouched 14+ days (spines.py --active)"
+    def test_background_sync_reports_stale_goals_for_the_current_repo_once(self) -> None:
+        line = f"{self.repo.name}: 1 goals active but untouched 14+ days (spines.py --active)"
         self.assertEqual(line, epic_log.attention(self.repo))
-        patches = [mock.patch.object(ss, n, return_value=None) for n in ("sync_skill", "sync_profile")]
-        with patches[0], patches[1], mock.patch("repo_sync.run", return_value=[]), mock.patch("repo_state.session_lines", return_value=[]), \
-                mock.patch("background_sync.attention_lines", return_value=[]):
-            self.assertEqual([line], ss.run({}, home=self.repo / "home", cwd=self.repo, clock=ss.Clock(30)))
+        home = self.repo / "home"
+        info = bg.sync_repo(self.repo, home, ss.SKILL_DIR, ss.Clock(60))
+        self.assertEqual([line], info["stale"])
+        bg.save(home, {str(self.repo): info}, ss.SKILL_DIR)
+        shown = [x for x in bg.attention_lines(home, self.repo) if "untouched" in x]
+        self.assertEqual([f"EpicSpine attention: {line} (background sync; tell the user which repo and why, change nothing)"], shown)
         (self.repo / "AGENTS.md").write_text("Root spine: none\n")
         self.assertEqual("", epic_log.attention(self.repo))
+
+    def test_session_start_does_not_scan_the_tree(self) -> None:
+        self.assertNotIn("epic_log", Path(ss.__file__).read_text())
 
 
 class CurrentStateWarningTests(LivingCase):

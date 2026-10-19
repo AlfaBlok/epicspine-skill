@@ -54,12 +54,15 @@ def active(log: dict) -> str:
 
 
 def attention(repo: Path) -> str:
-    """The SessionStart line for stale goals ('' when none or no root spine)."""
-    import spines
-    if spines.find_root(repo, {}) is None:
+    """The background-sync line for stale goals ('' when none, no root spine, or on any error)."""
+    try:
+        import spines
+        if spines.find_root(repo, {}) is None:
+            return ""
+        n = len(spines.scan(repo)["stale"])
+        return f"{repo.name}: {n} goals active but untouched {STALE_DAYS}+ days (spines.py --active)" if n else ""
+    except Exception:
         return ""
-    n = len(spines.scan(repo)["stale"])
-    return f"EpicSpine attention: {repo.name}: {n} goals active but untouched {STALE_DAYS}+ days (spines.py --active)" if n else ""
 
 
 def render(log: dict) -> str:

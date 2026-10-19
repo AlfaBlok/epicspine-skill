@@ -5,7 +5,7 @@
 - **Agents keep the epic log true.** Always-on rule 6 (`global-block.md`): every new ask is placed in the tree before work starts (the reply states `Goal: EPIC-<n>`, an open goal from `spines.py --active` or a new spine from `spine_new.py`); a done goal closes (`Status: done`, parent rolls up); a replaced one gets `Superseded by:`; stale goals flagged at SessionStart are reported, never closed silently.
 - **`spine_new.py` assigns the code**: title `# EPIC-<n>: <title>`, n = highest code among the repo's goal titles (legacy `E4`/`EPIC 0` counted) + 1, never 0 (the root is EPIC-0); `--code N` overrides; DoD IDs `E<n>-`; the parent's (or AGENTS.md) `Integration policy:` is copied.
 - **`spines.py`**: `--active` lists open goals; node JSON gains `superseded_by`, top level gains `stale: [{path, title, days}]` (active/blocked, file's last commit 14+ days old). New helper `epic_log.py` holds rollup, the text views, code and stale logic (spines.py 200 -> under 170 lines).
-- **Gates**: pre-commit blocks a `Superseded by:` link that is no goal doc and warns (never blocks) when a goal's Current State exceeds 12 lines. `session_sync.py` prints one `EpicSpine attention:` line for stale goals (skipped without a root spine). Tests: `tests/test_living_tree.py`. Skill 2026.10.19.3.
+- **Gates**: pre-commit blocks a `Superseded by:` link that is no goal doc and warns (never blocks) when a goal's Current State exceeds 12 lines. The 15-minute background sync (`background_sync.py`, never SessionStart, which stays scan-free) records one stale-goals line per repo with a root spine; SessionStart prints it, for the current repo too. Tests: `tests/test_living_tree.py`. Skill 2026.10.19.3.
 
 ## 2026.10.19.2 — Epic log wording
 

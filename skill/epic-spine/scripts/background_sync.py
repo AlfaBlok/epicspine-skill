@@ -25,10 +25,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-import local_mess  # noqa: E402
-import local_servers  # noqa: E402
-import repo_sync  # noqa: E402
-import vendored_skill  # noqa: E402
+import epic_log, local_mess, local_servers, repo_sync, vendored_skill  # noqa: E402
 from session_sync import SKILL_DIR, Clock, git, out, read_version  # noqa: E402
 
 STATUS = ".agents/epicspine-sync-status.json"
@@ -105,7 +102,7 @@ def sync_repo(top: Path, home: Path, skill_dir: Path, total: Clock, env: dict | 
         why = re.match(r"EpicSpine attention: repo (\S+) \((.*?)\) needs the user: (.*?)\. Tell the user", note)
         attention.append(f"{why.group(1)} ({why.group(2)}): {why.group(3)}" if why else note.removeprefix("EpicSpine attention: "))
     return {"name": top.name, "last_run": now_iso(), "branch": branch, "ahead": ahead, "behind": behind, "pulled": pulled,
-            "pushed": pushed, "timed_out": not clock.ok(), "attention": attention, "branches_pushed": mess.get("branches_pushed", 0),
+            "pushed": pushed, "timed_out": not clock.ok(), "attention": attention, "stale": list(filter(None, [epic_log.attention(top)])), "branches_pushed": mess.get("branches_pushed", 0),
             "mess": mess.get("mess", []), "dirty_since": mess.get("dirty_since"), "auto": mess.get("auto", []), "state": mess.get("state", {})}
 
 
@@ -182,7 +179,7 @@ def attention_lines(home: Path, cwd: Path | None = None, now: float | None = Non
     for top, info in sorted(data.get("repos", {}).items()):
         covered = here == Path(top) or Path(top) in here.parents  # the live SessionStart check covers the current repo's sync, not its mess
         lines += [f"EpicSpine attention: {a} (background sync; tell the user which repo and why, change nothing)"
-                  for a in ([] if covered else info.get("attention", [])) + info.get("mess", [])]
+                  for a in ([] if covered else info.get("attention", [])) + info.get("mess", []) + info.get("stale", [])]
     return lines[:SHOWN] + ([f"EpicSpine attention: {len(lines) - SHOWN} more (see ~/{STATUS})"] if len(lines) > SHOWN else [])
 
 
