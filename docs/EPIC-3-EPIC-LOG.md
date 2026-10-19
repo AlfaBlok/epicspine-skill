@@ -17,9 +17,9 @@ Integration branch: main
 Owner: EPIC-3 delivery manager (thread mcp:e9568396-d334-4a6b-bc0c-ab93b4a0fb6b)
 Status: active
 Last attempted: 2026-10-19 E3-2 merged (c320d91..61d7e03, release 2026.10.19.3): EPIC codes in spine_new, --active, stale goals via the 15-min background sync (SessionStart stays scan-free), Superseded by:, lean Current State warning, rule 6 Record; scripts handed to EPIC-4
-Result: main after E3-2: full suite in isolated config dirs green except test_url_gate.test_localhost_url_checked (fails on main before E3-2 too; passes alone, host load); global pointers canonical
+Result: main @ 61d7e03, full suite with CLAUDE_CONFIG_DIR/CODEX_HOME/XDG_CONFIG_HOME isolated: 517 tests, 516 OK; only test_url_gate localhost (pre-existing load flake, also red on main before E3-2)
 Evidence: docs/handoffs/2026-10-19-spine-conformance.md
-Waiting on: poly-maker migration report (thread mcp:766a969a); agent_team E3-4 report
+Waiting on: none
 Approved work: E3-1 to E3-5 (user, 2026-10-19)
 Next action: watch the poly-maker migration thread (mcp:766a969a; run 1 cancelled by a T3 restart with no changes, restarted 2026-10-19); full isolated suite on main rerunning (first run killed by the restart); E3-2 live proof: 3 fresh sessions in different repos; agent_team reports E3-4; then launch the zenod migration
 Source revision: main
