@@ -16,7 +16,7 @@ Integration branch: main
 
 Owner: EPIC-3 delivery manager (thread mcp:e9568396-d334-4a6b-bc0c-ab93b4a0fb6b)
 Status: active
-Last attempted: 2026-10-19 E3-2 dispatched (wt/living-tree, seat1 Sonnet 5.5); EPIC-4 told SKILL.md/spine-model.md are free; E3-1 done (release 2026.10.19.2)
+Last attempted: 2026-10-19 E3-2 re-dispatched (first try: provider could not start the turn, no work written; wt/living-tree, seat1 Sonnet 5.5); EPIC-4 told SKILL.md/spine-model.md are free; E3-1 done (release 2026.10.19.2)
 Result: main @ 20b4602: 503 of 508 OK on a loaded host (load 27): the 5 test_url_gate subprocess timeouts pass alone; manifest matches a clean tree
 Evidence: docs/handoffs/2026-10-19-spine-conformance.md
 Waiting on: E3-2 worker (wt/living-tree)
