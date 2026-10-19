@@ -14,7 +14,7 @@ Integration branch: main
 
 ## Current State
 
-Owner: /root delivery manager
+Owner: EPIC-3 delivery manager (thread mcp:e9568396-d334-4a6b-bc0c-ab93b4a0fb6b)
 Status: active
 Last attempted: 2026-10-19 skill tools round 1 (b19f284) reviewed; round 2 dispatched (repo-relative links, safe gate rollout, test dirs)
 Result: 503 tests OK on wt/epic-log; not merged
