@@ -86,7 +86,7 @@ def launch(argv: list[str], env: dict, seconds: float) -> bool:
 
 def heal_one(harness: str, cdir: Path, hooks_file: Path, instr: Path, stop: tuple[str, ...], env: dict, home: Path,
              updated: bool, skill_dir: Path) -> str | None:
-    if not cdir.is_dir() or not ours(hooks_file, instr):
+    if not cdir.is_dir() or gi.outside_home(cdir, home) or not ours(hooks_file, instr):
         return None
     try:
         reg = registered(hooks_file)

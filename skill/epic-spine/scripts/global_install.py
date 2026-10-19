@@ -21,6 +21,7 @@ import tempfile
 from pathlib import Path
 
 SKILL_DIR = Path(__file__).resolve().parent.parent
+_WARNED: set[str] = set()
 GLOBAL_TEMPLATE = SKILL_DIR / "assets" / "global-block.md"
 BLOCK_RE = re.compile(r"<!-- epicspine:begin [^>]*-->.*?<!-- epicspine:end -->", re.DOTALL)
 HOOK_MARK = 'agents_block.py" print-hook'
@@ -41,6 +42,58 @@ UNSUPPORTED = {
 }
 
 
+def warn(message: str) -> None:
+    """One stderr line per distinct message per process (hooks must stay quiet otherwise)."""
+    if message not in _WARNED:
+        _WARNED.add(message)
+        print(f"epicspine: {message}", file=sys.stderr)
+
+
+def _worktree_main(path: Path) -> tuple[Path, Path] | None:
+    """(linked worktree root, its main checkout) when ``path`` lies in a linked worktree (``.git`` is a FILE), else None."""
+    for top in (path, *path.parents):
+        dot = top / ".git"
+        if dot.is_file():
+            try:
+                gitdir = Path(dot.read_text(encoding="utf-8").split("gitdir:", 1)[1].strip().splitlines()[0])
+            except (IndexError, OSError):
+                return top, top
+            common = (top / gitdir).resolve().parent.parent  # <main>/.git/worktrees/<name> -> <main>/.git
+            return top, common.parent
+        if dot.exists():
+            return None
+    return None
+
+
+def install_dir(home: Path | None = None) -> Path | None:
+    """The skill dir that pointers, hooks and links may name: SKILL_DIR, unless it lies in a linked git worktree (which
+    is removed after its task), then the same dir in the repo's main checkout, else ``~/.agents/skills/epic-spine``
+    if present, else None (callers skip and warn)."""
+    found = _worktree_main(SKILL_DIR)
+    if found is None:
+        return SKILL_DIR
+    top, main = found
+    for cand in (main / SKILL_DIR.relative_to(top), (home or Path.home()) / ".agents" / "skills" / "epic-spine"):
+        if cand != SKILL_DIR and (cand / "assets" / "global-block.md").is_file() and _worktree_main(cand.resolve()) is None:
+            return cand
+    warn(f"{SKILL_DIR} is inside a linked git worktree and has no main checkout or ~/.agents/skills/epic-spine; "
+         "not writing pointers, hooks or links that would break when the worktree is removed")
+    return None
+
+
+def outside_home(path: Path, home: Path | None = None) -> bool:
+    """True (with a warning) when ``path`` is outside ``$HOME`` (a mixed or leaked test environment): never modified."""
+    base = home or (Path(os.environ["HOME"]) if os.environ.get("HOME") else None)
+    if base is None:
+        return False
+    try:
+        Path(os.path.realpath(path)).relative_to(os.path.realpath(base))
+        return False
+    except ValueError:
+        warn(f"not modifying {path}: outside HOME ({base})")
+        return True
+
+
 def read_version() -> str:
     return (SKILL_DIR / "VERSION").read_text(encoding="utf-8").strip()
 
@@ -52,10 +105,11 @@ def render_global() -> str:
 def render_pointer(hookless: bool = False) -> str:
     """Pasted into instruction files: a pointer to the live block, never a copy. ``hookless``: the harness hook
     may be unregistered or untrusted, so the first command runs the hook by hand (sync included)."""
-    tail = (f"If the block was not injected at session start, run `python3 {SKILL_DIR / 'scripts' / 'agents_block.py'} "
+    skill = install_dir() or SKILL_DIR
+    tail = (f"If the block was not injected at session start, run `python3 {skill / 'scripts' / 'agents_block.py'} "
             "print-hook` first and follow its output (it also syncs the skill and this repo).\n") if hookless else ""
     return ("<!-- epicspine:begin pointer -->\nEpicSpine is installed. Before your first reply, follow "
-            f"`{GLOBAL_TEMPLATE}` (read it unless already injected at session start).\n{tail}<!-- epicspine:end -->\n")
+            f"`{skill / 'assets' / 'global-block.md'}` (read it unless already injected at session start).\n{tail}<!-- epicspine:end -->\n")
 
 
 def profile_missing(home: Path | None = None) -> bool:
@@ -144,6 +198,8 @@ def heal(env: dict) -> None:
     (``CLAUDE_CONFIG_DIR``, else ``~/.claude``) with the current pointer. No block, or current: untouched."""
     try:
         path = Path(env.get("CLAUDE_CONFIG_DIR") or Path.home() / ".claude").expanduser() / "CLAUDE.md"
+        if install_dir() is None or outside_home(path.parent):
+            return
         match = BLOCK_RE.search(path.read_text(encoding="utf-8"))
         if match and match.group(0) + "\n" != render_pointer() and os.access(path, os.W_OK):
             upsert(path, render_pointer())
@@ -227,11 +283,10 @@ def _strip_hook(data: dict) -> bool:
 
 
 def _save(settings: Path, data: dict) -> None:
-    if data:
+    """Write ``data``; an existing file is kept (as ``{}``) even when empty, since we cannot know it is ours."""
+    if data or settings.exists():
         settings.parent.mkdir(parents=True, exist_ok=True)
         settings.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
-    elif settings.exists():
-        settings.unlink()
 
 
 def set_hook(settings: Path, on: bool, stop: tuple[str, ...] = ()) -> str:
@@ -242,8 +297,11 @@ def set_hook(settings: Path, on: bool, stop: tuple[str, ...] = ()) -> str:
         return f"error: cannot merge {settings}: {exc}"
     had = _strip_hook(data)
     if on:
-        cmds = [("SessionStart", f'python3 "{Path(__file__).with_name("agents_block.py")}" print-hook')]
-        cmds += [("Stop", f'python3 "{Path(__file__).with_name(name)}"') for name in stop]
+        skill = install_dir()
+        if skill is None:
+            return "skipped: skill dir is inside a git worktree"
+        cmds = [("SessionStart", f'python3 "{skill / "scripts" / "agents_block.py"}" print-hook')]
+        cmds += [("Stop", f'python3 "{skill / "scripts" / name}"') for name in stop]
         for event, command in cmds:
             data.setdefault("hooks", {}).setdefault(event, []).append(
                 {"hooks": [{"type": "command", "command": command}]})
@@ -286,14 +344,17 @@ def has_hook(settings: Path, stop: tuple[str, ...] = ()) -> bool:
 def skill_link(action: str, cdir: Path) -> tuple[str, int]:
     """Make the skill discoverable at ``<cdir>/skills/epic-spine`` (symlink to SKILL_DIR)."""
     link = cdir / "skills" / "epic-spine"
-    ours = link.is_symlink() and link.resolve() == SKILL_DIR
+    want = install_dir()
+    ours = link.is_symlink() and link.resolve() in (SKILL_DIR, want and want.resolve())
     if action == "install":
+        if want is None:
+            return "skipped (worktree)", 0
         if ours:
             return "current", 0
         if link.is_symlink() or link.exists():
             return "foreign, left alone", 0
         link.parent.mkdir(parents=True, exist_ok=True)
-        link.symlink_to(SKILL_DIR, target_is_directory=True)
+        link.symlink_to(want, target_is_directory=True)
         return "linked", 0
     if action == "uninstall":
         if ours:
@@ -308,8 +369,14 @@ def run(action: str, home: Path, env: dict, claude_dirs: list[str], hooks: bool 
     """action: install | check | uninstall. Prints one line per harness (``only``: just these, e.g. ``codex``).
     ``artifact_host`` (install, Claude only): None leaves settings env alone, "" removes it."""
     code, present = 0, 0
+    if action == "install" and install_dir(home) is None:
+        print("install skipped: skill dir is inside a git worktree with no canonical path")
+        return 1
     for label, detect, target, explicit, settings in harnesses(home, env, claude_dirs):
         if only and label.split("[")[0] not in only:
+            continue
+        if outside_home(detect, home):
+            print(f"{label}: skipped ({detect} is outside HOME)")
             continue
         if not (detect.exists() or (explicit and action == "install")):
             print(f"{label}: not detected ({detect} absent)")
