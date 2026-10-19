@@ -6,7 +6,8 @@ is advisory (printed, never blocks). A staged ``.md`` is a spine if it has ``## 
 a ticket if it has ``Ticket ID:``. A goal doc (``spines.is_goal``) must also be a consistent node of the epic log: a
 v1 header, reachable from the root, agreeing with its parent's Spine Map (``spine_new.py``). Blocks only a newly added or
 renamed goal doc, and a modified one whose HEAD version already had ``Spine ID:`` (migrated). Warns, never blocks: a
-modified legacy goal doc (no ``Spine ID:`` at HEAD), a root spine without a ``Spine ID:`` header, and ``Root spine: none``."""
+modified legacy goal doc (no ``Spine ID:`` at HEAD), a root spine without a ``Spine ID:`` header, ``Root spine: none`` and a goal
+spine whose ``## Current State`` has over 12 non-empty lines. ``Superseded by:`` must link to an existing goal doc (blocks)."""
 
 from __future__ import annotations
 
@@ -50,6 +51,17 @@ def tree_check(name: str, added: set[str], cache: dict, told: set[str]) -> tuple
     return True, why + f". Fix: python3 {HERE / 'spine_new.py'} --repo . --parent <parent spine> --path {name} --title <title> (new doc), or add the v1 header + a parent Spine Map row (existing doc)"
 
 
+def goal_notes(name: str, text: str, cache: dict) -> tuple[bool, str]:
+    """(blocks, message): a ``Superseded by:`` link that is no goal doc blocks; a long Current State only warns."""
+    cwd, msgs = Path.cwd(), []
+    sup = spines.meta(Path(name), cache)["fields"].get("Superseded by")
+    target = spines.link(Path(name).resolve(), sup, cache) if sup else None
+    if sup and not (target and target.is_file() and spines.is_goal(cwd, target.relative_to(cwd), spines.read(target))):
+        return True, f"{name}: Superseded by {sup!r} is not an existing goal doc"
+    lines = [x for x in v.parse_sections(text).get("Current State", "").splitlines() if x.strip()]
+    return False, f"{name}: Current State has {len(lines)} lines; keep Current State lean: history goes to Decisions/git" if len(lines) > 12 else ""
+
+
 def main() -> int:
     top = git("rev-parse", "--show-toplevel").stdout.strip()
     if top:
@@ -65,6 +77,10 @@ def main() -> int:
         kind = v.doc_kind(text)
         if spines.is_goal(Path.cwd(), path, text):
             stop, note = tree_check(name, added, cache, told)
+            blocked = blocked or stop
+            if note:
+                say(note)
+            stop, note = goal_notes(name, text, cache)
             blocked = blocked or stop
             if note:
                 say(note)

@@ -105,10 +105,10 @@ class SpineNewTests(EpicLogCase):
         self.assertTrue(v.trackable(child)["trackable"], v.trackable(child))
         self.assertEqual([], v.validate_local(child).errors)
         text = child.read_text()
-        for line in ("Spine ID: e4-one-logger", "Spine Type: branch", "Root spine: [Root](root.md)", "Parent spine: [Root](root.md)", "Status: draft", "- [ ] E4-1 "):
+        for line in ("Spine ID: e4-one-logger", "Spine Type: branch", "Root spine: [Root](root.md)", "Parent spine: [Root](root.md)", "Status: draft", "# EPIC-1: E4 one logger", "- [ ] E1-1 "):
             self.assertIn(line, text)
         root = self.repo / "docs/root.md"
-        self.assertIn("| e4-one-logger | child | [E4 one logger](E4-one-logger.md) |", root.read_text())
+        self.assertIn("| e4-one-logger | child | [EPIC-1: E4 one logger](E4-one-logger.md) |", root.read_text())
         self.assertEqual([], v.validate_local(root).errors)
 
     def test_idempotent_and_never_overwrites(self) -> None:
@@ -140,9 +140,9 @@ class SpineNewTests(EpicLogCase):
         nested = self.new("docs/e4/E4-1-streams.md", "e4-one-logger", "E4-1 streams", "--purpose", "One registry")
         self.assertEqual(0, nested.returncode, nested.stderr)
         child = self.repo / "docs/e4/E4-1-streams.md"
-        self.assertIn("Parent spine: [E4 one logger](../E4-one-logger.md)", child.read_text())
+        self.assertIn("Parent spine: [EPIC-1: E4 one logger](../E4-one-logger.md)", child.read_text())
         self.assertIn("Root spine: [Root](../root.md)", child.read_text())
-        self.assertIn("| e4-1-streams | child | [E4-1 streams](e4/E4-1-streams.md) | One registry |", (self.repo / "docs/E4-one-logger.md").read_text())
+        self.assertIn("| e4-1-streams | child | [EPIC-2: E4-1 streams](e4/E4-1-streams.md) | One registry |", (self.repo / "docs/E4-one-logger.md").read_text())
         self.assertEqual(1, (self.repo / "docs/root.md").read_text().count("## Spine Map"))
         graph = [str(self.repo / n) for n in ("docs/root.md", "docs/E4-one-logger.md", "docs/e4/E4-1-streams.md")]
         checked = subprocess.run([sys.executable, "-B", str(VALIDATOR_PATH), "--strict", "--graph", *graph], capture_output=True, text=True)
@@ -161,7 +161,7 @@ class DiscoveryTests(EpicLogCase):
         self.new()
         self.new("docs/e4/E4-1-streams.md", "e4-one-logger", "E4-1 streams")
         child = self.repo / "docs/e4/E4-1-streams.md"
-        child.write_text(child.read_text().replace("Status: draft", "Status: done").replace("- [ ] E4-1-1", "- [x] E4-1-1").replace("- [ ] E4-1 ", "- [x] E4-1 "))
+        child.write_text(child.read_text().replace("Status: draft", "Status: done").replace("- [ ] E4-1-1", "- [x] E4-1-1").replace("- [ ] E2-1 ", "- [x] E2-1 "))
         log = self.log()
         self.assertEqual("docs/root.md", log["root"])
         by = {n["path"]: n for n in log["nodes"]}
@@ -177,7 +177,7 @@ class DiscoveryTests(EpicLogCase):
         text = self.run_script("spines.py").stdout
         self.assertIn("- Root (docs/root.md) active", text)
         self.assertIn("  [ ] R-1 purpose met", text)
-        self.assertIn("    - E4-1 streams (docs/e4/E4-1-streams.md) done", text)
+        self.assertIn("    - EPIC-2: E4-1 streams (docs/e4/E4-1-streams.md) done", text)
 
     def test_rollup_rules(self) -> None:
         dod = lambda *done: [{"done": d} for d in done]  # noqa: E731
@@ -211,7 +211,7 @@ class DiscoveryTests(EpicLogCase):
     def test_repo_relative_links_resolve_like_agent_team(self) -> None:
         self.new()
         row = "| e4-one-logger | child | [E4 one logger](docs/spines/m2.md) |"
-        root = (self.repo / "docs/root.md").read_text().replace("| e4-one-logger | child | [E4 one logger](E4-one-logger.md) |", row)
+        root = (self.repo / "docs/root.md").read_text().replace("| e4-one-logger | child | [EPIC-1: E4 one logger](E4-one-logger.md) |", row)
         child = (self.repo / "docs/E4-one-logger.md").read_text().replace("Parent spine: [Root](root.md)", "Parent spine: docs/spines/root.md")
         (self.repo / "docs/root.md").unlink()
         (self.repo / "docs/E4-one-logger.md").unlink()

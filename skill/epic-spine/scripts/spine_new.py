@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Scaffold a goal spine in the epic log: ``spine_new.py --repo DIR --parent SPINE --path NEW.md --title T [--purpose P]``.
+"""Scaffold a goal spine in the epic log: ``spine_new.py --repo DIR --parent SPINE --path NEW.md --title NAME [--purpose P] [--code N]``.
 
-Writes a valid v1 compact child spine (Spine Type branch (a child), Root spine, Parent spine, Current State ``Status: draft``,
-checkbox Definition Of Done, Issue Ledger) and registers a row in the parent's Spine Map (the section is created when
+Writes a valid v1 compact child spine titled ``# EPIC-<n>: NAME`` (n = highest code in the repo's goal titles + 1, legacy
+``E4``/``EPIC 0`` included, or ``--code``; DoD IDs ``E<n>-``; Integration branch/policy copied from the parent or AGENTS.md;
+Root spine, Parent spine, ``Status: draft``, checkbox Definition Of Done, Issue Ledger) and registers a row in the parent's Spine Map (the section is created when
 missing). ``--parent`` is the parent's path or Spine ID. Idempotent: an existing file is never overwritten, only
 (re)registered when it is a spine. Output passes ``validate_spine.py --trackable``. See references/spine-creation.md."""
 
@@ -18,9 +19,10 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import spines as S  # noqa: E402
 import validate_spine as v  # noqa: E402
+from epic_log import next_code  # noqa: E402
 from rollup_spine import cell  # noqa: E402
 
-TEMPLATE = """# EPIC: {title}
+TEMPLATE = """# EPIC-{code}: {title}
 
 Spine profile: compact
 Ticket backend: github
@@ -33,7 +35,7 @@ Root spine: [{root_title}]({root_link})
 Parent spine: [{parent_title}]({parent_link})
 Additional root rationale: n/a
 Integration branch: {branch}
-
+{policy}
 ## Current State
 
 Owner: unassigned
@@ -104,6 +106,7 @@ def main() -> int:
     parser.add_argument("--title", required=True)
     parser.add_argument("--purpose")
     parser.add_argument("--spine-id")
+    parser.add_argument("--code", type=int, help="EPIC number (default: highest in the repo + 1)")
     a = parser.parse_args()
     repo, cache = Path(a.repo).resolve(), {}
     parent = next((p.resolve() for p in (repo / a.parent, Path(a.parent)) if p.is_file()), None)
@@ -130,12 +133,16 @@ def main() -> int:
     else:
         child.parent.mkdir(parents=True, exist_ok=True)
         today, root_meta = date.today().isoformat(), S.meta(root, cache)
+        log = S.scan(repo)
+        code = a.code if a.code is not None else next_code([x["title"] for x in log["nodes"] + log["orphans"]])
+        found = re.search(r"(?m)^Integration policy:.*", pm["text"]) or re.search(r"(?m)^Integration policy:.*", S.read(repo / "AGENTS.md"))
         child.write_text(TEMPLATE.format(
-            title=a.title, repo=pm["fields"].get("Repository", repo.name), primary=child.relative_to(repo).as_posix(), sid=sid, today=today,
+            title=a.title, code=code, policy=found.group() + "\n" if found else "", repo=pm["fields"].get("Repository", repo.name), primary=child.relative_to(repo).as_posix(), sid=sid, today=today,
             root_title=title_of(root_meta), root_link=link(root, child), parent_title=title_of(pm), parent_link=link(parent, child), parent_id=pm["id"],
-            branch=pm["fields"].get("Integration branch", "main"), purpose=a.purpose or a.title, prefix=(re.match(r"[A-Za-z][A-Za-z0-9]*", a.title) or ["G"])[0].upper()), encoding="utf-8")
+            branch=pm["fields"].get("Integration branch", "main"), purpose=a.purpose or a.title, prefix=f"E{code}"), encoding="utf-8")
         created = True
-    row = {"Spine ID": sid, "Relationship": "child", "Spine": f"[{a.title}]({link(child, parent)})", "Purpose": a.purpose or a.title, "Status": "draft",
+    name = (re.search(r"(?m)^# (.+)", S.read(child)) or [0, a.title])[1]
+    row = {"Spine ID": sid, "Relationship": "child", "Spine": f"[{name}]({link(child, parent)})", "Purpose": a.purpose or a.title, "Status": "draft",
            "Last Rolled Up": date.today().isoformat(), "Next Action": "fill Mission and Definition Of Done"}
     registered = child not in {t for _, t in pm["rows"]}
     if registered:

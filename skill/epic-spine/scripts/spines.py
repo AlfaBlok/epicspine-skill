@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 """The epic log: one tree of goals per repo, hung from the root spine (references/spine-model.md).
 
-``spines.py [--json] --repo DIR`` finds the root (AGENTS.md ``Root spine:``, else a root-typed header), walks children
-(a child's ``Parent spine:`` header decides its parent; the parent's Spine Map must agree; links resolve against the
-file's folder, else the repo root) and lists goal docs outside the tree as orphans. Goal doc = a file with a ``Spine ID:``
-line or an E<n>-*/EPIC*/*SPINE*/*PLAN* name; skipped: archive/, node_modules, dot-dirs, handoffs/, examples/, fixtures/,
-test/, tests/, any folder holding a SKILL.md (vendored skill). Library for ``spine_new.py`` and the pre-commit gate. Exits 0."""
+``spines.py [--json | --active] --repo DIR`` finds the root (AGENTS.md ``Root spine:``, else a root-typed header), walks children
+(a child's ``Parent spine:`` header decides; the parent's Spine Map must agree; links resolve against the file's folder, else
+the repo root) and lists goal docs outside the tree as orphans. Goal doc = a ``Spine ID:`` line or an E<n>-*/EPIC*/*SPINE*/*PLAN*
+name; skipped: archive/, node_modules, dot-dirs, handoffs/, examples/, fixtures/, test/, tests/, vendored skills. Exits 0."""
 
 from __future__ import annotations
 
@@ -18,6 +17,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import validate_spine as v  # noqa: E402
+from epic_log import active, link_problems, render, rollup, stale  # noqa: E402
 
 SKIP = {"archive", "node_modules", "vendor", "wt", "worktrees", "handoffs", "examples", "fixtures", "test", "tests", "__pycache__"}
 NAMED = re.compile(r"(?i)^(e\d+[-_]|epic)|(^|[-_ ])(spine|plan)($|[-_ 0-9])")
@@ -81,13 +81,6 @@ def parent_file(path: Path, cache: dict) -> Path | None:
     return m["parent"] if m and m["parent"] and meta(m["parent"], cache) else None
 
 
-def link_problems(child: dict, parent: dict) -> list[str]:
-    """The child's header and the parent's Spine Map must agree."""
-    rows = [i for i, t in parent["rows"] if t == child["path"]]
-    return (["Parent spine header does not name " + parent["path"].name] if child["parent"] != parent["path"] else []) + \
-        ([] if child["id"] in rows else ["Spine Map Spine ID differs"] if rows else ["not in the parent's Spine Map"])
-
-
 def problems(repo: Path, path: Path, cache: dict) -> list[str] | None:
     """Why ``path`` is not a consistent node of the tree (None: the repo has no root spine). Walks up one chain only."""
     root = find_root(repo, cache)
@@ -105,16 +98,6 @@ def problems(repo: Path, path: Path, cache: dict) -> list[str] | None:
         seen.add(cur)
         cur = parent
     return out
-
-
-def rollup(own: str, kids: list[str], dod: list[dict]) -> str:
-    """Derived: blocked wins; all children and criteria done: done; any progress: active; else the own status."""
-    parts = kids + ["done" if d["done"] else "open" for d in dod]
-    if own == "blocked" or "blocked" in kids:
-        return "blocked"
-    if parts and all(p == "done" for p in parts):
-        return "done"
-    return "active" if own == "active" or "active" in parts or "done" in parts else own or "draft"
 
 
 def scan(repo: Path) -> dict:
@@ -137,7 +120,8 @@ def scan(repo: Path) -> dict:
         dod = [{"id": x.group(2), "text": x.group(3), "done": x.group(1) != " "} for _, line in v.criteria(m["text"], ("Definition Of Done",)) if (x := DONE.match(line.strip()))]
         node = nodes[rel(path)] = {"id": m["id"], "path": rel(path), "title": title(m, path.stem), "parent": rel(m["parent"]) if parent_file(path, cache) else None,
                                    "type": m["fields"].get("Spine Type", "").lower() or ("root" if path == root else ""),
-                                   "status": status, "rollup_status": status, "dod": dod, "children": []}
+                                   "status": status, "rollup_status": status, "dod": dod, "children": [],
+                                   "superseded_by": rel(sup) if (sup := link(path, m["fields"].get("Superseded by", ""), cache)) else None}
         kids = list(header_kids.get(path, []))
         for _, target in m["rows"]:
             tm = meta(target, cache) if target else None
@@ -163,36 +147,18 @@ def scan(repo: Path) -> dict:
     for d in queue:  # docs a goal links as children are goal docs too
         queue += [t for _, t in meta(d, cache)["rows"] if t and t.suffix == ".md" and t.is_file() and rel(t) not in nodes and t not in queue]
     orphans = [{"path": rel(d), "title": title(meta(d, cache), d.stem), "reason": "not reachable from the root" if meta(d, cache)["id"] else "no Spine ID header"} for d in queue]
-    return {"root": rel(root) if root else None, "nodes": list(nodes.values()), "orphans": orphans, "mismatches": mismatches}
-
-
-def render(log: dict) -> str:
-    by_path = {n["path"]: n for n in log["nodes"]}
-    lines: list[str] = []
-
-    def show(path: str, depth: int) -> None:
-        n, pad = by_path[path], "  " * depth
-        lines.append(f"{pad}- {n['title']} ({n['path']}) {n['status'] or '?'}" + (f" -> {n['rollup_status']}" if n["rollup_status"] != n["status"] else ""))
-        lines.extend(f"{pad}  [{'x' if d['done'] else ' '}] {d['id']} {d['text']}" for d in n["dod"])
-        for child in n["children"]:
-            show(child, depth + 1)
-
-    if log["root"]:
-        show(log["root"], 0)
-    else:
-        lines.append("no root spine (Root spine: none): nothing is in the tree")
-    lines += [f"orphan: {o['path']} ({o['reason']})" for o in log["orphans"]]
-    lines += [f"mismatch: {m['path']}: {m['problem']}" for m in log["mismatches"]]
-    return "\n".join(lines)
+    return {"root": rel(root) if root else None, "nodes": list(nodes.values()), "orphans": orphans, "mismatches": mismatches,
+            "stale": stale(repo, list(nodes.values()))}
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--repo", default=".")
     parser.add_argument("--json", action="store_true")
+    parser.add_argument("--active", action="store_true", help="list open goals, one line each (stale marked)")
     args = parser.parse_args()
     log = scan(Path(args.repo))
-    print(json.dumps(log, indent=2) if args.json else render(log))
+    print(json.dumps(log, indent=2) if args.json else active(log) if args.active else render(log))
     return 0
 
 
