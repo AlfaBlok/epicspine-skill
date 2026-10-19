@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.10.19.2 — Epic log wording
+
+- **Spines are nested markdowns; leaf-vs-DoD-line is judgment.** Progress within a goal goes in that goal's spine; a new measurable objective worked over iterative pushes (sprint/plan) gets a leaf markdown linked from its parent, a small one-push item stays a DoD line. Every goal is `EPIC-<n>: <short name>`, with a one-line goal and measurable success criteria. **Status words**: `Status:` is the only status source (`Waiting on:` is context, never blocked); `ready` = defined, not started, launching a persona makes it `active`; `deferred` = paused by the user; `blocked` = a named external dependency. SKILL.md Epic Log, `references/spine-model.md`.
+- **Manifest skips `__pycache__` and `*.pyc`** (`tools/epicspine-manifest.sh`, `skill_update.generate_manifest`): a working tree with bytecode no longer produces lines that CI's clean checkout rejects. `test_manifest_excludes_pycache`. Skill 2026.10.19.2.
+
 ## 2026.10.19.1 — Epic log
 
 - **"On latest EpicSpine" means installed and docs conform.** The skill version, hooks and AGENTS.md block were never the whole story: nothing created, checked or listed the goal documents themselves (poly-maker E4 was a plain ticket-table doc, invisible to the console picker; `docs/handoffs/2026-10-19-spine-conformance.md`). A repo now has one **epic log**: a tree of goals hung from the root spine (the trunk, which states the purpose). A goal is a node under the root or another goal; it gets its own spine file when it has its own DoD, children or spans sessions, otherwise it is a `- [ ] <ID> text` DoD line in its parent. The child's `Parent spine:` header decides its place, the parent's Spine Map must agree (checked, not trusted), parent state rolls up from children. Files and header fields keep their names. SKILL.md (Epic Log section), `references/spine-model.md` (definition + the discovery JSON schema), `references/spine-creation.md`.
