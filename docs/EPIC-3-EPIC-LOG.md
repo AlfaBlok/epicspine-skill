@@ -16,12 +16,12 @@ Integration branch: main
 
 Owner: EPIC-3 delivery manager (thread mcp:e9568396-d334-4a6b-bc0c-ab93b4a0fb6b)
 Status: active
-Last attempted: 2026-10-19 round 2 (3bad60f) under verification; scope split: Goal/Serves/Done means/doctrine moved to EPIC-4 (Jordi)
-Result: 503 tests OK on wt/epic-log; not merged
+Last attempted: 2026-10-19 E3-1 round 2 merged (cab199a, 4639aa9; MANIFEST fixed 88f00fa: worker had committed 4 __pycache__ entries); round 3 (wording, code rule, status words, manifest skip) next
+Result: main @ 88f00fa: 507 tests OK (1 skipped; test_url_gate localhost flakes under full-suite load, passes alone); own repo 0 orphans 0 mismatches; agent_team m2-m5 are nodes, 4 mismatches (root Spine Map missing: agent_team's migration)
 Evidence: docs/handoffs/2026-10-19-spine-conformance.md
-Waiting on: test_url_gate localhost failure triage (round 2 does not touch the URL gate)
+Waiting on: E3-1 round 3 worker
 Approved work: E3-1 to E3-5 (user, 2026-10-19)
-Next action: merge round 2 (+ trimmed round 3 if needed); tell the EPIC-4 manager spines.py/spine_new.py/pre_commit.py are free; launch the poly-maker migration
+Next action: verify and merge round 3; send the E3-4 contract to agent_team d14c8f2e; launch the poly-maker migration (never mentioning E4)
 Source revision: main
 Verified at: 2026-10-19
 
@@ -47,8 +47,8 @@ No rename of existing files or header fields. Migration changes structure only (
 
 | Issue | Role | Owner / Assignment | Title | Status | Depends On | PR/Branch | Base | Latest Evidence | Last Verified | Next Action |
 |---|---|---|---|---|---|---|---|---|---|---|
-| draft | Ticket worker | worker (Sonnet 5.5, seat pool) | E3-1 skill tools: definition, `spine_new`, tree gate, `spines --json`; release 2026.10.19.1 | draft | none | wt/epic-log | main | r1 b19f284: 503 tests OK; review: repo-relative Parent spine unresolved (agent_team m2-m5 orphaned), gate would block legacy-doc edits in unmigrated repos, test fixtures counted; r2 dispatched | 2026-10-19 | verify r2; r3: align wording to \"nested markdowns, judgment\" and the EPIC code rule; status wording: one word per state, ready before launch, console persona launch = active, badge from `Status:` only; then merge and free the files for EPIC-4 (one worker on spines.py/spine_new.py/pre_commit.py at a time) |
-| draft | Ticket worker | unassigned | E3-2 living tree: always-on `Goal: EPIC-<n>` rule; Record duties (new goal -> `spine_new`, done -> roll up, replaced -> `Superseded by:`); `spines --active`; stale goals 14 d flagged; `spine_new` assigns the next EPIC code; lean Current State limit | draft | E3-1 | none | main | queued 2026-10-19 by user | 2026-10-19 | dispatch after E3-1 merges |
+| draft | Ticket worker | worker (Sonnet 5.5, seat pool) | E3-1 skill tools: definition, `spine_new`, tree gate, `spines --json`; release 2026.10.19.1 | active | none | wt/epic-log-r3 | main | r1+r2 merged on main (cab199a, 4639aa9), MANIFEST fixed 88f00fa, 507 OK; scripts handed to EPIC-4 | 2026-10-19 | r3 (SKILL.md, spine-model.md, manifest script only): nested markdowns + judgment, `EPIC-<n>: <name>` code rule, status words (ready before launch, persona launch = active, paused = deferred, badge from `Status:`), manifest skips __pycache__; verify, merge |
+| draft | Ticket worker | unassigned | E3-2 living tree: always-on `Goal: EPIC-<n>` rule; Record duties (new goal -> `spine_new`, done -> roll up, replaced -> `Superseded by:`); `spines --active`; stale goals 14 d flagged; `spine_new` assigns the next EPIC code; lean Current State limit | draft | E3-1, EPIC-4 work on spine_new.py/pre_commit.py | none | main | queued 2026-10-19 by user | 2026-10-19 | dispatch after E3-1 merges |
 | draft | Repo delivery manager | poly-maker thread | E3-3 migrate poly-maker (EPIC.md, EPIC0.md, 31 orphans); E4 excluded: a poly-maker thread brings E4 to Doctrine 2 as EPIC-4's compliance test (E4-4), so this brief never mentions E4 (L-14); coordinate with the one-logger session | draft | E3-1 | none | main | 31 orphans, root without Spine ID | 2026-10-19 | launch thread in the poly-maker project |
 | draft | Repo delivery manager | per-repo threads | E3-3 migrate zenod (46), idea_scraper (25, no root), infra-vps (11 + 1 mismatch), obsidian-brain (8, no root), abnb-agent (2), zenod-cloud (1, no root) | draft | E3-1 | none | main | counts from r1 scan 2026-10-19 | 2026-10-19 | launch after poly-maker proves the brief |
 | draft | Delivery manager | /root delivery manager | E3-3 conformance table, before/after per repo | draft | E3-3 migrations | none | main | before column: r1 scan 2026-10-19 | 2026-10-19 | publish when migrations land |
