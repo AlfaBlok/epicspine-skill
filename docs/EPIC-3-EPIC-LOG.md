@@ -21,7 +21,7 @@ Result: main @ 20b4602: 503 of 508 OK on a loaded host (load 27): the 5 test_url
 Evidence: docs/handoffs/2026-10-19-spine-conformance.md
 Waiting on: none
 Approved work: E3-1 to E3-5 (user, 2026-10-19)
-Next action: dispatch E3-2; launch the poly-maker migration (never mentioning E4); agent_team reports E3-4
+Next action: tell EPIC-4 (61d2777c) SKILL.md/spine-model.md are free (T3 send got ECONNREFUSED 2026-10-19); dispatch E3-2; launch the poly-maker migration (never mentioning E4); agent_team reports E3-4
 Source revision: main
 Verified at: 2026-10-19
 
