@@ -16,12 +16,12 @@ Integration branch: main
 
 Owner: EPIC-3 delivery manager (thread mcp:e9568396-d334-4a6b-bc0c-ab93b4a0fb6b)
 Status: active
-Last attempted: 2026-10-19 E3-1 round 3 merged (52cdd31..20b4602, release 2026.10.19.2): nested markdowns + judgment, EPIC code rule, status words, manifest skips __pycache__; E3-1 done
+Last attempted: 2026-10-19 E3-2 dispatched (wt/living-tree, seat1 Sonnet 5.5); EPIC-4 told SKILL.md/spine-model.md are free; E3-1 done (release 2026.10.19.2)
 Result: main @ 20b4602: 503 of 508 OK on a loaded host (load 27): the 5 test_url_gate subprocess timeouts pass alone; manifest matches a clean tree
 Evidence: docs/handoffs/2026-10-19-spine-conformance.md
-Waiting on: none
+Waiting on: E3-2 worker (wt/living-tree)
 Approved work: E3-1 to E3-5 (user, 2026-10-19)
-Next action: tell EPIC-4 (61d2777c) SKILL.md/spine-model.md are free (T3 send got ECONNREFUSED 2026-10-19); dispatch E3-2; launch the poly-maker migration (never mentioning E4); agent_team reports E3-4
+Next action: verify and merge E3-2; send EPIC-4 the living-tree rules (5 lines or fewer); launch the poly-maker migration (never mentioning E4); agent_team reports E3-4
 Source revision: main
 Verified at: 2026-10-19
 
@@ -48,7 +48,7 @@ No rename of existing files or header fields. Migration changes structure only (
 | Issue | Role | Owner / Assignment | Title | Status | Depends On | PR/Branch | Base | Latest Evidence | Last Verified | Next Action |
 |---|---|---|---|---|---|---|---|---|---|---|
 | draft | Ticket worker | worker (Sonnet 5.5, seat pool) | E3-1 skill tools: definition, `spine_new`, tree gate, `spines --json`; release 2026.10.19.1 | done | none | none | main | r1+r2+r3 merged (cab199a, 4639aa9, 88f00fa, 52cdd31..20b4602), release 2026.10.19.2; 508 tests, url_gate flakes only under host load | 2026-10-19 | none |
-| draft | Ticket worker | unassigned | E3-2 living tree: always-on `Goal: EPIC-<n>` rule; Record duties (new goal -> `spine_new`, done -> roll up, replaced -> `Superseded by:`); `spines --active`; stale goals 14 d flagged; `spine_new` assigns the next EPIC code; lean Current State limit | draft | E3-1 | none | main | queued 2026-10-19 by user; EPIC-4 handed spines.py/spine_new.py/pre_commit.py back until its step 2 is approved (277d585): leave room under the spines.py 200-line budget (EPIC-4 step 3 adds doctrine/goal/serves/done_means/contributes/missing_sections) | 2026-10-19 | dispatch after r3 merges; when rules settle send EPIC-4 manager (61d2777c) the living-tree rules in shortest form; hand the scripts back when EPIC-4 asks |
+| draft | Ticket worker | worker (Sonnet 5.5, seat1) | E3-2 living tree: always-on `Goal: EPIC-<n>` rule; Record duties (new goal -> `spine_new`, done -> roll up, replaced -> `Superseded by:`); `spines --active`; stale goals 14 d flagged; `spine_new` assigns the next EPIC code; lean Current State limit | active | E3-1 | wt/living-tree | main | dispatched 2026-10-19; write surface: spines.py (helper split, end at 170 lines or fewer for EPIC-4 headroom), spine_new.py, pre_commit.py, session_sync.py, global-block.md, spine-creation.md; never SKILL.md/spine-model.md (EPIC-4) | 2026-10-19 | verify, merge, send the rules to EPIC-4 (61d2777c); hand the scripts back when EPIC-4 asks |
 | draft | Repo delivery manager | poly-maker thread | E3-3 migrate poly-maker (EPIC.md, EPIC0.md, 31 orphans); E4 excluded: a poly-maker thread brings E4 to Doctrine 2 as EPIC-4's compliance test (E4-4), so this brief never mentions E4 (L-14); coordinate with the one-logger session | draft | E3-1 | none | main | 31 orphans, root without Spine ID | 2026-10-19 | launch thread in the poly-maker project |
 | draft | Repo delivery manager | per-repo threads | E3-3 migrate zenod (46), idea_scraper (25, no root), infra-vps (11 + 1 mismatch), obsidian-brain (8, no root), abnb-agent (2), zenod-cloud (1, no root) | draft | E3-1 | none | main | counts from r1 scan 2026-10-19 | 2026-10-19 | launch after poly-maker proves the brief |
 | draft | Delivery manager | /root delivery manager | E3-3 conformance table, before/after per repo | draft | E3-3 migrations | none | main | before column: r1 scan 2026-10-19 | 2026-10-19 | publish when migrations land |
@@ -72,3 +72,4 @@ Goal / Done means and doctrine versioning moved to [EPIC-4](EPIC-4-DOCTRINE-2.md
 | 2026-10-19 | accepted | Launch is the start order | Launching a persona on a spine from the console is the start order: before launch Status is `ready`, launch makes it `active`, the persona carries the goal to completion. Written where status is defined in the skill. | Jordi 2026-10-19 | never |
 | 2026-10-19 | accepted | Jordi talks to EPIC-3's manager directly | From now on EPIC-3 and spine-format questions come straight to this thread, not via the previous manager. | Jordi 2026-10-19 | never |
 | 2026-10-19 | accepted | Scope split with EPIC-4 | EPIC-4 (Doctrine 2, own manager) owns Goal, Serves, children's contributes, Done means and `Doctrine: <n>` (absent = 1). EPIC-3 keeps the tree tools, the EPIC code rule, wording alignment, status words, every repo's conformance, the console picker and the "on latest" learning. Merge order: EPIC-3 round 2 (+ trimmed round 3) first, then EPIC-4 gets spines.py/spine_new.py/pre_commit.py; never two workers on them at once. Roles per EPIC-2 L-14; poly-maker E4 is EPIC-4's compliance test, so EPIC-3 never briefs it. | Jordi 2026-10-19 via orchestrator | never |
+| 2026-10-19 | accepted | Split write surfaces with EPIC-4 | While E3-2 runs, EPIC-4 writes SKILL.md and spine-model.md (doctrine page), and EPIC-3 writes the scripts, global-block.md and spine-creation.md; the doctrine points to the living-tree mechanics and does not restate them. Never two workers on one file (L-10). | Jordi's merge order 2026-10-19; EPIC-4 handback 277d585 | EPIC-4 step 2 approved |
