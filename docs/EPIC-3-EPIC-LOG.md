@@ -21,7 +21,7 @@ Result: E3-2 branch: 39 targeted tests OK; test_url_gate fails on main too (pre-
 Evidence: docs/handoffs/2026-10-19-spine-conformance.md
 Waiting on: E3-2 round 2 (worker, wt/living-tree)
 Approved work: E3-1 to E3-5 (user, 2026-10-19)
-Next action: verify and merge E3-2; send EPIC-4 the living-tree rules (5 lines or fewer); launch the poly-maker migration (never mentioning E4); agent_team reports E3-4
+Next action: verify and merge E3-2 (tests with CLAUDE_CONFIG_DIR isolated; keep wt/living-tree until ~/.claude/CLAUDE.md names the canonical checkout: EPIC-0 6ad2e67); send EPIC-4 the living-tree rules (5 lines or fewer); launch the poly-maker migration (never mentioning E4); agent_team reports E3-4
 Source revision: main
 Verified at: 2026-10-19
 
