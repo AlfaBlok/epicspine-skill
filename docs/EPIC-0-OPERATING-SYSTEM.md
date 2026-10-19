@@ -19,13 +19,13 @@ Skill updates: auto
 
 Owner: /root delivery manager
 Status: active
-Last attempted: 2026-10-19 epic log (handoff docs/handoffs/2026-10-19-spine-conformance.md): goal definition, `spine_new`, tree gate and `spines --json` dispatched to a worker on wt/epic-log. Release history lives in CHANGELOG.md; the long state text before this date is in this file's git history.
-Result: main @ 20b4602: epic log tools released 2026.10.19.2 (EPIC-3 E3-1 done); test_url_gate times out under heavy host load, passes alone.
-Evidence: CHANGELOG.md 2026.10.16.13
-Waiting on: EPIC-4 step 1 (Doctrine 2 text)
+Last attempted: 2026-10-19 EPIC-4 major finding: console personas got no doctrine (tests leak CLAUDE_CONFIG_DIR; installer pinned the global pointer to a worktree); fix is EPIC-4 step 9, agent_team reinstalling seat1 and ~/.claude from the canonical checkout. Root swap done (ef15cfa).
+Result: seat1 repointed to the canonical checkout; ~/.claude/CLAUDE.md still points at wt/living-tree
+Evidence: EPIC-4 Decisions "Personas lost the doctrine" (845e6ff)
+Waiting on: Jordi's EPIC-4 approval page; EPIC-3 E3-2 round 2; EPIC-4 step 9
 Approved work: EPIC-3 Epic log and EPIC-4 Doctrine 2 (their ledgers hold the tickets)
-Next action: orchestrate EPIC-3 and EPIC-4 from this thread; then bring this root to Doctrine 2 (EPIC-4 step 5).
-Source revision: main @ 20b4602
+Next action: keep wt/living-tree until ~/.claude points at the canonical checkout; then E3-2 merge, step 3 tools, poly-maker migration; bring this root to Doctrine 2 (EPIC-4 step 6).
+Source revision: main
 Verified at: 2026-10-19
 
 ## Mission
@@ -103,6 +103,7 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 
 | Date | Outcome | Decision / Attempt | Durable Summary | Evidence | Revisit When |
 |---|---|---|---|---|---|
+| 2026-10-19 | accepted | Personas lost the doctrine | "Installed" also needs every config dir (seat1, ~/.claude) pointing at the canonical checkout with hooks; tests must never touch real config. Detail and fix: EPIC-4 step 9. | EPIC-4 845e6ff | step 9 merged |
 | 2026-10-16 | accepted | Automatic trackable contract | Enforcement is `--trackable`, never `--strict` (advisory). The pre-commit hook fixes what is unambiguous and blocks only on guesses; it self-installs via SessionStart. Local-backend ledgers: ticket-file Status counts. DoD criteria are `- [ ] <ID> text` (agent_team proposal). | user decisions 2026-10-16 | Dashboards need more fields |
 | 2026-10-09 | accepted | Two base roles | Every agent is a delivery manager or a worker; older identities are remits under them. | user decision 2026-10-09 | Role model changes |
 | 2026-10-09 | accepted | Stay in main, manager merges | Workers use local wt/<task> worktrees; the manager merges verified work to main. | user decision 2026-10-09 | User asks for PR review |
