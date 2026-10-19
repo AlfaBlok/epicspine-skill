@@ -7,9 +7,8 @@ description: EpicSpine / Epic Spine document-centric operating system for AI-ass
 
 ## Overview
 
-A spine is the living document of intent, context, and state for one scoped body of work; a fresh agent binds from it in minutes.
-Three surfaces: the **spine** owns intent, scope, acceptance, decisions, and rollup state; **issues/tickets** are the execution board for one concrete step; **code and tests** are the truth of what exists and what passed.
-Call the pattern **EpicSpine**; use `epic-spine` for files, labels, branches, and skill references.
+A spine is a snapshot of intent, facts and learnings, plus behaviours for maintenance and for dispatching workers; a cold agent binds from it in minutes. Read its first page, "What Every Epic Says", first: `references/spine-model.md`.
+Three surfaces: the **spine** owns intent, scope, acceptance, decisions, and rollup state; **issues/tickets** are the execution board for one concrete step; **code and tests** are the truth of what exists and what passed. Call the pattern **EpicSpine**; use `epic-spine` for files, labels, branches, and skill references.
 
 ## Default Behaviors
 
@@ -34,25 +33,21 @@ Read in this order, then act:
 2. Root spine — `Current State` + `Operating Learnings` **Always**.
 3. Only the branch spine whose mission contains the task — its `Current State`, Decisions, and Issue Ledger.
 
-Fall back to read-only orientation when the role, spine, or issue is unclear.
-Binding fields, one compact line: role | bound spine | bound issue | steward | handoff.
+Fall back to read-only orientation when the role, spine, or issue is unclear. Binding fields, one compact line: role | bound spine | bound issue | steward | handoff.
 
 ## Load On Demand
 
 | Read when the task involves… | Load |
 |---|---|
 | Creating a spine, any plan/proposal/epic/goal doc, or listing the repo's goals | `references/spine-creation.md`, `scripts/spine_new.py`, `scripts/spines.py`, `assets/epic-spine-template.md`, `assets/compact-spine-template.md` |
-| Hierarchy, authority, write scope, profiles | `references/spine-model.md` |
-| Compact profile, state API, migration | `references/compact-state.md`, `scripts/migrate_spine.py` |
-| Rollups and projections | `references/execution-rollups.md`, `scripts/rollup_spine.py` |
-| Role binding and dispatch profile | `references/roles-and-dispatch.md` |
-| Role protocols, gates, branches, bootstrapping | `references/role-protocols.md`, `references/dispatch-prompts.md` |
+| What every epic says, hierarchy, authority, write scope, profiles | `references/spine-model.md` |
+| Compact profile, state API, migration, rollups, projections | `references/compact-state.md`, `scripts/migrate_spine.py`, `references/execution-rollups.md`, `scripts/rollup_spine.py` |
+| Role binding, dispatch profile, role protocols, gates, bootstrapping | `references/roles-and-dispatch.md`, `references/role-protocols.md`, `references/dispatch-prompts.md` |
 | Sprint dialect v2 / SHIP-HARDEN | `references/sprint-dialect-v2.md` |
 | Ticket backend and issues | `references/ticket-backends.md`, `assets/github-issue-template.md` |
 | Structural validation and diagnostics | `references/structural-validation.md`, `scripts/validate_spine.py`, `scripts/spine_fix.py` |
 | Operating learnings | `references/learnings.md` |
-| Git, worktrees, integration, rollback | `references/git-doctrine.md` |
-| Hygiene and sweeps | `references/hygiene.md`, `assets/sweep-brief.md` |
+| Git, worktrees, integration, rollback; hygiene and sweeps | `references/git-doctrine.md`, `references/hygiene.md`, `assets/sweep-brief.md` |
 | Skill freshness and upgrades; session self-sync | `references/skill-update.md`, `references/session-sync.md`, `scripts/skill_update.py`, `scripts/session_sync.py`, `scripts/repo_sync.py`, `scripts/vendored_skill.py`, `scripts/stop_push.py`, `scripts/codex_hooks.py`, `scripts/rehook.py`, `scripts/background_sync.py`, `scripts/local_mess.py`, `scripts/local_servers.py`, `scripts/auto_return.py`, `scripts/deploy_gate.py`, `scripts/repo_state.py`, `scripts/sync_schedule.py`, `assets/epicspine-profile.md` |
 | A machine dispatcher is configured (`EPICSPINE_DISPATCHER`) | `references/machine-dispatcher.md` |
 | Book companion | `references/book-companion.md`, `assets/book-companion-contract.md` |
@@ -73,7 +68,5 @@ Create every goal file (plan, proposal, epic, `E<n>-*`) with `scripts/spine_new.
 
 ## Spine Document Minimums
 
-A spine declares a stable Spine ID, Repository, Primary document, Integration branch and (once connected) Spine Type, Root spine, and Parent spine; it contains Mission, Non-Goals, Current State, Definition Of Done, Issue Ledger, Decisions, and Operating Learnings when it owns rules.
-Dashboards read only DoD checkboxes, `Status:`/`Waiting on:` and the Issue Ledger's Issue/Title/Owner/Status (`references/spine-model.md`).
-`Current State` carries: Owner, Status, Last attempted, Result, Evidence, Waiting on, Approved work, Next action, Source revision, Verified at.
-Validate with `scripts/validate_spine.py --strict <spine.md>`; add `--graph` across the affected local spine family. Criteria are `- [ ] <ID> ...` lines (`references/spine-model.md`); `--fix` repairs the format.
+Header: stable Spine ID, Repository, Primary document, Integration branch and (once connected) Root spine, Parent spine. Sections per the table in `references/spine-model.md`, plus Operating Learnings when the spine owns rules. `Current State` carries: Owner, Status, Last attempted, Result, Evidence, Waiting on, Approved work, Next action, Source revision, Verified at. Dashboards read only DoD checkboxes, `Status:`/`Waiting on:` and the Issue Ledger's Issue/Title/Owner/Status.
+Validate with `scripts/validate_spine.py --strict <spine.md>` (advisory; add `--graph` across the spine family). Criteria are `- [ ] <ID> ...` lines; `--fix` repairs the format.
