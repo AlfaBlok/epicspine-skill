@@ -21,7 +21,7 @@ Result: on the rebased branch, isolated env not yet in force: manifest clean, ag
 Evidence: docs/handoffs/2026-10-19-spine-conformance.md
 Waiting on: full isolated suite on main (revert on red)
 Approved work: E3-1 to E3-5 (user, 2026-10-19)
-Next action: watch the poly-maker migration thread (mcp:766a969a); E3-2 live proof: 3 fresh sessions in different repos; agent_team reports E3-4; then launch the zenod migration
+Next action: watch the poly-maker migration thread (mcp:766a969a; run 1 cancelled by a T3 restart with no changes, restarted 2026-10-19); full isolated suite on main rerunning (first run killed by the restart); E3-2 live proof: 3 fresh sessions in different repos; agent_team reports E3-4; then launch the zenod migration
 Source revision: main
 Verified at: 2026-10-19
 
