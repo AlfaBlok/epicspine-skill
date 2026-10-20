@@ -19,14 +19,14 @@ Skill updates: auto
 
 Owner: /root delivery manager
 Status: active
-Last attempted: 2026-10-19 EPIC-4 major finding: console personas got no doctrine (tests leak CLAUDE_CONFIG_DIR; installer pinned the global pointer to a worktree); fix is EPIC-4 step 9, agent_team reinstalling seat1 and ~/.claude from the canonical checkout. Root swap done (ef15cfa).
-Result: seat1 and ~/.claude both point at the canonical checkout; E3-2 merged (release 2026.10.19.3, 7f9643c), wt/living-tree removed
-Evidence: EPIC-4 Decisions "Personas lost the doctrine" (845e6ff)
-Waiting on: Jordi's EPIC-4 approval page; EPIC-4 step 9 (wt/config-isolation)
+Last attempted: 2026-10-21 EPIC-4 released 2026.10.21.1 (step 12, structured human asks) and 2026.10.21.2 (step 9, config isolation; 562 OK isolated). Finding: seat1 was stripped again before step 9 landed, so personas ran without the doctrine until EPIC-4 reinstalled it.
+Result: ~/.claude, seat1 and seat2 all point at the canonical checkout (checked 2026-10-21); wt/config-isolation merged (383ac11) and removed
+Evidence: EPIC-4 6cee037
+Waiting on: Jordi's EPIC-4 approval (steps 1+2, open since 2026-10-19; structured ask in EPIC-4); agent_team's fresh persona launch as proof of the fix
 Approved work: EPIC-3 Epic log and EPIC-4 Doctrine 2 (their ledgers hold the tickets)
-Next action: E3-2 live proof (3 fresh sessions); step 3 tools on Jordi's approval; poly-maker migration; bring this root to Doctrine 2 (EPIC-4 step 6).
+Next action: agent_team persona proof; EPIC-4 step 13 (cron entry must not point into a worktree); E3-2 live proof (3 fresh sessions); step 3 tools on Jordi's approval; poly-maker migration; bring this root to Doctrine 2 (EPIC-4 step 6).
 Source revision: main
-Verified at: 2026-10-19
+Verified at: 2026-10-21
 
 ## Mission
 
