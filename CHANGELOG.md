@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.10.21.4 — Learnings inherit from ancestors
+
+- **Fix: a persona bound to a leaf epic printed `Learnings in force: none`** (agent_team M4 had none of its own and missed the root's L-1/L-2). Learnings already apply to the spine they sit in and everything under it (rule 7: deepest spine it applies to); rules 1-2 of `assets/global-block.md` now say so: in force = the bound epic's plus every `Parent spine:` ancestor's up to the root, listed nearest first in the bind line, never `none` while one has any. Reworded in place (no new rule, +139 bytes, same line count); one line aligned each in SKILL.md rule 5 and `references/learnings.md` (Depth is scope). EPIC-4 step 14. Skill 2026.10.21.4 (2026.10.21.3 is taken by the parallel sync_schedule branch).
+
 ## 2026.10.21.2 — Config isolation
 
 - **Fix: console personas lost the always-on block.** Tests built subprocess and patched envs as `{**os.environ, "HOME": tmp}`, keeping the agent's real `CLAUDE_CONFIG_DIR` (`~/.claude_seat1`); heal/install/uninstall in a test run then rewrote or stripped the real dir, and `global_install._save` deleted a settings.json that became empty. Separately, `SKILL_DIR` and hook paths came from `__file__`, so a run from a worktree wrote a pointer or hook into that worktree (`~/.claude/CLAUDE.md` pointed into one).
