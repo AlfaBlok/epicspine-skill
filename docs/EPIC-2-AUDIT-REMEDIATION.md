@@ -48,6 +48,22 @@ Remediate the six audit work packages through subagents, preserving artifact aut
 
 Acceptance is the local Python CLI and documentation package. No live product exists to deploy. Browser screenshots are not evidence for this repair. This scope follows the user's authorization to remediate the audited universal-browser requirement.
 
+## Outcome
+
+Verdict: accomplished
+Outcome: All six audit work packages were remediated and merged to main via PR #16; an independent tester passed 34/34 tests on Python 3.10 and 3.14 plus strict CLI checks at df3908e.
+Closed: 2026-10-09 by /root delivery manager (user decision)
+Risk: Validation checks recorded structure and uses keyword heuristics for some prose contracts; it does not prove execution or verify remote issue existence. Installed-skill rollout was a separate step.
+
+| Done means | Evidence |
+|---|---|
+| DOD-1 Malformed Markdown rows cannot disappear from validation; empty values cannot consume following fields. | 4414018 |
+| DOD-2 Explicit dialect selection preserves strict legacy compatibility and enforces the selected acceptance surface. | 037df98 |
+| DOD-3 Non-draft issue references and ledger statuses are checked with regressions. | 55642bc |
+| DOD-4 Workflow rules use bounded relevant discovery and surface-appropriate personal verification. | b1ce6d2 |
+| DOD-5 A complete example and quickstart validate locally; CI runs the regression suite. | bfbc261, 42e7e14 |
+| DOD-6 Independent tester verifies the integrated commit; final PR and residual risks are reported. | df3908e, [PR #16](https://github.com/AlfaBlok/epicspine-skill/pull/16), a8ea607 |
+
 ## Current State
 
 Status: done

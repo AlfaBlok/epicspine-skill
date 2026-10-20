@@ -1027,6 +1027,37 @@ def criteria(text: str, names: tuple[str, ...]) -> list[tuple[int, str]]:
     return items
 
 
+VERDICTS = ("accomplished", "partially accomplished", "not accomplished", "superseded")
+
+
+def outcome(text: str) -> dict | None:
+    """``## Outcome`` in the console-contract shape (docs/doctrine/console-contract.md): None when absent; unwritten fields None, evidence []."""
+    if (body := parse_sections(text).get("Outcome")) is None:
+        return None
+    kv = parse_key_values(re.sub(r"(?s)<!--.*?-->", "", body))
+    val = lambda key: None if is_empty(kv.get(key, "")) else kv[key]  # noqa: E731
+    verdict = (val("Verdict") or "").lower()
+    closed = re.match(r"(\S+)(?:\s+by\s+(.+))?$", val("Closed") or "")
+    target = lambda item: m.group(1) if (m := re.fullmatch(r"\[[^\]]*\]\(([^)]+)\)", item)) else item  # noqa: E731
+    items = lambda cell: [target(i.strip()) for i in re.split(r",\s*(?![^\[\]()]*[\])])", cell) if i.strip() and not is_none(i)]  # noqa: E731
+    return {"verdict": verdict if verdict in VERDICTS else None, "sentence": val("Outcome"),
+            "evidence": [{"done_means": r[0], "links": items(r[1])} for r in parse_table(body)[1] if len(r) > 1],
+            "risk": val("Risk"), "closed_at": closed.group(1) if closed else None,
+            "closed_by": by if closed and (by := closed.group(2)) and not by.startswith("<") else None}
+
+
+def outcome_missing(fields: dict[str, str], state: str, text: str) -> list[str]:
+    """A spine closed (Status done/closed/superseded, or ``Superseded by:``) needs a written ``## Outcome`` (spine-model.md)."""
+    word = re.match(r"[a-z]+", state.lower().lstrip("`*_ "))
+    sup = fields.get("Superseded by", "")
+    if not ((word and word.group() in ("done", "closed", "superseded")) or not (is_empty(sup) or is_none(sup))):
+        return []
+    found = outcome(text) or {}
+    if found.get("verdict") and found.get("sentence"):
+        return []
+    return ["closed spine has no usable ## Outcome: write `## Outcome` with `Verdict: " + " | ".join(VERDICTS) + "` and `Outcome: <one sentence>` (plus Closed, Risk, evidence per Done means) before closing"]
+
+
 def trackable(path: Path) -> dict[str, object]:
     """Check the machine-read contract (spine-model.md) of a spine or ticket; independent of --strict, tolerant of malformed docs."""
     if not path.is_file():
@@ -1044,6 +1075,8 @@ def trackable(path: Path) -> dict[str, object]:
     allowed = "|".join(TRACKABLE_STATUSES)
     shown = status if len(status) <= 60 else status[:57] + "..."
     missing = [] if trackable_status(status) else [f"{where} '{shown}': start it with one of {allowed}" if status else f"{where} missing: add 'Status: <{allowed}>'"]
+    if spine:
+        missing += outcome_missing(fields, status, text)
     if spine and names[0] != "Definition Of Done":
         missing.append(f"heading '## {alias}' must be '## Definition Of Done'")
     items, heads = criteria(text, names), "/".join(names)

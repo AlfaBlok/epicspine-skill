@@ -120,7 +120,7 @@ def scan(repo: Path) -> dict:
         dod = [{"id": x.group(2), "text": x.group(3), "done": x.group(1) != " "} for _, line in v.criteria(m["text"], ("Definition Of Done",)) if (x := DONE.match(line.strip()))]
         node = nodes[rel(path)] = {"id": m["id"], "path": rel(path), "title": title(m, path.stem), "parent": rel(m["parent"]) if parent_file(path, cache) else None,
                                    "type": m["fields"].get("Spine Type", "").lower() or ("root" if path == root else ""),
-                                   "status": status, "rollup_status": status, "dod": dod, "children": [],
+                                   "status": status, "rollup_status": status, "dod": dod, "outcome": v.outcome(m["text"]), "children": [],
                                    "superseded_by": rel(sup) if (sup := link(path, m["fields"].get("Superseded by", ""), cache)) else None}
         kids = list(header_kids.get(path, []))
         for _, target in m["rows"]:

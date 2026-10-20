@@ -56,7 +56,7 @@ Optional. One line per learning: `L-<n> | applies when | the rule, imperative | 
 |---|---|---|---|---|---|
 | <date> | accepted | <choice> | <reason> | <evidence> | <condition> |
 
-<!-- Optional: Phase in Current State; hierarchy fields and Spine Map when connected;
+<!-- Optional: Phase in Current State; `## Outcome` written at close (../references/spine-model.md); hierarchy fields and Spine Map when connected;
 Human Gates, Write Scope, Recovery And Takeover, or Book binding when applicable.
 Use one canonical Waiting on value for blockers/waits; state 'none' explicitly.
 Completed handoffs belong in linked history; never add a competing live cursor. -->

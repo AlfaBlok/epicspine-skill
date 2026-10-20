@@ -42,6 +42,21 @@ Reduce duplicated current state and manual synchronization while preserving evid
 - [x] DOD-4 Strict validation rejects objective defects and unresolved required data; prose guidance remains advisory.
 - [x] DOD-5 Synthetic examples, focused regression suite, independent review and reviewable PR pass on a named revision.
 
+## Outcome
+
+Verdict: accomplished
+Outcome: Compact authoritative state, explicit ticket backends, freshness-aware rollups and structural strict validation were delivered and merged to main via PR #22 with 85 combined tests and independent review passing.
+Closed: 2026-10-09 by /root delivery manager (user decision)
+Risk: Installed-skill rollout and production adoption were out of scope; the document stays usable for reference and is reopened only if delivery scope resumes.
+
+| Done means | Evidence |
+|---|---|
+| DOD-1 One authoritative current-state block with compatible legacy conflict detection and a compact active profile. | 17b2a81, fe91d3b |
+| DOD-2 Explicit GitHub and local ticket references without competing mutable ledgers. | 54c44e1 |
+| DOD-3 Deterministic direct-child rollup checks/previews, truthful freshness and authority-aware apply/proposal behavior. | fe6a638 |
+| DOD-4 Strict validation rejects objective defects and unresolved required data; prose guidance remains advisory. | 5d840a3, 465d27c |
+| DOD-5 Synthetic examples, focused regression suite, independent review and reviewable PR pass on a named revision. | 619bf81, [PR #22](https://github.com/AlfaBlok/epicspine-skill/pull/22), e94aa91 |
+
 ## Current State
 
 Status: done

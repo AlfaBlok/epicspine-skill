@@ -29,7 +29,7 @@ Wording: the root spine is the trunk; a goal (epic) is a node; the **epic log** 
 ```
 {"root": "<path>" | null,
  "nodes": [{"id", "path", "title", "type", "parent": "<path>" | null, "status", "rollup_status",
-            "dod": [{"id", "text", "done"}], "children": ["<path>", ...]}],   # depth-first from the root; paths are repo-relative
+            "dod": [{"id", "text", "done"}], "outcome": {...} | null, "children": ["<path>", ...]}],   # depth-first from the root; paths are repo-relative
  "orphans": [{"path", "title", "reason"}],      # goal docs outside the tree
  "mismatches": [{"path", "parent", "problem"}]} # header/map disagreement, missing map target
 ```
@@ -54,6 +54,21 @@ Dashboards and tools read only these; keep them exact, and write everything else
 - Other work tables are not read.
 
 Enforcement is `validate_spine.py --trackable` (valid Status, criteria as above, a ledger Status column — or valid ticket-file Status for local), run by the repo's pre-commit hook, which the SessionStart hook installs in EpicSpine repos. The commit fixes what it can without guessing (`validate_spine.py --fix`: criteria to `- [ ] <ID> ...`, alias headings such as `## Exit Test` to `## Definition Of Done`, status synonyms such as in progress to active) and blocks only on a missing Status, Status column or criterion; `--strict` stays advisory there. `validate_spine.py` also warns when Definition Of Done has no checkbox; a github ledger without Status already fails (`references/structural-validation.md`).
+
+## Outcome
+
+Every spine gets `## Outcome` written when its goal closes (done, abandoned or superseded). It holds the verdict, one sentence, each Done means item mapped to evidence links, residual risk/follow-ups, and date plus closing agent/run. `Status: done` (or a `Superseded by:` close) is invalid without a filled Outcome; `--trackable` blocks it, and `--fix` never invents one. The parent's rollup cites the child's outcome sentence. `spines.py --json` carries it per node as `outcome` (`null` when absent; shape in `docs/doctrine/console-contract.md`).
+
+```
+## Outcome
+Verdict: accomplished | partially accomplished | not accomplished | superseded
+Outcome: <one sentence>
+Closed: <YYYY-MM-DD> by <agent / run>
+Risk: <text or none>
+| Done means | Evidence |
+|---|---|
+| <ID and text> | [PR #31](https://github.com/o/r/pull/31), 0891cbb |
+```
 
 ## Authority By Artifact
 
