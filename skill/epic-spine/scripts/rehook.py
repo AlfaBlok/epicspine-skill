@@ -119,6 +119,8 @@ def ensure_schedule(env: dict, home: Path, skill_dir: Path, updated: bool) -> st
     import sync_schedule as sched
     if str(env.get("EPICSPINE_SYNC", "")).strip().lower() == "off" or sched.kind() is None or home.resolve() != Path.home().resolve():
         return None
+    if ig.install_dir(skill_dir, report=False) is None:  # a worktree with no canonical copy: sync_schedule.py would skip it
+        return None
     state = sched.cron_state(skill_dir) if sched.kind() == "cron" else sched.launchd_state(home, skill_dir)
     if state == "unreadable" or (not updated and (state == "current" or not due(home, name=SCHEDULE_STAMP))):
         return None

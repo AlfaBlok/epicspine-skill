@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.10.21.3 — Schedule never names a worktree
+
+- **Fix: the background-sync schedule survives its worktree being removed (EPIC-4 step 13).** `sync_schedule.py` took `SKILL_DIR` from `__file__`, so `ensure`/`install` run from a linked git worktree wrote a cron/launchd entry pointing into that worktree, which broke when the worktree was removed. Every path it writes (`target()`, so the cron line and the plist) now goes through `install_guard.install_dir`: the repo's main checkout, else `~/.agents/skills/epic-spine`; with neither, `apply` writes nothing, warns on stderr and exits 1. `rehook.ensure_schedule` compares against the same durable path, so an entry written from the main checkout is never seen as stale from a worktree. Tests: `WorktreeScheduleTest` (cron, launchd, no-canonical skip, rehook). Skill 2026.10.21.3.
+
 ## 2026.10.21.2 — Config isolation
 
 - **Fix: console personas lost the always-on block.** Tests built subprocess and patched envs as `{**os.environ, "HOME": tmp}`, keeping the agent's real `CLAUDE_CONFIG_DIR` (`~/.claude_seat1`); heal/install/uninstall in a test run then rewrote or stripped the real dir, and `global_install._save` deleted a settings.json that became empty. Separately, `SKILL_DIR` and hook paths came from `__file__`, so a run from a worktree wrote a pointer or hook into that worktree (`~/.claude/CLAUDE.md` pointed into one).

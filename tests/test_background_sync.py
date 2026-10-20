@@ -21,6 +21,7 @@ sys.path.insert(0, str(SCRIPTS))
 import agents_block as ab  # noqa: E402
 import background_sync as bg  # noqa: E402
 import fake_bin  # noqa: E402
+import install_guard  # noqa: E402
 from _safe_env import safe_env  # noqa: E402
 import local_servers  # noqa: E402
 import rehook  # noqa: E402
@@ -472,7 +473,8 @@ class CronTest(Base):
         return fake_bin.crontab_text(self.bin)
 
     def test_exact_line(self) -> None:
-        self.assertEqual(self.line, f'*/15 * * * * python3 "{self.skill}/scripts/background_sync.py" >/dev/null 2>&1 # epicspine-background-sync')
+        canon = install_guard.install_dir(self.skill) or self.skill  # the main checkout when the suite runs from a worktree
+        self.assertEqual(self.line, f'*/15 * * * * python3 "{canon}/scripts/background_sync.py" >/dev/null 2>&1 # epicspine-background-sync')
 
     def test_install_is_idempotent_and_preserves_other_entries(self) -> None:
         foreign = "MAILTO=me@example.com\n20 5 * * * /usr/bin/backup --all\n"
@@ -537,7 +539,7 @@ class LaunchdTest(Base):
         self.assertEqual(data["Label"], "dev.epicspine.sync")
         self.assertEqual(data["StartInterval"], 900)
         self.assertTrue(data["RunAtLoad"])
-        self.assertEqual(data["ProgramArguments"], ["/usr/bin/env", "python3", f"{self.skill}/scripts/background_sync.py"])
+        self.assertEqual(data["ProgramArguments"], ["/usr/bin/env", "python3", f"{install_guard.install_dir(self.skill) or self.skill}/scripts/background_sync.py"])
         self.assertIn("/opt/homebrew/bin", data["EnvironmentVariables"]["PATH"])
         self.assertEqual(self.plist, self.home / "Library" / "LaunchAgents" / "dev.epicspine.sync.plist")
 
@@ -621,6 +623,58 @@ class InstallGlobalTest(Base):
         self.assertEqual(run("ensure").stdout.split(" (")[0], "background sync: current")
         self.assertEqual(run("uninstall").stdout.split(" (")[0], "background sync: removed")
         self.assertEqual(run("bogus").returncode, 2)
+
+
+class WorktreeScheduleTest(Base):
+    """A schedule written from a linked worktree's skill dir names the main checkout (or nothing), never the worktree."""
+
+    def worktree(self) -> tuple[Path, Path]:
+        main = self.tmp / "main"
+        (main / "skill" / "epic-spine" / "assets").mkdir(parents=True)
+        (main / "skill" / "epic-spine" / "assets" / "global-block.md").write_text("x\n")
+        git(self.tmp, "init", "-q", "-b", "main", str(main))
+        git(main, "add", "-A")
+        git(main, "commit", "-qm", "seed")
+        git(main, "worktree", "add", "-q", "../wt", "-b", "wt/x", "main")
+        return main / "skill" / "epic-spine", self.tmp / "wt" / "skill" / "epic-spine"
+
+    def test_cron_and_plist_from_a_worktree_name_the_main_checkout(self) -> None:
+        main_skill, wt_skill = self.worktree()
+        self.assertEqual(sched.apply("install", self.home, wt_skill)[1], 0)
+        tab = fake_bin.crontab_text(self.bin)
+        self.assertIn(f'"{main_skill}/scripts/background_sync.py"', tab)
+        self.assertNotIn(str(wt_skill.parent.parent), tab)
+        self.assertEqual(sched.apply("check", self.home, wt_skill)[1], 0)  # current from either side
+        self.assertEqual(sched.apply("check", self.home, main_skill)[1], 0)
+        self.assertIn(f"{main_skill}/scripts/background_sync.py", sched.plist_text(wt_skill))
+        self.assertNotIn(str(self.tmp / "wt"), sched.plist_text(wt_skill))
+
+    def test_launchd_install_from_a_worktree_writes_the_main_checkout(self) -> None:
+        main_skill, wt_skill = self.worktree()
+        with mock.patch.object(sched, "kind", return_value="launchd"):
+            self.assertEqual(sched.apply("install", self.home, wt_skill)[1], 0)
+        text = sched.plist_path(self.home).read_text()
+        self.assertIn(f"{main_skill}/scripts/background_sync.py", text)
+        self.assertNotIn(str(self.tmp / "wt"), text)
+
+    def test_a_worktree_with_no_canonical_copy_writes_nothing_and_warns(self) -> None:
+        main_skill, wt_skill = self.worktree()
+        (main_skill / "assets" / "global-block.md").unlink()
+        err = io.StringIO()
+        with mock.patch.object(install_guard, "_SEEN", set()), mock.patch("sys.stderr", err):
+            for action in ("install", "ensure", "check"):
+                line, code = sched.apply(action, self.home, wt_skill)
+                self.assertEqual((line.split(" (")[0], code), ("skipped", 1))
+            self.assertIsNone(rehook.ensure_schedule({}, self.home, wt_skill, True))
+        self.assertEqual(fake_bin.crontab_text(self.bin), "")
+        self.assertIn("git worktree", err.getvalue())
+
+    def test_rehook_from_a_worktree_does_not_see_the_main_entry_as_stale(self) -> None:
+        main_skill, wt_skill = self.worktree()
+        sched.apply("install", self.home, main_skill)
+        calls = len(fake_bin.calls(self.bin))
+        self.assertIsNone(rehook.ensure_schedule({}, self.home, wt_skill, False))
+        self.assertEqual(len(fake_bin.calls(self.bin)), calls + 1)  # only the cheap `crontab -l` check, no rewrite
 
 
 class RehookScheduleTest(Base):
