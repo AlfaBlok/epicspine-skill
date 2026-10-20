@@ -53,7 +53,7 @@ EXISTING_BUDGETS = {
     "scripts/rollup_spine.py": 398,
     "scripts/url_gate.py": 220,  # raised from the 200 new-file cap: only files touched this turn trigger (turn_activity), 2026-10-16
     "scripts/skill_update.py": 485,  # raised: tree-based freshness + symlink resolution, 2026-10-10
-    "scripts/validate_spine.py": 1159,  # raised +35: ## Outcome parser (outcome(), shared by spines.py --json) + closed-spine Outcome trackable rule, 2026-10-20; +1 earlier: header-Status acceptance for --fix-moved Status (hint rewrite is line-neutral), 2026-10-16; +43 earlier: criterion-ID rule, criteria()/doc_kind helpers and --fix wiring (logic lives in spine_fix.py), 2026-10-16; +45 earlier: --trackable machine-read contract check, 2026-10-16 (+2 earlier: DoD-checkbox warning)
+    "scripts/validate_spine.py": 1161,  # raised +2: `advisory` human-ask issues in trackable() + --trackable output (logic lives in epic_log.py), 2026-10-21; +35 earlier: ## Outcome parser (outcome(), shared by spines.py --json) + closed-spine Outcome trackable rule, 2026-10-20; +1 earlier: header-Status acceptance for --fix-moved Status (hint rewrite is line-neutral), 2026-10-16; +43 earlier: criterion-ID rule, criteria()/doc_kind helpers and --fix wiring (logic lives in spine_fix.py), 2026-10-16; +45 earlier: --trackable machine-read contract check, 2026-10-16 (+2 earlier: DoD-checkbox warning)
 }
 
 # Files authored by the lean-kernel change: hard-capped instead of pinned.

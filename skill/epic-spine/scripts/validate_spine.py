@@ -1101,7 +1101,8 @@ def trackable(path: Path) -> dict[str, object]:
             if not trackable_status(parse_fields(ticket).get("Status", "")):
                 missing.append(f"Status in ticket {ref}")
     doc = validate_local(path) if spine else None
-    return {"path": str(path), "trackable": not missing, "missing": missing, "warnings": doc.errors + doc.warnings if doc else []}
+    from epic_log import ask_issues  # human asks: advisory issues, never `missing`
+    return {"path": str(path), "trackable": not missing, "missing": missing, "warnings": doc.errors + doc.warnings if doc else [], "advisory": ask_issues(text) if spine else []}
 
 
 def main() -> int:
@@ -1130,6 +1131,7 @@ def main() -> int:
             print(json.dumps(results, indent=2))
         for result in [] if args.json else results:
             print(f"{result['path']}: " + ("trackable" if result["trackable"] else "not trackable: " + "; ".join(result["missing"])))
+            print(*(f"  advisory: {a}" for a in result.get("advisory", [])), sep="\n", end="\n" * bool(result.get("advisory")))
         return int(not all(result["trackable"] for result in results))
 
     documents = [validate_local(path, dialect=args.dialect) for path in args.paths]
