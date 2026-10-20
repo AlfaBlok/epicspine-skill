@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.10.20.1 — Fetch guard
+
+- **A timed-out background fetch no longer fills the disk** (infra-vps VH-T20: `git fetch` killed at 15 s left an orphan `.git/objects/pack/tmp_pack_*` per 15-minute run, 17 GB in ~4 h). New `scripts/fetch_guard.py`, used by `repo_sync.sync` and both `auto_return.py` fetches: on timeout git's whole process group is killed (`session_sync.git` now runs git in its own session; `info["timeout"]`), only the `tmp_pack_*`/`tmp_idx_*` files created during that run are deleted, and consecutive timeouts are counted in `<git-dir>/epicspine-backoff.json`. From the 2nd strike the repo is skipped for 30 min, doubling to 6 h, with an `EpicSpine attention:` line naming the path for a manual `git fetch origin`; a successful fetch resets it. A longer retry budget was not added (the per-repo clock is 20 s). Tests: `FetchTimeoutTest`. Skill 2026.10.20.1.
+
 ## 2026.10.19.3 — Living tree
 
 - **Agents keep the epic log true.** Always-on rule 6 (`global-block.md`): every new ask is placed in the tree before work starts (the reply states `Goal: EPIC-<n>`, an open goal from `spines.py --active` or a new spine from `spine_new.py`); a done goal closes (`Status: done`, parent rolls up); a replaced one gets `Superseded by:`; stale goals flagged at SessionStart are reported, never closed silently.
