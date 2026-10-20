@@ -38,11 +38,11 @@ Done means (until step 2 makes `## Done means` a recognised heading, the outcome
 Owner: EPIC-4 delivery manager (thread mcp:61d2777c-071a-4feb-93e3-4db440b5d6ac)
 Status: active
 Last attempted: 2026-10-21 steps 10+11 verified done (2026.10.20.2); step 12 human asks placed and contract published; step 9 worker resumed
-Result: 10, 11 done; 12 dispatched; 9 in progress (WIP 6439309); steps 1+2 still awaiting Jordi since 2026-10-19
+Result: 10, 11, 12 done (12 released 2026.10.21.1); 9 in progress (WIP 6439309); steps 1+2 still awaiting Jordi since 2026-10-19
 Evidence: 21adcba (release 2026.10.20.2); [human-asks.md](doctrine/human-asks.md)
 Waiting on: Jordi (1 ask, see Waiting on)
 Approved work: E4-1 to E4-5; steps 10-12 requested by Jordi via agent_team (2026-10-20/21)
-Next action: verify and merge step 9, then step 12 and release; on Jordi's approval merge wt/doctrine-2 and dispatch step 3
+Next action: verify and merge step 9 (release 2026.10.21.2); on Jordi's approval merge wt/doctrine-2 and dispatch step 3
 Source revision: main
 Verified at: 2026-10-21
 
@@ -72,7 +72,7 @@ Steps run in this order; each one unblocks the next. Steps 1 and 2 are one appro
 | draft | Ticket worker | native subagent (Sonnet 5.5), resumed after seat1 provider failure | 9. Personas must receive the doctrine: tests never touch real harness config (CLAUDE_CONFIG_DIR leak healed/stripped ~/.claude_seat1, pointer in ~/.claude aimed at a worktree); installer never targets a worktree or a config dir outside HOME, never deletes settings.json | active | none | wt/config-isolation | main | seat1 worker died (provider could not start), WIP installer guard kept; config pointers canonical again (agent_team reinstall) | 2026-10-19 | verify, merge, release; agent_team repeats the fresh launch |
 | draft | Ticket worker | worker (wt/outcome) | 10. Outcome before close (Jordi via agent_team, 2026-10-20): every closed spine (done, abandoned, superseded) has `## Outcome` (verdict, one sentence, Done means -> evidence links, risk, closed date + agent); gate blocks a staged done spine without it; `spines.py --json` `outcome`; close rule says write Outcome, then close; parent rollup cites the sentence; [contract](doctrine/console-contract.md#outcome) | done | none (independent of steps 1-3) | wt/outcome | main (branch removed) | released 2026.10.20.2 (21adcba); test_outcome OK; `outcome` in --json | 2026-10-20; full suite 532 OK (1 skip) on 21adcba; release + JSON sent to agent_team | 2026-10-21 | none; agent_team backfills Outcome on m3-reddit-search, m4-browser-auth-sync 
 | draft | Ticket worker | worker (wt/outcome, same release as step 10) | 11. Current State for the console (Jordi via agent_team, 2026-10-20): `spines.py --json` `current_state` per node; doctrine: the manager updates Current State at the end of every working session or wake, not only at milestones, so the console's stale flag (Current State older than the last run) means something; [contract](doctrine/console-contract.md#latest-state) | done | none | wt/outcome | main (branch removed) | released 2026.10.20.2 (21adcba); `current_state` in --json | 2026-10-20; full suite 532 OK (1 skip) on 21adcba; release + JSON sent to agent_team | 2026-10-21 | none 
-| draft | Ticket worker | worker (Sonnet 5.5) | 12. Human asks (agent_team M2-SKILL, Jordi 2026-10-21): structured `## Waiting on` ask lines, answer write-back, `waiting_on` in --json, advisory checks; [contract](doctrine/human-asks.md) | active | none | wt/human-asks | main | contract published 2026-10-21 | 2026-10-21 | worker builds; manager verifies, merges, releases; console M2-13 reads `waiting_on` |
+| draft | Ticket worker | worker (Sonnet 5.5) | 12. Human asks (agent_team M2-SKILL, Jordi 2026-10-21): structured `## Waiting on` ask lines, answer write-back, `waiting_on` in --json, advisory checks; [contract](doctrine/human-asks.md) | done | none | wt/human-asks | main | released 2026.10.21.1 (merge 5672974); full isolated suite 554 OK; EPIC-4 waiting_on shows the open ask | 2026-10-21 | agent_team M2-13 reads `waiting_on` |
 
 ## Decisions
 
