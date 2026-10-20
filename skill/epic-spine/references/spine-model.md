@@ -29,7 +29,7 @@ Wording: the root spine is the trunk; a goal (epic) is a node; the **epic log** 
 ```
 {"root": "<path>" | null,
  "nodes": [{"id", "path", "title", "type", "parent": "<path>" | null, "status", "rollup_status",
-            "dod": [{"id", "text", "done"}], "outcome": {...} | null, "children": ["<path>", ...]}],   # depth-first from the root; paths are repo-relative
+            "dod": [{"id", "text", "done"}], "outcome": {...} | null, "current_state": {...} | null, "children": ["<path>", ...]}],   # depth-first from the root; paths are repo-relative
  "orphans": [{"path", "title", "reason"}],      # goal docs outside the tree
  "mismatches": [{"path", "parent", "problem"}]} # header/map disagreement, missing map target
 ```
@@ -49,7 +49,7 @@ Declare `Ticket backend: github|local` (omission defaults to github). GitHub mod
 Dashboards and tools read only these; keep them exact, and write everything else for humans:
 
 - `## Definition Of Done` (tickets: `## Acceptance`/`## Acceptance Criteria`): every criterion is `- [ ] <ID> <criterion>` or `- [x] <ID> ...` plus an optional short evidence note. ID `[A-Z][A-Z0-9]*-\d+` (M4-1, X-1), unique in the file, never renumbered; indented lines continue an item, prose and tier labels (`SHIP —`) are not criteria. Say how a measurable criterion is measured (metric, threshold, window, command).
-- `## Current State`: `Status:` is the only status source; `Waiting on:` is context and never implies blocked. Consumers (console badges) read `Status:` only.
+- `## Current State`: `Status:` is the only status source; `Waiting on:` is context and never implies blocked. Consumers (console badges) read `Status:` only; `spines.py --json` also carries its labels as `current_state`. The manager refreshes Last attempted, Result, Waiting on, Next action and Verified at at the end of every working session or wake, not only at milestones.
 - `## Issue Ledger`: the table with columns Issue, Title, Owner (`Owner / Assignment` is fine) and Status; Status is one of draft / ready / active / blocked / done / deferred: `ready` = defined, not started (launching a persona on the spine, e.g. from the agent_team console, is the start order and makes it `active`; the persona carries the goal to completion); `deferred` = paused by the user (`spine_fix` maps on hold/paused/parked to it); `blocked` = waiting on a named external dependency. A local-backend ledger is reference-only and carries no Status.
 - Other work tables are not read.
 

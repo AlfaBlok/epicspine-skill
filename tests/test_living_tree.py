@@ -74,7 +74,8 @@ class ClosingTests(LivingCase):
 
     def supersede(self, target: str) -> subprocess.CompletedProcess:
         a = self.repo / "docs/a.md"
-        a.write_text(a.read_text().replace("Status: draft", "Status: done").replace("Integration branch: main\n", f"Integration branch: main\nSuperseded by: {target}\n"))
+        outcome = "## Outcome\n\nVerdict: superseded\nOutcome: Replaced by beta.\nClosed: 2026-10-20 by test\nRisk: none\n\n"
+        a.write_text(a.read_text().replace("Status: draft", "Status: done").replace("## Current State", outcome + "## Current State", 1).replace("Integration branch: main\n", f"Integration branch: main\nSuperseded by: {target}\n"))
         return self.commit()
 
     def test_superseded_goal_closes_and_is_reported(self) -> None:

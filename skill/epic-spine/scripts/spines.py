@@ -23,6 +23,7 @@ SKIP = {"archive", "node_modules", "vendor", "wt", "worktrees", "handoffs", "exa
 NAMED = re.compile(r"(?i)^(e\d+[-_]|epic)|(^|[-_ ])(spine|plan)($|[-_ 0-9])")
 ID_LINE = re.compile(r"(?m)^Spine ID:")
 ROOT_LINE = re.compile(r"Root spine: \[?`?([^`\]\s)]+)")
+STATE_LABELS = ("Status", "Last attempted", "Result", "Evidence", "Waiting on", "Next action", "Verified at")
 DONE = re.compile(rf"- \[([ xX])\] ({v.ID})[ \t]*(.*)")
 
 
@@ -31,6 +32,12 @@ def read(path: Path) -> str:
         return path.read_text(encoding="utf-8", errors="replace")
     except OSError:
         return ""
+
+
+def current_state(sections: dict[str, str]) -> dict | None:
+    """The ``## Current State`` labels as snake_case keys, raw text after ``Label:`` (None: missing or empty; no section: None)."""
+    values = v.parse_key_values(sections.get("Current State", ""))
+    return {label.lower().replace(" ", "_"): values.get(label) or None for label in STATE_LABELS} if "Current State" in sections else None
 
 
 def is_goal(repo: Path, rel: Path, text: str) -> bool:
@@ -120,7 +127,7 @@ def scan(repo: Path) -> dict:
         dod = [{"id": x.group(2), "text": x.group(3), "done": x.group(1) != " "} for _, line in v.criteria(m["text"], ("Definition Of Done",)) if (x := DONE.match(line.strip()))]
         node = nodes[rel(path)] = {"id": m["id"], "path": rel(path), "title": title(m, path.stem), "parent": rel(m["parent"]) if parent_file(path, cache) else None,
                                    "type": m["fields"].get("Spine Type", "").lower() or ("root" if path == root else ""),
-                                   "status": status, "rollup_status": status, "dod": dod, "outcome": v.outcome(m["text"]), "children": [],
+                                   "status": status, "rollup_status": status, "dod": dod, "outcome": v.outcome(m["text"]), "current_state": current_state(m["sections"]), "children": [],
                                    "superseded_by": rel(sup) if (sup := link(path, m["fields"].get("Superseded by", ""), cache)) else None}
         kids = list(header_kids.get(path, []))
         for _, target in m["rows"]:

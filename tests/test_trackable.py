@@ -58,10 +58,11 @@ class TrackableTests(unittest.TestCase):
 
     def test_good_spine_and_vocabulary(self) -> None:
         self.assertEqual([], self.spine()["missing"])
-        for status in ("draft", "READY", "Active.", "blocked: x", "done", "deferred"):
+        for status in ("draft", "READY", "Active.", "blocked: x", "deferred"):
             self.assertTrue(self.spine(status=status)["trackable"], status)
         for status in ("review", "planning", "", "draft | ready | active", "closed"):
             self.assertFalse(self.spine(status=status)["trackable"], status)
+        self.assertFalse(self.spine(status="done")["trackable"])  # closing needs ## Outcome (tests/test_outcome.py)
 
     def test_checkbox_rules(self) -> None:
         self.assertTrue(self.spine(done="- [x] A-1 a\n- [X] M4-2 b — evidence note")["trackable"])
