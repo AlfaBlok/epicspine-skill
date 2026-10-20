@@ -45,3 +45,37 @@ If `missing_sections` is non-empty, show a quiet "not yet compliant: <names>" no
 
 ## Agent pipeline check (also step 4)
 A persona launched from the console must receive the EpicSpine always-on block (SessionStart hook) and bind to its epic. Verify this on one live launch.
+
+## Outcome
+
+Added per node by step 10 (Outcome before close). `outcome` is `null` when the epic has no `## Outcome` section. Until the release ships the field is absent: fall back to Done means + Status.
+
+```json
+"outcome": {
+  "verdict": "accomplished | partially accomplished | not accomplished | superseded",
+  "sentence": "one sentence: what was achieved",
+  "evidence": [{"done_means": "E4-1 New epics follow the doctrine by default", "links": ["https://github.com/o/r/pull/31", "0891cbb"]}],
+  "risk": "residual risk / follow-ups, or null",
+  "closed_at": "2026-10-20",
+  "closed_by": "EPIC-4 delivery manager (thread mcp:...)"
+}
+```
+
+The section in the spine it is read from:
+
+```markdown
+## Outcome
+
+Verdict: accomplished
+Outcome: <one sentence>
+Closed: 2026-10-20 by <agent / run>
+Risk: <residual risk and follow-ups, or none>
+
+| Done means | Evidence |
+|---|---|
+| E4-1 New epics follow the doctrine by default | [PR #31](https://github.com/o/r/pull/31), 0891cbb |
+```
+
+- `links` keeps each comma-separated item of the Evidence cell; a Markdown link gives its target. Items may be URLs, commit SHAs, `PR #n`, or repo paths.
+- `risk` is `null` when the line says `none`. Any field not written is `null` (`evidence` is `[]`).
+- The console shows an Outcome card (verdict, sentence, evidence per Done means, risk, closed) for any epic whose `outcome` is not null; the parent's rollup cites `sentence`.
