@@ -14,6 +14,11 @@ from pathlib import Path
 from unittest import mock
 
 SCRIPT = Path(__file__).parents[1] / "skill" / "epic-spine" / "scripts" / "agents_block.py"
+SKILL = SCRIPT.parent.parent
+sys.path.insert(0, str(SCRIPT.parent))
+import install_guard  # noqa: E402
+
+CANON = install_guard.install_dir(SKILL.resolve()) or SKILL  # the durable path (the main checkout when run from a worktree)
 SPEC = importlib.util.spec_from_file_location("agents_block_g", SCRIPT)
 assert SPEC and SPEC.loader
 ab = importlib.util.module_from_spec(SPEC)
@@ -78,7 +83,7 @@ class GlobalInstallTest(unittest.TestCase):
 
     def test_pasted_file_is_pointer_to_live_block(self) -> None:
         self.run_cmd("install-global")
-        live = SCRIPT.parent.parent / "assets" / "global-block.md"
+        live = CANON / "assets" / "global-block.md"
         for f in self.files():
             text = f.read_text(encoding="utf-8")
             self.assertIn(f"`{live.resolve()}`", text, f)
@@ -182,7 +187,7 @@ class GlobalInstallTest(unittest.TestCase):
         self.assertEqual(code, 0)
         for f in self.files():
             self.assertFalse(f.exists(), f)
-        self.assertFalse((self.home / ".claude/settings.json").exists())
+        self.assertNotIn("hooks", (self.home / ".claude/settings.json").read_text())  # kept, never deleted
 
     def test_invalid_settings_not_clobbered(self) -> None:
         settings = self.home / ".claude/settings.json"
@@ -231,7 +236,7 @@ class GlobalInstallTest(unittest.TestCase):
             self.assertIn("Stop", data["hooks"])
             link = d / "skills" / "epic-spine"
             self.assertTrue(link.is_symlink())
-            self.assertEqual(link.resolve(), SCRIPT.parent.parent.resolve())
+            self.assertEqual(link.resolve(), CANON.resolve())
         self.assertIn("skill link linked", out)
 
     def test_artifact_host_env_set_idempotent_remove(self) -> None:
@@ -383,7 +388,7 @@ class CodexHooksTest(unittest.TestCase):
         self.assertIn("print-hook", agents.read_text())
         self.run_cmd("uninstall-global")
         self.assertEqual(self.config.read_text(), 'model = "gpt-5"\n')
-        self.assertFalse(self.hooks.exists())
+        self.assertNotIn("print-hook", self.hooks.read_text() if self.hooks.exists() else "")  # kept, never deleted
         self.assertEqual(agents.read_text(), "# Mine\n")
 
     def test_uninstall_deletes_a_config_that_only_held_our_block(self) -> None:

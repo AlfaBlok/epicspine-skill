@@ -23,6 +23,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import global_install as gi  # noqa: E402
+import install_guard as ig  # noqa: E402
 from session_sync import due  # noqa: E402
 
 STAMP = ".agents/epicspine-rehook.stamp"
@@ -86,14 +87,15 @@ def launch(argv: list[str], env: dict, seconds: float) -> bool:
 
 def heal_one(harness: str, cdir: Path, hooks_file: Path, instr: Path, stop: tuple[str, ...], env: dict, home: Path,
              updated: bool, skill_dir: Path) -> str | None:
-    if not cdir.is_dir() or not ours(hooks_file, instr):
+    if not cdir.is_dir() or ig.outside_home(cdir, home) or not ours(hooks_file, instr):
         return None
     try:
         reg = registered(hooks_file)
     except (ValueError, OSError):
         reg = None
     script = skill_dir / "scripts" / "agents_block.py"
-    if reg is not None and reg.is_file() and reg.resolve() != script:
+    canon = ig.install_dir(skill_dir)  # hooks name the durable path, never a worktree's
+    if canon is None or (reg is not None and reg.is_file() and reg.resolve() != canon.resolve() / "scripts" / "agents_block.py"):
         return None  # another checkout's hook: not ours to repoint
     gone = missing(hooks_file, stop)
     if not (updated or gone) or not (updated or due(home, name=STAMP + "." + harness)):
