@@ -6,6 +6,8 @@ import stat
 from pathlib import Path
 from unittest import mock
 
+import isolation  # noqa: F401  (hermetic env for every module that installs fakes)
+
 CRONTAB = """#!/bin/sh
 state="$(dirname "$0")/state"; mkdir -p "$state"
 echo "crontab $*" >> "$state/calls"

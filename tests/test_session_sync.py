@@ -17,6 +17,7 @@ SCRIPTS = Path(__file__).parents[1] / "skill" / "epic-spine" / "scripts"
 sys.path.insert(0, str(SCRIPTS))
 import agents_block as ab  # noqa: E402
 import global_install  # noqa: E402
+from _safe_env import safe_env  # noqa: E402
 import rehook  # noqa: E402
 import repo_sync  # noqa: E402
 import stop_push  # noqa: E402
@@ -506,7 +507,7 @@ class StopPushTest(Base):
 
     def run_hook(self, payload: dict, **env: str) -> subprocess.CompletedProcess:
         return subprocess.run([sys.executable, "-B", str(SCRIPTS / "stop_push.py")], input=json.dumps(payload), text=True,
-                              capture_output=True, timeout=30, env={**os.environ, "HOME": str(self.home), **env})
+                              capture_output=True, timeout=30, env=safe_env(HOME=str(self.home), **env))
 
     def test_hook_process_pushes_silently_and_always_allows_stop(self) -> None:
         commit(self.repo, "a.txt", "a")
@@ -520,7 +521,7 @@ class StopPushTest(Base):
         commit(self.repo, "a.txt", "a")
         for stdin in ("", "not json", "[]"):
             proc = subprocess.run([sys.executable, "-B", str(SCRIPTS / "stop_push.py")], input=stdin, text=True, capture_output=True,
-                                  cwd=self.tmp, timeout=30, env={**os.environ, "HOME": str(self.home)})
+                                  cwd=self.tmp, timeout=30, env=safe_env(HOME=str(self.home)))
             self.assertEqual((proc.returncode, proc.stdout), (0, ""))
         self.assertNotEqual(self.remote_head(), git(self.repo, "rev-parse", "HEAD"))
         self.run_hook({"cwd": str(self.repo)}, EPICSPINE_SYNC="off")
@@ -569,7 +570,7 @@ class RehookTest(Base):
         self.old_install()
         self.assertEqual(self.heal(), "hooks re-registered (Stop push added)")
         self.assertEqual(sorted(Path(c.split('"')[1]).name for c in self.stops()), ["stop_push.py", "url_gate.py"])
-        self.assertTrue(all(str(self.skill) in c for c in self.stops()))  # real skill dir, no temp or foreign path
+        self.assertTrue(all(str(global_install.ig.install_dir(self.skill)) in c for c in self.stops()))  # real skill dir, no temp or foreign path
         self.assertIn("mine.sh", self.settings.read_text())
         with mock.patch.object(rehook, "launch", side_effect=AssertionError("current hooks need no subprocess")):
             self.assertIsNone(self.heal())
@@ -669,7 +670,7 @@ class RehookTest(Base):
     def test_the_real_hook_process_registers_the_stop_push_hook(self) -> None:
         self.old_install()
         proc = subprocess.run([sys.executable, "-B", str(SCRIPTS / "agents_block.py"), "print-hook"], cwd=self.tmp, text=True, capture_output=True,
-                              timeout=60, env={**os.environ, **self.env, "HOME": str(self.home)})
+                              timeout=60, env=safe_env(**self.env, HOME=str(self.home)))
         self.assertEqual((proc.returncode, proc.stderr), (0, ""))
         self.assertIn("hooks re-registered (Stop push added)", json.loads(proc.stdout)["hookSpecificOutput"]["additionalContext"])
         self.assertIn("stop_push.py", self.settings.read_text())
@@ -712,7 +713,7 @@ class HookIntegrationTest(Base):
         home.mkdir()
         t0 = time.monotonic()
         proc = subprocess.run([sys.executable, "-B", str(SCRIPTS / "agents_block.py"), "print-hook"], cwd=repo, text=True,
-                              capture_output=True, timeout=30, env={**os.environ, "HOME": str(home), "CLAUDE_CONFIG_DIR": str(self.tmp / "cfg")})
+                              capture_output=True, timeout=30, env=safe_env(HOME=str(home), CLAUDE_CONFIG_DIR=str(self.tmp / "cfg")))
         self.assertLess(time.monotonic() - t0, 12)
         self.assertEqual((proc.returncode, proc.stderr), (0, ""))
         json.loads(proc.stdout)
