@@ -79,3 +79,22 @@ Risk: <residual risk and follow-ups, or none>
 - `links` keeps each comma-separated item of the Evidence cell; a Markdown link gives its target. Items may be URLs, commit SHAs, `PR #n`, or repo paths.
 - `risk` is `null` when the line says `none`. Any field not written is `null` (`evidence` is `[]`).
 - The console shows an Outcome card (verdict, sentence, evidence per Done means, risk, closed) for any epic whose `outcome` is not null; the parent's rollup cites `sentence`.
+
+## Latest state
+
+Added per node by step 11. The console's top card shows the Outcome when there is one, and otherwise this. Each key is the snake_case form of its `## Current State` label. A label that is missing or empty gives `null`; `current_state` is `null` when the section is absent.
+
+```json
+"current_state": {
+  "status": "active",
+  "last_attempted": "2026-10-19 root swap merged (ef15cfa); ...",
+  "result": "step 7 done; ...",
+  "evidence": "main ef15cfa; ...",
+  "waiting_on": "Jordi's approval ...",
+  "next_action": "Jordi approves the doctrine page ...",
+  "verified_at": "2026-10-19"
+}
+```
+
+- Values are the raw line text after `Label:`. `status` is the same value as the node's existing `status`.
+- Stale flag (the console's call): Current State is stale when `verified_at` is older than the epic's last run. The doctrine has the manager refresh Last attempted, Result, Waiting on, Next action and Verified at at the end of every working session or wake.
