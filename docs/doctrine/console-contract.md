@@ -98,3 +98,7 @@ Added per node by step 11. The console's top card shows the Outcome when there i
 
 - Values are the raw line text after `Label:`. `status` is the same value as the node's existing `status`.
 - Stale flag (the console's call): Current State is stale when `verified_at` is older than the epic's last run. The doctrine has the manager refresh Last attempted, Result, Waiting on, Next action and Verified at at the end of every working session or wake.
+
+## Waiting on
+
+Added per node by step 12. `waiting_on` lists the structured asks under the epic's `## Waiting on` section, `[]` when there are none. Each item is `{who, ask, question, options, recommend, context, since, row, state, answer}`; `state` is `open` or `answered`, `answer` is null while open, `context` is repo-relative for a local link and an external URL is kept as-is. An `answered` line keeps only `who`, `question`, the fields it still carries and `answer` (`ask`, `since` and `row` are null: the tag no longer holds them). The format, the answer write-back and the advisory checks are in [human-asks.md](human-asks.md).

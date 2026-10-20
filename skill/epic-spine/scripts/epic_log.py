@@ -3,14 +3,21 @@
 
 from __future__ import annotations
 
+import datetime
+import os
 import re
 import subprocess
 import time
 from pathlib import Path
 
+import validate_spine as v
+
 OPEN = ("draft", "ready", "active", "blocked")
 CODE = re.compile(r"^(?:EPIC[- ]?|E)(\d+)\b")
 STALE_DAYS = 14
+STALE_ASK_DAYS = 7
+ASK = re.compile(r"-\s+\[(?:ask:\s*(decide|approve|provide)\s+@(\S+)\s+since\s+(\d{4}-\d\d-\d\d)(?:\s+row\s+(\S+))?|answered\s+\d{4}-\d\d-\d\d\s+@(\S+))\]\s*(.*)")
+ASK_FIELD = re.compile(r"(options|recommend|context|answer):\s*(.*)", re.S)
 
 
 def next_code(titles: list[str]) -> int:
@@ -83,3 +90,63 @@ def render(log: dict) -> str:
     lines += [f"orphan: {o['path']} ({o['reason']})" for o in log["orphans"]]
     lines += [f"mismatch: {m['path']}: {m['problem']}" for m in log["mismatches"]]
     return "\n".join(lines)
+
+
+def asks(text: str, path: Path, repo: Path) -> list[dict]:
+    """``## Waiting on`` ask lines in the docs/doctrine/human-asks.md shape; ``context`` is repo-relative when local (else kept as-is)."""
+    out = []
+    for line in v.parse_sections(text).get("Waiting on", "").splitlines():
+        if not (m := ASK.fullmatch(line.strip())):
+            continue
+        kind, who, since, row, answered_by, rest = m.groups()
+        question, *parts = re.split(r"\s+[—–]\s+", rest.strip())
+        fields: dict[str, str] = {}
+        for part in parts:
+            f = ASK_FIELD.fullmatch(part.strip())
+            if f:
+                fields[last := f.group(1)] = f.group(2).strip()
+            elif fields:  # a dash inside the previous field's text
+                fields[last] += " — " + part
+            else:
+                question += " — " + part
+        options = [o.strip() for o in fields.get("options", "").split("|") if o.strip()]
+        out.append({"who": who or answered_by, "ask": kind, "question": question, "options": options, "recommend": fields.get("recommend") or None,
+                    "context": ask_context(fields.get("context", ""), path, repo), "since": since, "row": row,
+                    "state": "open" if kind else "answered", "answer": fields.get("answer") or None})
+    return out
+
+
+def ask_context(value: str, path: Path, repo: Path) -> str | None:
+    """A markdown link or bare path/URL: external kept as-is, local made repo-relative (the file's folder first, else the repo root)."""
+    target = (m.group(1) if (m := re.fullmatch(r"\[[^\]]*\]\(([^)]+)\)", value.strip())) else value.strip()).strip("<>")
+    if not target or "://" in target or target.startswith("mailto:"):
+        return target or None
+    name, _, frag = target.partition("#")
+    here = (path.parent / name).resolve() if name else path.resolve()
+    found = here if here.exists() or not (repo / name).exists() else (repo / name).resolve()
+    return (os.path.relpath(found, repo) if found.is_relative_to(repo) else target) + (f"#{frag}" if frag else "")
+
+
+def ask_issues(text: str, today: datetime.date | None = None) -> list[str]:
+    """Advisory (never blocking): blocked rows/epic no open ask names, open asks missing a required field, open asks over 7 days old."""
+    today, issues = today or datetime.date.today(), []
+    found = [a for a in asks(text, Path("-"), Path("-")) if a["state"] == "open"]
+    key = lambda k: k.lower().strip("#[] ").rstrip(".:)")  # noqa: E731
+    named = {key(a["row"]) for a in found if a["row"]}
+    sections = v.parse_sections(text)
+    header, rows = v.parse_table(sections.get("Issue Ledger", ""))
+    for row in (dict(zip(header, r)) for r in rows) if "Status" in header else []:
+        if v.normalize(row["Status"]).lower().startswith("blocked"):
+            first = (row.get("Title", "").split() or [""])[0].rstrip(".:)")
+            keys = {key(k) for k in (first, row.get("Issue", ""), row.get("Ticket", "")) if k.strip()}
+            if not keys & named:
+                issues.append(f"ledger row '{first or row.get('Issue', '?')}' is blocked but no open ask names it (add one under ## Waiting on, `row <id>`)")
+    status = v.parse_key_values(sections.get("Current State", "")).get("Status", "").lower()
+    if status.startswith("blocked") and not found:
+        issues.append("Status is blocked but no open ask is under ## Waiting on")
+    for a in found:
+        label = f"ask '{a['question'][:40]}'"
+        issues += [f"{label} is missing {n}" for n, ok in (("options", a["ask"] != "decide" or a["options"]), ("recommend", a["ask"] == "provide" or a["recommend"]), ("context", a["context"])) if not ok]
+        if (today - datetime.date.fromisoformat(a["since"])).days > STALE_ASK_DAYS:
+            issues.append(f"stale ask: {label} to @{a['who']} open since {a['since']}")
+    return issues

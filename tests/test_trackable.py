@@ -148,7 +148,7 @@ class TrackableTests(unittest.TestCase):
         done = self.run_cli("--json", str(good), str(bad))
         data = json.loads(done.stdout)
         self.assertEqual([True, False], [d["trackable"] for d in data])
-        self.assertEqual({"path", "trackable", "missing", "warnings"}, set(data[0]))
+        self.assertEqual({"path", "trackable", "missing", "warnings", "advisory"}, set(data[0]))
         self.assertEqual(["criteria `- [ ] ID text` under ## Definition Of Done"], data[1]["missing"])
 
 

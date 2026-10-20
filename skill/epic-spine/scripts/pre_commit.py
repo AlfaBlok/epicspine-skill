@@ -7,7 +7,7 @@ a ticket if it has ``Ticket ID:``. A goal doc (``spines.is_goal``) must also be 
 v1 header, reachable from the root, agreeing with its parent's Spine Map (``spine_new.py``). Blocks only a newly added or
 renamed goal doc, and a modified one whose HEAD version already had ``Spine ID:`` (migrated). Warns, never blocks: a
 modified legacy goal doc (no ``Spine ID:`` at HEAD), a root spine without a ``Spine ID:`` header, ``Root spine: none`` and a goal
-spine whose ``## Current State`` has over 12 non-empty lines. ``Superseded by:`` must link to an existing goal doc (blocks)."""
+spine whose ``## Current State`` has over 12 non-empty lines, and ``epic_log.ask_issues`` (blocked row/epic with no open ask, ask missing a field, stale ask). ``Superseded by:`` must link to an existing goal doc (blocks)."""
 
 from __future__ import annotations
 
@@ -18,6 +18,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
+import epic_log  # noqa: E402
 import spine_fix  # noqa: E402
 import spines  # noqa: E402
 import validate_spine as v  # noqa: E402
@@ -53,10 +54,10 @@ def tree_check(name: str, added: set[str], cache: dict, told: set[str]) -> tuple
 
 def goal_notes(name: str, text: str, cache: dict) -> tuple[bool, str]:
     """(blocks, message): a ``Superseded by:`` link that is no goal doc blocks; a long Current State only warns."""
-    cwd, msgs = Path.cwd(), []
+    cwd = Path.cwd().resolve()
     sup = spines.meta(Path(name), cache)["fields"].get("Superseded by")
     target = spines.link(Path(name).resolve(), sup, cache) if sup else None
-    if sup and not (target and target.is_file() and spines.is_goal(cwd, target.relative_to(cwd), spines.read(target))):
+    if sup and not (target and target.is_file() and target.is_relative_to(cwd) and spines.is_goal(cwd, target.relative_to(cwd), spines.read(target))):
         return True, f"{name}: Superseded by {sup!r} is not an existing goal doc"
     lines = [x for x in v.parse_sections(text).get("Current State", "").splitlines() if x.strip()]
     return False, f"{name}: Current State has {len(lines)} lines; keep Current State lean: history goes to Decisions/git" if len(lines) > 12 else ""
@@ -98,6 +99,8 @@ def main() -> int:
         if not result["trackable"]:
             blocked = True
             say(f"{name}: not trackable: " + "; ".join(result["missing"]) + hint)
+        for note in epic_log.ask_issues(text) if kind == "spine" else []:
+            say(f"{name}: {note} (advisory)")
         if kind == "spine" and v.validate_local(path).fails(strict=True):
             say(f"{name}: --strict issues (advisory; run validate_spine.py --strict)")
     if blocked:

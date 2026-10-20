@@ -17,7 +17,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import validate_spine as v  # noqa: E402
-from epic_log import active, link_problems, render, rollup, stale  # noqa: E402
+from epic_log import active, asks, link_problems, render, rollup, stale  # noqa: E402
 
 SKIP = {"archive", "node_modules", "vendor", "wt", "worktrees", "handoffs", "examples", "fixtures", "test", "tests", "__pycache__"}
 NAMED = re.compile(r"(?i)^(e\d+[-_]|epic)|(^|[-_ ])(spine|plan)($|[-_ 0-9])")
@@ -127,7 +127,7 @@ def scan(repo: Path) -> dict:
         dod = [{"id": x.group(2), "text": x.group(3), "done": x.group(1) != " "} for _, line in v.criteria(m["text"], ("Definition Of Done",)) if (x := DONE.match(line.strip()))]
         node = nodes[rel(path)] = {"id": m["id"], "path": rel(path), "title": title(m, path.stem), "parent": rel(m["parent"]) if parent_file(path, cache) else None,
                                    "type": m["fields"].get("Spine Type", "").lower() or ("root" if path == root else ""),
-                                   "status": status, "rollup_status": status, "dod": dod, "outcome": v.outcome(m["text"]), "current_state": current_state(m["sections"]), "children": [],
+                                   "status": status, "rollup_status": status, "dod": dod, "outcome": v.outcome(m["text"]), "current_state": current_state(m["sections"]), "waiting_on": asks(m["text"], path, repo), "children": [],
                                    "superseded_by": rel(sup) if (sup := link(path, m["fields"].get("Superseded by", ""), cache)) else None}
         kids = list(header_kids.get(path, []))
         for _, target in m["rows"]:
