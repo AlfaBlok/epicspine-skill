@@ -341,6 +341,72 @@ class BoundsTest(Base):
         self.assertEqual(json.loads((self.home / bg.STATUS).read_text())["skill"], ss.read_version(self.skill))
 
 
+class FetchTimeoutTest(Base):
+    """A fetch killed mid-download must not leave tmp_pack files (VH-T20: 17 GB filled a disk) and must back off."""
+
+    def hang(self, pids: Path) -> None:
+        self.shim_git('case "$*" in *fetch*) d="$PWD/.git/objects/pack"; head -c 4096 /dev/zero > "$d/tmp_pack_new"; '
+                      f'sleep 60 & echo $! >> {pids}; exec sleep 60;; esac')
+
+    def packs(self, clone: Path) -> list[str]:
+        return sorted(p.name for p in (clone / ".git" / "objects" / "pack").glob("tmp_*"))
+
+    def test_timeout_kills_the_group_cleans_new_tmp_packs_and_backs_off(self) -> None:
+        _, a = self.repo("a")
+        old = a / ".git" / "objects" / "pack" / "tmp_pack_old"
+        old.write_bytes(b"x")
+        os.utime(old, (1, 1))  # predates the run: not ours, kept
+        pids = self.tmp / "pids"
+        self.hang(pids)
+        with mock.patch.object(bg, "REPO_SECONDS", 1.5):
+            self.assertEqual(self.entry(a)["attention"], [])
+            self.assertEqual(self.packs(a), ["tmp_pack_old"])
+            child = int(pids.read_text().split()[0])
+            with self.assertRaises(ProcessLookupError):
+                for _ in range(50):
+                    os.kill(child, 0)
+                    time.sleep(0.1)
+                os.kill(child, 0)  # still alive after 5 s: fail below
+                self.fail("fetch child survived the timeout")
+            self.assertEqual(self.entry(a)["attention"], [])  # strike 2
+            self.assertEqual(self.packs(a), ["tmp_pack_old"])
+            runs = len(pids.read_text().split())
+            att = self.entry(a)["attention"]  # backed off: no fetch, attention names the repo path
+            self.assertEqual(len(pids.read_text().split()), runs)
+            self.assertEqual(len(att), 1)
+            self.assertIn("timed out 2 times", att[0])
+            self.assertIn(f"git -C {a.resolve()} fetch origin", att[0])
+            self.assertEqual(self.packs(a), ["tmp_pack_old"])
+
+    def test_success_resets_the_strikes_and_expired_backoff_retries(self) -> None:
+        bare, a = self.repo("a")
+        state = a / ".git" / "epicspine-backoff.json"
+        state.write_text(json.dumps({"timeouts": 3, "skip_until": time.time() - 5}))
+        other = self.other(bare, "o")
+        commit(other, "n", "x")
+        git(other, "push", "-q", "origin", "main")
+        entry = self.entry(a)
+        self.assertEqual((entry["pulled"], entry["attention"]), (1, []))
+        self.assertFalse(state.exists())
+
+    def test_backoff_grows_and_is_capped(self) -> None:
+        _, a = self.repo("a")
+        self.shim_git('case "$*" in *fetch*) exec sleep 60;; esac')
+        clock = ss.Clock(100)
+        waits = []
+        for _ in range(8):
+            t0 = time.time()
+            ss_state = a / ".git" / "epicspine-backoff.json"
+            bg.repo_sync.fetch(a, clock, 0.3)
+            data = json.loads(ss_state.read_text())
+            if "skip_until" in data:
+                waits.append(round(data["skip_until"] - t0))
+                data.pop("skip_until")
+                ss_state.write_text(json.dumps(data))
+        self.assertEqual(waits[:3], [1800, 3600, 7200])
+        self.assertEqual(max(waits), 6 * 3600)
+
+
 class SessionStartLinesTest(Base):
     def write(self, repos: dict, updated: str | None = None) -> None:
         (self.home / ".agents").mkdir(exist_ok=True)

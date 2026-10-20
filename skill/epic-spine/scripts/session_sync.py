@@ -14,6 +14,7 @@ import contextlib
 import io
 import os
 import re
+import signal
 import subprocess
 import sys
 import time
@@ -43,16 +44,25 @@ class Clock:
         return self.cap(1.0) > 0.3
 
 
-def git(args: list[str], cwd: Path, clock: Clock, seconds: float = 4.0) -> subprocess.CompletedProcess | None:
-    """``git`` with no prompts and a deadline-capped timeout; None on timeout, error or no time left."""
+def git(args: list[str], cwd: Path, clock: Clock, seconds: float = 4.0, info: dict | None = None) -> subprocess.CompletedProcess | None:
+    """``git`` with no prompts and a deadline-capped timeout; None on timeout, error or no time left.
+    Own process group, killed whole on timeout (else fetch-pack/index-pack outlive it); ``info["timeout"]`` is set then."""
     if not clock.ok():
         return None
     env = {**os.environ, "GIT_TERMINAL_PROMPT": "0", "LC_ALL": "C"}
     env.setdefault("GIT_SSH_COMMAND", "ssh -o BatchMode=yes -o ConnectTimeout=4")
     try:
-        return subprocess.run(["git", "-c", "http.followRedirects=false", *args], cwd=str(cwd), capture_output=True,
-                              text=True, env=env, timeout=clock.cap(seconds))
-    except (subprocess.TimeoutExpired, OSError):
+        proc = subprocess.Popen(["git", "-c", "http.followRedirects=false", *args], cwd=str(cwd), stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE, text=True, env=env, start_new_session=True)
+        try:
+            stdout, stderr = proc.communicate(timeout=clock.cap(seconds))
+        except subprocess.TimeoutExpired:
+            info is None or info.update(timeout=True)
+            os.killpg(proc.pid, signal.SIGKILL)
+            proc.communicate(timeout=5)
+            return None
+        return subprocess.CompletedProcess(proc.args, proc.returncode, stdout, stderr)
+    except (subprocess.SubprocessError, OSError):
         return None
 
 

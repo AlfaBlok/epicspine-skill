@@ -158,7 +158,7 @@ def many(items: list[str]) -> str:
 def run(top: Path, clock: Clock, env: dict, text: str, integration: str, trees: list[tuple[Path, str]], now: float) -> dict:
     result: dict = {"auto": [], "mess": [], "gone": []}
     base, label = f"origin/{integration}", top.name
-    if out(git(["fetch", "--quiet", "--prune", "origin"], top, clock, 15)) is None or not out(git(["rev-parse", "--verify", "-q", base], top, clock, 3)):
+    if not repo_sync.fetch(top, clock, 15, "--prune")[0] or not out(git(["rev-parse", "--verify", "-q", base], top, clock, 3)):
         return result
     policy = (repo_sync.field(text, "Integration policy") or "").lower()
     gate, bad = deploy_gate.gate(text)
@@ -187,7 +187,7 @@ def run(top: Path, clock: Clock, env: dict, text: str, integration: str, trees: 
                 result["mess"].append(f"{label}: auto-merge of {name} stopped: {failed} — nothing was changed; merge it by hand")
                 break
             merges += 1
-            out(git(["fetch", "--quiet", "origin"], top, clock, 10))
+            repo_sync.fetch(top, clock, 10)
             wt = by_branch.get(name)
             result["auto"] += [f"{label}: merged {name} into {integration} (--no-ff, pushed)"] + [f"{label}: {d}" for d in delete(top, clock, base, name, info, wt, True)]
             if wt is not None and not wt.exists():
