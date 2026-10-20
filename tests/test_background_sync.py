@@ -21,6 +21,7 @@ sys.path.insert(0, str(SCRIPTS))
 import agents_block as ab  # noqa: E402
 import background_sync as bg  # noqa: E402
 import fake_bin  # noqa: E402
+from _safe_env import safe_env  # noqa: E402
 import local_servers  # noqa: E402
 import rehook  # noqa: E402
 import session_sync as ss  # noqa: E402
@@ -33,7 +34,7 @@ REAL_GIT = subprocess.run(["which", "git"], capture_output=True, text=True).stdo
 
 def git(cwd: Path, *args: str, env: dict | None = None) -> str:
     proc = subprocess.run(["git", *args], cwd=str(cwd), capture_output=True, text=True, check=True,
-                          env={**os.environ, **GIT_ENV, **(env or {})})
+                          env=safe_env(**GIT_ENV, **(env or {})))
     return proc.stdout.strip()
 
 
@@ -335,7 +336,7 @@ class BoundsTest(Base):
         git(other, "push", "-q", "origin", "main")
         for args, quiet in (([], True), (["-v"], False)):
             proc = subprocess.run([sys.executable, "-B", str(SCRIPTS / "background_sync.py"), *args], capture_output=True, text=True, timeout=120,
-                                  env={**os.environ, "EPICSPINE_REPO_ROOTS": str(self.root)})
+                                  env=safe_env(EPICSPINE_REPO_ROOTS=str(self.root)))
             self.assertEqual((proc.returncode, proc.stderr, proc.stdout == ""), (0, "", quiet))
         self.assertEqual(git(clone, "rev-parse", "HEAD"), git(other, "rev-parse", "HEAD"))
         self.assertEqual(json.loads((self.home / bg.STATUS).read_text())["skill"], ss.read_version(self.skill))

@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026.10.19.4 — Config isolation
+
+- **Fix: console personas lost the always-on block.** Tests built subprocess and patched envs as `{**os.environ, "HOME": tmp}`, keeping the agent's real `CLAUDE_CONFIG_DIR` (`~/.claude_seat1`); heal/install/uninstall in a test run then rewrote or stripped the real dir, and `global_install._save` deleted a settings.json that became empty. Separately, `SKILL_DIR` and hook paths came from `__file__`, so a run from a worktree wrote a pointer or hook into that worktree (`~/.claude/CLAUDE.md` pointed into one).
+- **Installer guard** (`scripts/install_guard.py`, used by `global_install.py`, `agents_block.py`, `rehook.py`): pointers, hook commands, the skill link and the repo pre-commit hook never name a linked git worktree (a dir whose `.git` is a file); they resolve to the repo's main checkout, else `~/.agents/skills/epic-spine`, else are skipped with a stderr warning. A config dir outside `$HOME` is never modified (warn, skip). settings.json is never deleted, even when it becomes empty.
+- **Tests**: `tests/test_000_isolation.py` (imports `tests/isolation.py`) redirects `HOME`, `CLAUDE_CONFIG_DIR`, `CODEX_HOME`, `XDG_CONFIG_HOME` to temp dirs and drops `GEMINI_*`/`EPICSPINE_*` for the whole run; `tests/_safe_env.py` `safe_env()` protects the leaking env lines in `test_session_sync.py` and `test_background_sync.py` for single-module runs. Skill 2026.10.19.4.
+
 ## 2026.10.19.3 — Living tree
 
 - **Agents keep the epic log true.** Always-on rule 6 (`global-block.md`): every new ask is placed in the tree before work starts (the reply states `Goal: EPIC-<n>`, an open goal from `spines.py --active` or a new spine from `spine_new.py`); a done goal closes (`Status: done`, parent rolls up); a replaced one gets `Superseded by:`; stale goals flagged at SessionStart are reported, never closed silently.

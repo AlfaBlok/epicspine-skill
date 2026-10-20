@@ -13,7 +13,9 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-import isolation  # noqa: F401  (first: scrubs the env before any other test module loads)
+sys.path.insert(0, str(Path(__file__).parent))
+import isolation  # first: redirects the env before any other test module loads
+from _safe_env import safe_env
 
 SCRIPTS = Path(__file__).parents[1] / "skill" / "epic-spine" / "scripts"
 sys.path.insert(0, str(SCRIPTS))
@@ -28,20 +30,24 @@ def git(cwd: Path, *args: str) -> None:
     subprocess.run(["git", *args], cwd=str(cwd), check=True, capture_output=True, env={**os.environ, **GIT_ENV})
 
 
-class ScrubTest(unittest.TestCase):
-    def test_process_env_is_scrubbed_and_home_is_throwaway(self) -> None:
+class IsolationTest(unittest.TestCase):
+    def test_config_dirs_are_redirected_to_temp_and_home_is_throwaway(self) -> None:
+        home = os.path.realpath(os.environ["HOME"])
         for key in isolation.NAMES:
-            self.assertNotIn(key, os.environ)
+            self.assertNotEqual(os.environ[key], isolation.ORIGINAL[key])
+            self.assertTrue(os.path.realpath(os.environ[key]).startswith(home + os.sep), key)
+        self.assertIn("epicspine-test-home-", home)
         self.assertFalse([k for k in os.environ if k.startswith(("GEMINI_", "EPICSPINE_")) and not k.startswith("EPICSPINE_TEST_")])
-        self.assertIn("epicspine-test-home-", os.environ["HOME"])
 
-    def test_real_looking_config_dir_is_scrubbed(self) -> None:
-        env = {"CLAUDE_CONFIG_DIR": "/home/someone/.claude_seat1", "CODEX_HOME": "/home/someone/.codex", "XDG_CONFIG_HOME": "/x",
-               "GEMINI_API_KEY": "k", "EPICSPINE_DISPATCHER": "d", "EPICSPINE_TEST_CODEX": "1", "PATH": "/bin"}
-        self.assertEqual(isolation.scrub(env), {"EPICSPINE_TEST_CODEX": "1", "PATH": "/bin"})
-        with mock.patch.dict(os.environ, {"CLAUDE_CONFIG_DIR": "/home/someone/.claude_seat1"}):
-            self.assertNotIn("CLAUDE_CONFIG_DIR", isolation.clean_env(HOME="/t"))
-            self.assertEqual(isolation.clean_env(HOME="/t")["HOME"], "/t")
+    def test_safe_env_never_carries_a_real_config_dir(self) -> None:
+        leaked = {"CLAUDE_CONFIG_DIR": "/home/someone/.claude_seat1", "CODEX_HOME": "/home/someone/.codex",
+                  "XDG_CONFIG_HOME": "/x", "GEMINI_API_KEY": "k", "EPICSPINE_TEST_CODEX": "1"}
+        with mock.patch.dict(os.environ, leaked):
+            env = safe_env(HOME="/t")
+        self.assertEqual((env["HOME"], env["EPICSPINE_TEST_CODEX"]), ("/t", "1"))
+        for key in ("CLAUDE_CONFIG_DIR", "CODEX_HOME", "XDG_CONFIG_HOME", "GEMINI_API_KEY"):
+            self.assertNotIn(key, env)
+        self.assertEqual(safe_env(CLAUDE_CONFIG_DIR="/c")["CLAUDE_CONFIG_DIR"], "/c")
 
 
 class InstallerGuardTest(unittest.TestCase):
@@ -101,7 +107,7 @@ class InstallerGuardTest(unittest.TestCase):
             self.assertTrue(gi.set_hook(cfg / "settings.json", True).startswith("skipped"))
         self.assertEqual((cfg / "CLAUDE.md").read_text(), before)
         self.assertFalse((cfg / "settings.json").exists())
-        self.assertIn("linked git worktree", err.getvalue())
+        self.assertIn("git worktree", err.getvalue())
 
     def test_config_dir_outside_home_is_untouched(self) -> None:
         outside = self.tmp / "seat"

@@ -20,6 +20,9 @@ import sys
 import tempfile
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import install_guard as ig  # noqa: E402
+
 SKILL_DIR = Path(__file__).resolve().parent.parent
 _WARNED: set[str] = set()
 GLOBAL_TEMPLATE = SKILL_DIR / "assets" / "global-block.md"
@@ -42,56 +45,23 @@ UNSUPPORTED = {
 }
 
 
-def warn(message: str) -> None:
-    """One stderr line per distinct message per process (hooks must stay quiet otherwise)."""
-    if message not in _WARNED:
-        _WARNED.add(message)
-        print(f"epicspine: {message}", file=sys.stderr)
-
-
-def _worktree_main(path: Path) -> tuple[Path, Path] | None:
-    """(linked worktree root, its main checkout) when ``path`` lies in a linked worktree (``.git`` is a FILE), else None."""
-    for top in (path, *path.parents):
-        dot = top / ".git"
-        if dot.is_file():
-            try:
-                gitdir = Path(dot.read_text(encoding="utf-8").split("gitdir:", 1)[1].strip().splitlines()[0])
-            except (IndexError, OSError):
-                return top, top
-            common = (top / gitdir).resolve().parent.parent  # <main>/.git/worktrees/<name> -> <main>/.git
-            return top, common.parent
-        if dot.exists():
-            return None
-    return None
-
-
 def install_dir(home: Path | None = None) -> Path | None:
-    """The skill dir that pointers, hooks and links may name: SKILL_DIR, unless it lies in a linked git worktree (which
-    is removed after its task), then the same dir in the repo's main checkout, else ``~/.agents/skills/epic-spine``
-    if present, else None (callers skip and warn)."""
-    found = _worktree_main(SKILL_DIR)
-    if found is None:
-        return SKILL_DIR
-    top, main = found
-    for cand in (main / SKILL_DIR.relative_to(top), (home or Path.home()) / ".agents" / "skills" / "epic-spine"):
-        if cand != SKILL_DIR and (cand / "assets" / "global-block.md").is_file() and _worktree_main(cand.resolve()) is None:
-            return cand
-    warn(f"{SKILL_DIR} is inside a linked git worktree and has no main checkout or ~/.agents/skills/epic-spine; "
-         "not writing pointers, hooks or links that would break when the worktree is removed")
-    return None
+    """Durable skill dir for pointers, hooks and links (never a linked worktree); None: skip (see install_guard)."""
+    key = f"{SKILL_DIR}|{home}"
+    found = ig.install_dir(SKILL_DIR, home, report=key not in _WARNED)
+    _WARNED.add(key)
+    return found
 
 
 def outside_home(path: Path, home: Path | None = None) -> bool:
-    """True (with a warning) when ``path`` is outside ``$HOME`` (a mixed or leaked test environment): never modified."""
+    """True (with one warning) when ``path`` is outside ``$HOME`` (a mixed or leaked env): never modified."""
     base = home or (Path(os.environ["HOME"]) if os.environ.get("HOME") else None)
-    if base is None:
+    if base is None or ig.inside(path, base):
         return False
-    try:
-        Path(os.path.realpath(path)).relative_to(os.path.realpath(base))
-        return False
-    except ValueError:
-        warn(f"not modifying {path}: outside HOME ({base})")
-        return True
+    if f"out|{path}" not in _WARNED:
+        _WARNED.add(f"out|{path}")
+        ig.warn(f"not modifying {path}: outside HOME ({base})")
+    return True
 
 
 def read_version() -> str:
