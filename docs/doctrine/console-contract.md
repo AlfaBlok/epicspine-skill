@@ -82,15 +82,17 @@ Risk: <residual risk and follow-ups, or none>
 
 ## Latest state
 
-Added per node by step 11. The console's top card shows the Outcome when there is one, and otherwise this. Each key is the snake_case form of its `## Current State` label. A label that is missing or empty gives `null`; `current_state` is `null` when the section is absent.
+Added per node by step 11. The console's top card shows the Outcome when there is one, and otherwise this. Each key is the snake_case form of its `## Current State` label (`owner` is the thread a human's answer is delivered to, per `human-asks.md`). A label that is missing or empty gives `null`; `current_state` is `null` when the section is absent.
 
 ```json
 "current_state": {
+  "owner": "EPIC-4 delivery manager (thread mcp:…)",
   "status": "active",
   "last_attempted": "2026-10-19 root swap merged (ef15cfa); ...",
   "result": "step 7 done; ...",
   "evidence": "main ef15cfa; ...",
   "waiting_on": "Jordi's approval ...",
+  "approved_work": "none",
   "next_action": "Jordi approves the doctrine page ...",
   "verified_at": "2026-10-19"
 }

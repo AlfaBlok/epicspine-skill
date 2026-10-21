@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.10.21.5 — current_state carries owner and approved_work
+
+- **Fix: `spines.py --json` `current_state` omitted `owner` and `approved_work`.** `STATE_LABELS` lacked `Owner` and `Approved work`, but `docs/doctrine/human-asks.md` routes a human's answer to the thread named in `current_state.owner`, and the agent_team console relies on it. Both labels are added in Current State template order (Owner first, Approved work before Next action); values are raw text, `null` when missing or empty. `docs/doctrine/console-contract.md` example updated; `tests/test_outcome.py` pins the new key set and asserts `owner` carries the raw Owner text. EPIC-4 step 15. Skill 2026.10.21.5.
+
 ## 2026.10.21.4 — Learnings inherit from ancestors
 
 - **Fix: a persona bound to a leaf epic printed `Learnings in force: none`** (agent_team M4 had none of its own and missed the root's L-1/L-2). Learnings already apply to the spine they sit in and everything under it (rule 7: deepest spine it applies to); rules 1-2 of `assets/global-block.md` now say so: in force = the bound epic's plus every `Parent spine:` ancestor's up to the root, listed nearest first in the bind line, never `none` while one has any. Reworded in place (no new rule, +139 bytes, same line count); one line aligned each in SKILL.md rule 5 and `references/learnings.md` (Depth is scope). EPIC-4 step 14. Skill 2026.10.21.4 (2026.10.21.3 is taken by the parallel sync_schedule branch).

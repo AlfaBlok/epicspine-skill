@@ -23,7 +23,7 @@ SKIP = {"archive", "node_modules", "vendor", "wt", "worktrees", "handoffs", "exa
 NAMED = re.compile(r"(?i)^(e\d+[-_]|epic)|(^|[-_ ])(spine|plan)($|[-_ 0-9])")
 ID_LINE = re.compile(r"(?m)^Spine ID:")
 ROOT_LINE = re.compile(r"Root spine: \[?`?([^`\]\s)]+)")
-STATE_LABELS = ("Status", "Last attempted", "Result", "Evidence", "Waiting on", "Next action", "Verified at")
+STATE_LABELS = ("Owner", "Status", "Last attempted", "Result", "Evidence", "Waiting on", "Approved work", "Next action", "Verified at")
 DONE = re.compile(rf"- \[([ xX])\] ({v.ID})[ \t]*(.*)")
 
 
