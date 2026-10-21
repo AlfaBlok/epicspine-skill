@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.10.21.6 — Worker briefs name the bound epic
+
+- **Fix: ticket workers bound `Learnings in force: none`** (5 workers, even on 2026.10.21.4). A brief said only "ticket worker for EPIC-4 step N in <repo>", never the epic file, so the worker never walked the `Parent spine:` chain to the root learnings. The worker template in `references/dispatch-prompts.md` now requires `Bound epic: <path to the epic file>` and a `Learnings:` line (read the bound epic's and every ancestor's Operating Learnings, list their ids in the bind line); the template in `references/roles-and-dispatch.md` gets the same in place, and rule 4 of `assets/global-block.md` says a worker brief names `Bound epic: <path>`. Reworded in place: global-block and roles-and-dispatch keep their line counts, dispatch-prompts +1. EPIC-4 step 16. Skill 2026.10.21.6.
+
 ## 2026.10.21.5 — current_state carries owner and approved_work
 
 - **Fix: `spines.py --json` `current_state` omitted `owner` and `approved_work`.** `STATE_LABELS` lacked `Owner` and `Approved work`, but `docs/doctrine/human-asks.md` routes a human's answer to the thread named in `current_state.owner`, and the agent_team console relies on it. Both labels are added in Current State template order (Owner first, Approved work before Next action); values are raw text, `null` when missing or empty. `docs/doctrine/console-contract.md` example updated; `tests/test_outcome.py` pins the new key set and asserts `owner` carries the raw Owner text. EPIC-4 step 15. Skill 2026.10.21.5.
