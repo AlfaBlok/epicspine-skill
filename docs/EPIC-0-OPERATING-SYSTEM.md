@@ -24,7 +24,7 @@ Result: step 4 pipeline check passed: console personas receive the doctrine on b
 Evidence: EPIC-4 56610dd
 Waiting on: Jordi's EPIC-4 approval (steps 1+2, open since 2026-10-19; structured ask in EPIC-4); draft kept on origin wt/doctrine-2 (0fabf2d)
 Approved work: EPIC-3 Epic log and EPIC-4 Doctrine 2 (their ledgers hold the tickets)
-Next action: on approval: merge wt/doctrine-2, step 3 tools; E3-2 live proof (3 fresh sessions); step 3 tools on Jordi's approval; poly-maker migration; bring this root to Doctrine 2 (EPIC-4 step 6).
+Next action: on approval: merge wt/doctrine-2, step 3 tools; E3-2 live proof (3 fresh sessions); poly-maker migration; bring this root to Doctrine 2 (EPIC-4 step 6).
 Source revision: main
 Verified at: 2026-10-21
 
