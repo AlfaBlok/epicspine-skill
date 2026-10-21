@@ -138,7 +138,7 @@ class SpineNewTests(EpicLogCase):
 
     def test_parent_by_spine_id_nested_and_existing_map(self) -> None:
         self.write("docs/root.md", self.root_text + "\n" + MAP_HEAD)
-        self.assertEqual(0, self.new().returncode)
+        self.assertEqual(0, self.new("docs/E4-one-logger.md", "docs/root.md", "E4 one logger", "--purpose", "One logger").returncode)
         nested = self.new("docs/e4/E4-1-streams.md", "e4-one-logger", "E4-1 streams", "--purpose", "One registry")
         self.assertEqual(0, nested.returncode, nested.stderr)
         child = self.repo / "docs/e4/E4-1-streams.md"
@@ -266,7 +266,7 @@ class PreCommitTreeTests(EpicLogCase):
         self.git("init", "-q")
         agents_block.install(self.repo, "docs/root.md")
         self.git("add", "-A")
-        self.assertEqual(0, self.git("commit", "-m", "base").returncode)
+        self.assertEqual(0, self.git("commit", "--no-verify", "-m", "base").returncode)  # history before the hook: an old-style root
 
     def git(self, *args: str) -> subprocess.CompletedProcess:
         return subprocess.run(["git", "-c", "user.name=t", "-c", "user.email=t@t", *args], cwd=self.repo, capture_output=True, text=True)

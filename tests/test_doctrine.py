@@ -199,7 +199,7 @@ class PreCommitDoctrineTests(base.EpicLogCase):
         self.git("init", "-q")
         base.agents_block.install(self.repo, "docs/root.md")
         self.git("add", "-A")
-        self.assertEqual(0, self.git("commit", "-m", "base").returncode)
+        self.assertEqual(0, self.git("commit", "--no-verify", "-m", "base").returncode)  # history before the hook: an old-style root
 
     def git(self, *args: str) -> subprocess.CompletedProcess:
         return subprocess.run(["git", "-c", "user.name=t", "-c", "user.email=t@t", *args], cwd=self.repo, capture_output=True, text=True)
