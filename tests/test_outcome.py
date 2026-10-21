@@ -100,10 +100,12 @@ class JsonOutcomeTests(OutcomeCase):
 
 class CurrentStateJsonTests(OutcomeCase):
     def test_present(self) -> None:
-        body = "Status: active\nLast attempted: ran the suite\nResult: 3 failures\nWaiting on: none\nNext action: fix them\nVerified at: 2026-10-20"
+        body = "Owner: EPIC-4 delivery manager (thread mcp:abc-123)\nStatus: active\nLast attempted: ran the suite\nResult: 3 failures\nWaiting on: none\nApproved work: none\nNext action: fix them\nVerified at: 2026-10-20"
         self.path.write_text(re.sub(r"(?s)## Current State\n.*?\n## ", f"## Current State\n\n{body}\n\n## ", self.text, count=1))
         state = self.node()["current_state"]
-        self.assertEqual(["status", "last_attempted", "result", "evidence", "waiting_on", "next_action", "verified_at"], list(state))
+        self.assertEqual(["owner", "status", "last_attempted", "result", "evidence", "waiting_on", "approved_work", "next_action", "verified_at"], list(state))
+        self.assertEqual("EPIC-4 delivery manager (thread mcp:abc-123)", state["owner"])
+        self.assertEqual("none", state["approved_work"])
         self.assertEqual(("active", "ran the suite", "3 failures", "none", "fix them", "2026-10-20"),
                          (state["status"], state["last_attempted"], state["result"], state["waiting_on"], state["next_action"], state["verified_at"]))
         self.assertEqual(state["status"], self.node()["status"])
