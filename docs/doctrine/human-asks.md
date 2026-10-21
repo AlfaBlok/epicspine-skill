@@ -23,7 +23,7 @@ An agent that is blocked on a human writes one line per ask under `## Waiting on
 - **Status:** the blocked ledger row gets Status `blocked`. If the whole epic waits, `Status: blocked` too. Current State's `Waiting on:` names the human and points here, e.g. `Jordi (2 asks, see Waiting on)`.
 
 ## Answering it
-1. The console delivers the answer to the owner's thread.
+1. The console delivers the answer to the owner's thread: the attached persona's thread, else a `thread <id>` named in Current State's `Owner:` value (`current_state.owner` in --json). An epic that can be blocked on a human should name its owner thread there.
 2. The owner changes the tag to `[answered <YYYY-MM-DD> @<who>]` and appends ` — answer: <answer>`.
 3. The owner adds a Decisions row for it (date, outcome, the answer, who).
 4. The owner unblocks the row, setting its Status to whatever it is now.
