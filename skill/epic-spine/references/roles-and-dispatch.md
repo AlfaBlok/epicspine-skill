@@ -97,7 +97,7 @@ Handoff: updated spine and ledger, integrated commits and evidence, integration 
 
 ```text
 Role: worker
-Bound spine / issue: <path or URL> / <issue URL>
+Bound epic / issue: <epic file path> / <issue URL>; list its and its ancestors' Learning ids in your bind line
 Scope: <exactly one task>
 Worktree: <absolute path>; create with git worktree add ../wt-<task> -b wt/<task> main (local branch; no push or PR by default)
 Verification: <commands and acceptance the worker must run and report>
