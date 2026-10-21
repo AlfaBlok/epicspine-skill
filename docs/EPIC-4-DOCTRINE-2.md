@@ -40,7 +40,7 @@ Status: active
 Last attempted: 2026-10-21 steps 10+11 verified done (2026.10.20.2); step 12 human asks placed and contract published; step 9 worker resumed
 Result: 9-16 done (latest release 2026.10.21.6); step 4 pipeline check passed; steps 1+2 still awaiting Jordi since 2026-10-19
 Evidence: 21adcba (release 2026.10.20.2); [human-asks.md](doctrine/human-asks.md)
-Waiting on: Jordi (1 ask, see Waiting on)
+Waiting on: Jordi: EPIC-4-A1
 Approved work: E4-1 to E4-5; steps 10-12 requested by Jordi via agent_team (2026-10-20/21)
 Next action: console is live, Jordi can approve from it; on Jordi's approval merge wt/doctrine-2 and dispatch step 3
 Source revision: main
@@ -49,7 +49,7 @@ Verified at: 2026-10-21
 
 ## Waiting on
 
-- [ask: approve @Jordi since 2026-10-19 row 1] Approve the doctrine page and enforcement plan (steps 1+2) as one? — recommend: approve, with both small answers yes — context: [approval page](http://vps-a9-1.taild81fbb.ts.net:36879/index.html)
+- [ask EPIC-4-A1: approve @Jordi since 2026-10-19 row 1] Approve the doctrine page (what every epic must say) and the enforcement plan (scaffold, commit check, JSON fields) as one? — recommend: approve, with both small answers yes (advisory size budget 150 lines / 200-char cells; profile, dialect and ticket-backend headers optional) — unblocks: step 3 (tools), then 5 (poly-maker compliance test) and 6 (slimming); waiting holds the whole Doctrine 2 rollout — effort: ~5 min — context: [approval page](http://vps-a9-1.taild81fbb.ts.net:36879/index.html)
 
 ## Non-Goals
 
@@ -77,6 +77,7 @@ Steps run in this order; each one unblocks the next. Steps 1 and 2 are one appro
 | draft | Ticket worker | worker (Sonnet 5.5) | 14. Learnings in force = the bound epic's plus every ancestor's up to the root (scope is the subtree); a persona on a leaf listed "none" and missed root L-1/L-2; one wording fix in global-block rule 1/2 | done | none | none | main | released 2026.10.21.4 (merge b1033ff); isolated suite 566 OK | 2026-10-21 | none |
 | draft | Ticket worker | worker (Sonnet 5.5) | 15. `current_state` omits Owner (and Approved work), yet the human-asks contract routes answers via `current_state.owner`; add both labels | done | none | merged | main | released 2026.10.21.5; isolated suite 566 OK; EPIC-4 current_state.owner names this thread | 2026-10-21 | none |
 | draft | Ticket worker | worker seat2 (Sonnet 5.5) | 16. Workers bind "Learnings in force: none" even on 2026.10.21.4: a worker brief names no bound epic, so it never walks the parent chain; the dispatch brief template should name the epic (and its learnings chain) | done | none | merged | main | released 2026.10.21.6; isolated suite OK; the step 16 worker itself bound with L-1..L-14 from EPIC-0 | 2026-10-21 | none |
+| draft | Ticket worker | worker (Sonnet 5.5) | 17. Human asks v2 (agent_team M2-SKILL2, Jordi 2026-10-21): ask codes, `do` + steps, unblocks/effort, gate is not an ask, manager synthesis rule, answer by code; [contract v2](doctrine/human-asks.md) | active | none | wt/human-asks-v2 | main | contract v2 published 2026-10-21 | 2026-10-21 | worker builds; manager verifies, merges, releases; then tell poly-maker E4 owner |
 
 ## Decisions
 
