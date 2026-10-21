@@ -22,6 +22,11 @@ import spines  # noqa: E402
 DECIDE = "- [ask: decide @Jordi since 2026-10-21 row T4] Ship E4 with one logger or two? — options: one | two — recommend: one — context: [why](docs/one-logger/notes.md#loggers)"
 APPROVE = "- [ask: approve @Ana since 2026-10-20] Approve the page? — recommend: approve — context: https://example.com/page#top"
 ANSWERED = "- [answered 2026-10-21 @Jordi] Ship E4 with one logger or two? — options: one | two — recommend: one — context: [why](docs/one-logger/notes.md) — answer: one"
+DO = ("- [ask E4-A3: do @Jordi since 2026-10-21 row T4] Patch the archiver for 1 h so the cutover (T4) can run? — steps: [runbook](docs/x.md#run) (vps1, user root) — unblocks: T4; each day waiting loses a day of ticks"
+      " — recommend: do it tonight — effort: ~10 min — context: [why](docs/one-logger/notes.md#archiver)")
+DECIDE2 = "- [ask E4-A1: decide @Jordi since 2026-10-21 row T4] Ship E4 with one logger or two? — options: one | two — recommend: one — unblocks: T4 — context: [why](docs/one-logger/notes.md#loggers)"
+APPROVE2 = "- [ask E4-A2: approve @Ana since 2026-10-20] Approve the page? — recommend: approve — unblocks: T5 — context: https://example.com/page#top"
+ANSWERED_V2 = "- [answered E4-A3 2026-10-22 @Jordi] Patch the archiver? — answer: done"
 TODAY = datetime.date(2026, 10, 22)
 
 
@@ -42,8 +47,38 @@ class ParserTests(unittest.TestCase):
         return epic_log.asks(waiting(*lines), self.repo / "docs/a.md", self.repo)
 
     def test_every_field(self) -> None:
-        self.assertEqual([{"who": "Jordi", "ask": "decide", "question": "Ship E4 with one logger or two?", "options": ["one", "two"], "recommend": "one",
-                           "context": "docs/one-logger/notes.md#loggers", "since": "2026-10-21", "row": "T4", "state": "open", "answer": None}], self.parse(DECIDE))
+        self.assertEqual([{"code": None, "who": "Jordi", "ask": "decide", "question": "Ship E4 with one logger or two?", "steps": None, "options": ["one", "two"], "recommend": "one",
+                           "unblocks": None, "effort": None, "context": "docs/one-logger/notes.md#loggers", "since": "2026-10-21", "row": "T4", "state": "open", "answer": None}], self.parse(DECIDE))
+
+    def test_v2_do_ask_with_every_new_field(self) -> None:
+        self.assertEqual({"code": "E4-A3", "who": "Jordi", "ask": "do", "question": "Patch the archiver for 1 h so the cutover (T4) can run?", "steps": "docs/x.md#run (vps1, user root)",
+                          "options": [], "recommend": "do it tonight", "unblocks": "T4; each day waiting loses a day of ticks", "effort": "~10 min",
+                          "context": "docs/one-logger/notes.md#archiver", "since": "2026-10-21", "row": "T4", "state": "open", "answer": None}, self.parse(DO)[0])
+
+    def test_steps_inline_commands_are_kept(self) -> None:
+        line = DO.replace("[runbook](docs/x.md#run) (vps1, user root)", "`sudo systemctl restart archiver` on vps1")
+        self.assertEqual("`sudo systemctl restart archiver` on vps1", self.parse(line)[0]["steps"])
+
+    def test_code_shapes(self) -> None:
+        for code in ("EPIC-4-A1", "E4-A12", "M2-A3", "poly-A1"):
+            with self.subTest(code):
+                self.assertEqual(code, self.parse(DO.replace("E4-A3", code))[0]["code"])
+        for bad in ("E4-3", "A3", "E4-Ax"):
+            with self.subTest(bad):
+                self.assertEqual([], self.parse(DO.replace("E4-A3", bad)))
+
+    def test_v1_lines_have_null_code_and_new_fields(self) -> None:
+        for ask in self.parse(DECIDE, APPROVE, ANSWERED):
+            self.assertEqual((None, None, None, None), (ask["code"], ask["steps"], ask["unblocks"], ask["effort"]))
+
+    def test_answered_with_code(self) -> None:
+        ask = self.parse(ANSWERED_V2)[0]
+        self.assertEqual(("answered", "E4-A3", "Jordi", "done"), (ask["state"], ask["code"], ask["who"], ask["answer"]))
+        self.assertEqual((None, None, None), (ask["ask"], ask["since"], ask["row"]))
+
+    def test_provide_do_types_accepted_and_unknown_type_ignored(self) -> None:
+        self.assertEqual("do", self.parse(DO)[0]["ask"])
+        self.assertEqual([], self.parse(DO.replace(": do @", ": fix @")))
 
     def test_row_is_optional_and_options_empty(self) -> None:
         ask = self.parse(APPROVE)[0]
@@ -91,14 +126,14 @@ class AdvisoryTests(unittest.TestCase):
         self.assertIn("ledger row 'T4' is blocked but no open ask names it", found[0])
 
     def test_open_ask_naming_the_row_clears_it(self) -> None:
-        self.assertEqual([], self.issues(asks=DECIDE))
+        self.assertEqual([], self.issues(asks=DECIDE2))
 
     def test_answered_or_other_row_ask_does_not_clear_it(self) -> None:
         self.assertEqual(1, len(self.issues(asks=ANSWERED)))
-        self.assertEqual(1, len(self.issues(asks=DECIDE.replace("row T4", "row T9"))))
+        self.assertEqual(1, len(self.issues(asks=DECIDE2.replace("row T4", "row T9"))))
 
     def test_row_matches_issue_id_too(self) -> None:
-        text = spine_with(asks=DECIDE.replace("row T4", "row #12")).replace("| T4 | Ticket worker", "| #12 | Ticket worker")
+        text = spine_with(asks=DECIDE2.replace("row T4", "row #12")).replace("| T4 | Ticket worker", "| #12 | Ticket worker")
         self.assertEqual([], epic_log.ask_issues(text, TODAY))
 
     def test_unblocked_row_needs_no_ask(self) -> None:
@@ -106,23 +141,93 @@ class AdvisoryTests(unittest.TestCase):
 
     def test_blocked_epic_needs_any_open_ask(self) -> None:
         self.assertEqual(["Status is blocked but no open ask is under ## Waiting on"], self.issues(ledger_status="active", status="blocked"))
-        self.assertEqual([], self.issues(ledger_status="active", status="blocked", asks=APPROVE))
+        self.assertEqual([], self.issues(ledger_status="active", status="blocked", asks=APPROVE2))
 
     def test_missing_field(self) -> None:
-        cases = {"options": DECIDE.replace(" — options: one | two", ""), "recommend": DECIDE.replace(" — recommend: one", ""),
-                 "context": re.sub(r" — context:.*", "", DECIDE)}
+        cases = {"options": DECIDE2.replace(" — options: one | two", ""), "recommend": DECIDE2.replace(" — recommend: one", ""),
+                 "context": re.sub(r" — context:.*", "", DECIDE2)}
         for name, line in cases.items():
             with self.subTest(name):
                 found = self.issues(asks=line)
                 self.assertEqual(1, len(found), found)
                 self.assertIn(f"is missing {name}", found[0])
-        self.assertIn("is missing recommend", self.issues(ledger_status="active", asks=APPROVE.replace(" — recommend: approve", ""))[0])
-        self.assertEqual([], self.issues(asks="- [ask: provide @J since 2026-10-21 row T4] Key? — context: docs/k.md"))
-        self.assertEqual([], self.issues(ledger_status="active", asks=APPROVE))
+        self.assertIn("is missing recommend", self.issues(ledger_status="active", asks=APPROVE2.replace(" — recommend: approve", ""))[0])
+        self.assertEqual([], self.issues(asks="- [ask E4-A5: provide @J since 2026-10-21 row T4] Key? — unblocks: T4 — context: docs/k.md"))
+        self.assertEqual([], self.issues(ledger_status="active", asks=APPROVE2))
+
+    def test_waiting_row_needs_an_ask_like_blocked(self) -> None:
+        found = self.issues(ledger_status="waiting")
+        self.assertEqual(1, len(found), found)
+        self.assertIn("ledger row 'T4' is waiting but no open ask names it", found[0])
+        self.assertEqual([], self.issues(ledger_status="waiting", asks=DO))
+        self.assertEqual(["Status is waiting but no open ask is under ## Waiting on"], self.issues(ledger_status="active", status="waiting"))
+
+    def test_v2_required_fields(self) -> None:
+        cases = {"steps": re.sub(r" — steps: .*?(?= — unblocks)", "", DO), "unblocks": re.sub(r" — unblocks: .*?(?= — recommend)", "", DO),
+                 "recommend": DO.replace(" — recommend: do it tonight", ""), "context": re.sub(r" — context:.*", "", DO)}
+        for name, line in cases.items():
+            with self.subTest(name):
+                found = self.issues(asks=line)
+                self.assertEqual(1, len(found), found)
+                self.assertIn(f"ask E4-A3 is missing {name}", found[0])
+        self.assertEqual([], self.issues(asks=DO))  # effort is optional
+        self.assertEqual([], self.issues(asks=DO.replace(" — effort: ~10 min", "")))
+
+    def test_unblocks_required_for_every_type(self) -> None:
+        v2 = "- [ask E4-A1: approve @Ana since 2026-10-21 row T4] Approve the page? — recommend: approve — context: docs/x.md"
+        self.assertEqual(["ask E4-A1 is missing unblocks"], self.issues(asks=v2))
+        self.assertEqual([], self.issues(asks=v2 + " — unblocks: T4"))
+        self.assertEqual(["ask E4-A1 is missing unblocks"], self.issues(asks=v2.replace("approve @Ana", "provide @Ana").replace(" — recommend: approve", "")))
+
+    def test_ask_without_code_is_flagged(self) -> None:
+        found = self.issues(asks=DECIDE.replace(" — context", " — unblocks: T4 — context"))
+        self.assertEqual(1, len(found), found)
+        self.assertIn("has no code", found[0])
+
+    def test_over_three_open_asks(self) -> None:
+        four = [DO.replace("E4-A3", f"E4-A{n}") for n in range(1, 5)]
+        self.assertEqual([], self.issues(asks="\n".join(four[:3])))
+        found = self.issues(asks="\n".join(four))
+        self.assertEqual(1, len(found), found)
+        self.assertIn("4 open asks", found[0])
+        self.assertEqual([], [i for i in self.issues(asks="\n".join(four[:3] + [ANSWERED_V2.replace("E4-A3", "E4-A9")])) if "open asks" in i])
+
+    def test_duplicate_code_among_open_asks(self) -> None:
+        found = self.issues(asks=DO + "\n" + DO.replace("row T4", "row T9"))
+        self.assertEqual(1, len([i for i in found if "duplicate ask code E4-A3" in i]), found)
+        self.assertEqual([], [i for i in self.issues(asks=DO + "\n" + DO.replace("E4-A3", "E4-A30")) if "duplicate" in i])
+
+    def test_open_ask_whose_code_is_in_a_decisions_row(self) -> None:
+        with_row = spine_with(asks=DO).replace("| accepted | c |", "| accepted | E4-A3 patch |")
+        self.assertTrue([i for i in epic_log.ask_issues(with_row, TODAY) if "duplicate ask code E4-A3" in i])
+        self.assertEqual([], [i for i in epic_log.ask_issues(with_row.replace("E4-A3 patch", "E4-A31 patch"), TODAY) if "duplicate" in i])
+        answered_only = with_row.replace(DO, ANSWERED_V2)
+        self.assertEqual([], [i for i in epic_log.ask_issues(answered_only, TODAY) if "duplicate" in i])  # an answered line may sit beside its Decisions row
+
+    def test_next_row_naming_a_human_needs_an_ask(self) -> None:
+        def spine(status: str, needs: str = "", owner: str = "me", asks: str = "") -> str:
+            text = spine_with(ledger_status=status, asks=asks).replace("| me | T4. t |", f"| {owner} | T4. t |")
+            if needs:
+                text = text.replace("| Issue |", "| Needs | Issue |", 1).replace("|---|", "|---|---|", 1).replace("| T4 |", f"| {needs} | T4 |", 1)
+            return text
+        flag = lambda **kw: [i for i in epic_log.ask_issues(spine(**kw), TODAY) if "is next" in i]  # noqa: E731
+        with self.subTest("Needs is a bare name"):
+            self.assertEqual(1, len(flag(status="ready", needs="Jordi")))
+            self.assertEqual(1, len(flag(status="active", needs="@Jordi")))
+        with self.subTest("an open ask naming the row clears it"):
+            self.assertEqual([], flag(status="ready", needs="Jordi", asks=DO))
+        with self.subTest("Owner is the who of an ask elsewhere"):
+            self.assertEqual(1, len(flag(status="ready", owner="Jordi", asks=DO.replace("row T4", "row T9"))))
+            self.assertEqual([], flag(status="ready", owner="Jordi"))  # no ask names a Jordi: stay quiet
+        with self.subTest("low noise"):
+            self.assertEqual([], flag(status="ready", needs="none"))
+            self.assertEqual([], flag(status="ready", needs="the doctrine page"))
+            self.assertEqual([], flag(status="draft", needs="Jordi"))
+            self.assertEqual([], flag(status="ready", owner="worker (Sonnet 5.5)"))
 
     def test_stale_ask(self) -> None:
-        old = DECIDE.replace("2026-10-21", "2026-10-14")
-        self.assertEqual([], epic_log.ask_issues(spine_with(asks=DECIDE.replace("2026-10-21", "2026-10-15")), TODAY))  # exactly 7 days
+        old = DECIDE2.replace("2026-10-21", "2026-10-14")
+        self.assertEqual([], epic_log.ask_issues(spine_with(asks=DECIDE2.replace("2026-10-21", "2026-10-15")), TODAY))  # exactly 7 days
         found = epic_log.ask_issues(spine_with(asks=old), TODAY)
         self.assertEqual(1, len(found))
         self.assertIn("stale ask", found[0])
@@ -151,10 +256,10 @@ class JsonTests(TreeCase):
             self.assertIn(key, node)
 
     def test_fixture_repo(self) -> None:
-        self.add_ask(DECIDE + "\n" + ANSWERED)
+        self.add_ask(DECIDE + "\n" + ANSWERED_V2)
         asks = self.node()["waiting_on"]
         self.assertEqual(["open", "answered"], [a["state"] for a in asks])
-        self.assertEqual({"who", "ask", "question", "options", "recommend", "context", "since", "row", "state", "answer"}, set(asks[0]))
+        self.assertEqual({"code", "who", "ask", "question", "steps", "options", "recommend", "unblocks", "effort", "context", "since", "row", "state", "answer"}, set(asks[0]))
         self.assertEqual(["one", "two"], asks[0]["options"])
         self.assertEqual([], next(n for n in self.log()["nodes"] if n["path"] == "docs/root.md")["waiting_on"])
 
@@ -164,7 +269,9 @@ class JsonTests(TreeCase):
         open_asks = [a for a in epic["waiting_on"] if a["state"] == "open"]
         if not open_asks:
             self.skipTest("EPIC-4's approve ask has been answered")
-        self.assertEqual(("approve", "Jordi"), (open_asks[0]["ask"], open_asks[0]["who"]))
+        self.assertEqual(("approve", "Jordi", "EPIC-4-A1"), (open_asks[0]["ask"], open_asks[0]["who"], open_asks[0]["code"]))
+        self.assertTrue(open_asks[0]["unblocks"])
+        self.assertEqual([], T.v.trackable(repo / epic["path"])["advisory"])
 
 
 class CommitCheckTests(TreeCase):
