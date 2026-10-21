@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026.10.21.4 — Learnings inherit from ancestors
+
+- **Fix: a persona bound to a leaf epic printed `Learnings in force: none`** (agent_team M4 had none of its own and missed the root's L-1/L-2). Learnings already apply to the spine they sit in and everything under it (rule 7: deepest spine it applies to); rules 1-2 of `assets/global-block.md` now say so: in force = the bound epic's plus every `Parent spine:` ancestor's up to the root, listed nearest first in the bind line, never `none` while one has any. Reworded in place (no new rule, +139 bytes, same line count); one line aligned each in SKILL.md rule 5 and `references/learnings.md` (Depth is scope). EPIC-4 step 14. Skill 2026.10.21.4 (2026.10.21.3 is taken by the parallel sync_schedule branch).
 ## 2026.10.21.3 — Schedule never names a worktree
 
 - **Fix: the background-sync schedule survives its worktree being removed (EPIC-4 step 13).** `sync_schedule.py` took `SKILL_DIR` from `__file__`, so `ensure`/`install` run from a linked git worktree wrote a cron/launchd entry pointing into that worktree, which broke when the worktree was removed. Every path it writes (`target()`, so the cron line and the plist) now goes through `install_guard.install_dir`: the repo's main checkout, else `~/.agents/skills/epic-spine`; with neither, `apply` writes nothing, warns on stderr and exits 1. `rehook.ensure_schedule` compares against the same durable path, so an entry written from the main checkout is never seen as stale from a worktree. Tests: `WorktreeScheduleTest` (cron, launchd, no-canonical skip, rehook). Skill 2026.10.21.3.
