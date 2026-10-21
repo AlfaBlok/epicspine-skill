@@ -7,7 +7,7 @@ a ticket if it has ``Ticket ID:``. A goal doc (``spines.is_goal``) must also be 
 v1 header, reachable from the root, agreeing with its parent's Spine Map (``spine_new.py``). Blocks only a newly added or
 renamed goal doc, and a modified one whose HEAD version already had ``Spine ID:`` (migrated). Warns, never blocks: a
 modified legacy goal doc (no ``Spine ID:`` at HEAD), a root spine without a ``Spine ID:`` header, ``Root spine: none`` and a goal
-spine whose ``## Current State`` has over 12 non-empty lines, and ``epic_log.ask_issues`` (blocked row/epic with no open ask, ask missing a field, stale ask). ``Superseded by:`` must link to an existing goal doc (blocks)."""
+spine whose ``## Current State`` has over 12 non-empty lines, and ``epic_log.ask_issues`` (human-asks.md checks: blocked/waiting row or epic with no open ask, ask missing a field or code, duplicate code, over 3 open, stale). ``Superseded by:`` must link to an existing goal doc (blocks)."""
 
 from __future__ import annotations
 

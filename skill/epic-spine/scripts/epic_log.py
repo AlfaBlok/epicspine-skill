@@ -16,8 +16,10 @@ OPEN = ("draft", "ready", "active", "blocked")
 CODE = re.compile(r"^(?:EPIC[- ]?|E)(\d+)\b")
 STALE_DAYS = 14
 STALE_ASK_DAYS = 7
-ASK = re.compile(r"-\s+\[(?:ask:\s*(decide|approve|provide)\s+@(\S+)\s+since\s+(\d{4}-\d\d-\d\d)(?:\s+row\s+(\S+))?|answered\s+\d{4}-\d\d-\d\d\s+@(\S+))\]\s*(.*)")
-ASK_FIELD = re.compile(r"(options|recommend|context|answer):\s*(.*)", re.S)
+ASK_CODE = r"([A-Za-z0-9][A-Za-z0-9-]*-A\d+)"
+ASK = re.compile(r"-\s+\[(?:ask(?:\s+" + ASK_CODE + r")?:\s*(decide|approve|provide|do)\s+@(\S+)\s+since\s+(\d{4}-\d\d-\d\d)(?:\s+row\s+(\S+))?|answered(?:\s+" + ASK_CODE + r")?\s+\d{4}-\d\d-\d\d\s+@(\S+))\]\s*(.*)")
+ASK_FIELD = re.compile(r"(steps|options|recommend|unblocks|effort|context|answer):\s*(.*)", re.S)
+MAX_OPEN_ASKS = 3
 
 
 def next_code(titles: list[str]) -> int:
@@ -93,12 +95,12 @@ def render(log: dict) -> str:
 
 
 def asks(text: str, path: Path, repo: Path) -> list[dict]:
-    """``## Waiting on`` ask lines in the docs/doctrine/human-asks.md shape; ``context`` is repo-relative when local (else kept as-is)."""
+    """``## Waiting on`` ask lines in the docs/doctrine/human-asks.md shape; ``context``/``steps`` links are repo-relative when local (else kept as-is)."""
     out = []
     for line in v.parse_sections(text).get("Waiting on", "").splitlines():
         if not (m := ASK.fullmatch(line.strip())):
             continue
-        kind, who, since, row, answered_by, rest = m.groups()
+        code, kind, who, since, row, answered_code, answered_by, rest = m.groups()
         question, *parts = re.split(r"\s+[—–]\s+", rest.strip())
         fields: dict[str, str] = {}
         for part in parts:
@@ -110,7 +112,9 @@ def asks(text: str, path: Path, repo: Path) -> list[dict]:
             else:
                 question += " — " + part
         options = [o.strip() for o in fields.get("options", "").split("|") if o.strip()]
-        out.append({"who": who or answered_by, "ask": kind, "question": question, "options": options, "recommend": fields.get("recommend") or None,
+        steps = re.sub(r"\[[^\]]*\]\(([^)]+)\)", lambda k: ask_context(k.group(1), path, repo) or "", fields.get("steps", ""))
+        out.append({"code": code or answered_code, "who": who or answered_by, "ask": kind, "question": question, "steps": steps or None, "options": options,
+                    "recommend": fields.get("recommend") or None, "unblocks": fields.get("unblocks") or None, "effort": fields.get("effort") or None,
                     "context": ask_context(fields.get("context", ""), path, repo), "since": since, "row": row,
                     "state": "open" if kind else "answered", "answer": fields.get("answer") or None})
     return out
@@ -127,26 +131,54 @@ def ask_context(value: str, path: Path, repo: Path) -> str | None:
     return (os.path.relpath(found, repo) if found.is_relative_to(repo) else target) + (f"#{frag}" if frag else "")
 
 
+def row_keys(row: dict) -> set[str]:
+    first = (row.get("Title", "").split() or [""])[0].rstrip(".:)")
+    return {k.lower().strip("#[] ").rstrip(".:)") for k in (first, row.get("Issue", ""), row.get("Ticket", "")) if k.strip()}
+
+
+def needs_human(row: dict, names: set[str]) -> bool:
+    """Best effort, low noise: a Needs cell that is a bare name or @name, or a Needs/Owner cell holding a word that is some ask's `who`."""
+    for col, cell in row.items():
+        text = v.normalize(cell)
+        words = {w.lower() for w in re.findall(r"[\w-]+", text)}
+        if col.lower().startswith("needs") and re.fullmatch(r"@?[A-Z][a-z]+", text) and text.lower() not in {"none", "nothing", "tbd", "n/a"}:
+            return True
+        if col.lower().startswith(("needs", "owner")) and words & names:
+            return True
+    return False
+
+
 def ask_issues(text: str, today: datetime.date | None = None) -> list[str]:
-    """Advisory (never blocking): blocked rows/epic no open ask names, open asks missing a required field, open asks over 7 days old."""
+    """Advisory (never blocking): the checks of docs/doctrine/human-asks.md (missing field or code, duplicate code, over 3 open, stale, blocked/waiting or next row with no open ask)."""
     today, issues = today or datetime.date.today(), []
-    found = [a for a in asks(text, Path("-"), Path("-")) if a["state"] == "open"]
-    key = lambda k: k.lower().strip("#[] ").rstrip(".:)")  # noqa: E731
-    named = {key(a["row"]) for a in found if a["row"]}
+    every = asks(text, Path("-"), Path("-"))
+    found = [a for a in every if a["state"] == "open"]
+    named = {a["row"].lower().strip("#[] ").rstrip(".:)") for a in found if a["row"]}
+    names = {a["who"].lower().strip(".,:;") for a in every}
     sections = v.parse_sections(text)
     header, rows = v.parse_table(sections.get("Issue Ledger", ""))
     for row in (dict(zip(header, r)) for r in rows) if "Status" in header else []:
-        if v.normalize(row["Status"]).lower().startswith("blocked"):
-            first = (row.get("Title", "").split() or [""])[0].rstrip(".:)")
-            keys = {key(k) for k in (first, row.get("Issue", ""), row.get("Ticket", "")) if k.strip()}
-            if not keys & named:
-                issues.append(f"ledger row '{first or row.get('Issue', '?')}' is blocked but no open ask names it (add one under ## Waiting on, `row <id>`)")
+        status = v.normalize(row["Status"]).lower()
+        label = (row.get("Title", "").split() or [row.get("Issue", "?")])[0].rstrip(".:)")
+        if status.startswith(("blocked", "waiting")) and not row_keys(row) & named:
+            issues.append(f"ledger row '{label}' is {status.split()[0]} but no open ask names it (add one under ## Waiting on, `row <id>`)")
+        elif status.startswith(("ready", "active")) and not row_keys(row) & named and needs_human(row, names):
+            issues.append(f"ledger row '{label}' is next but its Needs/Owner names a human and no open ask names it (a human blocking the next step is an ask)")
     status = v.parse_key_values(sections.get("Current State", "")).get("Status", "").lower()
-    if status.startswith("blocked") and not found:
-        issues.append("Status is blocked but no open ask is under ## Waiting on")
+    if status.startswith(("blocked", "waiting")) and not found:
+        issues.append(f"Status is {status.split()[0]} but no open ask is under ## Waiting on")
+    if len(found) > MAX_OPEN_ASKS:
+        issues.append(f"{len(found)} open asks (aim for at most {MAX_OPEN_ASKS}): merge asks one human action resolves, close what no longer blocks")
+    decided = sections.get("Decisions", "")
+    seen: set[str] = set()
     for a in found:
-        label = f"ask '{a['question'][:40]}'"
-        issues += [f"{label} is missing {n}" for n, ok in (("options", a["ask"] != "decide" or a["options"]), ("recommend", a["ask"] == "provide" or a["recommend"]), ("context", a["context"])) if not ok]
+        label = f"ask {a['code']}" if a["code"] else f"ask '{a['question'][:40]}'"
+        required = (("code", a["code"]), ("steps", a["ask"] != "do" or a["steps"]), ("options", a["ask"] != "decide" or a["options"]),
+                    ("recommend", a["ask"] == "provide" or a["recommend"]), ("unblocks", a["unblocks"]), ("context", a["context"]))
+        issues += [f"{label} is missing {n}" if n != "code" else f"{label} has no code (`[ask <epic code>-A<n>: ...]`)" for n, ok in required if not ok]
+        if a["code"] and (a["code"] in seen or re.search(rf"(?<![\w-]){re.escape(a['code'])}(?!\w)", decided)):
+            issues.append(f"duplicate ask code {a['code']} (an open ask repeats it, or a Decisions row already cites it): codes are never reused")
+        seen.add(a["code"] or "")
         if (today - datetime.date.fromisoformat(a["since"])).days > STALE_ASK_DAYS:
             issues.append(f"stale ask: {label} to @{a['who']} open since {a['since']}")
     return issues
