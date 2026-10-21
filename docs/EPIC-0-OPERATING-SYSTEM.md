@@ -19,12 +19,12 @@ Skill updates: auto
 
 Owner: /root delivery manager
 Status: active
-Last attempted: 2026-10-21 EPIC-4 released 2026.10.21.1 (step 12, structured human asks) and 2026.10.21.2 (step 9, config isolation; 562 OK isolated). Finding: seat1 was stripped again before step 9 landed, so personas ran without the doctrine until EPIC-4 reinstalled it.
-Result: ~/.claude, seat1 and seat2 all point at the canonical checkout (checked 2026-10-21); wt/config-isolation merged (383ac11) and removed
-Evidence: EPIC-4 6cee037
-Waiting on: Jordi's EPIC-4 approval (steps 1+2, open since 2026-10-19; structured ask in EPIC-4); agent_team's fresh persona launch as proof of the fix
+Last attempted: 2026-10-21 EPIC-4 steps 9-14 done (releases 2026.10.21.1-.4; 566 OK isolated): config isolation, cron never in a worktree, structured human asks, learnings in force inherit up to the root
+Result: step 4 pipeline check passed: console personas receive the doctrine on both seats; crontab names the main checkout (checked 2026-10-21)
+Evidence: EPIC-4 56610dd
+Waiting on: Jordi's EPIC-4 approval (steps 1+2, open since 2026-10-19; structured ask in EPIC-4); draft kept on origin wt/doctrine-2 (0fabf2d)
 Approved work: EPIC-3 Epic log and EPIC-4 Doctrine 2 (their ledgers hold the tickets)
-Next action: agent_team persona proof; EPIC-4 step 13 (cron entry must not point into a worktree); E3-2 live proof (3 fresh sessions); step 3 tools on Jordi's approval; poly-maker migration; bring this root to Doctrine 2 (EPIC-4 step 6).
+Next action: on approval: merge wt/doctrine-2, step 3 tools; E3-2 live proof (3 fresh sessions); step 3 tools on Jordi's approval; poly-maker migration; bring this root to Doctrine 2 (EPIC-4 step 6).
 Source revision: main
 Verified at: 2026-10-21
 
