@@ -47,7 +47,7 @@ def heading_at(lines: list[str], name: str) -> int:
 
 def fix_criteria(lines: list[str], spine: bool) -> list[str]:
     done, sections = [], v.parse_sections("\n".join(lines))
-    names = ("Definition Of Done",) if spine else ("Acceptance Criteria", "Acceptance")
+    names = ("Definition Of Done", "Done means") if spine else ("Acceptance Criteria", "Acceptance")
     alias = next((n for n in sections if v.DOD_ALIAS_RE.fullmatch(n)), None)
     if spine and "Definition Of Done" not in sections and alias:
         lines[heading_at(lines, alias)] = "## Definition Of Done"

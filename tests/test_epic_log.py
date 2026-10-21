@@ -66,7 +66,8 @@ None.
 |---|---|---|---|---|---|
 | 2026-10-19 | accepted | c | r | e | n |
 """
-E4 = "# E4 one logger\n\nStatus: PAUSED\n\n## Tickets\n\n| # | Ticket | State |\n|---|---|---|\n| 1 | stream registry | open |\n"
+E4 = "# E4 one logger\n\nStatus: PAUSED\n\n## Tickets\n\n| # | Ticket | State |\n|---|---|---|\n| 1 | stream registry | open |\n"  # a page: no EPIC-<n> title, no Spine ID
+STAMPED = E4.replace("# E4 one logger", "# EPIC-9: one logger")  # an epic by its stamp, still without the v1 header
 MAP_HEAD = "## Spine Map\n\n| Spine ID | Relationship | Spine | Purpose | Status | Health / Blocker | Latest Evidence | Last Rolled Up | Next Action |\n|---|---|---|---|---|---|---|---|---|\n"
 
 
@@ -105,8 +106,9 @@ class SpineNewTests(EpicLogCase):
         self.assertTrue(v.trackable(child)["trackable"], v.trackable(child))
         self.assertEqual([], v.validate_local(child).errors)
         text = child.read_text()
-        for line in ("Spine ID: e4-one-logger", "Spine Type: branch", "Root spine: [Root](root.md)", "Parent spine: [Root](root.md)", "Status: draft", "# EPIC-1: E4 one logger", "- [ ] E1-1 "):
+        for line in ("Spine ID: e4-one-logger", "Root spine: [Root](root.md)", "Parent spine: [Root](root.md)", "Status: ready", "# EPIC-1: E4 one logger", "## Goal", "## Serves", "## Done means", "- [ ] E1-1 "):
             self.assertIn(line, text)
+        self.assertNotIn("Spine Type", text)
         root = self.repo / "docs/root.md"
         self.assertIn("| e4-one-logger | child | [EPIC-1: E4 one logger](E4-one-logger.md) |", root.read_text())
         self.assertEqual([], v.validate_local(root).errors)
@@ -121,7 +123,7 @@ class SpineNewTests(EpicLogCase):
         self.assertIn("already in", again.stdout)
         self.assertEqual(before, (root.read_text(), child.read_text()))
         self.assertEqual(1, root.read_text().count("e4-one-logger"))
-        plain = self.write("docs/E9-plain.md", E4)
+        plain = self.write("docs/E9-plain.md", E4)  # a file with no header: not a spine, never overwritten
         refused = self.new("docs/E9-plain.md", title="E9")
         self.assertEqual(1, refused.returncode)
         self.assertIn("refusing to overwrite", refused.stderr)
@@ -161,7 +163,7 @@ class DiscoveryTests(EpicLogCase):
         self.new()
         self.new("docs/e4/E4-1-streams.md", "e4-one-logger", "E4-1 streams")
         child = self.repo / "docs/e4/E4-1-streams.md"
-        child.write_text(child.read_text().replace("Status: draft", "Status: done").replace("- [ ] E4-1-1", "- [x] E4-1-1").replace("- [ ] E2-1 ", "- [x] E2-1 "))
+        child.write_text(child.read_text().replace("Status: ready", "Status: done").replace("- [ ] E2-", "- [x] E2-"))
         log = self.log()
         self.assertEqual("docs/root.md", log["root"])
         by = {n["path"]: n for n in log["nodes"]}
@@ -171,7 +173,7 @@ class DiscoveryTests(EpicLogCase):
         self.assertEqual(["docs/e4/E4-1-streams.md"], by["docs/E4-one-logger.md"]["children"])
         leaf = by["docs/e4/E4-1-streams.md"]
         self.assertEqual(("done", "done", True), (leaf["status"], leaf["rollup_status"], leaf["dod"][0]["done"]))
-        self.assertEqual("draft", by["docs/E4-one-logger.md"]["status"])
+        self.assertEqual("ready", by["docs/E4-one-logger.md"]["status"])
         self.assertEqual("active", by["docs/E4-one-logger.md"]["rollup_status"])  # a done child, an open criterion
         self.assertEqual(([], []), (log["orphans"], log["mismatches"]))
         text = self.run_script("spines.py").stdout
@@ -188,12 +190,12 @@ class DiscoveryTests(EpicLogCase):
         self.assertEqual("draft", spines.rollup("", [], []))
 
     def test_orphans_skip_rules_and_linked_children(self) -> None:
-        self.write("docs/E4-ONE-LOGGER.md", E4)
+        self.write("docs/E4-ONE-LOGGER.md", STAMPED)
         self.write("docs/loose.md", "# Loose\n\nSpine ID: loose\n")
         self.write("docs/plans/PLAN-x.md", "# Plan\n")
         self.write("docs/notes.md", "# notes about explanation\n")
-        self.write("docs/archive/E1-old.md", E4)
-        self.write("node_modules/p/EPIC-x.md", E4)
+        self.write("docs/archive/E1-old.md", STAMPED)
+        self.write("node_modules/p/EPIC-x.md", STAMPED)
         self.write(".claude/skills/epic-spine/SKILL.md", "---\nname: epic-spine\n---\n")
         self.write(".claude/skills/epic-spine/assets/t.md", "Spine ID: <id>\n")
         self.write("vendor/epic-spine/SKILL.md", "x")
@@ -201,12 +203,11 @@ class DiscoveryTests(EpicLogCase):
         self.write("docs/handoffs/2026-spine-gap.md", "# handoff\n")
         self.write("docs/E7-linked.md", "# linked\n")
         self.write("console/server/test/real/SPINE-fixture.md", "# fixture\n")
-        self.write("tests/E1-fixture.md", E4)
+        self.write("tests/E1-fixture.md", STAMPED)
         self.write("docs/loose.md", "# Loose\n\nSpine ID: loose\n\n## Spine Map\n\n" + MAP_HEAD.split("\n\n", 1)[1] + "| e7 | child | [E7](E7-linked.md) | p | draft | none | none | d | n |\n")
         orphans = {o["path"]: o["reason"] for o in self.log()["orphans"]}
-        self.assertEqual({
-            "docs/E4-ONE-LOGGER.md": "no Spine ID header", "docs/loose.md": "not reachable from the root",
-            "docs/plans/PLAN-x.md": "no Spine ID header", "docs/E7-linked.md": "no Spine ID header"}, orphans)
+        # an epic is a Spine ID or an EPIC-<n> title, never a name: PLAN-x.md and notes.md are pages (test_doctrine.py)
+        self.assertEqual({"docs/E4-ONE-LOGGER.md": "no Spine ID header", "docs/loose.md": "not reachable from the root", "docs/E7-linked.md": "no Spine ID header"}, orphans)
 
     def test_repo_relative_links_resolve_like_agent_team(self) -> None:
         self.new()
@@ -245,12 +246,13 @@ class DiscoveryTests(EpicLogCase):
 
     def test_no_root_everything_is_an_orphan(self) -> None:
         self.write("AGENTS.md", "Root spine: none. Read nothing.\n")
-        self.write("docs/E4-ONE-LOGGER.md", E4)
+        self.write("docs/E4-ONE-LOGGER.md", STAMPED)
         done = self.run_script("spines.py", "--json")
         self.assertEqual(0, done.returncode)
         log = json.loads(done.stdout)
         self.assertEqual((None, []), (log["root"], log["nodes"]))
         self.assertEqual({"docs/E4-ONE-LOGGER.md", "docs/root.md"}, {o["path"] for o in log["orphans"]})
+        self.assertEqual(([], []), (log["orphan_pages"], log["looks_like_epic"]))
         self.assertIn("no root spine", self.run_script("spines.py").stdout)
 
     def test_root_found_from_header_without_agents(self) -> None:
@@ -276,7 +278,7 @@ class PreCommitTreeTests(EpicLogCase):
         return self.git("commit", "-m", "x")
 
     def test_unregistered_goal_doc_is_blocked_until_scaffolded(self) -> None:
-        blocked = self.commit("docs/E4-ONE-LOGGER.md", E4)
+        blocked = self.commit("docs/E4-ONE-LOGGER.md", STAMPED)
         self.assertNotEqual(0, blocked.returncode)
         self.assertIn("docs/E4-ONE-LOGGER.md: not in the epic log: E4-ONE-LOGGER.md: no Spine ID header", blocked.stderr)
         self.assertIn("spine_new.py --repo . --parent <parent spine> --path docs/E4-ONE-LOGGER.md", blocked.stderr)
@@ -300,13 +302,13 @@ class PreCommitTreeTests(EpicLogCase):
         self.assertIn("Parent spine missing or not a file", self.commit("docs/E8-loose.md").stderr)
 
     def legacy_head(self, name: str = "docs/E4-ONE-LOGGER.md") -> None:
-        self.write(name, E4)
+        self.write(name, STAMPED)
         self.git("add", "-A")
         self.assertEqual(0, self.git("commit", "--no-verify", "-m", "legacy").returncode)
 
     def test_modified_legacy_goal_doc_warns_and_passes(self) -> None:
         self.legacy_head()
-        done = self.commit("docs/E4-ONE-LOGGER.md", E4 + "\nmore\n")
+        done = self.commit("docs/E4-ONE-LOGGER.md", STAMPED + "\nmore\n")
         self.assertEqual(0, done.returncode, done.stderr)
         self.assertIn("docs/E4-ONE-LOGGER.md: not in the epic log", done.stderr)
         self.assertIn("legacy goal doc, not blocked", done.stderr)
@@ -324,7 +326,7 @@ class PreCommitTreeTests(EpicLogCase):
         self.write("AGENTS.md", (self.repo / "AGENTS.md").read_text().replace("Root spine: docs/root.md.", "Root spine: docs/EPIC.md."))
         self.git("add", "-A")
         self.assertEqual(0, self.git("commit", "--no-verify", "-m", "legacy root").returncode)
-        done = self.commit("docs/E4-ONE-LOGGER.md", E4)
+        done = self.commit("docs/E4-ONE-LOGGER.md", STAMPED)
         self.assertEqual(0, done.returncode, done.stderr)
         self.assertIn("root spine has no Spine ID header: migrate the root first", done.stderr)
         self.assertEqual(1, done.stderr.count("migrate the root first"))
@@ -336,7 +338,7 @@ class PreCommitTreeTests(EpicLogCase):
     def test_no_root_spine_only_warns(self) -> None:
         self.write("AGENTS.md", (self.repo / "AGENTS.md").read_text().replace("Root spine: docs/root.md.", "Root spine: none."))
         self.assertEqual(0, self.commit("AGENTS.md").returncode)
-        warned = self.commit("docs/E4-ONE-LOGGER.md", E4)
+        warned = self.commit("docs/E4-ONE-LOGGER.md", STAMPED)
         self.assertEqual(0, warned.returncode, warned.stderr)
         self.assertIn("no root spine: goal docs are not checked", warned.stderr)
 

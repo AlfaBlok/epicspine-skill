@@ -35,15 +35,15 @@ EXISTING_BUDGETS = {
     "references/git-doctrine.md": 75,  # raised +10: additive-straight-to-main, Ready marker, soft return, declare Integration policy/Deployed from, 2026-10-16
     "references/hygiene.md": 65,  # raised +15: cleanup safety checklist from the 2026-10-16 VPS cleanup + auto-return summary
     "references/learnings.md": 80,  # raised +5: reversal sweep section (fix stale current repo rules), 2026-10-16; earlier: save-immediately rule replaces propose-and-wait, 2026-10-16
-    "references/operating-model.md": 497,
+    "references/operating-model.md": 321,  # lowered: Authority/Write-Scope/Spine-and-Issue/Clean-Spine duplicates of spine-model.md trimmed (EPIC-4 step 3)
     "references/roles-and-dispatch.md": 105,  # raised: ask-once-and-record rule (dispatch defaults)
     "references/skill-update.md": 60,  # +5: central-install note, 2026-10-09; +5: session self-sync pointer, 2026-10-16
     "references/structural-validation.md": 60,
-    "references/ticket-backends.md": 80,
+    "references/ticket-backends.md": 76,
     "assets/book-companion-contract.md": 25,
     "assets/compact-spine-template.md": 65,
     "assets/dispatch-prompt-preamble.md": 35,
-    "assets/epic-spine-template.md": 293,  # raised +1: Current State Status line (machine-read contract), 2026-10-16
+    "assets/epic-spine-template.md": 292,  # raised +1: Current State Status line (machine-read contract), 2026-10-16
     "assets/github-issue-template.md": 85,
     "assets/sweep-brief.md": 25,
     "scripts/auto_return.py": 206,  # raised +6 over the 200 new-file cap: Deploy gate / PR-CI policy blocks (logic lives in deploy_gate.py), 2026-10-16
@@ -53,7 +53,7 @@ EXISTING_BUDGETS = {
     "scripts/rollup_spine.py": 398,
     "scripts/url_gate.py": 220,  # raised from the 200 new-file cap: only files touched this turn trigger (turn_activity), 2026-10-16
     "scripts/skill_update.py": 485,  # raised: tree-based freshness + symlink resolution, 2026-10-10
-    "scripts/validate_spine.py": 1161,  # raised +2: `advisory` human-ask issues in trackable() + --trackable output (logic lives in epic_log.py), 2026-10-21; +35 earlier: ## Outcome parser (outcome(), shared by spines.py --json) + closed-spine Outcome trackable rule, 2026-10-20; +1 earlier: header-Status acceptance for --fix-moved Status (hint rewrite is line-neutral), 2026-10-16; +43 earlier: criterion-ID rule, criteria()/doc_kind helpers and --fix wiring (logic lives in spine_fix.py), 2026-10-16; +45 earlier: --trackable machine-read contract check, 2026-10-16 (+2 earlier: DoD-checkbox warning)
+    "scripts/validate_spine.py": 1170,  # raised +9: Doctrine 2 (Spine Type optional and inferred by lineage(), `## Goal`/`## Done means` count as Mission/Definition Of Done), offset by trims in operating-model.md, EPIC-4 step 3, 2026-10-22; earlier +2: `advisory` human-ask issues in trackable() + --trackable output (logic lives in epic_log.py), 2026-10-21; +35 earlier: ## Outcome parser (outcome(), shared by spines.py --json) + closed-spine Outcome trackable rule, 2026-10-20; +1 earlier: header-Status acceptance for --fix-moved Status (hint rewrite is line-neutral), 2026-10-16; +43 earlier: criterion-ID rule, criteria()/doc_kind helpers and --fix wiring (logic lives in spine_fix.py), 2026-10-16; +45 earlier: --trackable machine-read contract check, 2026-10-16 (+2 earlier: DoD-checkbox warning)
 }
 
 # Files authored by the lean-kernel change: hard-capped instead of pinned.

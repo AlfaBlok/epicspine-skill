@@ -3,8 +3,9 @@
 
 ``spines.py [--json | --active] --repo DIR`` finds the root (AGENTS.md ``Root spine:``, else a root-typed header), walks children
 (a child's ``Parent spine:`` header decides; the parent's Spine Map must agree; links resolve against the file's folder, else
-the repo root) and lists goal docs outside the tree as orphans. Goal doc = a ``Spine ID:`` line or an E<n>-*/EPIC*/*SPINE*/*PLAN*
-name; skipped: archive/, node_modules, dot-dirs, handoffs/, examples/, fixtures/, test/, tests/, vendored skills. Exits 0."""
+the repo root) and lists goal docs outside the tree as orphans. Goal doc (epic) = a ``# EPIC-<n>`` title or a ``Spine ID:`` line, never
+a name (doctrine.py; any other .md is a page, reported as ``pages`` / ``orphan_pages`` / ``looks_like_epic``); skipped: archive/,
+node_modules, dot-dirs, handoffs/, examples/, fixtures/, test/, tests/, vendored skills. Exits 0."""
 
 from __future__ import annotations
 
@@ -16,22 +17,16 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import doctrine as D  # noqa: E402
 import validate_spine as v  # noqa: E402
 from epic_log import active, asks, link_problems, render, rollup, stale  # noqa: E402
 
-SKIP = {"archive", "node_modules", "vendor", "wt", "worktrees", "handoffs", "examples", "fixtures", "test", "tests", "__pycache__"}
-NAMED = re.compile(r"(?i)^(e\d+[-_]|epic)|(^|[-_ ])(spine|plan)($|[-_ 0-9])")
-ID_LINE = re.compile(r"(?m)^Spine ID:")
+ID_LINE = D.ID_LINE
 ROOT_LINE = re.compile(r"Root spine: \[?`?([^`\]\s)]+)")
 STATE_LABELS = ("Owner", "Status", "Last attempted", "Result", "Evidence", "Waiting on", "Approved work", "Next action", "Verified at")
-DONE = re.compile(rf"- \[([ xX])\] ({v.ID})[ \t]*(.*)")
 
 
-def read(path: Path) -> str:
-    try:
-        return path.read_text(encoding="utf-8", errors="replace")
-    except OSError:
-        return ""
+read = D.read
 
 
 def current_state(sections: dict[str, str]) -> dict | None:
@@ -41,19 +36,11 @@ def current_state(sections: dict[str, str]) -> dict | None:
 
 
 def is_goal(repo: Path, rel: Path, text: str) -> bool:
-    dirs = rel.parts[:-1]
-    skipped = any(d in SKIP or d.startswith(".") for d in dirs) or any((repo.joinpath(*dirs[:i]) / "SKILL.md").is_file() for i in range(len(dirs) + 1))
-    return rel.suffix == ".md" and not skipped and bool(NAMED.search(rel.stem) or ID_LINE.search(text))
+    return rel.suffix == ".md" and not D.skipped(repo, rel) and D.is_epic(text)
 
 
 def goal_docs(repo: Path) -> list[Path]:
-    found = []
-    for top, dirs, files in os.walk(repo):
-        vendored = "SKILL.md" in files
-        dirs[:] = [] if vendored else sorted(d for d in dirs if d not in SKIP and not d.startswith("."))
-        if not vendored:
-            found += [p for p in (Path(top, n) for n in sorted(files)) if p.suffix == ".md" and (NAMED.search(p.stem) or ID_LINE.search(read(p)))]
-    return found
+    return [p for p in D.docs(repo) if D.is_epic(read(p))]
 
 
 def link(path: Path, value: str, cache: dict) -> Path | None:
@@ -122,13 +109,12 @@ def scan(repo: Path) -> dict:
 
     def visit(path: Path) -> str:
         m = meta(path, cache)
-        state = v.read_state(m["text"])[0].get("status", "")
-        status = m_.group() if (m_ := re.match(r"[a-z]+", state.lower())) else ""
-        dod = [{"id": x.group(2), "text": x.group(3), "done": x.group(1) != " "} for _, line in v.criteria(m["text"], ("Definition Of Done",)) if (x := DONE.match(line.strip()))]
+        status = D.status_word(m["text"])
+        dod = D.criteria(m["text"], "Definition Of Done") or D.criteria(m["text"], "Done means")
         node = nodes[rel(path)] = {"id": m["id"], "path": rel(path), "title": title(m, path.stem), "parent": rel(m["parent"]) if parent_file(path, cache) else None,
                                    "type": m["fields"].get("Spine Type", "").lower() or ("root" if path == root else ""),
                                    "status": status, "rollup_status": status, "dod": dod, "outcome": v.outcome(m["text"]), "current_state": current_state(m["sections"]), "waiting_on": asks(m["text"], path, repo), "children": [],
-                                   "superseded_by": rel(sup) if (sup := link(path, m["fields"].get("Superseded by", ""), cache)) else None}
+                                   "superseded_by": rel(sup) if (sup := link(path, m["fields"].get("Superseded by", ""), cache)) else None, **D.fields(m["text"], path == root)}
         kids = list(header_kids.get(path, []))
         for _, target in m["rows"]:
             tm = meta(target, cache) if target else None
@@ -145,6 +131,7 @@ def scan(repo: Path) -> dict:
                 visit(kid)
                 node["children"].append(rel(kid))
                 mismatches.extend({"path": rel(kid), "parent": rel(path), "problem": p} for p in link_problems(meta(kid, cache), m))
+        node["contributes"] = D.contributes(v.table_rows(m["sections"].get("Spine Map", "")), lambda cell: link(path, cell, cache), rel, node["children"])
         node["rollup_status"] = rollup(status, [nodes[c]["rollup_status"] for c in node["children"]], dod) if node["children"] or dod else status
         return node["rollup_status"]
 
@@ -153,9 +140,13 @@ def scan(repo: Path) -> dict:
     queue = [d for d in docs if rel(d) not in nodes]
     for d in queue:  # docs a goal links as children are goal docs too
         queue += [t for _, t in meta(d, cache)["rows"] if t and t.suffix == ".md" and t.is_file() and rel(t) not in nodes and t not in queue]
+    epics = set(docs) | {repo / p for p in nodes} | set(queue)
+    for n in nodes.values():
+        n["pages"] = D.pages(repo, repo / n["path"], epics)
+    orphan_pages, like_epic = D.page_report(repo, [repo / p for p in nodes] if root else [], epics)
     orphans = [{"path": rel(d), "title": title(meta(d, cache), d.stem), "reason": "not reachable from the root" if meta(d, cache)["id"] else "no Spine ID header"} for d in queue]
     return {"root": rel(root) if root else None, "nodes": list(nodes.values()), "orphans": orphans, "mismatches": mismatches,
-            "stale": stale(repo, list(nodes.values()))}
+            "orphan_pages": orphan_pages, "looks_like_epic": like_epic, "stale": stale(repo, list(nodes.values()))}
 
 
 def main() -> int:
