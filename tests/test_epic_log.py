@@ -68,6 +68,7 @@ None.
 """
 E4 = "# E4 one logger\n\nStatus: PAUSED\n\n## Tickets\n\n| # | Ticket | State |\n|---|---|---|\n| 1 | stream registry | open |\n"  # a page: no EPIC-<n> title, no Spine ID
 STAMPED = E4.replace("# E4 one logger", "# EPIC-9: one logger")  # an epic by its stamp, still without the v1 header
+COMPLIANT = "# EPIC-9: one logger\n\n## Goal\n\nG.\n\n## Serves\n\nThe repo.\n\n## Done means\n\n- [ ] X-1 y\n\n## Current State\n\nStatus: draft\n"  # passes the new-epic doctrine check
 MAP_HEAD = "## Spine Map\n\n| Spine ID | Relationship | Spine | Purpose | Status | Health / Blocker | Latest Evidence | Last Rolled Up | Next Action |\n|---|---|---|---|---|---|---|---|---|\n"
 
 
@@ -326,7 +327,7 @@ class PreCommitTreeTests(EpicLogCase):
         self.write("AGENTS.md", (self.repo / "AGENTS.md").read_text().replace("Root spine: docs/root.md.", "Root spine: docs/EPIC.md."))
         self.git("add", "-A")
         self.assertEqual(0, self.git("commit", "--no-verify", "-m", "legacy root").returncode)
-        done = self.commit("docs/E4-ONE-LOGGER.md", STAMPED)
+        done = self.commit("docs/E4-ONE-LOGGER.md", COMPLIANT)
         self.assertEqual(0, done.returncode, done.stderr)
         self.assertIn("root spine has no Spine ID header: migrate the root first", done.stderr)
         self.assertEqual(1, done.stderr.count("migrate the root first"))
@@ -338,7 +339,7 @@ class PreCommitTreeTests(EpicLogCase):
     def test_no_root_spine_only_warns(self) -> None:
         self.write("AGENTS.md", (self.repo / "AGENTS.md").read_text().replace("Root spine: docs/root.md.", "Root spine: none."))
         self.assertEqual(0, self.commit("AGENTS.md").returncode)
-        warned = self.commit("docs/E4-ONE-LOGGER.md", STAMPED)
+        warned = self.commit("docs/E4-ONE-LOGGER.md", COMPLIANT)
         self.assertEqual(0, warned.returncode, warned.stderr)
         self.assertIn("no root spine: goal docs are not checked", warned.stderr)
 

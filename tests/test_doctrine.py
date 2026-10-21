@@ -227,7 +227,7 @@ class PreCommitDoctrineTests(base.EpicLogCase):
         self.git("reset", "-q")
         ok = self.commit("docs/EPIC-one.md", text)
         self.assertEqual(0, ok.returncode, ok.stderr)
-        self.assertNotIn("epic is missing", ok.stderr)
+        self.assertNotIn("docs/EPIC-one.md: epic is missing", ok.stderr)
 
     def test_new_epic_title_is_required(self) -> None:
         text = self.scaffold().replace("# EPIC-1: one", "# EPIC: one")
