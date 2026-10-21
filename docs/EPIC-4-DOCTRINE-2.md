@@ -39,7 +39,7 @@ Owner: EPIC-4 delivery manager (thread mcp:61d2777c-071a-4feb-93e3-4db440b5d6ac)
 Status: active
 Last attempted: 2026-10-22 step 17 human asks v2 released (2026.10.21.7); poly-maker E4 owner told to restate its gates
 Result: 9-17 done (latest release 2026.10.21.7); step 4 pipeline check passed; steps 1+2 still awaiting Jordi since 2026-10-19
-Evidence: 21adcba (release 2026.10.20.2); [human-asks.md](doctrine/human-asks.md)
+Evidence: 2788fcf (release 2026.10.21.7); health check 2026-10-22: `tests/test_human_asks.py` 36 OK on main, `spines.py` 0 orphans 0 mismatches, merged worktrees gone; [human-asks.md](doctrine/human-asks.md)
 Waiting on: Jordi: EPIC-4-A1
 Approved work: E4-1 to E4-5; steps 10-12 requested by Jordi via agent_team (2026-10-20/21)
 Next action: console is live, Jordi can approve from it; on Jordi's approval merge wt/doctrine-2 and dispatch step 3
