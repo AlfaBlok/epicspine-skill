@@ -1,4 +1,4 @@
-c7de251a1f234fdf5b5216c8718784478efa9fd8eb853709c85149634e99f1c9  skill/epic-spine/SKILL.md
+c88ea904f9d31640258353f5085a7b164420551e11dd9fd37360226224e3e611  skill/epic-spine/SKILL.md
 3ed94d2f3cc3e9b0541305c7323e0fc55638200626863da5e7256ff36a9e50d7  skill/epic-spine/VERSION
 843ce59de85887a44eba2db32a8a50b90d34920676c52d43f22cf09b589defe8  skill/epic-spine/agents/openai.yaml
 8451536b760acc439788af38a771454a5ff945bc4642b5b936ef4e355c40a618  skill/epic-spine/assets/agents-block.md
@@ -8,7 +8,7 @@ f01565c6ce6c1fa4c1468cceb58abbd37326bdee49f1686438a668d56fb811ae  skill/epic-spi
 5fe5562959c5a66abc68ce83153f5a34d58d097aded13e206791412b0c1f9cd5  skill/epic-spine/assets/epic-spine-template.md
 8c4753cbca745f9f1c4ac2162faa34bc82200b08569f563cf1987cb35a777505  skill/epic-spine/assets/epicspine-profile.md
 b8bb37dc32642a66840d64a298773570eb6f577e0bc5a33219dfe8683088197d  skill/epic-spine/assets/github-issue-template.md
-507df21d71ca87866acb34b1a36b000f03b7950209c6848c617b0ddf45e3d098  skill/epic-spine/assets/global-block.md
+b20f9c078e7eecd72d8361b47edaf3236462edcc74adb929c29d1e2643512df9  skill/epic-spine/assets/global-block.md
 47acf5deb7fa455973e845ff5eea4c1859146424b1d7cd7816fce8b3da085669  skill/epic-spine/assets/shortlist-sample.json
 01019cfd642f49cbb1f4b123c5f01b90937493d226e99c1b19afaea314e7d441  skill/epic-spine/assets/shortlist.template.html
 dc78959fe8ae86bf59a3f7739f8d3c05ac69bc9fe2fc01612818f67af0250cc1  skill/epic-spine/assets/sweep-brief.md
@@ -28,7 +28,7 @@ d72bbfb82ec286ff76e64a2fdee313af2f92679d4405466d6f1e1e2bb7a859f7  skill/epic-spi
 a0627739c5ecd7d8ce07c6b8c5dae66698884639abc4372413ae8583463263f6  skill/epic-spine/references/shortlists.md
 3aa71d51c18bd3e35635048091698457581dad3134a56556c5e307ed782ef134  skill/epic-spine/references/skill-update.md
 98438b04c616b7b2f6710c6d03e20555879ad94951abc203d6237abd47437795  skill/epic-spine/references/spine-creation.md
-623da747639733dc10ec725b5fa37e7d397e8602dd3409fad2767095e1b78214  skill/epic-spine/references/spine-model.md
+32bed12f0201fd841865d42ff7bc3c379df0b6fd8cc18f0fb590f8afe279683a  skill/epic-spine/references/spine-model.md
 878226247ba88be23a3f08fb3d1c70fe8560cc9ed4f682cbda20e5ad80226b35  skill/epic-spine/references/sprint-dialect-v2.md
 b0a12ad59eaba65823458c34e246b86aa0249b0ca8e2ed84d9c1e572f0c14122  skill/epic-spine/references/structural-validation.md
 b8402d1bf57fb7432acb966898bb1670d122cc46c79b8a5377def3f6dbe3e720  skill/epic-spine/references/ticket-backends.md
