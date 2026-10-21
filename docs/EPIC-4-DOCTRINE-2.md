@@ -38,11 +38,11 @@ Done means (until step 2 makes `## Done means` a recognised heading, the outcome
 Owner: EPIC-4 delivery manager (thread mcp:61d2777c-071a-4feb-93e3-4db440b5d6ac)
 Status: active
 Last attempted: 2026-10-21 steps 10+11 verified done (2026.10.20.2); step 12 human asks placed and contract published; step 9 worker resumed
-Result: 9-14 done (latest release 2026.10.21.4); step 4 pipeline check passed; steps 1+2 still awaiting Jordi since 2026-10-19
+Result: 9-15 done (latest release 2026.10.21.5); step 4 pipeline check passed; steps 1+2 still awaiting Jordi since 2026-10-19
 Evidence: 21adcba (release 2026.10.20.2); [human-asks.md](doctrine/human-asks.md)
 Waiting on: Jordi (1 ask, see Waiting on)
 Approved work: E4-1 to E4-5; steps 10-12 requested by Jordi via agent_team (2026-10-20/21)
-Next action: merge step 15; console is live, Jordi can approve from it; on Jordi's approval merge wt/doctrine-2 and dispatch step 3
+Next action: step 16 (worker brief names the epic); console is live, Jordi can approve from it; on Jordi's approval merge wt/doctrine-2 and dispatch step 3
 Source revision: main
 Verified at: 2026-10-21
 
@@ -75,7 +75,8 @@ Steps run in this order; each one unblocks the next. Steps 1 and 2 are one appro
 | draft | Ticket worker | worker (Sonnet 5.5) | 12. Human asks (agent_team M2-SKILL, Jordi 2026-10-21): structured `## Waiting on` ask lines, answer write-back, `waiting_on` in --json, advisory checks; [contract](doctrine/human-asks.md) | done | none | wt/human-asks | main | released 2026.10.21.1 (merge 5672974); full isolated suite 554 OK; EPIC-4 waiting_on shows the open ask | 2026-10-21 | agent_team M2-13 reads `waiting_on` |
 | draft | Ticket worker | worker (Sonnet 5.5) | 13. sync_schedule.py takes its path from `__file__`: the background-sync cron entry can still point into a worktree; route it through install_guard | done | none | none | main | released 2026.10.21.3 (merge 91011ec); isolated suite OK; real cron names the main checkout | 2026-10-21 | none |
 | draft | Ticket worker | worker (Sonnet 5.5) | 14. Learnings in force = the bound epic's plus every ancestor's up to the root (scope is the subtree); a persona on a leaf listed "none" and missed root L-1/L-2; one wording fix in global-block rule 1/2 | done | none | none | main | released 2026.10.21.4 (merge b1033ff); isolated suite 566 OK | 2026-10-21 | none |
-| draft | Ticket worker | worker (Sonnet 5.5) | 15. `current_state` omits Owner (and Approved work), yet the human-asks contract routes answers via `current_state.owner`; add both labels | active | none | wt/state-owner | main | agent_team uses a markdown fallback meanwhile | 2026-10-21 | worker builds; manager verifies, merges, releases |
+| draft | Ticket worker | worker (Sonnet 5.5) | 15. `current_state` omits Owner (and Approved work), yet the human-asks contract routes answers via `current_state.owner`; add both labels | done | none | merged | main | released 2026.10.21.5; isolated suite 566 OK; EPIC-4 current_state.owner names this thread | 2026-10-21 | none |
+| draft | Delivery manager | EPIC-4 delivery manager | 16. Workers bind "Learnings in force: none" even on 2026.10.21.4: a worker brief names no bound epic, so it never walks the parent chain; the dispatch brief template should name the epic (and its learnings chain) | draft | none | none | main | 5 worker reports 2026-10-21 | 2026-10-21 | fix references/dispatch-prompts.md via a worker |
 
 ## Decisions
 
