@@ -37,14 +37,14 @@ Done means (until step 2 makes `## Done means` a recognised heading, the outcome
 
 Owner: EPIC-4 delivery manager (thread mcp:61d2777c-071a-4feb-93e3-4db440b5d6ac)
 Status: active
-Last attempted: 2026-10-22 step 17 human asks v2 released (2026.10.21.7); poly-maker E4 owner told to restate its gates
+Last attempted: 2026-10-22 health wake (run_bc17a665): reconciled spine to main ae9618f; wt/doctrine-2 (0fabf2d, local+origin) still unmerged, the merge conflicts on SKILL.md only (spine-model.md auto-merges); dispatcher seat pool 2/2 free
 Result: 9-17 done (latest release 2026.10.21.7); step 4 pipeline check passed; steps 1+2 approved by Jordi (EPIC-4-A1, 2026-10-21), merge of wt/doctrine-2 pending
 Evidence: 2788fcf (release 2026.10.21.7); health check 2026-10-22: `tests/test_human_asks.py` 36 OK on main, `spines.py` 0 orphans 0 mismatches, merged worktrees gone; [human-asks.md](doctrine/human-asks.md)
 Waiting on: none
 Approved work: E4-1 to E4-5; steps 10-12 requested by Jordi via agent_team (2026-10-20/21)
 Next action: manager merges wt/doctrine-2 (one trivial SKILL.md row conflict; run tests), then dispatches step 3 (tools-brief.md); steps 5 and 6 follow step 3
 Source revision: main
-Verified at: 2026-10-22 (answer written back)
+Verified at: 2026-10-22 (main ae9618f; spines.py 0 orphans 0 mismatches; EPIC-4-A1 answered)
 
 
 ## Waiting on
