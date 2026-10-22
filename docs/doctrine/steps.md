@@ -242,3 +242,5 @@ Missed:
 - it reported `validate_spine.py --strict` failing with 32 ES-S-TICKET errors (Issue `draft` on non-draft rows). The doctrine says the ledger row is the ticket and `--strict` stays advisory, so this is expected; worth a one-line note in the doctrine or relaxing ES-S-TICKET for compact epics.
 
 Fix (proposal): the bind reply of a worker whose brief is only `Bound epic:` states four lines from the spine (Goal, Done means left, Next action, where context lives) before acting, and walks the parent chain for learnings. Then re-run E4-5 without the read-only line, in a throwaway clone. Back to [EPIC-4](../EPIC-4-DOCTRINE-2.md).
+
+Re-run 2026-10-22 on 2026.10.22.3 (console run run_0a988e59, Sonnet 5.5, seat2, brief = `Bound epic: <path>` only, no-push clone at 6caab22): PASS for EPIC-4. Unasked, it opened with Goal, Done means still open, Next action and where context lives, and bound L-1..L-14 via the parent chain. It closed by asking which check to run next, because Next action named this test itself; E4-5 still needs the poly-maker E4 half (after step 5).
