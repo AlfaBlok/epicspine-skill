@@ -20,11 +20,11 @@ Skill updates: auto
 Owner: /root delivery manager
 Status: active
 Last attempted: 2026-10-22 EPIC-4 closed, accomplished: every epic says what it achieves, how it serves its parent and what each child adds; the console shows it (poly-maker E4 migrated unasked)
-Result: EPIC-4 steps 1-3, 7, 9-17 done; step 6 slimming running (wt/epic4-slim); full isolated suite 606 OK; EPIC-0 over the advisory size budget (162 lines, 28 long cells), slimmed after EPIC-4 in step 6
-Evidence: EPIC-4 54eff99
+Result: EPIC-4 closed accomplished (E4-1..E4-5 met); open children: EPIC-3 only (state last refreshed 2026-10-19)
+Evidence: EPIC-4 Outcome (340333f)
 Waiting on: none
 Approved work: EPIC-3 Epic log and EPIC-4 Doctrine 2 (their ledgers hold the tickets)
-Next action: E3-2 live proof (3 fresh sessions); poly-maker migration; bring this root to Doctrine 2 (EPIC-4 step 6).
+Next action: drive EPIC-3 to close (E3-2 live proof, E3-3 repo migrations, E3-4 likely met by EPIC-4 E4-4 evidence, E3-5 learning, cold spines.py vs the console's 15 s timeout); root tidy worker (seat2): EPIC-0 under 150 lines, Serves on closed EPIC-1/2
 Source revision: main
 Verified at: 2026-10-22
 
