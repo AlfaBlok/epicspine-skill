@@ -42,7 +42,7 @@ Result: steps 1-4, 7-17 done; step 6 active (EPIC-4 slimmed, E4-5 re-run after s
 Evidence: cold agent given only `Bound epic:` (read-only) found the state, pages and open ask without asking, and its checks agree with Current State; it did not state the goal or its next action, and bound Learnings in force: none; [step 19](doctrine/steps.md#step-19)
 Waiting on: Jordi: EPIC-4-A2
 Approved work: E4-1 to E4-5; steps 10-12 requested by Jordi via agent_team (2026-10-20/21)
-Next action: dispatch step 19 (cold pickup reply) and step 18 (worktree hook tests); on EPIC-4-A2, launch step 5
+Next action: verify and merge step 19 (2026.10.22.2) then step 18 (.3), re-run E4-5 on EPIC-4; on EPIC-4-A2, launch step 5
 Source revision: main
 Verified at: 2026-10-22 (main 234c4f6; spines.py 0 orphans 0 mismatches)
 
@@ -79,8 +79,8 @@ Steps run in this order; each one unblocks the next. Steps 1 and 2 are one appro
 | draft | Ticket worker | worker (Sonnet 5.5) | 15. `current_state` adds Owner and Approved work (human-asks answers route via `current_state.owner`). [detail](doctrine/steps.md#step-15) | done | none | merged | main | released 2026.10.21.5; isolated suite 566 OK; EPIC-4 current_state.owner names this thread | 2026-10-21 | none |
 | draft | Ticket worker | worker seat2 (Sonnet 5.5) | 16. Worker briefs name the bound epic so workers walk the parent chain for learnings. [detail](doctrine/steps.md#step-16) | done | none | merged | main | released 2026.10.21.6; isolated suite OK; the step 16 worker itself bound with L-1..L-14 from EPIC-0 | 2026-10-21 | none |
 | draft | Ticket worker | worker (Sonnet 5.5) | 17. Human asks v2: ask codes, `do` + steps, unblocks/effort, gate is not an ask, answer by code. [detail](doctrine/steps.md#step-17) | done | none | merged | main | released 2026.10.21.7 (merge 2788fcf); full isolated suite OK; EPIC-4-A1 parses with code, unblocks, effort | 2026-10-21 | poly-maker E4 owner restates its gates as v2 asks |
-| draft | Ticket worker | unassigned | 18. Pre-commit tests run from a linked worktree exercise main's installed hook, not the branch's code (found by the step 3 worker, who ran from a plain clone). [detail](doctrine/steps.md#step-18) | draft | none | none | main | step 3 report 2026-10-22 | 2026-10-22 | dispatch a test fix (resolve the hook from the tested checkout) |
-| draft | Ticket worker | unassigned | 19. Cold pickup reply: an agent given only `Bound epic:` audited the epic instead of stating goal, Done means, next action and where context lives, and bound Learnings in force: none. [detail](doctrine/steps.md#step-19) | draft | none | none | main | cold check 2026-10-22 (console run run_1d057709) | 2026-10-22 | brief a skill fix, then re-run E4-5 on EPIC-4 |
+| draft | Ticket worker | worker seat2 (Sonnet 5.5) | 18. Pre-commit tests run from a linked worktree exercise main's installed hook, not the branch's code (found by the step 3 worker, who ran from a plain clone). [detail](doctrine/steps.md#step-18) | active | none | wt/hook-tests | main | step 3 report 2026-10-22 | 2026-10-22 | dispatch a test fix (resolve the hook from the tested checkout) |
+| draft | Ticket worker | worker seat1 (Sonnet 5.5) | 19. Cold pickup reply: an agent given only `Bound epic:` audited the epic instead of stating goal, Done means, next action and where context lives, and bound Learnings in force: none. [detail](doctrine/steps.md#step-19) | active | none | wt/cold-pickup | main | cold check 2026-10-22 (console run run_1d057709) | 2026-10-22 | brief a skill fix, then re-run E4-5 on EPIC-4 |
 
 ## Decisions
 

@@ -55,6 +55,8 @@ Page of [EPIC-4](../EPIC-4-DOCTRINE-2.md). The Issue Ledger there keeps one line
 - **Last Verified:** 2026-10-19
 - **Next Action:** relink orphan page tools-brief.md at the step 6 merge
 
+Tree status fix (agent_team c0d21de, 2026-10-22): a step's status comes only from its ledger row, an epic's from `Status:`, a page never sets one; it also stopped the shared `steps.md` page colouring every EPIC-4 row. Ships with the next full console deploy (not live yet).
+
 ## Step 5
 
 - **Role:** poly-maker delivery manager
