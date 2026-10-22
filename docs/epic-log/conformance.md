@@ -5,10 +5,10 @@ Page of [EPIC-3](../EPIC-3-EPIC-LOG.md) (E3-3). `spines.py --json` on every repo
 | Repo | Root | Nodes | Orphans | Mismatches | Looks like epic | Orphan pages | After |
 |---|---|---|---|---|---|---|---|
 | poly-maker | EPIC0.md | 55 | 3 | 0 | 14 | 343 | green: 58 / 0 / 0 / 14 recorded as exceptions ([list](https://github.com/AlfaBlok/poly-maker/blob/main/docs/spines/LOOKS_LIKE_EPIC_EXCEPTIONS.md)) / 339 (1dc21c66..69a3a0d8) |
-| zenod | yes | 4 | 0 | 0 | 28 | 140 | migrating (mcp:aa9a971f) |
+| zenod | docs/EPIC-0-FOUNDATION-SPINE.md | 4 | 0 | 0 | 28 | 140 | green: 29 / 0 / 0 / 3 recorded as exceptions / 104 (PR #1420, merge 2c34984); 7 superseded goals closed, 6 flagged stale for the owner |
 | infra-vps | docs/EPIC-0-VPS-FLEET.md | 7 | 0 | 0 | 39 | 16 | migrating (mcp:51557bfc) |
-| tax-assist-research | yes | 18 | 0 | 4 | 0 | 552 | queued |
-| abnb-agent | yes | 1 | 0 | 0 | 4 | 18 | queued |
+| tax-assist-research | docs/EPIC_SPINE.md | 18 | 0 | 4 | 0 | 552 | migrating (mcp:c53a334c) |
+| abnb-agent | docs/travel/TRAVEL_SPINE.md | 1 | 0 | 0 | 4 | 18 | migrating (mcp:688572d4) |
 | agent_team | yes | 5 | 0 | 0 | 0 | 12 | green |
 | house_decision | yes | 1 | 0 | 0 | 0 | 20 | green |
 | sismic | yes | 1 | 0 | 0 | 0 | 3 | green |
