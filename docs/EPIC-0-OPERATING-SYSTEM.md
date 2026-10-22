@@ -22,9 +22,9 @@ Status: active
 Last attempted: 2026-10-21 EPIC-4 steps 9-14 done (releases 2026.10.21.1-.4; 566 OK isolated): config isolation, cron never in a worktree, structured human asks, learnings in force inherit up to the root
 Result: step 4 pipeline check passed: console personas receive the doctrine on both seats; crontab names the main checkout (checked 2026-10-21)
 Evidence: EPIC-4 56610dd
-Waiting on: Jordi's EPIC-4 approval (steps 1+2, open since 2026-10-19; structured ask in EPIC-4); draft kept on origin wt/doctrine-2 (0fabf2d)
+Waiting on: Jordi: EPIC-4-A2 (when to launch the poly-maker E4 compliance test; asked in EPIC-4)
 Approved work: EPIC-3 Epic log and EPIC-4 Doctrine 2 (their ledgers hold the tickets)
-Next action: on approval: merge wt/doctrine-2, step 3 tools; E3-2 live proof (3 fresh sessions); poly-maker migration; bring this root to Doctrine 2 (EPIC-4 step 6).
+Next action: E3-2 live proof (3 fresh sessions); poly-maker migration; bring this root to Doctrine 2 (EPIC-4 step 6).
 Source revision: main
 Verified at: 2026-10-21
 
