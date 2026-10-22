@@ -20,7 +20,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import doctrine as D  # noqa: E402
 import validate_spine as v  # noqa: E402
 from ask_refs import resolve, waits  # noqa: E402
-from epic_log import active, asks, link_problems, render, rollup, stale  # noqa: E402
+from epic_log import active, asks, next_of, link_problems, render, rollup, stale  # noqa: E402
 
 ID_LINE = D.ID_LINE
 ROOT_LINE = re.compile(r"Root spine: \[?`?([^`\]\s)]+)")
@@ -164,7 +164,7 @@ def main() -> int:
     parser.add_argument("--active", action="store_true", help="list open goals, one line each (stale marked)")
     args = parser.parse_args()
     log = scan(Path(args.repo))
-    print(json.dumps(log, indent=2) if args.json else active(log) if args.active else render(log))
+    print(json.dumps({**log, "next_code": next_of(log)}, indent=2) if args.json else active(log) if args.active else render(log))
     return 0
 
 

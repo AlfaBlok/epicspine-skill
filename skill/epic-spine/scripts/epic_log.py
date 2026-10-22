@@ -28,6 +28,11 @@ def next_code(titles: list[str]) -> int:
     return 1 + max((int(m.group(1)) for t in titles if (m := CODE.match(t.strip()))), default=0)
 
 
+def next_of(log: dict) -> int:
+    """The code `spine_new.py` assigns without `--code`: next_code over every goal title in the scan."""
+    return next_code([x["title"] for x in log["nodes"] + log["orphans"]])
+
+
 def rollup(own: str, kids: list[str], dod: list[dict]) -> str:
     """Derived: blocked wins; all children and criteria done: done; any progress: active; else the own status."""
     parts = kids + ["done" if d["done"] else "open" for d in dod]
@@ -60,10 +65,10 @@ def stale(repo: Path, nodes: list[dict], now: float | None = None) -> list[dict]
 
 
 def active(log: dict) -> str:
-    """One line per open goal: `<title> — <status> — <path>` (+ stale mark)."""
+    """One line per open goal: `<title> — <status> — <path>` (+ stale mark), then `next: EPIC-<n>`, the code a new spine gets."""
     days = {s["path"]: s["days"] for s in log["stale"]}
-    return "\n".join(f"{n['title']} — {n['status']} — {n['path']}" + (f" — STALE {days[n['path']]}d" if n["path"] in days else "")
-                     for n in log["nodes"] if n["status"] in OPEN)
+    return "\n".join([f"{n['title']} — {n['status']} — {n['path']}" + (f" — STALE {days[n['path']]}d" if n["path"] in days else "")
+                      for n in log["nodes"] if n["status"] in OPEN] + [f"next: EPIC-{next_of(log)}"])
 
 
 def attention(repo: Path) -> str:

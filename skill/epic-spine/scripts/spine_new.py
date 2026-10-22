@@ -21,7 +21,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import spines as S  # noqa: E402
 import validate_spine as v  # noqa: E402
-from epic_log import next_code  # noqa: E402
+from epic_log import next_of  # noqa: E402
 from rollup_spine import cell  # noqa: E402
 
 TEMPLATE = """# EPIC-{code}: {title}
@@ -146,7 +146,7 @@ def main() -> int:
         child.parent.mkdir(parents=True, exist_ok=True)
         today, root_meta = date.today().isoformat(), S.meta(root, cache)
         log = S.scan(repo)
-        code = a.code if a.code is not None else next_code([x["title"] for x in log["nodes"] + log["orphans"]])
+        code = a.code if a.code is not None else next_of(log)
         found = re.search(r"(?m)^Integration policy:.*", pm["text"]) or re.search(r"(?m)^Integration policy:.*", S.read(repo / "AGENTS.md"))
         child.write_text(TEMPLATE.format(
             title=a.title, code=code, policy=found.group() + "\n" if found else "", repo=pm["fields"].get("Repository", repo.name), primary=child.relative_to(repo).as_posix(), sid=sid, today=today,
