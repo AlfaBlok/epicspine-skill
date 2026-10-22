@@ -17,11 +17,11 @@ Integration branch: main
 Owner: EPIC-3 delivery manager (thread mcp:e9568396-d334-4a6b-bc0c-ab93b4a0fb6b)
 Status: active
 Last attempted: 2026-10-22 re-oriented after EPIC-4 closed (340333f); E3-4 verified live; conformance rescan of 16 repos ([scan](epic-log/conformance.md)); spines.py speed step dispatched; poly-maker and infra-vps migrations launched; poly-maker green (verified), zenod launched
-Result: E3-4 met (picker lists poly-maker EPIC-4 via spines.py). Cold spines.py on poly-maker takes 10-23 s under load against the console's 15 s timeout; parsing, not the walk, is the cost, and the console already answers from its last good result (agent_team spines.ts:290), so only a cold start falls back; wt/spines-fast trims CPU and stops a git timeout crashing the scan. E3-2 has 1 of 3 live proofs
+Result: E3-4 met (picker lists poly-maker EPIC-4 via spines.py). Cold spines.py on poly-maker takes 10-23 s under load against the console's 15 s timeout; parsing, not the walk, is the cost, and the console already answers from its last good result (agent_team spines.ts:290), so only a cold start falls back; 2026.10.22.6 (83b4b9b) trims CPU and stops a git timeout crashing the scan. E3-2 has 1 of 3 live proofs
 Evidence: [conformance scan 2026-10-22](epic-log/conformance.md)
 Waiting on: EPIC-3-A1
 Approved work: E3-1 to E3-5 (user, 2026-10-19)
-Next action: verify and merge wt/spines-fast; take reports from infra-vps (mcp:51557bfc) and zenod (mcp:aa9a971f), then launch tax-assist-research and abnb-agent
+Next action: take reports from infra-vps (mcp:51557bfc) and zenod (mcp:aa9a971f), then launch tax-assist-research and abnb-agent
 Source revision: main @ 21e3892
 Verified at: 2026-10-22
 
@@ -61,7 +61,7 @@ No rename of existing files or header fields. Migration changes structure only (
 | draft | Repo delivery manager | per-repo threads | E3-3 migrate infra-vps (39 looks_like_epic, thread mcp:51557bfc), zenod (28, thread mcp:aa9a971f), tax-assist-research (4 mismatches), abnb-agent (4); rootless repos per EPIC-3-A1 | active | E3-1 | main-direct | main | [scan 2026-10-22](epic-log/conformance.md) | 2026-10-22 | tax-assist-research + abnb-agent after infra-vps reports |
 | draft | Delivery manager | EPIC-3 delivery manager | E3-3 conformance table, before/after per repo | active | E3-3 migrations | none | main | before column: [scan 2026-10-22](epic-log/conformance.md) | 2026-10-22 | after column when migrations land |
 | draft | Repo delivery manager | agent_team | E3-4 console picker reads `spines.py --json` | done | E3-1 | none | main | 2026-10-22 live: `/api/repos/poly-maker/docs` lists `EPIC-4: ONE LOGGER` via `spines`, parent EPIC0.md (agent_team 9e53c7d); [screenshot](doctrine/evidence/polymaker-e4-done-means-2026-10-22.png) | 2026-10-22 | none |
-| draft | Ticket worker | worker (Sonnet 5.5, seat2) | spines.py under load: read each file once; stale check survives git timeouts (risk from EPIC-4: cold run vs console 15 s timeout) | active | none | wt/spines-fast | main | r1 958d350: walk is not the cost (0.15-0.6 s); 2.7 s CPU is parsing 5.6 MB, stretched by host load; output byte-identical; r2 drops the git listing (L-1), adds stale() timeout guard | 2026-10-22 | verify r2, merge |
+| draft | Ticket worker | worker (Sonnet 5.5, seat1/seat2) | spines.py under load: read each file once; stale check survives git timeouts (risk from EPIC-4: cold run vs console 15 s timeout) | done | none | merged | main | merged 83b4b9b (2026.10.22.6): ~15% less CPU, output byte-identical on poly-maker/zenod; isolated suite 625 OK; console last-good cache covers the rest | 2026-10-22 | none |
 | draft | Delivery manager | /root delivery manager | E3-5 learning "on latest = installed and conforming" + supersede sweep | draft | E3-3 | none | main | none | 2026-10-19 | write when the table is green |
 
 ## Decisions
