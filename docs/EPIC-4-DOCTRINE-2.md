@@ -37,14 +37,14 @@ Done means (until step 2 makes `## Done means` a recognised heading, the outcome
 
 Owner: EPIC-4 delivery manager (thread mcp:61d2777c-071a-4feb-93e3-4db440b5d6ac)
 Status: active
-Last attempted: 2026-10-22 DM wake (run_e15b607b): E4-5 re-run on EPIC-4 (seat2, brief = `Bound epic:` only, no-push clone at 6caab22)
-Result: steps 1-4, 7-19 done; E4-1, E4-2 and E4-3 met; E4-5 half met (EPIC-4 passes; poly-maker E4 waits on step 5); step 6 active for EPIC-0 and EPIC-3
-Evidence: re-run reply opened with Goal, Done means still open (E4-4, E4-5), Next action (this check; step 5 waits on EPIC-4-A2), context (ledger, Decisions, docs/doctrine/ pages, parent EPIC-0), learnings L-1..L-14 via the parent chain, nothing changed; [step 19](doctrine/steps.md#step-19)
+Last attempted: 2026-10-22 DM wake (run_38368463): step 20 worker still running (seat2, wt/ask-refs); step 6 second half dispatched (seat1, wt/slim-root: EPIC-0 and EPIC-3); EPIC-4 trimmed back to 0 long cells (9967d2a)
+Result: steps 1-4, 7-19 done; step 6 active (EPIC-4 done; EPIC-0, EPIC-3 in flight); step 20 in flight; E4-1, E4-2 and E4-3 met; E4-5 half met (EPIC-4)
+Evidence: re-run E4-5 on EPIC-4 passed (run_0a988e59); D19 recorded (7efe0ee); EPIC-4 size 108 lines, 0 long cells
 Waiting on: Jordi: EPIC-4-A2
-Approved work: E4-1 to E4-5; steps 10-12 requested by Jordi via agent_team (2026-10-20/21)
-Next action: on EPIC-4-A2, launch step 5 (then E4-5 on poly-maker E4); meanwhile step 6: slim EPIC-0, then EPIC-3
+Approved work: E4-1 to E4-5; steps 10-12 requested by Jordi via agent_team (2026-10-20/21); step 20 (Jordi via agent_team M2-35, 2026-10-22)
+Next action: verify and merge wt/ask-refs (step 20; send the JSON shape to agent_team) and wt/slim-root (step 6); on EPIC-4-A2, launch step 5
 Source revision: main
-Verified at: 2026-10-22 (main 6caab22; spines.py 0 orphans 0 mismatches)
+Verified at: 2026-10-22 (main 9967d2a; spines.py 0 orphans 0 mismatches)
 
 
 ## Waiting on
