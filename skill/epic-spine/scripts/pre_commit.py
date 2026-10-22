@@ -130,7 +130,7 @@ def main() -> int:
         if not result["trackable"]:
             blocked = True
             say(f"{name}: not trackable: " + "; ".join(result["missing"]) + hint)
-        for note in epic_log.ask_issues(text) if kind == "spine" else []:
+        for note in epic_log.ask_issues(text, repo=Path.cwd()) if kind == "spine" else []:
             say(f"{name}: {note} (advisory)")
         if kind == "spine" and v.validate_local(path).fails(strict=True):
             say(f"{name}: --strict issues (advisory; run validate_spine.py --strict)")

@@ -50,7 +50,7 @@ A rollup contains only:
 - absolute last-rollup time;
 - one next action.
 
-The child remains authoritative for detail. Parents aggregate direct children only; root-level health emerges through recursive one-level rollups. A parent must not mark a child `done` without the child's acceptance evidence.
+The child remains authoritative for detail. Parents aggregate direct children only; root-level health emerges through recursive one-level rollups. A parent must not mark a child `done` without the child's acceptance evidence; when parent and child disagree, mark drift and reconcile, never silently choose the more optimistic status.
 
 ## Execution Cursor And Decision Memory
 
