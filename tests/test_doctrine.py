@@ -24,7 +24,7 @@ class FieldTests(base.EpicLogCase):
     def test_scaffold_fields(self) -> None:
         node = self.child()["docs/EPIC-one.md"]
         self.assertEqual("Why one exists", node["goal"])
-        self.assertTrue(node["serves"].startswith("[Root](root.md)"), node["serves"])
+        self.assertTrue(node["serves"].startswith("[EPIC-0: Root](root.md)"), node["serves"])
         self.assertEqual([{"id": "E1-1", "text": "<observable outcome and how it is measured>", "done": False},
                           {"id": "E1-2", "text": "<a second outcome (2-5 in all), or delete this line>", "done": False}], node["done_means"])
         self.assertEqual(node["done_means"], node["dod"])  # rollup reads the new heading too
@@ -44,17 +44,17 @@ class FieldTests(base.EpicLogCase):
 
     def test_root_missing_sections_and_serves_null(self) -> None:
         root = self.child()["docs/root.md"]
-        self.assertEqual((None, ["title"]), (root["serves"], root["missing_sections"]))  # "# EPIC: Root" is not `EPIC-<n>: name`; no Serves needed
+        self.assertEqual((None, []), (root["serves"], root["missing_sections"]))  # the root needs no Serves
         self.assertEqual("Purpose.", root["goal"])  # Mission counts as Goal
         self.assertEqual([{"id": "R-1", "text": "purpose met", "done": False}], root["done_means"])  # DoD heading is the fallback
 
     def test_missing_sections_names(self) -> None:
         self.child()
-        self.write("docs/EPIC-bare.md", "# EPIC-9: bare\n\nSpine ID: bare\nRoot spine: [Root](root.md)\nParent spine: [Root](root.md)\n\n## Notes\n\nx\n")
+        self.write("docs/EPIC-bare.md", "# EPIC-9: bare\n\nSpine ID: bare\nRoot spine: [EPIC-0: Root](root.md)\nParent spine: [EPIC-0: Root](root.md)\n\n## Notes\n\nx\n")
         node = {n["path"]: n for n in self.log()["nodes"]}["docs/EPIC-bare.md"]
         self.assertEqual(["goal", "serves", "done_means", "status"], node["missing_sections"])
         self.assertEqual((None, None, []), (node["goal"], node["serves"], node["done_means"]))
-        self.write("docs/EPIC-bare.md", "# bare\n\nSpine ID: bare\nRoot spine: [Root](root.md)\nParent spine: [Root](root.md)\n")
+        self.write("docs/EPIC-bare.md", "# bare\n\nSpine ID: bare\nRoot spine: [EPIC-0: Root](root.md)\nParent spine: [EPIC-0: Root](root.md)\n")
         self.assertEqual(["title", "goal", "serves", "done_means", "status"], {n["path"]: n for n in self.log()["nodes"]}["docs/EPIC-bare.md"]["missing_sections"])
 
     def test_done_means_prefers_its_heading_and_empty_goal_is_missing(self) -> None:
@@ -216,7 +216,7 @@ class PreCommitDoctrineTests(base.EpicLogCase):
 
     def test_new_epic_missing_sections_is_blocked_then_passes(self) -> None:
         text = self.scaffold()
-        for gap, cut in (("serves", text.replace("## Serves\n\n[Root](root.md): <one sentence: how this serves its parent>\n\n", "")),
+        for gap, cut in (("serves", text.replace("## Serves\n\n[EPIC-0: Root](root.md): <one sentence: how this serves its parent>\n\n", "")),
                          ("done_means", text.replace("## Done means\n\n", "## Notes\n\n")),
                          ("goal", text.replace("## Goal\n\nP\n\n", "")), ("status", text.replace("Status: ready", "Status:"))):
             with self.subTest(gap=gap):
@@ -239,7 +239,7 @@ class PreCommitDoctrineTests(base.EpicLogCase):
         text = self.scaffold()
         self.assertEqual(0, self.commit("docs/EPIC-one.md", text).returncode)
         long = "| a | " + "x" * 201 + " |\n"
-        edited = text.replace("## Serves\n\n[Root](root.md): <one sentence: how this serves its parent>\n\n", "") + long + "\nfiller\n" * 160
+        edited = text.replace("## Serves\n\n[EPIC-0: Root](root.md): <one sentence: how this serves its parent>\n\n", "") + long + "\nfiller\n" * 160
         done = self.commit("docs/EPIC-one.md", edited)
         self.assertEqual(0, done.returncode, done.stderr)
         self.assertIn("docs/EPIC-one.md: epic is missing serves", done.stderr)
@@ -247,7 +247,7 @@ class PreCommitDoctrineTests(base.EpicLogCase):
         self.assertIn("(advisory)", done.stderr)
 
     def test_existing_old_style_root_passes_with_advisory(self) -> None:
-        self.write("docs/root.md", self.root_text.replace("Purpose.", "Purpose changed."))
+        self.write("docs/root.md", self.root_text.replace("# EPIC-0: Root", "# EPIC: Root"))
         done = self.commit("docs/root.md")
         self.assertEqual(0, done.returncode, done.stderr)
         self.assertIn("docs/root.md: epic is missing title", done.stderr)

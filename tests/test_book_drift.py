@@ -26,7 +26,8 @@ BOOK = ROOT / "index.html"
 SKILL_DIR = ROOT / "skill" / "epic-spine"
 
 # Files intentionally not named in the deck. Each entry needs a reason.
-ALLOWLIST: dict[str, str] = {"epic_log.py": "helper module of spines.py (rollup, --active, stale, next code); documented with spines.py"}
+ALLOWLIST: dict[str, str] = {"epic_log.py": "helper module of spines.py (rollup, --active, stale, next code); documented with spines.py",
+                             "doctrine.py": "helper module of spines.py / pre_commit.py (Doctrine 2 readers: epics, pages, JSON fields); documented with spines.py"}
 
 SKILL_FOLDERS = ("references", "scripts", "assets")
 

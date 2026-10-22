@@ -19,10 +19,18 @@ import spine_fix  # noqa: E402
 
 ASSETS = VALIDATOR_PATH.parents[1] / "assets"
 
-SPINE = """# EPIC: T
+SPINE = """# EPIC-1: T
 
 Spine ID: t
 {extra}
+## Goal
+
+Why.
+
+## Serves
+
+The parent.
+
 ## Current State
 
 Status: {status}
@@ -90,7 +98,7 @@ class TrackableTests(unittest.TestCase):
             self.assertEqual([f"heading '## {head}' must be '## Definition Of Done'"], self.check(text)["missing"], head)
 
     def test_templates_stay_trackable(self) -> None:
-        for name, heads, count in (("epic-spine-template.md", ("Definition Of Done",), 6), ("compact-spine-template.md", ("Definition Of Done",), 1),
+        for name, heads, count in (("epic-spine-template.md", ("Done means",), 6), ("compact-spine-template.md", ("Done means",), 2),
                                    ("github-issue-template.md", ("Acceptance Criteria",), 3)):
             items = v.criteria((ASSETS / name).read_text(encoding="utf-8"), heads)
             self.assertEqual(count, len(items), name)

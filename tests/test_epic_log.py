@@ -15,7 +15,7 @@ SCRIPTS = VALIDATOR_PATH.parent
 sys.path.insert(0, str(SCRIPTS))
 import spines  # noqa: E402
 
-ROOT = """# EPIC: Root
+ROOT = """# EPIC-0: Root
 
 Spine profile: compact
 Ticket backend: github
@@ -107,7 +107,7 @@ class SpineNewTests(EpicLogCase):
         self.assertTrue(v.trackable(child)["trackable"], v.trackable(child))
         self.assertEqual([], v.validate_local(child).errors)
         text = child.read_text()
-        for line in ("Spine ID: e4-one-logger", "Root spine: [Root](root.md)", "Parent spine: [Root](root.md)", "Status: ready", "# EPIC-1: E4 one logger", "## Goal", "## Serves", "## Done means", "- [ ] E1-1 "):
+        for line in ("Spine ID: e4-one-logger", "Root spine: [EPIC-0: Root](root.md)", "Parent spine: [EPIC-0: Root](root.md)", "Status: ready", "# EPIC-1: E4 one logger", "## Goal", "## Serves", "## Done means", "- [ ] E1-1 "):
             self.assertIn(line, text)
         self.assertNotIn("Spine Type", text)
         root = self.repo / "docs/root.md"
@@ -144,7 +144,7 @@ class SpineNewTests(EpicLogCase):
         self.assertEqual(0, nested.returncode, nested.stderr)
         child = self.repo / "docs/e4/E4-1-streams.md"
         self.assertIn("Parent spine: [EPIC-1: E4 one logger](../E4-one-logger.md)", child.read_text())
-        self.assertIn("Root spine: [Root](../root.md)", child.read_text())
+        self.assertIn("Root spine: [EPIC-0: Root](../root.md)", child.read_text())
         self.assertIn("| e4-1-streams | child | [EPIC-2: E4-1 streams](e4/E4-1-streams.md) | One registry |", (self.repo / "docs/E4-one-logger.md").read_text())
         self.assertEqual(1, (self.repo / "docs/root.md").read_text().count("## Spine Map"))
         graph = [str(self.repo / n) for n in ("docs/root.md", "docs/E4-one-logger.md", "docs/e4/E4-1-streams.md")]
@@ -178,7 +178,7 @@ class DiscoveryTests(EpicLogCase):
         self.assertEqual("active", by["docs/E4-one-logger.md"]["rollup_status"])  # a done child, an open criterion
         self.assertEqual(([], []), (log["orphans"], log["mismatches"]))
         text = self.run_script("spines.py").stdout
-        self.assertIn("- Root (docs/root.md) active", text)
+        self.assertIn("- EPIC-0: Root (docs/root.md) active", text)
         self.assertIn("  [ ] R-1 purpose met", text)
         self.assertIn("    - EPIC-2: E4-1 streams (docs/e4/E4-1-streams.md) done", text)
 
@@ -214,7 +214,7 @@ class DiscoveryTests(EpicLogCase):
         self.new()
         row = "| e4-one-logger | child | [E4 one logger](docs/spines/m2.md) |"
         root = (self.repo / "docs/root.md").read_text().replace("| e4-one-logger | child | [EPIC-1: E4 one logger](E4-one-logger.md) |", row)
-        child = (self.repo / "docs/E4-one-logger.md").read_text().replace("Parent spine: [Root](root.md)", "Parent spine: docs/spines/root.md")
+        child = (self.repo / "docs/E4-one-logger.md").read_text().replace("Parent spine: [EPIC-0: Root](root.md)", "Parent spine: docs/spines/root.md")
         (self.repo / "docs/root.md").unlink()
         (self.repo / "docs/E4-one-logger.md").unlink()
         self.write("AGENTS.md", "Root spine: docs/spines/root.md. Read its Current State.\n")
@@ -232,9 +232,9 @@ class DiscoveryTests(EpicLogCase):
         root = self.repo / "docs/root.md"
         # E5 says its parent is E4, but only the root's map lists it; E4 is listed by the root and names it.
         e5 = self.repo / "docs/E5-b.md"
-        e5.write_text(e5.read_text().replace("Parent spine: [Root](root.md)", "Parent spine: [E4](E4-one-logger.md)"))
+        e5.write_text(e5.read_text().replace("Parent spine: [EPIC-0: Root](root.md)", "Parent spine: [E4](E4-one-logger.md)"))
         # a header-only child: not in any map
-        self.write("docs/E6-c.md", e5.read_text().replace("e5-b", "e6-c").replace("E5 b", "E6 c").replace("Parent spine: [E4](E4-one-logger.md)", "Parent spine: [Root](root.md)"))
+        self.write("docs/E6-c.md", e5.read_text().replace("e5-b", "e6-c").replace("E5 b", "E6 c").replace("Parent spine: [E4](E4-one-logger.md)", "Parent spine: [EPIC-0: Root](root.md)"))
         root.write_text(root.read_text() + "| gone | child | [Gone](gone.md) | p | draft | none | none | d | n |\n")
         problems = {(m["path"], m["problem"]) for m in self.log()["mismatches"]}
         self.assertIn(("docs/E5-b.md", "listed in this Spine Map but its Parent spine is docs/E4-one-logger.md"), problems)
@@ -299,7 +299,7 @@ class PreCommitTreeTests(EpicLogCase):
         self.assertNotEqual(0, blocked.returncode)
         self.assertIn("not in the parent's Spine Map", blocked.stderr)
         self.git("reset", "-q")
-        self.write("docs/E8-loose.md", (self.repo / "docs/E4-one-logger.md").read_text().replace("Parent spine: [Root](root.md)", "Parent spine: none"))
+        self.write("docs/E8-loose.md", (self.repo / "docs/E4-one-logger.md").read_text().replace("Parent spine: [EPIC-0: Root](root.md)", "Parent spine: none"))
         self.assertIn("Parent spine missing or not a file", self.commit("docs/E8-loose.md").stderr)
 
     def legacy_head(self, name: str = "docs/E4-ONE-LOGGER.md") -> None:

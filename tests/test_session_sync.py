@@ -29,7 +29,7 @@ from test_validate_spine import validate_spine as v  # noqa: E402
 
 GIT_ENV = {"GIT_AUTHOR_NAME": "T", "GIT_AUTHOR_EMAIL": "t@example.com", "GIT_COMMITTER_NAME": "T",
            "GIT_COMMITTER_EMAIL": "t@example.com", "GIT_TERMINAL_PROMPT": "0"}
-SPINE = ("# EPIC: Demo\n\nSpine ID: demo\nSpine Type: root\nRoot spine: self\nParent spine: none\n"
+SPINE = ("# EPIC-0: Demo\n\nSpine ID: demo\nSpine Type: root\nRoot spine: self\nParent spine: none\n"
          "Integration branch: main\n\n## Mission\nx\n\n## Current State\nStatus: active\n\n## Definition Of Done\n"
          "- [ ] D-1 works\n")
 
