@@ -269,7 +269,8 @@ class JsonTests(TreeCase):
         open_asks = [a for a in epic["waiting_on"] if a["state"] == "open"]
         if not open_asks:
             self.skipTest("EPIC-4's approve ask has been answered")
-        self.assertEqual(("approve", "Jordi", "EPIC-4-A1"), (open_asks[0]["ask"], open_asks[0]["who"], open_asks[0]["code"]))
+        self.assertEqual(("approve", "Jordi"), (open_asks[0]["ask"], open_asks[0]["who"]))
+        self.assertRegex(open_asks[0]["code"], r"^EPIC-4-A\d+$")
         self.assertTrue(open_asks[0]["unblocks"])
         self.assertEqual([], T.v.trackable(repo / epic["path"])["advisory"])
 

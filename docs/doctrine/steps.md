@@ -223,3 +223,7 @@ Page of [EPIC-4](../EPIC-4-DOCTRINE-2.md). The Issue Ledger there keeps one line
 - **Latest Evidence:** released 2026.10.21.7 (merge 2788fcf); full isolated suite OK; EPIC-4-A1 parses with code, unblocks, effort
 - **Last Verified:** 2026-10-21
 - **Next Action:** poly-maker E4 owner restates its gates as v2 asks
+
+## Step 18
+
+Pre-commit tests run from a linked worktree (for example `../epicspine-skill-wt-<task>`) exercise the hook the main checkout installed, so they test main's `pre_commit.py`, not the branch's. The step 3 worker found it on 2026-10-22 and ran its suite from a plain clone instead. Fix: the tests (or `install_guard`) resolve the hook script from the checkout under test. Back to [EPIC-4](../EPIC-4-DOCTRINE-2.md).
