@@ -19,9 +19,9 @@ Skill updates: auto
 
 Owner: /root delivery manager
 Status: active
-Last attempted: 2026-10-22 root tidy (1d8ba5e, d02aa08: 144 lines, Serves on EPIC-1/2, tree 0 orphans 0 mismatches); EPIC-3 re-oriented (de56c4d): E3-4 met, E3-3 migrations running, spines.py speed step on seat1
-Result: open child EPIC-3: E3-4 done; E3-2 proof 1/3; E3-3 5 of 16 repos green, 3 migrating, 3 queued, 6 rootless; E3-5 after E3-3
-Evidence: EPIC-3 de56c4d; docs/epic-log/conformance.md
+Last attempted: 2026-10-22 EPIC-3 (011ab13): E3-2 met (3 fresh sessions bound `Goal: EPIC-<n>` unprompted; `next: EPIC-<n>` added, 2026.10.22.7); E3-3 every rooted repo conforms; spines.py faster (2026.10.22.6)
+Result: EPIC-3 open items: E3-3 six rootless repos and E3-5, both gated on EPIC-3-A1
+Evidence: EPIC-3 011ab13; docs/epic-log/conformance.md
 Waiting on: Jordi: EPIC-3-A1 (root spines for the six rootless repos; asked in EPIC-3)
 Approved work: EPIC-3 Epic log and EPIC-4 Doctrine 2 (their ledgers hold the tickets)
 Next action: EPIC-3 closes E3-2/E3-3/E3-5 (ETA 1-2 days, E3-3 rootless repos gated on EPIC-3-A1); EPIC-0 free for E3-5's learning; then close this root's DOD
