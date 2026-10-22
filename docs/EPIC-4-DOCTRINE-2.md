@@ -37,18 +37,19 @@ Done means (until step 2 makes `## Done means` a recognised heading, the outcome
 
 Owner: EPIC-4 delivery manager (thread mcp:61d2777c-071a-4feb-93e3-4db440b5d6ac)
 Status: active
-Last attempted: 2026-10-22 DM wake (run_26a8faff): merged wt/doctrine-2 (9f3b093, steps 1+2); step 3 worker (seat1, run_4b6bd75d) delivered; merged 6be5e7c, worktree and branch removed
-Result: steps 1-3, 7, 9-17 done; E4-1 and E4-2 met (release 2026.10.22.1); E4-3 waits on agent_team's live screenshot, E4-4/E4-5 on steps 5 and 6
-Evidence: merge 6be5e7c: full isolated suite 606 OK (2 skip) on merged main; `spines.py --json` EPIC-4 goal/serves/done_means/pages present, missing_sections [], size 103 lines / 24 long cells; orphan_pages SYNC.md, docs/hygiene/2026-10-16-cleanup.md
-Waiting on: none
+Last attempted: 2026-10-22 DM wake (run_a800bfa2): step 8 quiet re-run passed; step 6 slim dispatched (seat1, run_3c883684, wt/epic4-slim); release 2026.10.22.1 sent to agent_team for the step 4 screenshot; step 5 timing asked of Jordi (EPIC-4-A2); human-asks.md prose `Status:` line reworded (925d882) so the console stops showing step 12 yellow
+Result: steps 1-3, 7, 9-17 done; step 8 re-run green (row update and a new row for the linked-worktree hook finding at step 6 merge, to avoid a conflict); E4-1 and E4-2 met
+Evidence: quiet host (load 1.8): test_background_sync 55 OK, test_session_sync 61 OK, test_local_mess 33 OK, test_auto_return 23 OK; main 6be5e7c full isolated suite 606 OK
+Waiting on: Jordi: EPIC-4-A2
 Approved work: E4-1 to E4-5; steps 10-12 requested by Jordi via agent_team (2026-10-20/21)
-Next action: tell agent_team 2026.10.22.1 is out (step 4 screenshot); launch step 5 (fresh poly-maker thread); step 6 slims EPIC-4 (24 long cells) then E4-5 cold-start check
+Next action: merge wt/epic4-slim when the step 6 worker reports, then run the E4-5 cold-start check on EPIC-4; on EPIC-4-A2, launch step 5; collect agent_team's E4-3 screenshot
 Source revision: main
-Verified at: 2026-10-22 (main 6be5e7c; spines.py 0 orphans 0 mismatches)
+Verified at: 2026-10-22 (main 925d882; spines.py 0 orphans 0 mismatches)
 
 
 ## Waiting on
 
+- [open EPIC-4-A2 2026-10-22 @Jordi] Launch the poly-maker E4 compliance test (step 5) now, although poly-maker E4's owner is actively working it (b0d6dd36)? — recommend: yes; warn the E4 owner first that a structure-only migration commit is coming — unblocks: step 5 (E4-4), then the E4-5 check on poly-maker E4 — effort: ~1 min — context: console item nj_4dcdbafa
 - [answered EPIC-4-A1 2026-10-21 @Jordi] Approve the doctrine page (what every epic must say) and the enforcement plan (scaffold, commit check, JSON fields) as one? — recommend: approve, with both small answers yes (advisory size budget 150 lines / 200-char cells; profile, dialect and ticket-backend headers optional) — unblocks: step 3 (tools), then 5 (poly-maker compliance test) and 6 (slimming); waiting holds the whole Doctrine 2 rollout — effort: ~5 min — context: [approval page](http://vps-a9-1.taild81fbb.ts.net:36879/index.html) — answer: APPROVED
 
 ## Non-Goals
