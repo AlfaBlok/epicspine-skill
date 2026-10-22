@@ -37,6 +37,10 @@ No child spines.
 
 Remediate the six audit work packages through subagents, preserving artifact authority, one steward, execution cursors and connected-spine navigation. Deliver a tested reviewable branch and report outcomes to the user.
 
+## Serves
+
+[EPIC-0 EpicSpine operating system](EPIC-0-OPERATING-SYSTEM.md): contributes audit remediation delivery (EPIC-0 Spine Map), a done child kept for reference (EPIC-0 Decisions, "EPIC-2 and EPIC-1 closed").
+
 ## Definition Of Done
 
 - [x] DOD-1 Malformed Markdown rows cannot disappear from validation; empty values cannot consume following fields.

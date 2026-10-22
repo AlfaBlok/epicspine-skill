@@ -34,6 +34,10 @@ No child spines.
 
 Reduce duplicated current state and manual synchronization while preserving evidence, history, one steward and bounded authority. Deliver a compact state profile, explicit local/GitHub ticket backends, deterministic freshness-aware rollups and structural strict validation.
 
+## Serves
+
+[EPIC-0 EpicSpine operating system](EPIC-0-OPERATING-SYSTEM.md): contributes compact state and trustworthy rollups (EPIC-0 Spine Map), a done child kept for reference (EPIC-0 Decisions, "EPIC-2 and EPIC-1 closed").
+
 ## Definition Of Done
 
 - [x] DOD-1 One authoritative current-state block with compatible legacy conflict detection and a compact active profile.
