@@ -38,7 +38,7 @@ Write one line per ask under `## Waiting on`, right after Current State.
 | `effort:` | optional | e.g. `~10 min` |
 | `context:` | all | a page or anchor with the background |
 
-**Status:** the blocked row gets Status `blocked`. Current State's `Waiting on:` lists the codes, e.g. `Jordi: E4-A3, E4-A4`.
+**Row status word:** the blocked row is set to `blocked`. Current State's `Waiting on:` lists the codes, e.g. `Jordi: E4-A3, E4-A4`.
 
 ## Keep it minimal (the manager's duty)
 On every wake and at every session end, the delivery manager rewrites `## Waiting on` as the smallest set of human actions:
