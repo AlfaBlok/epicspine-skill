@@ -17,11 +17,11 @@ Integration branch: main
 Owner: EPIC-3 delivery manager (thread mcp:e9568396-d334-4a6b-bc0c-ab93b4a0fb6b)
 Status: active
 Last attempted: 2026-10-22 re-oriented after EPIC-4 closed (340333f); E3-4 verified live; conformance rescan of 16 repos ([scan](epic-log/conformance.md)); spines.py speed step dispatched; poly-maker and infra-vps migrations launched; poly-maker green (verified), zenod launched
-Result: E3-4 met (picker lists poly-maker EPIC-4 via spines.py). Cold spines.py on poly-maker takes 10-23 s under load against the console's 15 s timeout; parsing, not the walk, is the cost, and the console already answers from its last good result (agent_team spines.ts:290), so only a cold start falls back; 2026.10.22.6 (83b4b9b) trims CPU and stops a git timeout crashing the scan. E3-2 has 2 of 3 live proofs (sismic probe named no code: wt/next-code); every rooted repo conforms (E3-3 waits only on A1)
+Result: E3-4 met (picker lists poly-maker EPIC-4 via spines.py). Cold spines.py on poly-maker takes 10-23 s under load against the console's 15 s timeout; parsing, not the walk, is the cost, and the console already answers from its last good result (agent_team spines.ts:290), so only a cold start falls back; 2026.10.22.6 (83b4b9b) trims CPU and stops a git timeout crashing the scan. E3-2 has 2 of 3 live proofs (sismic probe named no code: fixed in 2026.10.22.7, re-probe running); every rooted repo conforms (E3-3 waits only on A1)
 Evidence: [conformance scan 2026-10-22](epic-log/conformance.md)
 Waiting on: EPIC-3-A1
 Approved work: E3-1 to E3-5 (user, 2026-10-19)
-Next action: verify and merge wt/next-code, re-probe E3-2 in a third repo; rootless repos once EPIC-3-A1 is answered; then E3-5
+Next action: read the house_decision E3-2 probe (mcp:0c5418a5); tick E3-2 if it answers `Goal: EPIC-<n>`; rootless repos once EPIC-3-A1 is answered; then E3-5
 Source revision: main @ 21e3892
 Verified at: 2026-10-22
 
@@ -57,7 +57,7 @@ No rename of existing files or header fields. Migration changes structure only (
 |---|---|---|---|---|---|---|---|---|---|---|
 | draft | Ticket worker | worker (Sonnet 5.5, seat pool) | E3-1 skill tools: definition, `spine_new`, tree gate, `spines --json`; release 2026.10.19.1 | done | none | none | main | r1+r2+r3 merged (cab199a, 4639aa9, 88f00fa, 52cdd31..20b4602), release 2026.10.19.2; 508 tests, url_gate flakes only under host load | 2026-10-19 | none |
 | draft | Ticket worker | worker (Sonnet 5.5) | E3-2 living tree: `Goal: EPIC-<n>`, Record duties, `--active`, 14 d stale, codes from `spine_new` [detail](epic-log/steps.md#ticket-2) | active | E3-1 | none | main | merged 61d7e03 (2026.10.19.3); live proofs 2/3: poly-maker e25fa5ad `Goal: EPIC-4`, zenod aa9a971f `Goal: EPIC-0`, unprompted (2026-10-22) | 2026-10-22 | proof 3 from the infra-vps thread (plain ask, no goal named) |
-| draft | Ticket worker | worker (Sonnet 5.5, seat2) | `spines.py --active` prints `next: EPIC-<n>`; rule 6 names it for new goals (E3-2 probe gap) | active | none | wt/next-code | main | sismic probe 2026-10-22 | 2026-10-22 | verify, merge, re-probe |
+| draft | Ticket worker | worker (Sonnet 5.5, seat2) | `spines.py --active` prints `next: EPIC-<n>`; rule 6 names it for new goals (E3-2 probe gap) | done | none | merged | main | merged 7881e52 (2026.10.22.7); isolated suite OK; sismic --active ends `next: EPIC-1` | 2026-10-22 | none |
 | draft | Repo delivery manager | poly-maker thread mcp:aac4e0e3 | E3-3 migrate poly-maker: 3 orphans (analysis/*/SPINE.md), 14 looks_like_epic; E4 content untouched [detail](epic-log/steps.md#ticket-3) | done | E3-1 | main-direct | main | verified 2026-10-22: 58 nodes, 0 orphans, 0 mismatches, 14 pages recorded as exceptions (poly-maker 1dc21c66..69a3a0d8) | 2026-10-22 | none |
 | draft | Repo delivery manager | per-repo threads | E3-3 migrate infra-vps (39 looks_like_epic, retry mcp:decbc138), zenod (done: PR #1420, 2c34984), tax-assist-research (done: 8cebb7b), abnb-agent (done: 585732d); rootless repos per EPIC-3-A1 | active | E3-1 | per repo policy | main | zenod (29 nodes) abnb-agent (3) and tax-assist-research (18) verified 2026-10-22: 0 orphans, 0 mismatches, exceptions recorded | 2026-10-22 | await infra-vps |
 | draft | Delivery manager | EPIC-3 delivery manager | E3-3 conformance table, before/after per repo | active | E3-3 migrations | none | main | before column: [scan 2026-10-22](epic-log/conformance.md) | 2026-10-22 | after column when migrations land |
