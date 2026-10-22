@@ -111,7 +111,7 @@ class StaleTests(LivingCase):
         log = self.log()
         self.assertEqual([{"path": "docs/a.md", "title": "EPIC-1: alpha", "days": 30}], log["stale"])  # root fresh, b only ready
         lines = self.run_script("spines.py", "--active").stdout.splitlines()
-        self.assertEqual(["Root — active — docs/root.md", "EPIC-1: alpha — active — docs/a.md — STALE 30d", "EPIC-2: beta — ready — docs/b.md"], lines)
+        self.assertEqual(["EPIC-0: Root — active — docs/root.md", "EPIC-1: alpha — active — docs/a.md — STALE 30d", "EPIC-2: beta — ready — docs/b.md"], lines)
 
     def test_background_sync_reports_stale_goals_for_the_current_repo_once(self) -> None:
         line = f"{self.repo.name}: 1 goals active but untouched 14+ days (spines.py --active)"

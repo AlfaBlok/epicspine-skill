@@ -81,7 +81,7 @@ class TrackableTests(unittest.TestCase):
     def test_id_rule(self) -> None:
         for bad in ("- [ ] ship", "- [ ] 1. ship", "- [ ] m4-1 ship", "- [ ] M4 ship", "- [ ] M4-1: ship", "- A-1 ship", "1. A-1 ship"):
             result = self.spine(done=f"- [ ] OK-1 fine\n{bad}")
-            self.assertEqual(["1 criteria under ## Definition Of Done not `- [ ] ID text` (lines 13)"], result["missing"], bad)
+            self.assertEqual(["1 criteria under ## Definition Of Done not `- [ ] ID text` (lines 21)"], result["missing"], bad)
         self.assertTrue(self.spine(done="- [ ] X-1 a\n- [ ] Z9-10 b\n- [ ] A1B-2")["trackable"])
 
     def test_duplicate_ids(self) -> None:
