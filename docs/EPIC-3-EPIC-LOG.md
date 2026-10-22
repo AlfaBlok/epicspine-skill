@@ -16,8 +16,8 @@ Integration branch: main
 
 Owner: EPIC-3 delivery manager (thread mcp:e9568396-d334-4a6b-bc0c-ab93b4a0fb6b)
 Status: active
-Last attempted: 2026-10-22 re-oriented after EPIC-4 closed (340333f); E3-4 verified live; conformance rescan of 16 repos ([scan](epic-log/conformance.md)); spines.py speed step dispatched; poly-maker and infra-vps migrations launched; poly-maker green (verified), zenod launched
-Result: E3-4 met (picker lists poly-maker EPIC-4 via spines.py). Cold spines.py on poly-maker takes 10-23 s under load against the console's 15 s timeout; parsing, not the walk, is the cost, and the console already answers from its last good result (agent_team spines.ts:290), so only a cold start falls back; 2026.10.22.6 (83b4b9b) trims CPU and stops a git timeout crashing the scan. E3-2 met: 3 fresh sessions in 3 repos answered `Goal: EPIC-<n>` unprompted; every rooted repo conforms (E3-3 waits only on A1)
+Last attempted: 2026-10-22 E3-2 re-probe passed (house_decision); next-code (2026.10.22.7) and spines.py load fixes (2026.10.22.6) merged; 5 rooted repos migrated
+Result: E3-1, E3-2, E3-4 met. E3-3: every rooted repo green ([table](epic-log/conformance.md)); six rootless repos wait on EPIC-3-A1. E3-5 follows E3-3
 Evidence: [conformance scan 2026-10-22](epic-log/conformance.md)
 Waiting on: EPIC-3-A1
 Approved work: E3-1 to E3-5 (user, 2026-10-19)
