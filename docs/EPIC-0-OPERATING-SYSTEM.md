@@ -19,14 +19,14 @@ Skill updates: auto
 
 Owner: /root delivery manager
 Status: active
-Last attempted: 2026-10-21 EPIC-4 steps 9-14 done (releases 2026.10.21.1-.4; 566 OK isolated): config isolation, cron never in a worktree, structured human asks, learnings in force inherit up to the root
-Result: step 4 pipeline check passed: console personas receive the doctrine on both seats; crontab names the main checkout (checked 2026-10-21)
-Evidence: EPIC-4 56610dd
+Last attempted: 2026-10-22 EPIC-4: Jordi approved the doctrine (EPIC-4-A1, merged 9f3b093); E4-1, E4-2, E4-3 met; live console shows Goal, Serves chain, Done means and this root's children (milestone ms_7125d985)
+Result: EPIC-4 steps 1-3, 7, 9-17 done; step 6 slimming running (wt/epic4-slim); full isolated suite 606 OK; EPIC-0 over the advisory size budget (162 lines, 28 long cells), slimmed after EPIC-4 in step 6
+Evidence: EPIC-4 54eff99
 Waiting on: Jordi: EPIC-4-A2 (when to launch the poly-maker E4 compliance test; asked in EPIC-4)
 Approved work: EPIC-3 Epic log and EPIC-4 Doctrine 2 (their ledgers hold the tickets)
 Next action: E3-2 live proof (3 fresh sessions); poly-maker migration; bring this root to Doctrine 2 (EPIC-4 step 6).
 Source revision: main
-Verified at: 2026-10-21
+Verified at: 2026-10-22
 
 ## Mission
 
