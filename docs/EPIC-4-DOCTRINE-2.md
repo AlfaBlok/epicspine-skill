@@ -37,14 +37,14 @@ Done means (until step 2 makes `## Done means` a recognised heading, the outcome
 
 Owner: EPIC-4 delivery manager (thread mcp:61d2777c-071a-4feb-93e3-4db440b5d6ac)
 Status: active
-Last attempted: 2026-10-22 E4-5 cold-start check on EPIC-4 (seat1, console run run_1d057709): partial, step 19 opened
+Last attempted: 2026-10-22 DM wake (run_e15b607b): E4-5 re-run on EPIC-4 dispatched (seat2, brief = `Bound epic:` only, no-push clone at 6caab22, release 2026.10.22.3)
 Result: steps 1-4, 7-19 done (latest release 2026.10.22.3); step 6 active (EPIC-4 slimmed, E4-5 re-run after step 19, then EPIC-0 and EPIC-3); E4-1, E4-2 and E4-3 met
 Evidence: cold agent given only `Bound epic:` (read-only) found the state, pages and open ask without asking, and its checks agree with Current State; it did not state the goal or its next action, and bound Learnings in force: none; [step 19](doctrine/steps.md#step-19)
 Waiting on: Jordi: EPIC-4-A2
 Approved work: E4-1 to E4-5; steps 10-12 requested by Jordi via agent_team (2026-10-20/21)
 Next action: re-run E4-5 on EPIC-4 (throwaway clone, brief = `Bound epic:` only); on EPIC-4-A2, launch step 5
 Source revision: main
-Verified at: 2026-10-22 (main 234c4f6; spines.py 0 orphans 0 mismatches)
+Verified at: 2026-10-22 (main 6caab22; EPIC-4-A2 still open in console nj_4dcdbafa)
 
 
 ## Waiting on
