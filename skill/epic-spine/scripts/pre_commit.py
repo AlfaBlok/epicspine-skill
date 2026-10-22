@@ -7,7 +7,9 @@ a ticket if it has ``Ticket ID:``. A goal doc (``spines.is_goal``) must also be 
 v1 header, reachable from the root, agreeing with its parent's Spine Map (``spine_new.py``). Blocks only a newly added or
 renamed goal doc, and a modified one whose HEAD version already had ``Spine ID:`` (migrated). Warns, never blocks: a
 modified legacy goal doc (no ``Spine ID:`` at HEAD), a root spine without a ``Spine ID:`` header, ``Root spine: none`` and a goal
-spine whose ``## Current State`` has over 12 non-empty lines, and ``epic_log.ask_issues`` (human-asks.md checks: blocked/waiting row or epic with no open ask, ask missing a field or code, duplicate code, over 3 open, stale). ``Superseded by:`` must link to an existing goal doc (blocks)."""
+spine whose ``## Current State`` has over 12 non-empty lines, and ``epic_log.ask_issues`` (human-asks.md checks: blocked/waiting row or epic with no open ask, ask missing a field or code, duplicate code, over 3 open, stale). ``Superseded by:`` must link to an existing goal doc (blocks).
+Doctrine 2 (doctrine.py, references/spine-model.md): a newly *added* epic (``A``, not renamed) missing the title, Goal (Mission counts), Serves (not the root), Done means or Status word
+blocks; an existing epic only warns of the same gaps, of over 150 lines or a table cell over 200 characters; a staged page warns when it looks like an epic or no epic links it."""
 
 from __future__ import annotations
 
@@ -18,6 +20,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
+import doctrine  # noqa: E402
 import epic_log  # noqa: E402
 import spine_fix  # noqa: E402
 import spines  # noqa: E402
@@ -63,12 +66,34 @@ def goal_notes(name: str, text: str, cache: dict) -> tuple[bool, str]:
     return False, f"{name}: Current State has {len(lines)} lines; keep Current State lean: history goes to Decisions/git" if len(lines) > 12 else ""
 
 
+def doctrine_notes(name: str, text: str, new: bool, cache: dict) -> tuple[bool, str]:
+    """(blocks, message): a new epic missing a required section blocks; an existing one only warns (also of size)."""
+    root = spines.find_root(Path.cwd(), cache)
+    found = doctrine.fields(text, bool(root and Path(name).resolve() == root) or v.parse_fields(text).get("Root spine", "").lower() == "self")
+    size, notes = found["size"], []
+    if found["missing_sections"]:
+        notes.append(f"epic is missing {', '.join(found['missing_sections'])} (references/spine-model.md: What Every Epic Says; spine_new.py writes them)")
+    if size["lines"] > doctrine.MAX_LINES or size["long_cells"]:
+        notes.append(f"over the size budget: {size['lines']} lines (max {doctrine.MAX_LINES}), {size['long_cells']} table cells over {doctrine.MAX_CELL} characters: move detail to linked pages")
+    blocks = new and bool(found["missing_sections"])
+    return blocks, f"{name}: " + "; ".join(notes) + ("" if blocks else " (advisory)") if notes else ""
+
+
+def page_notes(names: list[str]) -> list[str]:
+    """Advisory: staged pages that look like an epic (intent belongs in an epic) or that no epic links (orphans)."""
+    cwd = Path.cwd().resolve()
+    epics = {p for p in doctrine.docs(cwd) if doctrine.is_epic(doctrine.read(p))}
+    orphans, like = doctrine.page_report(cwd, sorted(epics), epics)
+    return [f"{n}: " + why + " (advisory)" for n in names for why, bad in (("looks like an epic: give it an EPIC-<n> title and a parent (spine_new.py)", like), ("orphan page: link it from an epic or another page", orphans)) if n in bad]
+
+
 def main() -> int:
     top = git("rev-parse", "--show-toplevel").stdout.strip()
     if top:
         os.chdir(top)
-    blocked, cache, told = False, {}, set()
+    blocked, cache, told, pages = False, {}, set(), []
     added = set(filter(None, git("diff", "--cached", "--name-only", "--diff-filter=AR", "-z").stdout.split("\0")))
+    created = set(filter(None, git("diff", "--cached", "--name-only", "--diff-filter=A", "-z").stdout.split("\0")))
     for name in filter(None, git("diff", "--cached", "--name-only", "--diff-filter=ACMR", "-z").stdout.split("\0")):
         path = Path(name)
         if not (name.endswith(".md") and path.is_file()):
@@ -85,6 +110,12 @@ def main() -> int:
             blocked = blocked or stop
             if note:
                 say(note)
+            stop, note = doctrine_notes(name, text, name in created, cache)
+            blocked = blocked or stop
+            if note:
+                say(note)
+        elif not spines.D.skipped(Path.cwd(), path) and path.stem.lower() not in doctrine.CONVENTIONAL:
+            pages.append(name)
         if kind is None:
             continue
         result, hint = v.trackable(path), ""
@@ -103,6 +134,8 @@ def main() -> int:
             say(f"{name}: {note} (advisory)")
         if kind == "spine" and v.validate_local(path).fails(strict=True):
             say(f"{name}: --strict issues (advisory; run validate_spine.py --strict)")
+    for note in page_notes(pages) if pages else []:
+        say(note)
     if blocked:
         say("commit blocked; fix the above, or bypass once with git commit --no-verify")
     return int(blocked)

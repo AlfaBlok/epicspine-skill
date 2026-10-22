@@ -19,7 +19,6 @@ REQUIRED_FIELDS = (
     "Repository",
     "Primary document",
     "Spine ID",
-    "Spine Type",
     "Root spine",
     "Parent spine",
     "Additional root rationale",
@@ -147,7 +146,13 @@ class SpineDocument:
 
     @property
     def spine_type(self) -> str:
-        return normalize(self.fields.get("Spine Type", "")).lower()
+        return lineage(self.fields)
+
+
+def lineage(fields: dict[str, str]) -> str:
+    """``Spine Type`` when written (ignored by Doctrine 2), else inferred: root = ``Root spine: self``; branch = a Root/Parent spine link; "" = none declared."""
+    set_ = lambda k: (x := normalize(fields.get(k, "")).lower()) not in {"", "none", "n/a"} and not x.startswith("<") and "|" not in x  # noqa: E731
+    return normalize(fields.get("Spine Type", "")).lower() or ("root" if normalize(fields.get("Root spine", "")).lower() == "self" else "branch" if set_("Root spine") or set_("Parent spine") else "")
 
 
 def normalize(value: str) -> str:
@@ -718,6 +723,9 @@ def validate_local(path: Path, *, dialect: str = "auto", ticket_source: Path | N
     text = path.read_text(encoding="utf-8")
     fields = parse_fields(text)
     sections = parse_sections(text)
+    for canon, alias in (("Mission", "goal"), ("Definition Of Done", "done means")):  # Doctrine 2 headings count
+        if canon not in sections and (named := next((k for k in sections if k.lower() == alias), None)):
+            sections[canon] = sections[named]
     if "Status" not in fields and (moved := parse_key_values(sections.get("Current State", "")).get("Status")):
         fields["Status"] = moved  # --fix moves a header Status into Current State; either place satisfies the field
     profile = normalize(fields.get("Spine profile", "full")).lower()
@@ -758,7 +766,7 @@ def validate_local(path: Path, *, dialect: str = "auto", ticket_source: Path | N
 
     required_fields = COMPACT_FIELDS if compact else REQUIRED_FIELDS
     if compact and any(name in fields for name in ("Spine Type", "Root spine", "Parent spine")):
-        required_fields += ("Spine Type", "Root spine", "Parent spine", "Additional root rationale")
+        required_fields += ("Root spine", "Parent spine", "Additional root rationale")
     for field in required_fields:
         if field not in fields:
             errors.append(f"missing field: {field}")
@@ -775,7 +783,7 @@ def validate_local(path: Path, *, dialect: str = "auto", ticket_source: Path | N
     if not is_empty(done := sections.get("Definition Of Done", "")) and not CHECKBOX_RE.search(done):
         warnings.append("Definition Of Done has no '- [ ]'/'- [x]' checkbox lines; dashboards read only those")
 
-    spine_type = normalize(fields.get("Spine Type", "")).lower()
+    spine_type = lineage(fields)
     root_spine = normalize(fields.get("Root spine", "")).lower()
     parent_spine = normalize(fields.get("Parent spine", "")).lower()
     if spine_type and spine_type not in {"root", "branch"} and not spine_type.startswith("<") and "|" not in spine_type:
@@ -1022,7 +1030,7 @@ def criteria(text: str, names: tuple[str, ...]) -> list[tuple[int, str]]:
             comment = "-->" not in line.split("<!--")[-1]
         elif line.lstrip().startswith("```"):
             fence = not fence
-        elif section in names and not fence and ITEM_RE.match(line):
+        elif section.lower() in {n.lower() for n in names} and not fence and ITEM_RE.match(line):
             items.append((index, line))
     return items
 
@@ -1067,7 +1075,8 @@ def trackable(path: Path) -> dict[str, object]:
     kind = doc_kind(text)
     spine = kind == "spine"
     alias = next((name for name in sections if DOD_ALIAS_RE.fullmatch(name)), None)
-    names = (alias if alias and "Definition Of Done" not in sections else "Definition Of Done",) if spine else ("Acceptance Criteria", "Acceptance")
+    done = next((name for name in sections if name.lower() == "done means"), None)  # Doctrine 2 heading, equal to Definition Of Done
+    names = ("Definition Of Done" if "Definition Of Done" in sections else done or alias or "Definition Of Done",) if spine else ("Acceptance Criteria", "Acceptance")
     if not (kind or "Status" in fields or any(name in sections for name in names)):
         return {"path": str(path), "trackable": False, "missing": ["not a spine or ticket (no ## Current State)"], "warnings": []}
     status = parse_key_values(sections.get("Current State", "")).get("Status", "") if spine else fields.get("Status", "")
@@ -1077,7 +1086,7 @@ def trackable(path: Path) -> dict[str, object]:
     missing = [] if trackable_status(status) else [f"{where} '{shown}': start it with one of {allowed}" if status else f"{where} missing: add 'Status: <{allowed}>'"]
     if spine:
         missing += outcome_missing(fields, status, text)
-    if spine and names[0] != "Definition Of Done":
+    if spine and names[0] not in ("Definition Of Done", done):
         missing.append(f"heading '## {alias}' must be '## Definition Of Done'")
     items, heads = criteria(text, names), "/".join(names)
     matches = [(index, CRITERION_RE.match(line)) for index, line in items]

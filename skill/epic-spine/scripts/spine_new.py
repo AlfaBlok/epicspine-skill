@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
-"""Scaffold a goal spine in the epic log: ``spine_new.py --repo DIR --parent SPINE --path NEW.md --title NAME [--purpose P] [--code N]``.
+"""Scaffold an epic in the epic log: ``spine_new.py --repo DIR --parent SPINE --path NEW.md --title NAME [--purpose P] [--code N]``.
 
-Writes a valid v1 compact child spine titled ``# EPIC-<n>: NAME`` (n = highest code in the repo's goal titles + 1, legacy
-``E4``/``EPIC 0`` included, or ``--code``; DoD IDs ``E<n>-``; Integration branch/policy copied from the parent or AGENTS.md;
-Root spine, Parent spine, ``Status: draft``, checkbox Definition Of Done, Issue Ledger) and registers a row in the parent's Spine Map (the section is created when
-missing). ``--parent`` is the parent's path or Spine ID. Idempotent: an existing file is never overwritten, only
-(re)registered when it is a spine. Output passes ``validate_spine.py --trackable``. See references/spine-creation.md."""
+Writes a compact epic titled ``# EPIC-<n>: NAME`` (n = highest code in the repo's goal titles + 1, legacy ``E4``/``EPIC 0`` included, or
+``--code``; criterion IDs ``E<n>-``) that follows references/spine-model.md: Goal, Serves (linked to the parent), Done means (checkbox
+placeholders above the steps), Current State ``Status: ready``, Non-Goals, the steps ledger, Decisions, Operating Learnings; Root spine,
+Parent spine, Integration branch/policy copied from the parent or AGENTS.md; no ``Spine Type:`` or version line. It registers a row in the
+parent's Spine Map (created when missing) whose Purpose is the child's one "contributes" sentence (``--purpose``, else a placeholder).
+``--parent`` is the parent's path or Spine ID. Idempotent: an existing file is never overwritten, only (re)registered when it is a spine.
+Output passes ``validate_spine.py --trackable`` and the commit check's required sections. See references/spine-creation.md."""
 
 from __future__ import annotations
 
@@ -25,53 +27,63 @@ from rollup_spine import cell  # noqa: E402
 TEMPLATE = """# EPIC-{code}: {title}
 
 Spine profile: compact
-Ticket backend: github
-Spine dialect: v1
 Repository: {repo}
 Primary document: {primary}
 Spine ID: {sid}
-Spine Type: branch
 Root spine: [{root_title}]({root_link})
 Parent spine: [{parent_title}]({parent_link})
 Additional root rationale: n/a
 Integration branch: {branch}
 {policy}
+## Goal
+
+{purpose}
+
+## Serves
+
+[{parent_title}]({parent_link}): <one sentence: how this serves its parent>
+
+## Done means
+
+- [ ] {prefix}-1 <observable outcome and how it is measured>
+- [ ] {prefix}-2 <a second outcome (2-5 in all), or delete this line>
+
 ## Current State
 
 Owner: unassigned
-Status: draft
+Status: ready
 Last attempted: scaffolded with spine_new.py on {today}
 Result: created, not started
 Evidence: {parent_link}
 Waiting on: none
 Approved work: none
-Next action: fill Mission and Definition Of Done
+Next action: fill Goal, Serves and Done means
 Source revision: uncommitted scaffold
 Verified at: {today}
-
-## Mission
-
-{purpose}
 
 ## Non-Goals
 
 TBD
 
-## Definition Of Done
-
-- [ ] {prefix}-1 <observable outcome and how it is measured>
-
 ## Issue Ledger
+
+Steps: each is independently testable and closes only with evidence.
 
 | Issue | Role | Owner / Assignment | Title | Status | Depends On | PR/Branch | Base | Latest Evidence | Last Verified | Next Action |
 |---|---|---|---|---|---|---|---|---|---|---|
-| draft | Ticket worker | unassigned | first step | draft | none | none | none | none | {today} | write the first ticket |
+| draft | Ticket worker | unassigned | first step | draft | none | none | none | none | {today} | write the first step |
 
 ## Decisions
+
+One line per decision; detail goes to a linked page.
 
 | Date | Outcome | Decision / Attempt | Durable Summary | Evidence | Revisit When |
 |---|---|---|---|---|---|
 | {today} | accepted | Created as a goal under {parent_id} | one node in the epic log | {parent_link} | never |
+
+## Operating Learnings
+
+None yet: one line each, `L-<n> | applies when | rule | why | confirmed <date>` (references/learnings.md).
 """
 
 
@@ -142,8 +154,8 @@ def main() -> int:
             branch=pm["fields"].get("Integration branch", "main"), purpose=a.purpose or a.title, prefix=f"E{code}"), encoding="utf-8")
         created = True
     name = (re.search(r"(?m)^# (.+)", S.read(child)) or [0, a.title])[1]
-    row = {"Spine ID": sid, "Relationship": "child", "Spine": f"[{name}]({link(child, parent)})", "Purpose": a.purpose or a.title, "Status": "draft",
-           "Last Rolled Up": date.today().isoformat(), "Next Action": "fill Mission and Definition Of Done"}
+    row = {"Spine ID": sid, "Relationship": "child", "Spine": f"[{name}]({link(child, parent)})", "Purpose": a.purpose or "<one sentence: what this adds to the parent's goal>", "Status": "ready",
+           "Last Rolled Up": date.today().isoformat(), "Next Action": "fill Goal, Serves and Done means"}
     registered = child not in {t for _, t in pm["rows"]}
     if registered:
         register(parent, row)

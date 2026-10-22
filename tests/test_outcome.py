@@ -34,7 +34,7 @@ class OutcomeCase(T.EpicLogCase):
         self.text = self.path.read_text()
 
     def edit(self, status: str = "draft", outcome: str = "", extra: str = "") -> dict:
-        text = self.text.replace("Status: draft", f"Status: {status}")
+        text = self.text.replace("Status: ready", f"Status: {status}")
         text = text.replace("Integration branch: main\n", f"Integration branch: main\n{extra}", 1)
         self.path.write_text(text.replace("## Current State", outcome + "## Current State", 1))
         return T.v.trackable(self.path)

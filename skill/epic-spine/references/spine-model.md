@@ -35,7 +35,7 @@ A spine is a snapshot of intent, facts and learnings, plus behaviours for mainte
 - When an epic closes, each of its learnings is promoted to the parent or retired.
 - The checker gives an advisory size budget per epic.
 
-**Enforcement.** The commit check blocks only newly added epics that lack these sections; existing epics keep passing and `spines --json` reports `missing_sections` per epic. Whatever this page requires is enforced there or dropped; `--strict` stays advisory. Page and orphan checks: the step 2 plan. A `Spine Type:` line is ignored.
+**Enforcement.** The commit check blocks only newly added epics that lack these sections; existing epics keep passing and `spines --json` reports `missing_sections` per epic. Whatever this page requires is enforced there or dropped; `--strict` stays advisory. Page and orphan checks are advisory. A `Spine Type:` line is ignored.
 
 **Header details** (optional, one line each): `Spine profile:` compact|full (size), `Spine dialect:` v1|v2 (v2 adds SHIP/HARDEN), `Ticket backend:` github|local. <!-- open: header details -->
 
@@ -57,15 +57,17 @@ Wording: the root spine is the trunk; a goal (epic) is a node; the **epic log** 
 - A goal hangs from the root spine (which states the repo's purpose) or from another goal. Spines are nested markdowns: progress within a goal is written in that goal's spine. A new measurable objective worked over iterative pushes (a sprint or plan, each push unblocking the next) gets a new leaf markdown linked from its parent; a small one-push item stays a `- [ ] <ID> text` line in its parent's Definition Of Done. Judgment, not a hard rule.
 - Every goal is named `EPIC-<n>: <short name>` (file title `# EPIC-<n>: <name>`), states its goal in one line and lists measurable success criteria; without a code it cannot be discussed.
 - The child's `Parent spine:` header is the structural authority; the parent's Spine Map must list it with the same Spine ID. A disagreement (either way, or a row pointing at a missing file) is a mismatch. Parent state rolls up from children (blocked wins; all children and criteria done = done; any progress = active).
-- Goal doc = a file with a `Spine ID:` line or named `E<n>-*`, `EPIC*`, `*SPINE*`, `*PLAN*` (not under `archive/`, `node_modules`, dot-dirs, `handoffs/`, `examples/`, `fixtures/`, `test/`, `tests/`, or a vendored skill). One not in the tree is an orphan. Header and Spine Map links resolve against the file's own folder, else the repo root (`Parent spine: docs/spines/root.md` works from any folder).
-- Create with `spine_new.py` (`references/spine-creation.md`); `pre_commit.py` blocks a newly added/renamed goal doc, or a modified one whose HEAD version already had `Spine ID:`, that has no valid header, is not reachable from the root, or disagrees with its parent's map (`--trackable` + tree only; `--strict` stays advisory). It only warns for a modified legacy doc (no `Spine ID:` at HEAD: migrate it with `spines.py`/`spine_new.py`), a root spine with no `Spine ID:` header (migrate the root first), and `Root spine: none`.
+- Epic = a file titled `# EPIC-<n>` or with a `Spine ID:` line, never by name alone (not under `archive/`, `node_modules`, dot-dirs, `handoffs/`, `examples/`, `fixtures/`, `test/`, `tests/`, or a vendored skill); any other .md is a page (`doctrine.py`). An epic not in the tree is an orphan. Header and Spine Map links resolve against the file's own folder, else the repo root (`Parent spine: docs/spines/root.md` works from any folder).
+- Create with `spine_new.py` (`references/spine-creation.md`); `pre_commit.py` blocks a newly added/renamed goal doc, or a modified one whose HEAD version already had `Spine ID:`, that has no valid header, is not reachable from the root, or disagrees with its parent's map, and blocks a newly added epic missing title, Goal, Serves (not the root), Done means or Status (`--trackable` + tree + these only; `--strict` stays advisory). Existing epics only warn: the same gaps, over 150 lines or a cell over 200 characters, a page that looks like an epic, an orphan page. It only warns for a modified legacy doc (no `Spine ID:` at HEAD: migrate it with `spines.py`/`spine_new.py`), a root spine with no `Spine ID:` header (migrate the root first), and `Root spine: none`.
 - `spines.py --json --repo DIR` is the discovery contract (console pickers consume it; always exit 0):
 
 ```
 {"root": "<path>" | null,
  "nodes": [{"id", "path", "title", "type", "parent": "<path>" | null, "status", "rollup_status",
-            "dod": [{"id", "text", "done"}], "outcome": {...} | null, "current_state": {...} | null, "children": ["<path>", ...]}],   # depth-first from the root; paths are repo-relative
- "orphans": [{"path", "title", "reason"}],      # goal docs outside the tree
+            "dod": [{"id", "text", "done"}], "outcome": {...} | null, "current_state": {...} | null, "children": ["<path>", ...],   # depth-first from the root; paths are repo-relative
+            "goal", "serves", "done_means": [{id, text, done}], "contributes": {"<child path>": "<sentence>"}, "pages": [{"path", "title", "via"}], "missing_sections": [...], "size": {"lines", "long_cells"}}],
+ "orphans": [{"path", "title", "reason"}],      # epics outside the tree
+ "orphan_pages": ["<path>"], "looks_like_epic": ["<path>"],   # pages no epic links; pages with Goal / Done means / checkboxes / Next action / Status
  "mismatches": [{"path", "parent", "problem"}]} # header/map disagreement, missing map target
 ```
 

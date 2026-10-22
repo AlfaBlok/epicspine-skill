@@ -39,7 +39,7 @@ Fall back to read-only orientation when the role, spine, or issue is unclear. Bi
 
 | Read when the task involves… | Load |
 |---|---|
-| Creating a spine, any plan/proposal/epic/goal doc, or listing the repo's goals | `references/spine-creation.md`, `scripts/spine_new.py`, `scripts/spines.py`, `scripts/epic_log.py`, `assets/epic-spine-template.md`, `assets/compact-spine-template.md` |
+| Creating a spine, any plan/proposal/epic/goal doc, or listing the repo's goals | `references/spine-creation.md`, `scripts/spine_new.py`, `scripts/spines.py`, `scripts/doctrine.py`, `scripts/epic_log.py`, `assets/epic-spine-template.md`, `assets/compact-spine-template.md` |
 | What every epic says, hierarchy, authority, write scope, profiles | `references/spine-model.md` |
 | Compact profile, state API, migration, rollups, projections | `references/compact-state.md`, `scripts/migrate_spine.py`, `references/execution-rollups.md`, `scripts/rollup_spine.py` |
 | Role binding, dispatch profile, role protocols, gates, bootstrapping | `references/roles-and-dispatch.md`, `references/role-protocols.md`, `references/dispatch-prompts.md` |
@@ -64,7 +64,7 @@ Every thread's first turn, greetings included, check the env (`echo "$EPICSPINE_
 ## Epic Log
 
 A repo has one **epic log**: a tree of goals hung from the root spine (the trunk, which states the purpose). Spines are nested markdowns: progress within a goal is written in that goal's spine. A new measurable objective worked over iterative pushes (a sprint or plan, each push unblocking the next) gets a new leaf markdown linked from its parent; a small one-push item stays a `- [ ] <ID> text` DoD line in its parent. This is judgment, not a hard rule. Every goal is named `EPIC-<n>: <short name>`, states its goal in one line and lists measurable success criteria; without a code it cannot be discussed. The child's `Parent spine:` header decides its place; the parent's Spine Map must agree (checked, not trusted); parent state rolls up from children. A goal closes only after its `## Outcome` is written (verdict, one sentence, evidence per Done means).
-Create every goal file (plan, proposal, epic, `E<n>-*`) with `scripts/spine_new.py`, from its first commit, never by hand; `scripts/spines.py [--json]` lists the tree, orphans and mismatches; the pre-commit gate blocks a new or already-migrated goal doc outside the tree (legacy ones only warn). "On latest EpicSpine" means installed **and** docs conform. `references/spine-model.md`
+Create every goal file (plan, proposal, epic, `E<n>-*`) with `scripts/spine_new.py`, from its first commit, never by hand; `scripts/spines.py [--json]` lists the tree, orphans and mismatches; the pre-commit gate blocks a new or already-migrated epic outside the tree, and a new epic missing Goal, Serves, Done means or Status (existing ones only warn). To make an epic compliant: read `missing_sections` from `spines.py --json`, fill each gap from facts already in the repo (ask its owner for any unwritten why, never invent one), slim it to its own level with detail in linked pages, link them, commit. "On latest EpicSpine" means installed **and** docs conform. `references/spine-model.md`
 
 ## Spine Document Minimums
 

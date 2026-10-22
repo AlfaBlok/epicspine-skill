@@ -75,7 +75,7 @@ class ClosingTests(LivingCase):
     def supersede(self, target: str) -> subprocess.CompletedProcess:
         a = self.repo / "docs/a.md"
         outcome = "## Outcome\n\nVerdict: superseded\nOutcome: Replaced by beta.\nClosed: 2026-10-20 by test\nRisk: none\n\n"
-        a.write_text(a.read_text().replace("Status: draft", "Status: done").replace("## Current State", outcome + "## Current State", 1).replace("Integration branch: main\n", f"Integration branch: main\nSuperseded by: {target}\n"))
+        a.write_text(a.read_text().replace("Status: ready", "Status: done").replace("## Current State", outcome + "## Current State", 1).replace("Integration branch: main\n", f"Integration branch: main\nSuperseded by: {target}\n"))
         return self.commit()
 
     def test_superseded_goal_closes_and_is_reported(self) -> None:
@@ -101,7 +101,7 @@ class StaleTests(LivingCase):
         self.new("docs/b.md", title="beta")
         for n, st in (("a", "active"), ("b", "ready")):
             p = self.repo / f"docs/{n}.md"
-            p.write_text(p.read_text().replace("Status: draft", f"Status: {st}"))
+            p.write_text(p.read_text().replace("Status: ready", f"Status: {st}"))
         old = time.strftime("%Y-%m-%dT%H:%M:%S", time.gmtime(time.time() - 30 * 86400))
         self.assertEqual(0, self.commit(when=old).returncode)  # root and both goals are 30 days old
         self.write("docs/root.md", self.root_text + "\nfresh\n")
@@ -111,7 +111,7 @@ class StaleTests(LivingCase):
         log = self.log()
         self.assertEqual([{"path": "docs/a.md", "title": "EPIC-1: alpha", "days": 30}], log["stale"])  # root fresh, b only ready
         lines = self.run_script("spines.py", "--active").stdout.splitlines()
-        self.assertEqual(["Root — active — docs/root.md", "EPIC-1: alpha — active — docs/a.md — STALE 30d", "EPIC-2: beta — ready — docs/b.md"], lines)
+        self.assertEqual(["EPIC-0: Root — active — docs/root.md", "EPIC-1: alpha — active — docs/a.md — STALE 30d", "EPIC-2: beta — ready — docs/b.md"], lines)
 
     def test_background_sync_reports_stale_goals_for_the_current_repo_once(self) -> None:
         line = f"{self.repo.name}: 1 goals active but untouched 14+ days (spines.py --active)"

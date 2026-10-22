@@ -1,4 +1,4 @@
-# EPIC: <name>
+# EPIC-<n>: <name>
 
 <!-- Full legacy profile. Prefer compact-spine-template.md for small active epics;
 keep overlapping Current State and Execution Cursor facts consistent until migration. -->
@@ -16,7 +16,6 @@ Updated: YYYY-MM-DD
 Repository: <owner/repo or path>
 Primary document: <link or path to this file>
 Spine ID: <stable-id>
-Spine Type: root | branch
 Spine dialect: v2
 Acceptance surface: browser | cli | library | infrastructure | documentation
 Root spine: self | <root spine link>
@@ -81,15 +80,17 @@ List direct children only. A leaf spine may write `No child spines.` instead of 
 |---|---|---|---|---|---|---|---|---|
 | <child-spine-id> | child | <path or URL> | <one-sentence owned ambition> | draft | <healthy or exact blocker> | <link or none> | YYYY-MM-DD HH:MM TZ | <one concrete action> |
 
-Cross-links that do not change canonical parentage:
+Cross-links that do not change canonical parentage: <related sibling, roadmap, memory, architecture, or portfolio link and why it matters>
 
-- <related sibling, roadmap, memory, architecture, or portfolio link and why it matters>
+## Goal
 
-## Mission
+State what the work achieves and why in one paragraph, for a teammate who has not seen the chat history; the Spine Map's Purpose cell is each child's one "contributes" sentence.
 
-State the outcome in one paragraph. Write for a capable teammate who has not seen the chat history.
+## Serves
 
-## Definition Of Done
+[<parent title>](<path to the parent spine>): <how this serves its parent; the root has no parent>
+
+## Done means
 
 <!-- See ../references/structural-validation.md for strict data checks and advisory prose. `## Outcome` is written at close (../references/spine-model.md). Machine-read contract (`- [ ] <ID> <criterion>` lines here, Status/Waiting on, Issue Ledger columns): ../references/spine-model.md. -->
 
@@ -277,8 +278,6 @@ Links:
 | Date | Target Spine | Proposed Change | Evidence | Suggested Owner | Status |
 |---|---|---|---|---|---|
 | YYYY-MM-DD | <path or URL> | <summary> | <link> | <owner> | proposed |
-
-Use `registration pending` when a new branch spine exists but the parent steward has not yet added its reciprocal Spine Map row. Do not describe that spine as connected until registration is complete.
 
 ## Appendix
 
