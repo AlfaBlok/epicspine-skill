@@ -45,6 +45,23 @@ class CompactStateTests(unittest.TestCase):
         validator.validate_graph([document])
         self.assertIn("graph validation requires explicit hierarchy fields for compact spines; lineage is undeclared", document.errors)
 
+    def test_compact_row_is_the_ticket_so_issue_may_stay_draft(self):
+        text = self.source().replace("| draft | Ticket worker | example-worker | Review CLI explanation | draft |", "| draft | Ticket worker | example-worker | Review CLI explanation | done |")
+        self.assertNotEqual(text, self.source())
+        self.assertEqual([], self.document(text).errors)
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "epic.md"
+            path.write_text(text)
+            result = subprocess.run([sys.executable, str(SCRIPTS / "validate_spine.py"), "--strict", str(path)], capture_output=True, text=True)
+        self.assertNotIn("ES-S-TICKET", result.stdout + result.stderr)
+
+    def test_draft_issue_still_fails_once_a_github_compact_epic_cites_real_issues(self):
+        row = next(line for line in self.source().splitlines() if line.startswith("| draft | Ticket worker"))
+        done = row.replace("explanation | draft |", "explanation | done |")
+        real = done.replace("| draft |", "| https://github.com/example/repo/issues/7 |", 1)
+        text = self.source().replace("Spine profile: compact", "Spine profile: compact\nTicket backend: github").replace(row, done + "\n" + real)
+        self.assertTrue(any("invalid Issue" in error for error in self.document(text).errors))
+
     def test_declared_compact_hierarchy_is_checked(self):
         text = self.source().replace("Integration branch: codex/example", "Integration branch: codex/example\nSpine Type: root\nRoot spine: self\nParent spine: none\nAdditional root rationale: n/a")
         with tempfile.TemporaryDirectory() as tmp:
