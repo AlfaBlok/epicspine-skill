@@ -227,3 +227,16 @@ Page of [EPIC-4](../EPIC-4-DOCTRINE-2.md). The Issue Ledger there keeps one line
 ## Step 18
 
 Pre-commit tests run from a linked worktree (for example `../epicspine-skill-wt-<task>`) exercise the hook the main checkout installed, so they test main's `pre_commit.py`, not the branch's. The step 3 worker found it on 2026-10-22 and ran its suite from a plain clone instead. Fix: the tests (or `install_guard`) resolve the hook script from the checkout under test. Back to [EPIC-4](../EPIC-4-DOCTRINE-2.md).
+
+## Step 19
+
+E4-5 cold check on EPIC-4, 2026-10-22, console run run_1d057709 (Sonnet 5.5, seat1). The brief was only `Bound epic: <path>` plus "read-only: change no files, commit nothing, dispatch no one, ask nothing".
+
+Passed: no questions asked; it found the state, Done means, open ask EPIC-4-A2 and the linked pages; its checks (spines --json, --trackable, pages exist) agree with Current State.
+
+Missed:
+- it did not state the goal in its own words or its next action. It treated the brief as "verify the epic" (the read-only line may have pushed it there).
+- it bound "Learnings in force: none read", without walking `Parent spine:` up to EPIC-0 (global-block rule 2).
+- it reported `validate_spine.py --strict` failing with 32 ES-S-TICKET errors (Issue `draft` on non-draft rows). The doctrine says the ledger row is the ticket and `--strict` stays advisory, so this is expected; worth a one-line note in the doctrine or relaxing ES-S-TICKET for compact epics.
+
+Fix (proposal): the bind reply of a worker whose brief is only `Bound epic:` states four lines from the spine (Goal, Done means left, Next action, where context lives) before acting, and walks the parent chain for learnings. Then re-run E4-5 without the read-only line, in a throwaway clone. Back to [EPIC-4](../EPIC-4-DOCTRINE-2.md).
