@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.10.22.7 — A new goal names its code: `spines.py --active` prints `next: EPIC-<n>`
+
+- **Fix: a fresh session answered a new ask with "Goal: a new child spine" and no code** (EPIC-3 E3-2, live probe in sismic 2026-10-22). Rule 6 said a new spine comes from `spine_new.py`, but the code it gets was only computed when the file was written. `spines.py --active` now ends with `next: EPIC-<n>`, the code `spine_new.py` assigns without `--code` (highest goal code in the repo, legacy `E4`/`EPIC 0` counted, + 1; a repo with no coded goal gives `EPIC-1`); both use the new shared `epic_log.next_of`. `spines.py --json` adds a top-level `next_code` int (documented in `references/spine-model.md`; every other field unchanged). Rule 6 in `global-block.md` now reads "an open one, or for a new spine the `next:` code, both from `spines.py --active`; then create it with `spine_new.py`" (same length class); `spine-creation.md` names the line. Tests: `tests/test_living_tree.py` (`NextCodeLineTests`: EPIC-0 + EPIC-3 gives EPIC-4, legacy `# EPIC: x` root gives EPIC-1, the line matches what `spine_new.py` writes). Skill 2026.10.22.7.
+
 ## 2026.10.22.6 — spines.py reads each file once; the stale check survives git timeouts
 
 - **Fix: `spines.py --json` was slow and could crash on a loaded host** (EPIC-3 E3-4: the agent_team console calls it with a 15 s timeout, and poly-maker EPIC-4 fell out of the milestone picker). A scan used to read every doc up to four times; it now reads each once (`doctrine.remembering()`, scoped to `spines.scan`), `page_report` takes the pages `scan` already computed instead of recomputing them, and `validate_spine.criteria` no longer rebuilds its section set per line. And `epic_log.stale` no longer lets a `git log` timeout (or `OSError`) abort the scan: that goal is skipped, neither stale nor known. `spines.py --json` output is unchanged. Tests: `tests/test_epic_log.py`. Skill 2026.10.22.6.

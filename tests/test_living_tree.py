@@ -65,6 +65,28 @@ class CodeTests(LivingCase):
         self.assertTrue(T.v.trackable(self.repo / "docs/a.md")["trackable"])
 
 
+class NextCodeLineTests(LivingCase):
+    """`spines.py --active` ends with `next: EPIC-<n>`, the code `spine_new.py` assigns (E3-2 probe gap)."""
+
+    def last(self) -> str:
+        return self.run_script("spines.py", "--active").stdout.splitlines()[-1]
+
+    def test_next_follows_the_highest_code(self) -> None:
+        self.new("docs/c.md", "docs/root.md", "three", "--code", "3")
+        self.assertEqual("next: EPIC-4", self.last())
+        self.assertEqual(4, self.log()["next_code"])
+        self.assertEqual(0, self.new("docs/d.md", title="four").returncode)
+        self.assertEqual("# EPIC-4: four", self.title("docs/d.md"))  # the line named what spine_new then wrote
+        self.assertEqual("next: EPIC-5", self.last())
+
+    def test_legacy_root_without_a_code_gives_epic_1(self) -> None:
+        self.write("docs/root.md", self.root_text.replace("# EPIC-0: Root", "# EPIC: x", 1))
+        self.assertEqual(["next: EPIC-1"], [l for l in self.run_script("spines.py", "--active").stdout.splitlines() if l.startswith("next:")])
+        self.assertEqual(1, self.log()["next_code"])
+        self.assertEqual(0, self.new("docs/a.md", title="alpha").returncode)
+        self.assertEqual("# EPIC-1: alpha", self.title("docs/a.md"))
+
+
 class ClosingTests(LivingCase):
     def setUp(self) -> None:
         super().setUp()
@@ -112,7 +134,7 @@ class StaleTests(LivingCase):
         log = self.log()
         self.assertEqual([{"path": "docs/a.md", "title": "EPIC-1: alpha", "days": 30}], log["stale"])  # root fresh, b only ready
         lines = self.run_script("spines.py", "--active").stdout.splitlines()
-        self.assertEqual(["EPIC-0: Root — active — docs/root.md", "EPIC-1: alpha — active — docs/a.md — STALE 30d", "EPIC-2: beta — ready — docs/b.md"], lines)
+        self.assertEqual(["EPIC-0: Root — active — docs/root.md", "EPIC-1: alpha — active — docs/a.md — STALE 30d", "EPIC-2: beta — ready — docs/b.md", "next: EPIC-3"], lines)
 
     def test_background_sync_reports_stale_goals_for_the_current_repo_once(self) -> None:
         line = f"{self.repo.name}: 1 goals active but untouched 14+ days (spines.py --active)"
