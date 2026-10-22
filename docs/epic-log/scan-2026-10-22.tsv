@@ -1,0 +1,16 @@
+poly-maker	root=True	nodes=55 orphans=3 mismatches=0 orphan_pages=343 looks_like_epic=14 stale=0	23s
+zenod	root=True	nodes=4 orphans=0 mismatches=0 orphan_pages=140 looks_like_epic=28 stale=0	9s
+idea_scraper	root=False	nodes=0 orphans=0 mismatches=0 orphan_pages=0 looks_like_epic=0 stale=0	6s
+infra-vps	root=True	nodes=7 orphans=0 mismatches=0 orphan_pages=16 looks_like_epic=39 stale=0	9s
+obsidian-brain	root=False	nodes=0 orphans=0 mismatches=0 orphan_pages=0 looks_like_epic=0 stale=0	3s
+abnb-agent	root=True	nodes=1 orphans=0 mismatches=0 orphan_pages=18 looks_like_epic=4 stale=0	2s
+zenod-cloud	root=False	nodes=0 orphans=0 mismatches=0 orphan_pages=0 looks_like_epic=0 stale=0	3s
+agent_team	root=True	nodes=5 orphans=0 mismatches=0 orphan_pages=12 looks_like_epic=0 stale=0	2s
+house_decision	root=True	nodes=1 orphans=0 mismatches=0 orphan_pages=20 looks_like_epic=0 stale=0	6s
+sismic	root=True	nodes=1 orphans=0 mismatches=0 orphan_pages=3 looks_like_epic=0 stale=0	3s
+nectary	root=False	nodes=0 orphans=0 mismatches=0 orphan_pages=0 looks_like_epic=0 stale=0	2s
+testaments	root=True	nodes=1 orphans=0 mismatches=0 orphan_pages=0 looks_like_epic=0 stale=0	1s
+tax-assist-research	root=True	nodes=18 orphans=0 mismatches=4 orphan_pages=552 looks_like_epic=0 stale=0	14s
+zenod_memory	root=False	nodes=0 orphans=0 mismatches=0 orphan_pages=0 looks_like_epic=0 stale=0	1s
+alpha9_webflow_export	root=False	nodes=0 orphans=0 mismatches=0 orphan_pages=0 looks_like_epic=0 stale=0	1s
+epicspine-skill	root=True	nodes=5 orphans=0 mismatches=0 orphan_pages=2 looks_like_epic=0 stale=0	3s
