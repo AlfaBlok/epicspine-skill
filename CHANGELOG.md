@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026.10.22.3 — Hook tests run the tree under test
+
+- **Fix: pre-commit tests run from a linked worktree exercised main's gate** (EPIC-4 step 18). The hook `agents_block.hook_text` writes points at the main checkout by design (`install_guard.install_dir`), and the repo's `.git/hooks` is shared by worktrees, so a suite run from `../epicspine-skill-wt-<task>` tested main's `pre_commit.py`, not the branch's. No skill code changes: installed hooks still name the durable path. `tests/tree_gate.py` installs the gate in a test's temp repo pointing at the checkout under test; the tests that commit through the hook (`test_trackable`, `test_epic_log`, `test_doctrine`, `test_living_tree`) use it, and `tests/test_tree_gate.py` proves that a linked worktree whose `pre_commit.py` differs is the gate that runs, while a normal install still points at main. Skill 2026.10.22.3.
 ## 2026.10.22.2 — Cold pickup reply, row is the ticket
 
 - **Fix: a cold agent audited the epic instead of picking it up** (EPIC-4 step 19, E4-5 check on EPIC-4: no goal or next action stated, `Learnings in force: none`). Global-block rule 1 now says that an agent whose brief names `Bound epic: <path>` opens, right after the bind line and before acting, with four short lines from that epic (Goal, Done means still open, Next action, where its context lives); rule 2 says to walk the `Parent spine:` chain before binding. One line each mirrored in SKILL.md rule 5 and the worker template of `references/dispatch-prompts.md`. Reworded in place: no file gains a line.

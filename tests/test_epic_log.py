@@ -8,6 +8,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
+import tree_gate
 from test_agents_block import agents_block
 from test_validate_spine import VALIDATOR_PATH, validate_spine as v
 
@@ -265,7 +266,7 @@ class PreCommitTreeTests(EpicLogCase):
     def setUp(self) -> None:
         super().setUp()
         self.git("init", "-q")
-        agents_block.install(self.repo, "docs/root.md")
+        tree_gate.install(agents_block, self.repo, "docs/root.md")
         self.git("add", "-A")
         self.assertEqual(0, self.git("commit", "--no-verify", "-m", "base").returncode)  # history before the hook: an old-style root
 

@@ -11,6 +11,7 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
+import tree_gate
 from test_agents_block import agents_block
 from test_validate_spine import validate_spine as v, VALIDATOR_PATH
 
@@ -316,7 +317,7 @@ class PreCommitHookTests(unittest.TestCase):
         return subprocess.run(cmd, cwd=self.repo, capture_output=True, text=True)
 
     def install(self, root: str = "docs/EPIC.md") -> None:
-        agents_block.install(self.repo, root)
+        tree_gate.install(agents_block, self.repo, root)
 
     @property
     def hook(self) -> Path:

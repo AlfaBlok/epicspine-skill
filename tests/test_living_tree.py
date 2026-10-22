@@ -10,6 +10,7 @@ import unittest
 from pathlib import Path
 
 import test_epic_log as T
+import tree_gate
 from test_agents_block import agents_block
 
 sys.path.insert(0, str(T.SCRIPTS))
@@ -27,7 +28,7 @@ class LivingCase(T.EpicLogCase):
 
     def init(self) -> None:
         self.git("init", "-q")
-        agents_block.install(self.repo, "docs/root.md")
+        tree_gate.install(agents_block, self.repo, "docs/root.md")
 
     def commit(self, when: str | None = None) -> subprocess.CompletedProcess:
         self.git("add", "-A")

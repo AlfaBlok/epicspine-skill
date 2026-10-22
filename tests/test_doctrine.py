@@ -7,6 +7,7 @@ import sys
 import unittest
 
 import test_epic_log as base
+import tree_gate
 from test_validate_spine import VALIDATOR_PATH, validate_spine as v
 
 SCRIPTS = VALIDATOR_PATH.parent
@@ -197,7 +198,7 @@ class PreCommitDoctrineTests(base.EpicLogCase):
     def setUp(self) -> None:
         super().setUp()
         self.git("init", "-q")
-        base.agents_block.install(self.repo, "docs/root.md")
+        tree_gate.install(base.agents_block, self.repo, "docs/root.md")
         self.git("add", "-A")
         self.assertEqual(0, self.git("commit", "--no-verify", "-m", "base").returncode)  # history before the hook: an old-style root
 
