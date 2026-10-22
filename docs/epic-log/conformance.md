@@ -8,7 +8,7 @@ Page of [EPIC-3](../EPIC-3-EPIC-LOG.md) (E3-3). `spines.py --json` on every repo
 | zenod | docs/EPIC-0-FOUNDATION-SPINE.md | 4 | 0 | 0 | 28 | 140 | green: 29 / 0 / 0 / 3 recorded as exceptions / 104 (PR #1420, merge 2c34984); 7 superseded goals closed, 6 flagged stale for the owner |
 | infra-vps | docs/EPIC-0-VPS-FLEET.md | 7 | 0 | 0 | 39 | 16 | migrating (mcp:51557bfc) |
 | tax-assist-research | docs/EPIC_SPINE.md | 18 | 0 | 4 | 0 | 552 | migrating (mcp:c53a334c) |
-| abnb-agent | docs/travel/TRAVEL_SPINE.md | 1 | 0 | 0 | 4 | 18 | migrating (mcp:688572d4) |
+| abnb-agent | docs/travel/TRAVEL_SPINE.md | 1 | 0 | 0 | 4 | 18 | green: 3 / 0 / 0 / 2 recorded as exceptions / 6 (585732d); root kept (travel home); EPIC-1 Pyrenees dormant since 2026-08, left for Jordi |
 | agent_team | yes | 5 | 0 | 0 | 0 | 12 | green |
 | house_decision | yes | 1 | 0 | 0 | 0 | 20 | green |
 | sismic | yes | 1 | 0 | 0 | 0 | 3 | green |
