@@ -7,6 +7,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 import tree_gate
 from test_agents_block import agents_block
@@ -14,6 +15,7 @@ from test_validate_spine import VALIDATOR_PATH, validate_spine as v
 
 SCRIPTS = VALIDATOR_PATH.parent
 sys.path.insert(0, str(SCRIPTS))
+import epic_log  # noqa: E402
 import spines  # noqa: E402
 
 ROOT = """# EPIC-0: Root
@@ -260,6 +262,14 @@ class DiscoveryTests(EpicLogCase):
     def test_root_found_from_header_without_agents(self) -> None:
         (self.repo / "AGENTS.md").unlink()
         self.assertEqual("docs/root.md", self.log()["root"])
+
+
+class StaleTests(unittest.TestCase):
+    def test_git_timeout_or_oserror_skips_the_node_and_the_scan_returns(self) -> None:
+        nodes = [{"path": "docs/a.md", "title": "A", "status": "active"}, {"path": "docs/b.md", "title": "B", "status": "blocked"}]
+        for error in (subprocess.TimeoutExpired("git", 5), OSError("no git")):
+            with mock.patch.object(epic_log.subprocess, "run", side_effect=error):
+                self.assertEqual([], epic_log.stale(Path("."), nodes))
 
 
 class PreCommitTreeTests(EpicLogCase):

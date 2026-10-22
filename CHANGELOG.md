@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.10.22.6 — spines.py reads each file once; the stale check survives git timeouts
+
+- **Fix: `spines.py --json` was slow and could crash on a loaded host** (EPIC-3 E3-4: the agent_team console calls it with a 15 s timeout, and poly-maker EPIC-4 fell out of the milestone picker). A scan used to read every doc up to four times; it now reads each once (`doctrine.remembering()`, scoped to `spines.scan`), `page_report` takes the pages `scan` already computed instead of recomputing them, and `validate_spine.criteria` no longer rebuilds its section set per line. And `epic_log.stale` no longer lets a `git log` timeout (or `OSError`) abort the scan: that goal is skipped, neither stale nor known. `spines.py --json` output is unchanged. Tests: `tests/test_epic_log.py`. Skill 2026.10.22.6.
+
 ## 2026.10.22.5 — An epic stamp needs the colon
 
 - **Fix: a page titled `# EPIC-4 decisions (full text)` was listed as an orphan epic** (EPIC-4 step 21). The stamp was `^# EPIC-<n>\b`, so any title starting with an epic code counted; the poly-maker E4 migration (8326a45d) wrote six detail pages that way (`docs/one-logger/{decisions,tickets,inventory,history,open-issues,schema}.md`), and `spines.py --json` reported them as epics with "no Spine ID header" instead of listing them under E4's `pages`. An epic is now a doc titled `# EPIC-<n>:` (the doctrine's `EPIC-<n>: <name>`, colon required) or with a `Spine ID:` line; every other doc is a page, reached by links like any other. The `title` missing-section check is unchanged. On poly-maker (not edited) the six pages move under E4's `pages` and orphans drop from 10 to 3 (the seventh, `analysis/bestiary/rebates/REPORT.md`, titled `# EPIC-8 Rebate economics ...`, is now a page under its SPINE.md); this repo's `spines.py --json` is identical before and after. Wording in `spine-model.md`, `spines.py` and `doctrine.py` docstrings updated in place. Tests: `tests/test_doctrine.py`. Skill 2026.10.22.5.

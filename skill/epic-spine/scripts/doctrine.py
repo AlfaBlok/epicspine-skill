@@ -5,6 +5,7 @@ orphan / looks-like-epic pages. An epic is a doc titled ``# EPIC-<n>:`` (colon r
 
 from __future__ import annotations
 
+import contextlib
 import os
 import re
 from pathlib import Path
@@ -21,11 +22,30 @@ DONE = re.compile(rf"- \[([ xX])\] ({v.ID})[ \t]*(.*)")
 MAX_LINES, MAX_CELL = 150, 200
 
 
+_reads: dict[Path, str] | None = None  # set by ``remembering()``: one read per file for the length of a scan
+
+
 def read(path: Path) -> str:
+    if _reads is not None and path in _reads:
+        return _reads[path]
     try:
-        return path.read_text(encoding="utf-8", errors="replace")
+        text = path.read_text(encoding="utf-8", errors="replace")
     except OSError:
-        return ""
+        text = ""
+    if _reads is not None:
+        _reads[path] = text
+    return text
+
+
+@contextlib.contextmanager
+def remembering():
+    """Within the block each file is read once (a repo scan reads every doc up to four times, slow on a loaded host); files must not change meanwhile."""
+    global _reads
+    _reads = {}
+    try:
+        yield
+    finally:
+        _reads = None
 
 
 def is_epic(text: str) -> bool:
@@ -117,10 +137,11 @@ def looks_like_epic(text: str) -> bool:
     return sum(map(bool, signals)) >= 2
 
 
-def page_report(repo: Path, sources: list[Path], epics: set[Path]) -> tuple[list[str], list[str]]:
-    """(orphan_pages, looks_like_epic): pages no source epic reaches; pages that read like an epic. README/AGENTS/CHANGELOG-style files are ignored."""
+def page_report(repo: Path, sources: list[Path], epics: set[Path], reached: set[Path] | None = None) -> tuple[list[str], list[str]]:
+    """(orphan_pages, looks_like_epic): pages no source epic reaches; pages that read like an epic. README/AGENTS/CHANGELOG-style files are ignored.
+    ``reached`` is the pages of ``sources`` when the caller already holds them (``spines.scan``), else they are computed."""
     rel = lambda p: os.path.relpath(p, repo)  # noqa: E731
-    reached = {repo / p["path"] for e in sources for p in pages(repo, e, epics)}
+    reached = {repo / p["path"] for e in sources for p in pages(repo, e, epics)} if reached is None else reached
     candidates = [p for p in docs(repo) if p not in epics and p.stem.lower() not in CONVENTIONAL]
     return ([rel(p) for p in candidates if p not in reached] if sources else [],
             sorted(rel(p) for p in {*candidates, *reached} if p.stem.lower() not in CONVENTIONAL and looks_like_epic(read(p))) if sources else [])

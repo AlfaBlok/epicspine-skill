@@ -96,6 +96,11 @@ def problems(repo: Path, path: Path, cache: dict) -> list[str] | None:
 
 
 def scan(repo: Path, refs: bool = True) -> dict:
+    with D.remembering():
+        return _scan(repo, refs)
+
+
+def _scan(repo: Path, refs: bool) -> dict:
     cache = {None: (repo := repo.resolve())}
     docs = [p.resolve() for p in goal_docs(repo)]
     root = find_root(repo, cache, docs)
@@ -146,7 +151,7 @@ def scan(repo: Path, refs: bool = True) -> dict:
         n["pages"] = D.pages(repo, repo / n["path"], epics)
     if refs:  # `waits on` states: this repo's asks, else the sibling checkout `../<repo>`
         resolve(repo, list(nodes.values()), meta(root, cache)["text"] if root else "")
-    orphan_pages, like_epic = D.page_report(repo, [repo / p for p in nodes] if root else [], epics)
+    orphan_pages, like_epic = D.page_report(repo, [repo / p for p in nodes] if root else [], epics, {repo / q["path"] for n in nodes.values() for q in n["pages"]})
     orphans = [{"path": rel(d), "title": title(meta(d, cache), d.stem), "reason": "not reachable from the root" if meta(d, cache)["id"] else "no Spine ID header"} for d in queue]
     return {"root": rel(root) if root else None, "nodes": list(nodes.values()), "orphans": orphans, "mismatches": mismatches,
             "orphan_pages": orphan_pages, "looks_like_epic": like_epic, "stale": stale(repo, list(nodes.values()))}

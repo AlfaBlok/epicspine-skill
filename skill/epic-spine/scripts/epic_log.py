@@ -46,11 +46,14 @@ def link_problems(child: dict, parent: dict) -> list[str]:
 
 
 def stale(repo: Path, nodes: list[dict], now: float | None = None) -> list[dict]:
-    """Active/blocked goals whose file's last commit is 14+ days old (one git call each; untracked files are skipped)."""
+    """Active/blocked goals whose file's last commit is 14+ days old (one git call each; untracked files and git timeouts are skipped)."""
     out, now = [], now or time.time()
     for n in nodes:
         if n["status"] in ("active", "blocked"):
-            r = subprocess.run(["git", "log", "-1", "--format=%ct", "--", n["path"]], cwd=repo, capture_output=True, text=True, timeout=5)
+            try:
+                r = subprocess.run(["git", "log", "-1", "--format=%ct", "--", n["path"]], cwd=repo, capture_output=True, text=True, timeout=5)
+            except (subprocess.TimeoutExpired, OSError):  # a loaded host must not crash the scan: this node is unknown, not stale
+                continue
             if r.stdout.strip().isdigit() and (days := int((now - int(r.stdout)) // 86400)) >= STALE_DAYS:
                 out.append({"path": n["path"], "title": n["title"], "days": days})
     return out
