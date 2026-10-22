@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.10.22.3 — Hook tests run the tree under test
+
+- **Fix: pre-commit tests run from a linked worktree exercised main's gate** (EPIC-4 step 18). The hook `agents_block.hook_text` writes points at the main checkout by design (`install_guard.install_dir`), and the repo's `.git/hooks` is shared by worktrees, so a suite run from `../epicspine-skill-wt-<task>` tested main's `pre_commit.py`, not the branch's. No skill code changes: installed hooks still name the durable path. `tests/tree_gate.py` installs the gate in a test's temp repo pointing at the checkout under test; the tests that commit through the hook (`test_trackable`, `test_epic_log`, `test_doctrine`, `test_living_tree`) use it, and `tests/test_tree_gate.py` proves that a linked worktree whose `pre_commit.py` differs is the gate that runs, while a normal install still points at main. Skill 2026.10.22.3.
+
 ## 2026.10.22.1 — Doctrine 2 tools
 
 - **The tools write and read the Doctrine 2 shape** (EPIC-4 step 3; spec `docs/doctrine/tools-brief.md`, contract `docs/doctrine/console-contract.md`, approved as EPIC-4-A1). New `scripts/doctrine.py` holds the readers; `spines.py --json` adds, per node and without changing any existing field: `goal`, `serves` (null for the root), `done_means` (`## Done means`, else the DoD heading; `dod` reads either), `contributes` (child path to the Spine Map's `Contributes`/`Purpose` sentence; a child without one is absent), `pages` (unstamped docs reachable by links from the epic through pages, any depth, `via` = the linking leaf), `missing_sections` (`title`, `goal`, `serves`, `done_means`, `status`) and `size` (`lines`, `long_cells` over 200 characters); top level adds `orphan_pages` (docs no tree leaf links to; same skip list, README/AGENTS/CHANGELOG-style files ignored, empty without a root) and `looks_like_epic` (pages with two or more of Goal, Done means, checkboxes, Next action, Status).
