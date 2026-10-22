@@ -51,7 +51,7 @@ Page of [EPIC-4](../EPIC-4-DOCTRINE-2.md). The Issue Ledger there keeps one line
 - **Depends On:** contract (parallel with step 3); live check after step 3
 - **PR/Branch:** none
 - **Base:** main
-- **Latest Evidence:** live check on 2026.10.22.1 (2026-10-22): EPIC-4 Definitions tab shows Goal, Serves chain to EPIC-0, Done means 2/5 above tickets, 3 pages, no missing_sections ([screenshot](http://100.104.206.10:18770/epic4-live-overview-2026-10-22.png)); agent_team 1a27502, ca8fc10, deploy c5f8bdb; children + contributes on EPIC-0 ([screenshot](http://100.104.206.10:18770/epic0-live-children-2026-10-22.png)); E4-3 met
+- **Latest Evidence:** live check on 2026.10.22.1 (2026-10-22): EPIC-4 Definitions tab shows Goal, Serves chain to EPIC-0, Done means 2/5 above tickets, 3 pages, no missing_sections ([screenshot](evidence/epic4-live-overview-2026-10-22.png)); agent_team 1a27502, ca8fc10, deploy c5f8bdb; children + contributes on EPIC-0 ([screenshot](evidence/epic0-live-children-2026-10-22.png)); E4-3 met
 - **Last Verified:** 2026-10-19
 - **Next Action:** relink orphan page tools-brief.md at the step 6 merge
 
