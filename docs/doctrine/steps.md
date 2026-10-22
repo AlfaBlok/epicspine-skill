@@ -248,3 +248,7 @@ Re-run 2026-10-22 on 2026.10.22.3 (console run run_0a988e59, Sonnet 5.5, seat2, 
 ## Step 20
 
 Build [D19](decisions.md#d19) (agent_team M2-35). Contract: [human-asks.md](human-asks.md) gains "Reference, not ask", "Search before asking" and "Consumed answers" sections; the spine-model.md Waiting on line names `waits on` and `· done` in a few words (net skill size must not grow). Parser (`epic_log.py`): `waits_on` per node and the `done` state on answered lines. Checks: unknown same-repo code warns; a reference satisfies a blocked row; done lines are never stale or surplus. Tests, CHANGELOG, VERSION, MANIFEST. Then mark EPIC-4-A1 `· done` as the first use. Back to [EPIC-4](../EPIC-4-DOCTRINE-2.md).
+
+Second half, 2026-10-22 (console run run_7966b83c, merge 2771c53): EPIC-0 28 -> 0 long cells (detail in docs/root/steps.md, decisions.md), EPIC-3 13 -> 0 (docs/epic-log/), EPIC-3 `## Serves` condensed from EPIC-0's Mission and Spine Map row. Follow-ups, not blocking:
+- EPIC-0 stays at 162 lines (budget 150, advisory): only collapsing or moving whole ledger rows (33) or the Book Companion block would cut lines; that is the root delivery manager's call.
+- EPIC-1 and EPIC-2 (done) report `missing_sections: serves`; nothing in the repo says how they serve EPIC-0, so no text was invented. Either their owner writes it from history, or `doctrine.py` stops requiring Serves on done epics (proposal for the next tools step).
