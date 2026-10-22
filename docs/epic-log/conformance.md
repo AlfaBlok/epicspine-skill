@@ -6,8 +6,8 @@ Page of [EPIC-3](../EPIC-3-EPIC-LOG.md) (E3-3). `spines.py --json` on every repo
 |---|---|---|---|---|---|---|---|
 | poly-maker | EPIC0.md | 55 | 3 | 0 | 14 | 343 | green: 58 / 0 / 0 / 14 recorded as exceptions ([list](https://github.com/AlfaBlok/poly-maker/blob/main/docs/spines/LOOKS_LIKE_EPIC_EXCEPTIONS.md)) / 339 (1dc21c66..69a3a0d8) |
 | zenod | docs/EPIC-0-FOUNDATION-SPINE.md | 4 | 0 | 0 | 28 | 140 | green: 29 / 0 / 0 / 3 recorded as exceptions / 104 (PR #1420, merge 2c34984); 7 superseded goals closed, 6 flagged stale for the owner |
-| infra-vps | docs/EPIC-0-VPS-FLEET.md | 7 | 0 | 0 | 39 | 16 | migrating (mcp:51557bfc) |
-| tax-assist-research | docs/EPIC_SPINE.md | 18 | 0 | 4 | 0 | 552 | migrating (mcp:c53a334c) |
+| infra-vps | docs/EPIC-0-VPS-FLEET.md | 7 | 0 | 0 | 39 | 16 | migrating (retry mcp:decbc138; first thread failed at start, no changes) |
+| tax-assist-research | docs/EPIC_SPINE.md | 18 | 0 | 4 | 0 | 552 | green: 18 / 0 / 0 / 0 / 553 (8cebb7b): a misplaced P3 header, 2 Spine Map rows |
 | abnb-agent | docs/travel/TRAVEL_SPINE.md | 1 | 0 | 0 | 4 | 18 | green: 3 / 0 / 0 / 2 recorded as exceptions / 6 (585732d); root kept (travel home); EPIC-1 Pyrenees dormant since 2026-08, left for Jordi |
 | agent_team | yes | 5 | 0 | 0 | 0 | 12 | green |
 | house_decision | yes | 1 | 0 | 0 | 0 | 20 | green |
