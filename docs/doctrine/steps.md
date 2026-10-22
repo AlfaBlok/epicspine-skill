@@ -258,3 +258,5 @@ Result 2026-10-22: fresh poly-maker thread mcp:e25fa5ad (Opus 5.5, seat2), singl
 ## Step 21
 
 `doctrine.py` STAMP `^# EPIC-\d+\b` treats any `# EPIC-4 …` page title as an epic, so poly-maker's six E4 detail pages became orphan epics after the step 5 migration. The doctrine title is `EPIC-<n>: <name>`; the stamp now requires the colon (or a `Spine ID:` line). Back to [EPIC-4](../EPIC-4-DOCTRINE-2.md).
+
+E4-5 on poly-maker E4, 2026-10-22 (console run run_874eb3d3, Sonnet 5.5, seat1, no-push clone at poly-maker 9e98f5d6, brief = `Bound epic:` plus a no-production-action limit): PASS. Unasked it opened with Goal, the six open Done means, next action (pg1 writer window, 48 h parity, T6/T10; E4-A7 waits on Jordi) and context (docs/one-logger/, parent EPIC0), bound learnings E4 L-1..2, EPIC L-1/3/4, EPIC0 L-1..5, then ran the xtreme_logger tests (41 OK) without touching production. It noted E4's Source revision lags main (owner's job).
