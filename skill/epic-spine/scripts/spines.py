@@ -3,7 +3,7 @@
 
 ``spines.py [--json | --active] --repo DIR`` finds the root (AGENTS.md ``Root spine:``, else a root-typed header), walks children
 (a child's ``Parent spine:`` header decides; the parent's Spine Map must agree; links resolve against the file's folder, else
-the repo root) and lists goal docs outside the tree as orphans. Goal doc (epic) = a ``# EPIC-<n>`` title or a ``Spine ID:`` line, never
+the repo root) and lists goal docs outside the tree as orphans. Goal doc (epic) = a ``# EPIC-<n>:`` title or a ``Spine ID:`` line, never
 a name (doctrine.py; any other .md is a page, reported as ``pages`` / ``orphan_pages`` / ``looks_like_epic``); skipped: archive/,
 node_modules, dot-dirs, handoffs/, examples/, fixtures/, test/, tests/, vendored skills. Exits 0."""
 

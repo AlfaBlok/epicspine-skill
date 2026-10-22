@@ -135,6 +135,24 @@ class PageTests(base.EpicLogCase):
         self.assertEqual({"docs/stamped.md": "no Spine ID header", "docs/with-id.md": "not reachable from the root"}, {o["path"]: o["reason"] for o in self.log()["orphans"]})
         self.assertIn("docs/not-stamped.md", self.log()["orphan_pages"])
 
+    def test_title_without_colon_is_a_page_reached_by_links(self) -> None:
+        # poly-maker E4 detail pages are titled "# EPIC-4 decisions (full text)": pages, never orphan epics
+        self.assertEqual(0, self.new("docs/EPIC-one.md", "docs/root.md", "one").returncode)
+        self.write("docs/EPIC-one.md", (self.repo / "docs/EPIC-one.md").read_text() + "\nSee [decisions](one/decisions.md).\n")
+        self.write("docs/one/decisions.md", "# EPIC-4 decisions (full text)\n\nDetail.\n")
+        self.write("docs/one/loose.md", "# EPIC-4 loose notes\n")
+        log = self.log()
+        by = {n["path"]: n for n in log["nodes"]}
+        self.assertEqual([{"path": "docs/one/decisions.md", "title": "EPIC-4 decisions (full text)", "via": "docs/EPIC-one.md"}], by["docs/EPIC-one.md"]["pages"])
+        self.assertNotIn("docs/one/decisions.md", by)
+        self.assertEqual([], log["orphans"])  # not orphan epics
+        self.assertEqual(["docs/one/loose.md"], log["orphan_pages"])  # an unlinked one is an orphan page
+
+    def test_title_with_colon_is_an_epic(self) -> None:
+        self.write("docs/colon.md", "# EPIC-4: X\n")
+        self.assertEqual({"docs/colon.md": "no Spine ID header"}, {o["path"]: o["reason"] for o in self.log()["orphans"]})
+        self.assertNotIn("docs/colon.md", self.log()["orphan_pages"])
+
     def test_no_root_reports_no_pages(self) -> None:
         self.write("AGENTS.md", "Root spine: none. Read nothing.\n")
         self.write("docs/old-notes.md", PAGE_GOAL)

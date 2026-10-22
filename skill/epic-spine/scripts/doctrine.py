@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Doctrine 2 readers (references/spine-model.md, docs/doctrine/console-contract.md) for spines.py and pre_commit.py: epic detection,
 the per-epic fields of ``spines.py --json`` (goal, serves, done_means, contributes, pages, missing_sections, size) and the repo's
-orphan / looks-like-epic pages. An epic is a doc titled ``# EPIC-<n>`` or with a ``Spine ID:`` line; every other .md is a page."""
+orphan / looks-like-epic pages. An epic is a doc titled ``# EPIC-<n>:`` (colon required: ``# EPIC-4 decisions`` is a page) or with a ``Spine ID:`` line; every other .md is a page."""
 
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ import validate_spine as v
 SKIP = {"archive", "node_modules", "vendor", "wt", "worktrees", "handoffs", "examples", "fixtures", "test", "tests", "__pycache__"}
 CONVENTIONAL = {"readme", "agents", "claude", "gemini", "changelog", "contributing", "license", "security", "code_of_conduct"}
 ID_LINE = re.compile(r"(?m)^Spine ID:")
-STAMP = re.compile(r"(?m)^# EPIC-\d+\b")
+STAMP = re.compile(r"(?m)^# EPIC-\d+:")
 TITLE = re.compile(r"EPIC-\d+:\s*\S")
 LINK = re.compile(r"\]\(<?([^)\s>#]+)")
 DONE = re.compile(rf"- \[([ xX])\] ({v.ID})[ \t]*(.*)")
