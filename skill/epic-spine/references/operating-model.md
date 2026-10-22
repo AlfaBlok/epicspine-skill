@@ -24,46 +24,9 @@ Cold-start order:
 
 This is the formal version of a useful resume instruction such as `continue`: the word itself contains no hidden project context; it means resume from the recorded cursor after verifying current execution reality.
 
-## Spine Creation And Registration
+## Spine Creation, Registration And Rollups
 
-Create a branch spine when a durable ambition needs its own acceptance boundary, steward, backlog, decision memory, and execution cursor. A large ticket alone is not enough.
-
-Creation protocol:
-
-1. Search from the root through existing Spine Maps. Select the narrowest parent whose mission contains the proposed work.
-2. Prefer a branch. If creating another root, record an Additional Root Rationale.
-3. Assign a stable Spine ID and declare type, root, parent, steward, repository, integration target, mission, and acceptance.
-4. Initialize Spine Map, Current State, Execution Cursor, Decisions, Issue Ledger, and required authority/write-scope sections.
-5. Add the branch to its direct parent's Spine Map.
-6. Land both directions together when the creator may write both spines. Otherwise leave the child `draft`, record `registration pending`, and send the parent steward an exact proposed Spine Map row.
-7. Validate the child locally and validate the affected family as a graph.
-
-Registration is complete only when the child points to the parent and the parent lists the child. Until then, the document is a pending branch proposal, not a connected operational spine.
-
-## Rollup Model
-
-Every spine owns local truth for its mission, acceptance, execution cursor, issue ledger, decisions, and validation. Every parent owns compact direct-child rollups.
-
-Required direct-child rollup fields:
-
-| Field | Meaning |
-|---|---|
-| Spine ID / link | Stable child identity and navigation target |
-| Purpose | One sentence describing the ambition owned by the child |
-| Status | Child phase using the shared vocabulary |
-| Health / Blocker | Healthy, or the exact blocking dependency/decision |
-| Latest Evidence | Freshest proof supporting status |
-| Last Rolled Up | Absolute reconciliation time |
-| Next Action | One concrete action that advances or unblocks the child |
-
-Roll up one level at a time. A root summarizes its direct children, including branch children that themselves summarize deeper descendants. This keeps the root navigable without duplicating entire descendant issue ledgers.
-
-Rollup rules:
-
-- The child is authoritative for its detailed state; its steward publishes the rollup (or a structured update) and the parent steward reconciles the parent's row without rewriting child detail.
-- Update a rollup when phase, health, blocker, latest evidence, or next action changes.
-- Never roll up `done` without child acceptance evidence.
-- When parent and child disagree, mark drift and reconcile; do not silently choose the more optimistic status.
+The creation protocol, registration (both directions land together, else `draft` + `registration pending`) and the direct-child rollup fields and rules are in `spine-creation.md` (Spine Creation And Registration, Rollup Contract).
 
 ## Write Scope
 
@@ -173,16 +136,7 @@ The following two-section shape describes legacy full spines. Keep overlaps cons
 
 Current State is the compact phase snapshot. The Execution Cursor is the durable resume point for the next execution cycle. Update it whenever work is attempted, execution stops, ownership changes, or a gate is reached.
 
-The cursor must answer:
-
-| Field | Question |
-|---|---|
-| Last attempted | What concrete action did the previous cycle try? |
-| Result | What actually happened, and where is the evidence? |
-| Execution status | Is work not-started, ready, active, blocked, in review, testing, or done? |
-| Waiting on | Which person, decision, dependency, check, or event must move? |
-| Approved work | What may proceed without another process-design or planning conversation? |
-| Next action | What exact action should a new bound agent take first? |
+The cursor holds the fields listed in `spine-creation.md` (Execution Cursor And Decision Memory): last attempted, result, status, waiting on, approved work, next action.
 
 The cursor is not a prose work log. Preserve only the latest durable resume state and link to the issue or handoff containing detail. Append historical consequences to Decisions or Handoff Journal when they matter beyond the next cycle.
 
@@ -192,18 +146,7 @@ At the end of an execution cycle, report the same shape to the user: what worked
 
 Decisions prevent future agents from repeatedly reopening settled paths. Before proposing a familiar approach, search the bound spine and relevant ancestors for `rejected` and `superseded` entries.
 
-Use these outcomes:
-
-- `accepted`: current operating choice;
-- `rejected`: tried or evaluated and deliberately declined;
-- `superseded`: once valid but replaced by a later choice.
-
-A rejected or superseded entry contains:
-
-- the approach or claim in a searchable phrase;
-- a compact durable reason;
-- a link to detailed evidence such as an issue, PR, ADR, experiment, or source memory;
-- the condition that would justify reconsideration, or `never`.
+Outcomes are `accepted`, `rejected` and `superseded`; a rejected or superseded entry carries a searchable phrase, a compact reason, an evidence link and the reconsideration condition or `never` (`spine-creation.md`).
 
 Keep the anti-repetition fact in the spine even after linked implementation detail becomes historical. Do not paste the full investigation into the spine.
 
@@ -310,12 +253,4 @@ When the bound spine conflicts with GitHub issues, PRs, or code: state the confl
 
 ## Handoff Quality Bar
 
-A handoff is complete when the next role can answer:
-
-- What changed?
-- Why did it change?
-- What was attempted, and what actually happened?
-- What is the next action?
-- What is waiting, and what work remains approved?
-- How will success be verified?
-- What risks or open questions remain?
+A handoff is complete when the next role can answer: what changed and why; what was attempted and what actually happened; the next action; what is waiting and what work remains approved; how success will be verified; what risks or open questions remain.

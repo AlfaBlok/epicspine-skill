@@ -11,13 +11,14 @@ import time
 from pathlib import Path
 
 import validate_spine as v
+from ask_refs import ASK_CODE, repo_root, unknown, waits  # noqa: F401 (repo_root: re-exported)
 
 OPEN = ("draft", "ready", "active", "blocked")
 CODE = re.compile(r"^(?:EPIC[- ]?|E)(\d+)\b")
 STALE_DAYS = 14
 STALE_ASK_DAYS = 7
-ASK_CODE = r"([A-Za-z0-9][A-Za-z0-9-]*-A\d+)"
 ASK = re.compile(r"-\s+\[(?:ask(?:\s+" + ASK_CODE + r")?:\s*(decide|approve|provide|do)\s+@(\S+)\s+since\s+(\d{4}-\d\d-\d\d)(?:\s+row\s+(\S+))?|answered(?:\s+" + ASK_CODE + r")?\s+\d{4}-\d\d-\d\d\s+@(\S+))\]\s*(.*)")
+DONE = re.compile(r"\s*·\s*done\s+\d{4}-\d\d-\d\d(?:\s+\S+)?\s*$")
 ASK_FIELD = re.compile(r"(steps|options|recommend|unblocks|effort|context|answer):\s*(.*)", re.S)
 MAX_OPEN_ASKS = 3
 
@@ -98,7 +99,8 @@ def asks(text: str, path: Path, repo: Path) -> list[dict]:
     """``## Waiting on`` ask lines in the docs/doctrine/human-asks.md shape; ``context``/``steps`` links are repo-relative when local (else kept as-is)."""
     out = []
     for line in v.parse_sections(text).get("Waiting on", "").splitlines():
-        if not (m := ASK.fullmatch(line.strip())):
+        line, done = DONE.subn("", line.strip())
+        if not (m := ASK.fullmatch(line)):
             continue
         code, kind, who, since, row, answered_code, answered_by, rest = m.groups()
         question, *parts = re.split(r"\s+[—–]\s+", rest.strip())
@@ -116,7 +118,7 @@ def asks(text: str, path: Path, repo: Path) -> list[dict]:
         out.append({"code": code or answered_code, "who": who or answered_by, "ask": kind, "question": question, "steps": steps or None, "options": options,
                     "recommend": fields.get("recommend") or None, "unblocks": fields.get("unblocks") or None, "effort": fields.get("effort") or None,
                     "context": ask_context(fields.get("context", ""), path, repo), "since": since, "row": row,
-                    "state": "open" if kind else "answered", "answer": fields.get("answer") or None})
+                    "state": "open" if kind else "done" if done else "answered", "answer": fields.get("answer") or None})
     return out
 
 
@@ -148,12 +150,13 @@ def needs_human(row: dict, names: set[str]) -> bool:
     return False
 
 
-def ask_issues(text: str, today: datetime.date | None = None) -> list[str]:
-    """Advisory (never blocking): the checks of docs/doctrine/human-asks.md (missing field or code, duplicate code, over 3 open, stale, blocked/waiting or next row with no open ask)."""
+def ask_issues(text: str, today: datetime.date | None = None, repo: Path | None = None) -> list[str]:
+    """Advisory (never blocking): the checks of docs/doctrine/human-asks.md (missing field or code, duplicate code, over 3 open, stale, blocked/waiting or next row with no open ask or `waits on` reference; with ``repo``, a same-repo reference to a code that does not exist)."""
     today, issues = today or datetime.date.today(), []
     every = asks(text, Path("-"), Path("-"))
     found = [a for a in every if a["state"] == "open"]
-    named = {a["row"].lower().strip("#[] ").rstrip(".:)") for a in found if a["row"]}
+    refs = waits(text)
+    named = {a["row"].lower().strip("#[] ").rstrip(".:)") for a in [*found, *refs] if a["row"]}
     names = {a["who"].lower().strip(".,:;") for a in every}
     sections = v.parse_sections(text)
     header, rows = v.parse_table(sections.get("Issue Ledger", ""))
@@ -165,11 +168,13 @@ def ask_issues(text: str, today: datetime.date | None = None) -> list[str]:
         elif status.startswith(("ready", "active")) and not row_keys(row) & named and needs_human(row, names):
             issues.append(f"ledger row '{label}' is next but its Needs/Owner names a human and no open ask names it (a human blocking the next step is an ask)")
     status = v.parse_key_values(sections.get("Current State", "")).get("Status", "").lower()
-    if status.startswith(("blocked", "waiting")) and not found:
+    if status.startswith(("blocked", "waiting")) and not found and not refs:
         issues.append(f"Status is {status.split()[0]} but no open ask is under ## Waiting on")
     if len(found) > MAX_OPEN_ASKS:
         issues.append(f"{len(found)} open asks (aim for at most {MAX_OPEN_ASKS}): merge asks one human action resolves, close what no longer blocks")
     decided = sections.get("Decisions", "")
+    for r in unknown(refs, repo, text):
+        issues.append(f"waits on {r['ref']}: no ask with that code exists in this repo (check the code, or qualify it `<repo>/<code>`)")
     seen: set[str] = set()
     for a in found:
         label = f"ask {a['code']}" if a["code"] else f"ask '{a['question'][:40]}'"

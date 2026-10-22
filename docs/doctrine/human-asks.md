@@ -1,6 +1,6 @@
-# Human asks: contract (v2)
+# Human asks: contract (v3)
 
-Page of [EPIC-4](../EPIC-4-DOCTRINE-2.md). v1 was step 12 (agent_team M2-SKILL). v2 is step 17 (M2-SKILL2, Jordi, 2026-10-21). The console may code against v2 now.
+Page of [EPIC-4](../EPIC-4-DOCTRINE-2.md). v1 was step 12 (agent_team M2-SKILL). v2 is step 17 (M2-SKILL2, Jordi, 2026-10-21). v3 is step 20 ([D19](decisions.md#d19), agent_team M2-35, 2026-10-22): reference lines, search before asking, consumed answers. The console may code against v3 now; v2 shapes are unchanged.
 
 An ask is a human action that blocks the NEXT step. A human named on a later step is a plan, not an ask: leave it as plain ledger text until that row is next.
 
@@ -58,6 +58,30 @@ On every wake and at every session end, the delivery manager rewrites `## Waitin
 
 So an `ask` line is open, an `answered` line is answered but not yet cleaned up, and no line means nothing is pending.
 
+## Consumed answers
+After acting on an `[answered ...]` line, the owner appends ` · done <YYYY-MM-DD> <sha>` to it (the commit that acted on the answer):
+
+```
+- [answered EPIC-4-A1 2026-10-21 @Jordi] Approve the doctrine page? — answer: APPROVED · done 2026-10-22 7efe0ee
+```
+
+Tools read it as closed: `state: "done"`, never listed as work, never open, stale or surplus. An `answered` line without `done` is the owner's action item. Deleting the line after its Decisions row exists stays valid.
+
+## Reference, not ask
+A spine blocked by an ask that already exists anywhere writes one line instead of a second ask:
+
+```
+- [waits on infra-vps/EPIC-10-A7 row 3] The VPS key Jordi is providing
+```
+
+- `[waits on <code> row <id>]` plus a one-line gloss. `row` is the row of THIS spine that is blocked. Across repos the code is qualified `<repo>/<code>` (GitHub repo name, not owner/name).
+- It has no fields, does not count toward the 3-ask limit, never goes stale, and satisfies the blocked-row check below.
+- The canonical ask's `unblocks:` may name rows in other epics as `<repo>/<epic code> row <id>`.
+- The line is set to `blocked` like any ask's row; remove it when the target ask is `done` or gone.
+
+## Search before asking
+Before raising an ask, check, in this order: the open asks in this repo's tree (`spines.py --json`, each node's `waiting_on`), the same in the other repos the epic touches, and the console's open Needs Jordi items. If one matches, write a reference line (above). A console Needs Jordi item and a spine ask for the same question are ONE ask: the item's question starts with the spine code (`EPIC-4-A2: ...`), never a second code.
+
 **v1 lines** (`[ask: decide @Jordi …]`, no code) still parse: `code` is null and the checks give the advisory warning "ask has no code".
 
 ## In `spines.py --json` (per node)
@@ -66,7 +90,15 @@ So an `ask` line is open, an `answered` line is answered but not yet cleaned up,
   "options": [], "recommend": "do it tonight", "unblocks": "S2, S3; each day waiting loses a day of archived ticks", "effort": "~10 min",
   "context": "docs/one-logger/notes.md#archiver", "since": "2026-10-21", "row": "S3", "state": "open", "answer": null}]
 ```
-Unknown or missing fields are null. On an `answered` line, `code` is kept, and `ask`, `since` and `row` may be null.
+Unknown or missing fields are null. On an `answered` line, `code` is kept, and `ask`, `since` and `row` may be null. `state` is `open`, `answered` or `done` (`· done` consumed answer; `answer` excludes the suffix). `waiting_on` never holds reference lines.
+
+Reference lines are a separate per-node list, `[]` when there are none:
+```json
+"waits_on": [{"ref": "infra-vps/EPIC-10-A7", "repo": "infra-vps", "code": "EPIC-10-A7", "row": "3", "state": "open"}]
+```
+- `ref` is the target as written (`<repo>/<code>` or `<code>`); `repo` is the qualifier or null (same repo); `row` is this spine's blocked row, or null.
+- `state` is the target ask's state (`open`, `answered`, `done`) when it resolves, else `unresolved`.
+- Resolution: a bare code, or one qualified with this repo's own name (folder name or the `Repository:` header), is looked up in this repo's tree (ask lines, else `done` when only a Decisions row cites the code, i.e. its line was cleaned up); any other repo is read from the sibling checkout `../<repo>`, and is `unresolved` when that checkout is absent or has no tree.
 
 ## Checks (advisory; they never block a commit)
 The validator and the commit check warn on:
@@ -76,6 +108,9 @@ The validator and the commit check warn on:
 - a duplicate code within an epic;
 - a bare internal id in the question (best effort);
 - more than 3 open asks;
-- an ask open for more than 7 days.
+- an ask open for more than 7 days;
+- a `waits on` code of this repo that no ask or Decisions row cites (a cross-repo one never warns, it reports `unresolved`).
+
+A `waits on` line satisfies the first checks (a row or epic blocked on it has an ask naming it). `done` lines are not open asks, so the open-count, stale and missing-field checks skip them.
 
 Under `--trackable`, these are reported as issues.
