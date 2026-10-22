@@ -19,10 +19,10 @@ Skill updates: auto
 
 Owner: /root delivery manager
 Status: active
-Last attempted: 2026-10-22 EPIC-4: Jordi approved the doctrine (EPIC-4-A1, merged 9f3b093); E4-1, E4-2, E4-3 met; live console shows Goal, Serves chain, Done means and this root's children (milestone ms_7125d985)
+Last attempted: 2026-10-22 EPIC-4 closed, accomplished: every epic says what it achieves, how it serves its parent and what each child adds; the console shows it (poly-maker E4 migrated unasked)
 Result: EPIC-4 steps 1-3, 7, 9-17 done; step 6 slimming running (wt/epic4-slim); full isolated suite 606 OK; EPIC-0 over the advisory size budget (162 lines, 28 long cells), slimmed after EPIC-4 in step 6
 Evidence: EPIC-4 54eff99
-Waiting on: Jordi: EPIC-4-A2 (when to launch the poly-maker E4 compliance test; asked in EPIC-4)
+Waiting on: none
 Approved work: EPIC-3 Epic log and EPIC-4 Doctrine 2 (their ledgers hold the tickets)
 Next action: E3-2 live proof (3 fresh sessions); poly-maker migration; bring this root to Doctrine 2 (EPIC-4 step 6).
 Source revision: main
@@ -159,4 +159,4 @@ Landing exceptions: No slide for quick answers, transient status, raw logs, tick
 | epicspine-audit-remediation | child | [EPIC-2 Audit remediation](EPIC-2-AUDIT-REMEDIATION.md) | Audit remediation delivery | done | none | PR #16 | 2026-10-09 | Reference only; reopen if scope resumes |
 | epicspine-coordination-simplification | child | [EPIC-1 Coordination simplification](EPIC-1-COORDINATION-SIMPLIFICATION.md) | Compact state and trustworthy rollups | done | none | PR #22 | 2026-10-09 | Reference only; reopen if scope resumes |
 | epicspine-epic-log | child | [EPIC-3 Epic log](EPIC-3-EPIC-LOG.md) | Every goal is a coded EPIC in one tree per repo, kept true by agents | active | none | wt/epic-log r2 | 2026-10-19 | verify r2, merge, migrate poly-maker |
-| epicspine-doctrine-2 | child | [EPIC-4 Doctrine 2 semantic goal tree](EPIC-4-DOCTRINE-2.md) | Contributes the human layer: each spine says what it achieves, how it serves its parent and what its children add; agent_team shows it | ready | none | none | 2026-10-19 | step 1: Doctrine 2 text for Jordi's approval |
+| epicspine-doctrine-2 | child | [EPIC-4 Doctrine 2 semantic goal tree](EPIC-4-DOCTRINE-2.md) | Contributes the human layer: every epic now says what it achieves and why, how it serves its parent and what each child adds, and the agent_team console shows it (Outcome: accomplished) | done | none | Outcome 2026-10-22; skill 2026.10.22.5 | 2026-10-22 | Reference only; reopen if scope resumes |

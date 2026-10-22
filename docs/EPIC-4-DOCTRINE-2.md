@@ -30,23 +30,37 @@ Done means (until step 2 makes `## Done means` a recognised heading, the outcome
 - [x] E4-1 New epics follow the doctrine by default: `spine_new.py` writes Goal, Serves and Done means, and adds a "contributes" sentence for the child in its parent's Spine Map; the commit check blocks a newly added epic without them (existing epics keep passing). Released on main, tests green.
 - [x] E4-2 The doctrine is written down, unversioned: `references/spine-model.md` holds one current definition with the L-16 vocabulary (tree from EPIC-0; leaf = epic or page; only epics have required structure; intent or goal must be an epic; learning L-<n>; step = testable mid-outcome closed with evidence; unlinked = orphan). It is one short page a newcomer reads, replaces skill text rather than adding to it (net skill size does not grow), and everything it requires is enforced at the trackable level or dropped. `spines.py --json` returns `goal`, `serves`, `done_means`, each child's `contributes`, each epic's pages, orphan pages, and `missing_sections`. Jordi has approved the text.
 - [x] E4-3 agent_team reads it: the console Overview of a Doctrine 2 spine shows Goal, the Serves chain up to the root, the children with their contributes sentences, and Done means above the tickets, read from `spines.py --json`. Checked on a live spine with a screenshot.
-- [ ] E4-4 The compliance test passes: a fresh poly-maker session, asked only "make Epic 4 compliant with the latest EpicSpine doctrine", brings poly-maker E4 to Doctrine 2 without further instructions, and the console shows the result. Where poly-maker E4's "why" is not written anywhere in the repo, the agent asks Jordi rather than inventing one (one question about the why is a good result).
+- [x] E4-4 The compliance test passes: a fresh poly-maker session, asked only "make Epic 4 compliant with the latest EpicSpine doctrine", brings poly-maker E4 to Doctrine 2 without further instructions, and the console shows the result. Where poly-maker E4's "why" is not written anywhere in the repo, the agent asks Jordi rather than inventing one (one question about the why is a good result).
 - [x] E4-5 A fresh agent can pick up a spine cold: launched against a Doctrine 2 spine with no other brief, it states the goal, what done means, its next action and where its context lives, without asking. Tested on EPIC-4 itself and on poly-maker E4 after migration.
 
 ## Current State
 
 Owner: EPIC-4 delivery manager (thread mcp:61d2777c-071a-4feb-93e3-4db440b5d6ac)
-Status: active
-Last attempted: 2026-10-22 step 21 merged (aa9734f, 2026.10.22.5); E4-5 passed on poly-maker E4 (run_874eb3d3)
-Result: steps 1-4, 6-21 done; step 5 active (only the console Done means display left); E4-1, E4-2, E4-3 and E4-5 met
-Evidence: aa9734f: docs tests OK on merged main, worker suite 624 OK; poly-maker E4 now lists its 6 detail pages, 0 false orphans from the migration
-Waiting on: none (agent_team wt/done-means-dod: milestone dod from done_means, screenshot of ms_b3ed1efe with 6 Done means)
+Status: done
+Last attempted: 2026-10-22 E4-4 verified on the live console (agent_team 9e53c7d); Outcome written; EPIC-4 closed
+Result: all 21 steps done; E4-1 to E4-5 met
+Evidence: see Outcome
+Waiting on: none
 Approved work: E4-1 to E4-5; steps 10-12 requested by Jordi via agent_team (2026-10-20/21); step 20 (Jordi via agent_team M2-35, 2026-10-22); step 5 (EPIC-4-A2)
-Next action: on agent_team's console fix and screenshot, tick E4-4, write `## Outcome` and close EPIC-4 (parent EPIC-0 rolls up)
+Next action: none (closed); follow-ups listed in Outcome Risk
 Source revision: main
-Verified at: 2026-10-22 (main aa9734f)
+Verified at: 2026-10-22 (main bcdf5e7; agent_team 9e53c7d)
 
 
+
+## Outcome
+
+Verdict: accomplished
+Outcome: Every epic now says in plain words what it achieves and why, how it serves its parent and what each child adds; the skill scaffolds, checks and exports that story (2026.10.22.1 onward) and the agent_team console shows it, proven by a fresh poly-maker session migrating its E4 unasked.
+Closed: 2026-10-22 by EPIC-4 delivery manager (thread mcp:61d2777c-071a-4feb-93e3-4db440b5d6ac)
+Risk: on loaded vps1 a cold `spines.py` run on poly-maker can pass the console's 15 s timeout (Goal, Serves, Pages blank until the next refresh; Done means still right); D19's console side is agent_team M2-40 (vps3 M2 manager); EPIC-1..3 still lack `## Serves` (missing_sections).
+| Done means | Evidence |
+|---|---|
+| E4-1 new epics follow the doctrine by default, commit check blocks new ones without it | 6be5e7c (2026.10.22.1, 606 OK) |
+| E4-2 doctrine written down, unversioned; `--json` doctrine fields; Jordi approved | 9f3b093 (EPIC-4-A1 approved); `references/spine-model.md` "What Every Epic Says" |
+| E4-3 console shows Goal, Serves chain, children with contributes, Done means first | [EPIC-4 view](http://100.104.206.10:18770/epic4-live-overview-2026-10-22.png), [EPIC-0 children](http://100.104.206.10:18770/epic0-live-children-2026-10-22.png); agent_team c5f8bdb |
+| E4-4 fresh poly-maker session makes E4 compliant from one sentence; console shows it | poly-maker 8326a45d; [console](http://100.104.206.10:18770/polymaker-e4-done-means-2026-10-22.png), agent_team 9e53c7d |
+| E4-5 a cold agent picks up a spine from `Bound epic:` alone | 0cb8e83 (EPIC-4 and poly-maker E4, run_874eb3d3); 2026.10.22.2 |
 ## Waiting on
 
 - [answered EPIC-4-A2 2026-10-22 @Jordi] Launch step 5 (the poly-maker E4 compliance test) now, although poly-maker E4's owner is actively working it (b0d6dd36)? — recommend: yes; warn the E4 owner first that a structure-only migration commit is coming — unblocks: step 5 (E4-4), then the E4-5 check on poly-maker E4 — effort: ~1 min — context: [poly-maker E4 activity](https://github.com/AlfaBlok/poly-maker/commit/b0d6dd36) (console item nj_4dcdbafa) — answer: APPROVED · done 2026-10-22 3a2254b
@@ -66,7 +80,7 @@ Steps run in this order; each one unblocks the next. Steps 1 and 2 are one appro
 | draft | Delivery manager | EPIC-4 delivery manager | 2. Plan enforcement: scaffold, commit check, `spines --json` visibility, size budget, migration; Jordi approves before tool work. [detail](doctrine/steps.md#step-2) | done | step 1 | none | main | [enforcement.md](doctrine/enforcement.md) on main; approved EPIC-4-A1 2026-10-21 | 2026-10-22 | none; built by step 3 |
 | draft | Ticket worker | worker seat1 (Sonnet 5.5), task epic4-step3-tools-r1, console run run_4b6bd75d | 3. Tools: `spine_new` writes Doctrine 2, `## Done means`, `spines --json` fields, commit check, template, release. [detail](doctrine/steps.md#step-3) | done | step 2 (done) | merged | main | released 2026.10.22.1 (merge 6be5e7c); full isolated suite 606 OK (2 skip); skill -3 lines | 2026-10-22 | none |
 | draft | agent_team delivery manager | agent_team thread mcp:6734cbcd-4cab-456a-9bcc-dbff1b10f713 | 4. Console reads Doctrine 2 from `spines --json` (Goal, Serves chain, children, Done means); verify the persona pipeline. [detail](doctrine/steps.md#step-4) | done | contract (parallel with step 3); live check after step 3 | none | main | live check on 2026.10.22.1 (2026-10-22): Definitions tab shows Goal, Serves chain, Done means; EPIC-0 children + contributes; agent_team 1a27502, ca8fc10, c5f8bdb; E4-3 met | 2026-10-19 | relink orphan page tools-brief.md at the step 6 merge |
-| draft | poly-maker delivery manager | fresh poly-maker thread mcp:e25fa5ad (Opus 5.5, seat2) | 5. Compliance test on poly-maker E4 ("make Epic 4 compliant with the latest EpicSpine doctrine"), then the E4-5 cold-start check there. [detail](doctrine/steps.md#step-5) | active | step 3 shipped and skill synced to vps1 (launch); step 4 (console view) | none | main | poly-maker 8326a45d: E4 migrated unasked, strict OK; gaps: false orphan epics (step 21), console DoD 0/0; [detail](doctrine/steps.md#step-5) | 2026-10-22 | console Done means fix (agent_team wt/done-means-dod), then tick E4-4 |
+| draft | poly-maker delivery manager | fresh poly-maker thread mcp:e25fa5ad (Opus 5.5, seat2) | 5. Compliance test on poly-maker E4 ("make Epic 4 compliant with the latest EpicSpine doctrine"), then the E4-5 cold-start check there. [detail](doctrine/steps.md#step-5) | done | step 3 shipped and skill synced to vps1 (launch); step 4 (console view) | none | main | poly-maker 8326a45d migrated unasked, strict OK; console shows Done means 0/6 (agent_team 9e53c7d, [screenshot](http://100.104.206.10:18770/polymaker-e4-done-means-2026-10-22.png)); E4-4 met | 2026-10-22 | none |
 | draft | Delivery manager | EPIC-4 delivery manager | 6. Slim to L-17, EPIC-4 first, then the E4-5 cold-start check on it; then EPIC-0 (root) and EPIC-3. [detail](doctrine/steps.md#step-6) | done | step 3 | merged | main | EPIC-4 (d0e138a), EPIC-0 and EPIC-3 (merge 2771c53): long cells 0 everywhere; EPIC-3 gained Serves; E4-5 on EPIC-4 passed; [detail](doctrine/steps.md#step-6) | 2026-10-22 | none; follow-ups in detail (EPIC-0 162 lines, EPIC-1/2 Serves) |
 | draft | Ticket worker | worker seat1 (Sonnet 5.5), task epic4-step7-root-swap-r1 | 7. Root swap (L-15): EPIC-2 root becomes EPIC-0, done audit EPIC-0 becomes EPIC-2; rename files, update links repo-wide. [detail](doctrine/steps.md#step-7) | done | step 1 vocabulary approved (L-16, done) | wt/root-swap | main | merged and pushed: main ef15cfa (branch 336ae54); doc-reading tests pass; briefs updated by root DM (719ffe9) | 2026-10-19 | none; see step 8 for the load-failing sync tests |
 | draft | Delivery manager | EPIC-4 delivery manager | 8. Quiet re-run of 4 sync tests that failed under load 34 (pre-commit in a linked worktree runs main's hook). [detail](doctrine/steps.md#step-8) | done | quiet host | none | main | 2026-10-22 load 1.8: background_sync 55, session_sync 61, local_mess 33, auto_return 23, all OK; hook finding moved to step 18 | 2026-10-22 | none |
