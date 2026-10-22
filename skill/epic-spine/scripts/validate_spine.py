@@ -1032,15 +1032,15 @@ def doc_kind(text: str) -> str | None:
 def criteria(text: str, names: tuple[str, ...]) -> list[tuple[int, str]]:
     """Top-level list items (line index, line) under the named ``##`` sections; indented lines continue an item,
     other prose, tables, HTML comments and code fences are not criteria."""
-    items, section, comment, fence = [], "", False, False
+    items, section, comment, fence, wanted = [], "", False, False, {n.lower() for n in names}
     for index, line in enumerate(text.split("\n")):
-        if heading := re.match(r"## (.+?)[ \t]*$", line):
+        if line.startswith("## ") and (heading := re.match(r"## (.+?)[ \t]*$", line)):
             section = normalize(heading.group(1))
         elif comment or line.lstrip().startswith("<!--"):
             comment = "-->" not in line.split("<!--")[-1]
         elif line.lstrip().startswith("```"):
             fence = not fence
-        elif section.lower() in {n.lower() for n in names} and not fence and ITEM_RE.match(line):
+        elif section.lower() in wanted and not fence and ITEM_RE.match(line):
             items.append((index, line))
     return items
 
