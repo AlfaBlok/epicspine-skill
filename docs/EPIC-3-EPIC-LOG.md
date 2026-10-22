@@ -16,12 +16,12 @@ Integration branch: main
 
 Owner: EPIC-3 delivery manager (thread mcp:e9568396-d334-4a6b-bc0c-ab93b4a0fb6b)
 Status: active
-Last attempted: 2026-10-22 re-oriented after EPIC-4 closed (340333f); E3-4 verified live; conformance rescan of 16 repos ([scan](epic-log/conformance.md)); spines.py speed step dispatched; poly-maker and infra-vps migrations launched
+Last attempted: 2026-10-22 re-oriented after EPIC-4 closed (340333f); E3-4 verified live; conformance rescan of 16 repos ([scan](epic-log/conformance.md)); spines.py speed step dispatched; poly-maker and infra-vps migrations launched; poly-maker green (verified), zenod launched
 Result: E3-4 met (picker lists poly-maker EPIC-4 via spines.py). Cold spines.py on poly-maker takes 19-23 s against the console's 15 s timeout (os.walk over 20k files); step wt/spines-fast fixes it. E3-2 has 1 of 3 live proofs
 Evidence: [conformance scan 2026-10-22](epic-log/conformance.md)
 Waiting on: EPIC-3-A1
 Approved work: E3-1 to E3-5 (user, 2026-10-19)
-Next action: verify and merge wt/spines-fast; take reports from the poly-maker (mcp:aac4e0e3) and infra-vps (mcp:51557bfc) migration threads, then launch zenod and tax-assist-research
+Next action: verify and merge wt/spines-fast; take reports from infra-vps (mcp:51557bfc) and zenod (mcp:aa9a971f), then launch tax-assist-research and abnb-agent
 Source revision: main @ 21e3892
 Verified at: 2026-10-22
 
@@ -57,8 +57,8 @@ No rename of existing files or header fields. Migration changes structure only (
 |---|---|---|---|---|---|---|---|---|---|---|
 | draft | Ticket worker | worker (Sonnet 5.5, seat pool) | E3-1 skill tools: definition, `spine_new`, tree gate, `spines --json`; release 2026.10.19.1 | done | none | none | main | r1+r2+r3 merged (cab199a, 4639aa9, 88f00fa, 52cdd31..20b4602), release 2026.10.19.2; 508 tests, url_gate flakes only under host load | 2026-10-19 | none |
 | draft | Ticket worker | worker (Sonnet 5.5) | E3-2 living tree: `Goal: EPIC-<n>`, Record duties, `--active`, 14 d stale, codes from `spine_new` [detail](epic-log/steps.md#ticket-2) | active | E3-1 | none | main | merged 61d7e03 (2026.10.19.3); live proof 1/3: poly-maker e25fa5ad answered `Goal: EPIC-4` unprompted (2026-10-22) | 2026-10-22 | proofs 2-3 from the infra-vps and zenod migration threads (plain ask, no goal named) |
-| draft | Repo delivery manager | poly-maker thread mcp:aac4e0e3 | E3-3 migrate poly-maker: 3 orphans (analysis/*/SPINE.md), 14 looks_like_epic; E4 content untouched [detail](epic-log/steps.md#ticket-3) | active | E3-1 | main-direct | main | 10-19 thread mcp:766a969a gone, left nothing; EPIC-4 step 5 (8326a45d) did E4 only; relaunched 2026-10-22 | 2026-10-22 | await its report |
-| draft | Repo delivery manager | per-repo threads | E3-3 migrate infra-vps (39 looks_like_epic, thread mcp:51557bfc), zenod (28), tax-assist-research (4 mismatches), abnb-agent (4); rootless repos per EPIC-3-A1 | active | E3-1 | main-direct | main | [scan 2026-10-22](epic-log/conformance.md) | 2026-10-22 | zenod + tax-assist-research after poly-maker/infra-vps report |
+| draft | Repo delivery manager | poly-maker thread mcp:aac4e0e3 | E3-3 migrate poly-maker: 3 orphans (analysis/*/SPINE.md), 14 looks_like_epic; E4 content untouched [detail](epic-log/steps.md#ticket-3) | done | E3-1 | main-direct | main | verified 2026-10-22: 58 nodes, 0 orphans, 0 mismatches, 14 pages recorded as exceptions (poly-maker 1dc21c66..69a3a0d8) | 2026-10-22 | none |
+| draft | Repo delivery manager | per-repo threads | E3-3 migrate infra-vps (39 looks_like_epic, thread mcp:51557bfc), zenod (28, thread mcp:aa9a971f), tax-assist-research (4 mismatches), abnb-agent (4); rootless repos per EPIC-3-A1 | active | E3-1 | main-direct | main | [scan 2026-10-22](epic-log/conformance.md) | 2026-10-22 | tax-assist-research + abnb-agent after infra-vps reports |
 | draft | Delivery manager | EPIC-3 delivery manager | E3-3 conformance table, before/after per repo | active | E3-3 migrations | none | main | before column: [scan 2026-10-22](epic-log/conformance.md) | 2026-10-22 | after column when migrations land |
 | draft | Repo delivery manager | agent_team | E3-4 console picker reads `spines.py --json` | done | E3-1 | none | main | 2026-10-22 live: `/api/repos/poly-maker/docs` lists `EPIC-4: ONE LOGGER` via `spines`, parent EPIC0.md (agent_team 9e53c7d); [screenshot](doctrine/evidence/polymaker-e4-done-means-2026-10-22.png) | 2026-10-22 | none |
 | draft | Ticket worker | worker (Sonnet 5.5, seat1) | spines.py fast on big repos: walk `git ls-files`, not os.walk (risk taken over from EPIC-4: cold run 19-23 s > console 15 s timeout) | active | none | wt/spines-fast | main | poly-maker 19-23 s wall / 2.7 s CPU, 20k files walked (2026-10-22) | 2026-10-22 | verify timings + identical output, merge |

@@ -4,8 +4,8 @@ Page of [EPIC-3](../EPIC-3-EPIC-LOG.md) (E3-3). `spines.py --json` on every repo
 
 | Repo | Root | Nodes | Orphans | Mismatches | Looks like epic | Orphan pages | After |
 |---|---|---|---|---|---|---|---|
-| poly-maker | EPIC0.md | 55 | 3 | 0 | 14 | 343 | migrating (mcp:aac4e0e3) |
-| zenod | yes | 4 | 0 | 0 | 28 | 140 | queued |
+| poly-maker | EPIC0.md | 55 | 3 | 0 | 14 | 343 | green: 58 / 0 / 0 / 14 recorded as exceptions ([list](https://github.com/AlfaBlok/poly-maker/blob/main/docs/spines/LOOKS_LIKE_EPIC_EXCEPTIONS.md)) / 339 (1dc21c66..69a3a0d8) |
+| zenod | yes | 4 | 0 | 0 | 28 | 140 | migrating (mcp:aa9a971f) |
 | infra-vps | docs/EPIC-0-VPS-FLEET.md | 7 | 0 | 0 | 39 | 16 | migrating (mcp:51557bfc) |
 | tax-assist-research | yes | 18 | 0 | 4 | 0 | 552 | queued |
 | abnb-agent | yes | 1 | 0 | 0 | 4 | 18 | queued |
