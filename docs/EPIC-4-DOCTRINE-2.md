@@ -49,7 +49,7 @@ Verified at: 2026-10-22 (main 925d882; spines.py 0 orphans 0 mismatches)
 
 ## Waiting on
 
-- [open EPIC-4-A2 2026-10-22 @Jordi] Launch the poly-maker E4 compliance test (step 5) now, although poly-maker E4's owner is actively working it (b0d6dd36)? — recommend: yes; warn the E4 owner first that a structure-only migration commit is coming — unblocks: step 5 (E4-4), then the E4-5 check on poly-maker E4 — effort: ~1 min — context: console item nj_4dcdbafa
+- [ask EPIC-4-A2: approve @Jordi since 2026-10-22 row 5] Launch step 5 (the poly-maker E4 compliance test) now, although poly-maker E4's owner is actively working it (b0d6dd36)? — recommend: yes; warn the E4 owner first that a structure-only migration commit is coming — unblocks: step 5 (E4-4), then the E4-5 check on poly-maker E4 — effort: ~1 min — context: [poly-maker E4 activity](https://github.com/AlfaBlok/poly-maker/commit/b0d6dd36) (console item nj_4dcdbafa)
 - [answered EPIC-4-A1 2026-10-21 @Jordi] Approve the doctrine page (what every epic must say) and the enforcement plan (scaffold, commit check, JSON fields) as one? — recommend: approve, with both small answers yes (advisory size budget 150 lines / 200-char cells; profile, dialect and ticket-backend headers optional) — unblocks: step 3 (tools), then 5 (poly-maker compliance test) and 6 (slimming); waiting holds the whole Doctrine 2 rollout — effort: ~5 min — context: [approval page](http://vps-a9-1.taild81fbb.ts.net:36879/index.html) — answer: APPROVED
 
 ## Non-Goals
