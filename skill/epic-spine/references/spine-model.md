@@ -26,7 +26,7 @@ A spine is a snapshot of intent, facts and learnings, plus behaviours for mainte
 
 **The why rule.** If a goal's why is not written anywhere in the repo, ask the spine's owner. Never invent one.
 
-**What goes where.** Why the work exists and what done means stay in the spine; "3. Tools: write the new format by default, owner, status, next action" is one step row; a long debate on how to treat legacy docs gets issue #12, linked from that row, and only its outcome is written back.
+**What goes where.** Why the work exists and what done means stay in the spine; "3. Tools: write the new format by default, owner, status, next action" is one step row; a long debate on how to treat legacy docs gets issue #12, linked from that row, and only its outcome is written back. In a compact or Doctrine 2 epic the row itself is the ticket: `Issue` may stay `draft`.
 
 **Maintenance** (the agent bound to an epic):
 - **Tidy and informed.** Keep the epic tidy and fully informed: after each step, update state, steps and evidence.

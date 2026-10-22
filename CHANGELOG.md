@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.10.22.2 — Cold pickup reply, row is the ticket
+
+- **Fix: a cold agent audited the epic instead of picking it up** (EPIC-4 step 19, E4-5 check on EPIC-4: no goal or next action stated, `Learnings in force: none`). Global-block rule 1 now says that an agent whose brief names `Bound epic: <path>` opens, right after the bind line and before acting, with four short lines from that epic (Goal, Done means still open, Next action, where its context lives); rule 2 says to walk the `Parent spine:` chain before binding. One line each mirrored in SKILL.md rule 5 and the worker template of `references/dispatch-prompts.md`. Reworded in place: no file gains a line.
+- **Fix: `validate_spine.py --strict` raised ES-S-TICKET (32 errors on EPIC-4) for `Issue` `draft` on non-draft rows.** In a compact or Doctrine 2 epic the ledger row is the ticket, so `draft` is accepted on any row; an epic that declares `Ticket backend: github` and cites at least one real issue URL keeps the check (`row_is_ticket`). `spine-model.md` notes it under "What goes where". Test: `tests/test_compact_state.py`. Skill 2026.10.22.2.
+
 ## 2026.10.22.1 — Doctrine 2 tools
 
 - **The tools write and read the Doctrine 2 shape** (EPIC-4 step 3; spec `docs/doctrine/tools-brief.md`, contract `docs/doctrine/console-contract.md`, approved as EPIC-4-A1). New `scripts/doctrine.py` holds the readers; `spines.py --json` adds, per node and without changing any existing field: `goal`, `serves` (null for the root), `done_means` (`## Done means`, else the DoD heading; `dod` reads either), `contributes` (child path to the Spine Map's `Contributes`/`Purpose` sentence; a child without one is absent), `pages` (unstamped docs reachable by links from the epic through pages, any depth, `via` = the linking leaf), `missing_sections` (`title`, `goal`, `serves`, `done_means`, `status`) and `size` (`lines`, `long_cells` over 200 characters); top level adds `orphan_pages` (docs no tree leaf links to; same skip list, README/AGENTS/CHANGELOG-style files ignored, empty without a root) and `looks_like_epic` (pages with two or more of Goal, Done means, checkboxes, Next action, Status).
