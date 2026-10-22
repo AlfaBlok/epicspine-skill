@@ -163,3 +163,15 @@ Page of [EPIC-4](../EPIC-4-DOCTRINE-2.md). The Decisions table there keeps one l
 - **Durable Summary:** APPROVED as one, with both small answers yes: advisory size budget 150 lines / 200-char cells; profile, dialect and ticket-backend headers optional. Unblocks step 3 (tools), then 5 and 6.
 - **Evidence:** Jordi via agent_team console (item wj_7f4157f90d7b8a48), EPIC-4-A1
 - **Revisit When:** never
+
+## D19
+
+- **Date:** 2026-10-22
+- **Outcome:** accepted (adopt with changes)
+- **Decision / Attempt:** agent_team M2-35 proposal: cross-epic ask references, search before asking, consumed answers
+- **Durable Summary:** Problem: Jordi was asked one question several times (EPIC-10-A6 as both a console Needs Jordi item and a coded ask; poly-maker E4-A2/A3 and EPIC-4-A2 the same), and `[answered]` lines stayed in spines and were re-listed every wake. Adopted with these changes:
+  1. **Reference, not ask.** A spine blocked by an ask that already exists anywhere writes one Waiting on line `- [waits on <code> row <id>] <one-line gloss>`; across repos the code is qualified `<repo>/<code>` (GitHub repo name, as human-asks.md already does), e.g. `[waits on infra-vps/EPIC-10-A7 row 3]`. It needs no fields, does not count toward the 3-ask limit, and satisfies the "blocked row with no open ask" check. The canonical ask's `unblocks:` may name rows in other epics as `<repo>/<epic code> row <id>`. `spines.py --json` carries a separate per-node `waits_on: [{ref, repo, code, row, state}]`, where `state` is the target ask's state (`open`, `answered`, `done`) when it resolves, else `unresolved`. Checks (advisory): a same-repo code that does not exist warns; a cross-repo code resolves through a sibling checkout (`../<repo>`) and otherwise reports `unresolved` without warning.
+  2. **Search before asking.** Before raising an ask, an agent checks the open asks in its repo's tree (`spines.py --json`), in the repos the epic touches, and the console's open Needs Jordi items; if one matches, it references it (rule 1). A console Needs Jordi item and a spine ask for the same question are one ask: the item's question starts with the spine code, never a second code.
+  3. **Consumed answers.** After acting on an `[answered …]` line, the owner appends ` · done <YYYY-MM-DD> <sha>` to that line. Tools treat it as closed (`state: "done"`, not listed as work); an `answered` line without `done` is the owner's action item. Deleting the line after its Decisions row exists stays valid.
+- **Evidence:** Jordi via agent_team console (M2-35, agent_team docs/spines/m2-team-console.md, docs/handoffs/M2-35-M2-36.md), 2026-10-22
+- **Revisit When:** a second cross-repo reference format appears

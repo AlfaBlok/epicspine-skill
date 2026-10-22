@@ -244,3 +244,7 @@ Missed:
 Fix (proposal): the bind reply of a worker whose brief is only `Bound epic:` states four lines from the spine (Goal, Done means left, Next action, where context lives) before acting, and walks the parent chain for learnings. Then re-run E4-5 without the read-only line, in a throwaway clone. Back to [EPIC-4](../EPIC-4-DOCTRINE-2.md).
 
 Re-run 2026-10-22 on 2026.10.22.3 (console run run_0a988e59, Sonnet 5.5, seat2, brief = `Bound epic: <path>` only, no-push clone at 6caab22): PASS for EPIC-4. Unasked, it opened with Goal, Done means still open, Next action and where context lives, and bound L-1..L-14 via the parent chain. It closed by asking which check to run next, because Next action named this test itself; E4-5 still needs the poly-maker E4 half (after step 5).
+
+## Step 20
+
+Build [D19](decisions.md#d19) (agent_team M2-35). Contract: [human-asks.md](human-asks.md) gains "Reference, not ask", "Search before asking" and "Consumed answers" sections; the spine-model.md Waiting on line names `waits on` and `· done` in a few words (net skill size must not grow). Parser (`epic_log.py`): `waits_on` per node and the `done` state on answered lines. Checks: unknown same-repo code warns; a reference satisfies a blocked row; done lines are never stale or surplus. Tests, CHANGELOG, VERSION, MANIFEST. Then mark EPIC-4-A1 `· done` as the first use. Back to [EPIC-4](../EPIC-4-DOCTRINE-2.md).
