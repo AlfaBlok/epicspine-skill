@@ -1,8 +1,8 @@
 # Changelog
 
-## 2026.10.22.6 — spines.py lists docs from git
+## 2026.10.22.6 — spines.py reads each file once; the stale check survives git timeouts
 
-- **Fix: `spines.py --json` was slow and starved of CPU on a loaded host** (EPIC-3 E3-4: the agent_team console calls it with a 15 s timeout, and poly-maker EPIC-4 fell out of the milestone picker). `doctrine.docs` now takes the candidate list from `git ls-files --cached --others --exclude-standard -- '*.md'` (tracked plus untracked-not-ignored, so a new uncommitted spine is still seen), applies the same skip list, dot-dir and vendored-skill rules and the same per-folder order as before, and so never walks gitignored data dirs (poly-maker holds 20k files, 560 of them `.md`). Outside git, or when git fails, the old `os.walk` runs. Docs listing CPU 0.15 s -> 0.03 s on poly-maker, stat calls one per doc. Also: a scan reads each file once (`doctrine.remembering()`, scoped to `spines.scan`), `page_report` takes the pages `scan` already computed instead of recomputing them, and `validate_spine.criteria` no longer rebuilds its section set per line. `spines.py --json` is byte-identical before and after on this repo, zenod and tax-assist-research, and on poly-maker apart from files it changed meanwhile. Tests: `tests/test_docs_listing.py`. Skill 2026.10.22.6.
+- **Fix: `spines.py --json` was slow and could crash on a loaded host** (EPIC-3 E3-4: the agent_team console calls it with a 15 s timeout, and poly-maker EPIC-4 fell out of the milestone picker). A scan used to read every doc up to four times; it now reads each once (`doctrine.remembering()`, scoped to `spines.scan`), `page_report` takes the pages `scan` already computed instead of recomputing them, and `validate_spine.criteria` no longer rebuilds its section set per line. And `epic_log.stale` no longer lets a `git log` timeout (or `OSError`) abort the scan: that goal is skipped, neither stale nor known. `spines.py --json` output is unchanged. Tests: `tests/test_epic_log.py`. Skill 2026.10.22.6.
 
 ## 2026.10.22.5 — An epic stamp needs the colon
 

@@ -8,8 +8,6 @@ from __future__ import annotations
 import contextlib
 import os
 import re
-import stat
-import subprocess
 from pathlib import Path
 
 import validate_spine as v
@@ -60,33 +58,8 @@ def skipped(repo: Path, rel: Path) -> bool:
     return any(d in SKIP or d.startswith(".") for d in dirs) or any((repo.joinpath(*dirs[:i]) / "SKILL.md").is_file() for i in range(len(dirs) + 1))
 
 
-def git_docs(repo: Path) -> list[Path] | None:
-    """Tracked plus untracked-not-ignored .md files of a git repo, in ``os.walk`` order and with its skip rules; None when git cannot list them."""
-    try:
-        out = subprocess.run(["git", "-C", str(repo), "ls-files", "-z", "--cached", "--others", "--exclude-standard", "--", "*.md"],
-                             capture_output=True, timeout=60, check=True).stdout.decode("utf-8", "surrogateescape")
-    except (OSError, subprocess.SubprocessError):
-        return None
-    listed = [tuple(rel.split("/")) for rel in out.split("\0") if rel.endswith(".md")]
-    vendored = {parts[:-1] for parts in listed if parts[-1] == "SKILL.md"}  # folders holding a SKILL.md
-    keep = [parts for parts in listed if not any(d in SKIP or d.startswith(".") for d in parts[:-1]) and not any(parts[:i] in vendored for i in range(len(parts)))]
-    keep.sort(key=lambda parts: tuple((1, d) for d in parts[:-1]) + ((0, parts[-1]),))  # a folder's files, then its sub-folders (os.walk order)
-    base, found = repo.resolve(), []
-    for parts in keep:
-        path = base.joinpath(*parts)
-        try:
-            mode = os.lstat(path).st_mode  # one stat per file: listed but deleted, or a folder, is skipped; a symlink resolves like the walk
-        except OSError:
-            continue
-        found += [] if stat.S_ISDIR(mode) else [path.resolve() if stat.S_ISLNK(mode) else path]
-    return found
-
-
 def docs(repo: Path) -> list[Path]:
-    """Every .md the epic log looks at (same skip list as goal docs), sorted per folder. In a git repo gitignored files are never listed
-    (a data dir with 20k files made the walk take 20 s); outside git, or when git fails, the tree is walked."""
-    if (found := git_docs(repo)) is not None:
-        return found
+    """Every .md the epic log looks at (same skip list as goal docs), sorted per folder."""
     found = []
     for top, dirs, files in os.walk(repo):
         vendored = "SKILL.md" in files
