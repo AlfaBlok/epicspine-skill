@@ -38,11 +38,11 @@ Done means (until step 2 makes `## Done means` a recognised heading, the outcome
 Owner: EPIC-4 delivery manager (thread mcp:61d2777c-071a-4feb-93e3-4db440b5d6ac)
 Status: active
 Last attempted: 2026-10-22: step 20 merged (5e6df01, 2026.10.22.4; full suite re-running under load); EPIC-4-A2 APPROVED, E4 owner warned, step 5 launched (poly-maker thread mcp:e25fa5ad)
-Result: steps 1-4, 6-19 done; step 5 active; step 20 merged pending the full-suite check; E4-1, E4-2 and E4-3 met; E4-5 half met (EPIC-4)
-Evidence: worker suite 622 OK (1 skip) on wt/ask-refs 038d5f0; first manager run on merged main hit the 10-min background limit at load 23; EPIC-4-A1 and A2 marked `· done` (first use of D19 rule 3)
+Result: steps 1-4, 6-20 done; step 5 active; E4-1, E4-2 and E4-3 met; E4-5 half met (EPIC-4)
+Evidence: worker suite 622 OK (1 skip) on wt/ask-refs 038d5f0; full isolated suite 622 OK (2 skip) on merged main 5e6df01; EPIC-4-A1 and A2 marked `· done` (first use of D19 rule 3)
 Waiting on: none
 Approved work: E4-1 to E4-5; steps 10-12 requested by Jordi via agent_team (2026-10-20/21); step 20 (Jordi via agent_team M2-35, 2026-10-22); step 5 now (EPIC-4-A2)
-Next action: confirm the full suite on 5e6df01 (revert step 20 if red), send the step 20 JSON shape to agent_team; follow step 5 to its result, then run E4-5 on poly-maker E4
+Next action: follow step 5 to its result, then run E4-5 on poly-maker E4
 Source revision: main
 Verified at: 2026-10-22 (main 45150b2)
 
@@ -81,7 +81,7 @@ Steps run in this order; each one unblocks the next. Steps 1 and 2 are one appro
 | draft | Ticket worker | worker (Sonnet 5.5) | 17. Human asks v2: ask codes, `do` + steps, unblocks/effort, gate is not an ask, answer by code. [detail](doctrine/steps.md#step-17) | done | none | merged | main | released 2026.10.21.7 (merge 2788fcf); full isolated suite OK; EPIC-4-A1 parses with code, unblocks, effort | 2026-10-21 | none; poly-maker E4 restated as v2 asks E4-A1 (do), E4-A2 (decide) in poly-maker b90d9a53, trackable |
 | draft | Ticket worker | worker seat2 (Sonnet 5.5) | 18. Pre-commit tests run from a linked worktree exercise main's installed hook, not the branch's code (found by the step 3 worker, who ran from a plain clone). [detail](doctrine/steps.md#step-18) | done | none | merged | main | released 2026.10.22.3 (merge 4ab45c8): tests install the hook for the tree under test; combined isolated suite 609 OK | 2026-10-22 | none |
 | draft | Ticket worker | worker seat1 (Sonnet 5.5) | 19. Cold pickup reply: a `Bound epic:`-only agent audited instead of stating goal, Done means, next action, context; bound no learnings. [detail](doctrine/steps.md#step-19) | done | none | merged | main | released 2026.10.22.2 (merge 1b2bb93): four-line pickup, learnings chain, row-is-ticket in --strict; EPIC-4 0 ES-S-TICKET; combined isolated suite 609 OK | 2026-10-22 | none |
-| draft | Ticket worker | unassigned | 20. One ask per question (agent_team M2-35, D19): `waits on` refs, search before asking, `· done` answers; contract, parser, checks, release. [detail](doctrine/steps.md#step-20) | ready | none | none | main | decision D19 2026-10-22 | 2026-10-22 | dispatch a worker |
+| draft | Ticket worker | worker seat2 (Sonnet 5.5) | 20. One ask per question (agent_team M2-35, D19): `waits on` refs, search before asking, `· done` answers; contract, parser, checks, release. [detail](doctrine/steps.md#step-20) | done | none | merged | main | released 2026.10.22.4 (merge 5e6df01, branch removed); full isolated suite 622 OK on merged main; EPIC-4-A1/A2 `· done`; JSON shape sent to agent_team | 2026-10-22 | agent_team console switches to D19 syntax |
 
 ## Decisions
 
