@@ -40,7 +40,7 @@ Status: active
 Last attempted: 2026-10-22 DM wake (run_b3c0352c): step 5 result read and verified; step 21 dispatched (seat2, wt/stamp); E4-5 cold check on poly-maker E4 running (seat1, no-push clone, no production actions); console DoD gap sent to agent_team
 Result: steps 1-4, 6-20 done; step 5 active (migration passed, two display gaps); E4-1, E4-2 and E4-3 met; E4-5 half met (EPIC-4)
 Evidence: poly-maker 8326a45d by fresh thread mcp:e25fa5ad, one message, no questions (every why was written); `spines.py --json` on poly-maker: E4 missing_sections [], 6 done_means, validate --strict OK; console tree shows "EPIC-4: ONE LOGGER" but milestone dod 0/0; [step 5](doctrine/steps.md#step-5)
-Waiting on: none (agent_team: console Done means read; workers: step 21, E4-5 check)
+Waiting on: none (agent_team wt/done-means-dod: milestone dod from done_means, screenshot of ms_b3ed1efe with 6 Done means; workers: step 21, E4-5 check)
 Approved work: E4-1 to E4-5; steps 10-12 requested by Jordi via agent_team (2026-10-20/21); step 20 (Jordi via agent_team M2-35, 2026-10-22); step 5 (EPIC-4-A2)
 Next action: merge step 21; on agent_team's console fix tick E4-4; on a passing poly-maker cold check tick E4-5; then write Outcome and close EPIC-4
 Source revision: main
