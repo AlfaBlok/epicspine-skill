@@ -175,3 +175,12 @@ Page of [EPIC-4](../EPIC-4-DOCTRINE-2.md). The Decisions table there keeps one l
   3. **Consumed answers.** After acting on an `[answered …]` line, the owner appends ` · done <YYYY-MM-DD> <sha>` to that line. Tools treat it as closed (`state: "done"`, not listed as work); an `answered` line without `done` is the owner's action item. Deleting the line after its Decisions row exists stays valid.
 - **Evidence:** Jordi via agent_team console (M2-35, agent_team docs/spines/m2-team-console.md, docs/handoffs/M2-35-M2-36.md), 2026-10-22
 - **Revisit When:** a second cross-repo reference format appears
+
+## D20
+
+- **Date:** 2026-10-22
+- **Outcome:** accepted
+- **Decision / Attempt:** EPIC-4-A2: launch step 5 (poly-maker E4 compliance test) while poly-maker E4's owner is actively working it
+- **Durable Summary:** APPROVED with the recommendation: warn the E4 owner (agent_team persona, assignment as_da033f21, thread mcp:d3607a34) that a structure-only migration commit is coming, then launch one fresh poly-maker thread whose only message is "make Epic 4 compliant with the latest EpicSpine doctrine". Launched 2026-10-22 as thread mcp:e25fa5ad (Opus 5.5, seat2).
+- **Evidence:** answer commit 45150b2 (agent-team console)
+- **Revisit When:** never
