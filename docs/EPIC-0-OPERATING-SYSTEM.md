@@ -19,14 +19,14 @@ Skill updates: auto
 
 Owner: /root delivery manager
 Status: active
-Last attempted: 2026-10-22 EPIC-3 (011ab13): E3-2 met (3 fresh sessions bound `Goal: EPIC-<n>` unprompted; `next: EPIC-<n>` added, 2026.10.22.7); E3-3 every rooted repo conforms; spines.py faster (2026.10.22.6)
+Last attempted: 2026-10-23 ticket-34 (e39fc79, skill 2026.10.23.1): ask lines agents write are all read (`superseded`, done notes, `Waiting on:` codes as `waits_on` refs), advisories name the canonical form
 Result: EPIC-3 open items: E3-3 six rootless repos and E3-5, both gated on EPIC-3-A1
-Evidence: EPIC-3 011ab13; docs/epic-log/conformance.md
+Evidence: e39fc79 (633 tests green; live `spines.py --json`: infra-vps EPIC-10-A8 superseded, EPIC-2-A9 done, Waiting-on refs); EPIC-3 011ab13
 Waiting on: Jordi: EPIC-3-A1 (root spines for the six rootless repos; asked in EPIC-3)
 Approved work: EPIC-3 Epic log and EPIC-4 Doctrine 2 (their ledgers hold the tickets)
 Next action: EPIC-3 closes E3-2/E3-3/E3-5 (ETA 1-2 days, E3-3 rootless repos gated on EPIC-3-A1); EPIC-0 free for E3-5's learning; then close this root's DOD
 Source revision: main
-Verified at: 2026-10-22
+Verified at: 2026-10-23
 
 ## Mission
 
@@ -81,7 +81,7 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 | draft | Ticket worker | worker (Opus 5.5, native) | Background sync: machine-wide cron/launchd job syncs every repo, writes `~/.agents/epicspine-sync-status.json`; skill 2026.10.16.9 [detail](root/steps.md#ticket-27) | draft | none | feat/background-sync | ad29302 | 421 tests green, manifest regenerated, real crontab untouched by tests | 2026-10-16 | merge per Integration policy; run install-global on the VPS and the Mac |
 | draft | Ticket worker | worker (Sonnet 5.5, native) | Fetch guard (infra-vps VH-T20): fetch timeouts kill git's process group, clean own tmp packs, back off after 2 strikes; skill 2026.10.20.1 [detail](root/steps.md#ticket-32) | draft | none | wt/fetch-timeout-tmp-pack | f63cf51 | new tests green; full suite differs from the pre-change baseline only by them (20 env failures pre-exist in this worktree); manifest regenerated | 2026-10-20 | manager merges |
 | draft | Ticket worker | worker (Sonnet 5.5, native) | EPIC-4 steps 10+11: `## Outcome` before close and `current_state` in `--json`; `tests/test_outcome.py`; skill 2026.10.20.2 [detail](root/steps.md#ticket-33) | draft | none | wt/outcome | see branch | new tests green; manifest regenerated | 2026-10-20 | manager merges |
-| draft | Ticket worker | worker (Opus 5.5, T3 sub-agent) | ticket-34 Ask states & refs (agent_team L-12 duplicate cards): `superseded` ask state, done marker with trailing note, `Waiting on:` code mentions as `waits_on[]` refs, `none`/`nobody`; advisory on unparsable ask/Waiting-on lines (D19) | in progress | none | wt/ask-states-refs | 6be164a | dispatched | 2026-10-23 | implement, test, release, merge |
+| draft | Ticket worker | worker (Opus 5.5, T3 sub-agent) | ticket-34 Ask states & refs (agent_team L-12 duplicate cards): `superseded` state, done notes, `Waiting on:` codes as `waits_on[]` refs, advisories (D19 pt 4) | done | none | wt/ask-states-refs (removed) | 6be164a | merged e39fc79, 2026.10.23.1; 633 tests green; live JSON verified | 2026-10-23 | agent_team console codes against human-asks.md v4 |
 
 Done tickets (20 rows, Next Action done/none, moved verbatim): [done ledger](root/steps.md#done-ledger).
 
