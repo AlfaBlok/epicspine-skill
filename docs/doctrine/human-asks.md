@@ -1,6 +1,6 @@
-# Human asks: contract (v3)
+# Human asks: contract (v4)
 
-Page of [EPIC-4](../EPIC-4-DOCTRINE-2.md). v1 was step 12 (agent_team M2-SKILL). v2 is step 17 (M2-SKILL2, Jordi, 2026-10-21). v3 is step 20 ([D19](decisions.md#d19), agent_team M2-35, 2026-10-22): reference lines, search before asking, consumed answers. The console may code against v3 now; v2 shapes are unchanged.
+Page of [EPIC-4](../EPIC-4-DOCTRINE-2.md). v1 was step 12 (agent_team M2-SKILL). v2 is step 17 (M2-SKILL2, Jordi, 2026-10-21). v3 is step 20 ([D19](decisions.md#d19), agent_team M2-35, 2026-10-22): reference lines, search before asking, consumed answers. v4 is D19's amendment (EPIC-0 ticket-34, 2026-10-23): `superseded` asks, done notes, `Waiting on:` code references, advisories on unreadable lines. Earlier shapes are unchanged.
 
 An ask is a human action that blocks the NEXT step. A human named on a later step is a plan, not an ask: leave it as plain ledger text until that row is next.
 
@@ -38,7 +38,7 @@ Write one line per ask under `## Waiting on`, right after Current State.
 | `effort:` | optional | e.g. `~10 min` |
 | `context:` | all | a page or anchor with the background |
 
-**Row status word:** the blocked row is set to `blocked`. Current State's `Waiting on:` lists the codes, e.g. `Jordi: E4-A3, E4-A4`.
+**Row status word:** the blocked row is set to `blocked`. Current State's `Waiting on:` lists the codes, e.g. `Jordi: E4-A3, E4-A4` (any ask code it names, this epic's or another's, `<repo>/<code>` across repos, is read as a reference); `nobody` or `none` (first word) means no human blocks, whatever follows.
 
 ## Keep it minimal (the manager's duty)
 On every wake and at every session end, the delivery manager rewrites `## Waiting on` as the smallest set of human actions:
@@ -58,8 +58,10 @@ On every wake and at every session end, the delivery manager rewrites `## Waitin
 
 So an `ask` line is open, an `answered` line is answered but not yet cleaned up, and no line means nothing is pending.
 
+**Superseded:** an ask replaced by another before it was answered becomes `- [superseded <code> <YYYY-MM-DD> by [<repo>/]<code>] <question> …`. It is closed like `done`; the new ask carries the wait.
+
 ## Consumed answers
-After acting on an `[answered ...]` line, the owner appends ` · done <YYYY-MM-DD> <sha>` to it (the commit that acted on the answer):
+After acting on an `[answered ...]` line, the owner appends ` · done <YYYY-MM-DD> <sha>` to it (the commit that acted on the answer; a short note may follow, and the marker may also sit inside the tag after `@<who>`, with ` superseded by <code>`):
 
 ```
 - [answered EPIC-4-A1 2026-10-21 @Jordi] Approve the doctrine page? — answer: APPROVED · done 2026-10-22 7efe0ee
@@ -90,14 +92,16 @@ Before raising an ask, check, in this order: the open asks in this repo's tree (
   "options": [], "recommend": "do it tonight", "unblocks": "S2, S3; each day waiting loses a day of archived ticks", "effort": "~10 min",
   "context": "docs/one-logger/notes.md#archiver", "since": "2026-10-21", "row": "S3", "state": "open", "answer": null}]
 ```
-Unknown or missing fields are null. On an `answered` line, `code` is kept, and `ask`, `since` and `row` may be null. `state` is `open`, `answered` or `done` (`· done` consumed answer; `answer` excludes the suffix). `waiting_on` never holds reference lines.
+Unknown or missing fields are null. On an `answered` or `superseded` line, `code` is kept, and `ask`, `since` and `row` may be null (`who` too when superseded). `state` is `open`, `answered`, `done` (`· done` consumed answer; `answer` excludes the suffix) or `superseded`. `superseded_by` is the code after `by` (`[superseded …]`, or `superseded by` in an answered tag), else null. An ask type outside the four is kept as written (and warned). `waiting_on` never holds reference lines.
 
 Reference lines are a separate per-node list, `[]` when there are none:
 ```json
-"waits_on": [{"ref": "infra-vps/EPIC-10-A7", "repo": "infra-vps", "code": "EPIC-10-A7", "row": "3", "state": "open"}]
+"waits_on": [{"ref": "infra-vps/EPIC-10-A7", "repo": "infra-vps", "code": "EPIC-10-A7", "row": "3", "state": "open", "via": "waits_on"},
+             {"ref": "E4-A8", "repo": null, "code": "E4-A8", "row": null, "state": "done", "via": "waiting_on"}]
 ```
 - `ref` is the target as written (`<repo>/<code>` or `<code>`); `repo` is the qualifier or null (same repo); `row` is this spine's blocked row, or null.
-- `state` is the target ask's state (`open`, `answered`, `done`) when it resolves, else `unresolved`.
+- `via` is `waits_on` (a `[waits on]` line) or `waiting_on` (a code named in Current State's `Waiting on:`; `row` null). A code appears once, a line first; a code of this node's own ask points at that ask (same code in `waiting_on`). `nobody`/`none` adds nothing.
+- `state` is the target ask's state (`open`, `answered`, `done`, `superseded`) when it resolves, else `unresolved`.
 - Resolution: a bare code, or one qualified with this repo's own name (folder name or the `Repository:` header), is looked up in this repo's tree (ask lines, else `done` when only a Decisions row cites the code, i.e. its line was cleaned up); any other repo is read from the sibling checkout `../<repo>`, and is `unresolved` when that checkout is absent or has no tree.
 
 ## Checks (advisory; they never block a commit)
@@ -109,8 +113,10 @@ The validator and the commit check warn on:
 - a bare internal id in the question (best effort);
 - more than 3 open asks;
 - an ask open for more than 7 days;
-- a `waits on` code of this repo that no ask or Decisions row cites (a cross-repo one never warns, it reports `unresolved`).
+- a `waits on` or `Waiting on:` code of this repo that no ask or Decisions row cites (a cross-repo one never warns, it reports `unresolved`);
+- a `## Waiting on` bullet the tools cannot read, an unknown ask type, or extra text in an `answered` tag, naming the canonical form;
+- a Current State `Waiting on:` that names a human (`Jordi: …`, `Jordi — …`) but no ask code (write the codes, or `nobody`).
 
-A `waits on` line satisfies the first checks (a row or epic blocked on it has an ask naming it). `done` lines are not open asks, so the open-count, stale and missing-field checks skip them.
+A `waits on` line satisfies the first checks (a row or epic blocked on it has an ask naming it). `done` and `superseded` lines are not open asks, so the open-count, stale and missing-field checks skip them.
 
 Under `--trackable`, these are reported as issues.

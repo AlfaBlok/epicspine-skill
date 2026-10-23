@@ -48,12 +48,12 @@ class ParserTests(unittest.TestCase):
 
     def test_every_field(self) -> None:
         self.assertEqual([{"code": None, "who": "Jordi", "ask": "decide", "question": "Ship E4 with one logger or two?", "steps": None, "options": ["one", "two"], "recommend": "one",
-                           "unblocks": None, "effort": None, "context": "docs/one-logger/notes.md#loggers", "since": "2026-10-21", "row": "T4", "state": "open", "answer": None}], self.parse(DECIDE))
+                           "unblocks": None, "effort": None, "context": "docs/one-logger/notes.md#loggers", "since": "2026-10-21", "row": "T4", "state": "open", "answer": None, "superseded_by": None}], self.parse(DECIDE))
 
     def test_v2_do_ask_with_every_new_field(self) -> None:
         self.assertEqual({"code": "E4-A3", "who": "Jordi", "ask": "do", "question": "Patch the archiver for 1 h so the cutover (T4) can run?", "steps": "docs/x.md#run (vps1, user root)",
                           "options": [], "recommend": "do it tonight", "unblocks": "T4; each day waiting loses a day of ticks", "effort": "~10 min",
-                          "context": "docs/one-logger/notes.md#archiver", "since": "2026-10-21", "row": "T4", "state": "open", "answer": None}, self.parse(DO)[0])
+                          "context": "docs/one-logger/notes.md#archiver", "since": "2026-10-21", "row": "T4", "state": "open", "answer": None, "superseded_by": None}, self.parse(DO)[0])
 
     def test_steps_inline_commands_are_kept(self) -> None:
         line = DO.replace("[runbook](docs/x.md#run) (vps1, user root)", "`sudo systemctl restart archiver` on vps1")
@@ -76,9 +76,9 @@ class ParserTests(unittest.TestCase):
         self.assertEqual(("answered", "E4-A3", "Jordi", "done"), (ask["state"], ask["code"], ask["who"], ask["answer"]))
         self.assertEqual((None, None, None), (ask["ask"], ask["since"], ask["row"]))
 
-    def test_provide_do_types_accepted_and_unknown_type_ignored(self) -> None:
+    def test_provide_do_types_accepted_and_unknown_type_kept(self) -> None:
         self.assertEqual("do", self.parse(DO)[0]["ask"])
-        self.assertEqual([], self.parse(DO.replace(": do @", ": fix @")))
+        self.assertEqual(("fix", "open"), tuple(self.parse(DO.replace(": do @", ": fix @"))[0][k] for k in ("ask", "state")))  # read, and the checks advise
 
     def test_row_is_optional_and_options_empty(self) -> None:
         ask = self.parse(APPROVE)[0]
@@ -259,7 +259,7 @@ class JsonTests(TreeCase):
         self.add_ask(DECIDE + "\n" + ANSWERED_V2)
         asks = self.node()["waiting_on"]
         self.assertEqual(["open", "answered"], [a["state"] for a in asks])
-        self.assertEqual({"code", "who", "ask", "question", "steps", "options", "recommend", "unblocks", "effort", "context", "since", "row", "state", "answer"}, set(asks[0]))
+        self.assertEqual({"code", "who", "ask", "question", "steps", "options", "recommend", "unblocks", "effort", "context", "since", "row", "state", "answer", "superseded_by"}, set(asks[0]))
         self.assertEqual(["one", "two"], asks[0]["options"])
         self.assertEqual([], next(n for n in self.log()["nodes"] if n["path"] == "docs/root.md")["waiting_on"])
 

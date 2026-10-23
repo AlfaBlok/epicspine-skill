@@ -4,23 +4,20 @@
 from __future__ import annotations
 
 import datetime
-import os
 import re
 import subprocess
 import time
 from pathlib import Path
 
 import validate_spine as v
-from ask_refs import ASK_CODE, repo_root, unknown, waits  # noqa: F401 (repo_root: re-exported)
+from ask_refs import ASK_CODE, MENTION, ask_context, asks, repo_root, unknown, waits  # noqa: F401 (re-exported)
 
 OPEN = ("draft", "ready", "active", "blocked")
 CODE = re.compile(r"^(?:EPIC[- ]?|E)(\d+)\b")
 STALE_DAYS = 14
 STALE_ASK_DAYS = 7
-ASK = re.compile(r"-\s+\[(?:ask(?:\s+" + ASK_CODE + r")?:\s*(decide|approve|provide|do)\s+@(\S+)\s+since\s+(\d{4}-\d\d-\d\d)(?:\s+row\s+(\S+))?|answered(?:\s+" + ASK_CODE + r")?\s+\d{4}-\d\d-\d\d\s+@(\S+))\]\s*(.*)")
-DONE = re.compile(r"\s*·\s*done\s+\d{4}-\d\d-\d\d(?:\s+\S+)?\s*$")
-ASK_FIELD = re.compile(r"(steps|options|recommend|unblocks|effort|context|answer):\s*(.*)", re.S)
 MAX_OPEN_ASKS = 3
+HUMAN_WAIT = re.compile(r"@?[A-Z][a-z]+(?:'s\b|\s*[:—–(]|\s+-\s)")  # `Jordi: …`, `Jordi — …`, `Jordi's call` (best effort)
 
 
 def next_code(titles: list[str]) -> int:
@@ -103,44 +100,6 @@ def render(log: dict) -> str:
     return "\n".join(lines)
 
 
-def asks(text: str, path: Path, repo: Path) -> list[dict]:
-    """``## Waiting on`` ask lines in the docs/doctrine/human-asks.md shape; ``context``/``steps`` links are repo-relative when local (else kept as-is)."""
-    out = []
-    for line in v.parse_sections(text).get("Waiting on", "").splitlines():
-        line, done = DONE.subn("", line.strip())
-        if not (m := ASK.fullmatch(line)):
-            continue
-        code, kind, who, since, row, answered_code, answered_by, rest = m.groups()
-        question, *parts = re.split(r"\s+[—–]\s+", rest.strip())
-        fields: dict[str, str] = {}
-        for part in parts:
-            f = ASK_FIELD.fullmatch(part.strip())
-            if f:
-                fields[last := f.group(1)] = f.group(2).strip()
-            elif fields:  # a dash inside the previous field's text
-                fields[last] += " — " + part
-            else:
-                question += " — " + part
-        options = [o.strip() for o in fields.get("options", "").split("|") if o.strip()]
-        steps = re.sub(r"\[[^\]]*\]\(([^)]+)\)", lambda k: ask_context(k.group(1), path, repo) or "", fields.get("steps", ""))
-        out.append({"code": code or answered_code, "who": who or answered_by, "ask": kind, "question": question, "steps": steps or None, "options": options,
-                    "recommend": fields.get("recommend") or None, "unblocks": fields.get("unblocks") or None, "effort": fields.get("effort") or None,
-                    "context": ask_context(fields.get("context", ""), path, repo), "since": since, "row": row,
-                    "state": "open" if kind else "done" if done else "answered", "answer": fields.get("answer") or None})
-    return out
-
-
-def ask_context(value: str, path: Path, repo: Path) -> str | None:
-    """A markdown link or bare path/URL: external kept as-is, local made repo-relative (the file's folder first, else the repo root)."""
-    target = (m.group(1) if (m := re.fullmatch(r"\[[^\]]*\]\(([^)]+)\)", value.strip())) else value.strip()).strip("<>")
-    if not target or "://" in target or target.startswith("mailto:"):
-        return target or None
-    name, _, frag = target.partition("#")
-    here = (path.parent / name).resolve() if name else path.resolve()
-    found = here if here.exists() or not (repo / name).exists() else (repo / name).resolve()
-    return (os.path.relpath(found, repo) if found.is_relative_to(repo) else target) + (f"#{frag}" if frag else "")
-
-
 def row_keys(row: dict) -> set[str]:
     first = (row.get("Title", "").split() or [""])[0].rstrip(".:)")
     return {k.lower().strip("#[] ").rstrip(".:)") for k in (first, row.get("Issue", ""), row.get("Ticket", "")) if k.strip()}
@@ -161,11 +120,11 @@ def needs_human(row: dict, names: set[str]) -> bool:
 def ask_issues(text: str, today: datetime.date | None = None, repo: Path | None = None) -> list[str]:
     """Advisory (never blocking): the checks of docs/doctrine/human-asks.md (missing field or code, duplicate code, over 3 open, stale, blocked/waiting or next row with no open ask or `waits on` reference; with ``repo``, a same-repo reference to a code that does not exist)."""
     today, issues = today or datetime.date.today(), []
-    every = asks(text, Path("-"), Path("-"))
+    every = asks(text, Path("-"), Path("-"), issues)
     found = [a for a in every if a["state"] == "open"]
     refs = waits(text)
     named = {a["row"].lower().strip("#[] ").rstrip(".:)") for a in [*found, *refs] if a["row"]}
-    names = {a["who"].lower().strip(".,:;") for a in every}
+    names = {a["who"].lower().strip(".,:;") for a in every if a["who"]}
     sections = v.parse_sections(text)
     header, rows = v.parse_table(sections.get("Issue Ledger", ""))
     for row in (dict(zip(header, r)) for r in rows) if "Status" in header else []:
@@ -175,14 +134,17 @@ def ask_issues(text: str, today: datetime.date | None = None, repo: Path | None 
             issues.append(f"ledger row '{label}' is {status.split()[0]} but no open ask names it (add one under ## Waiting on, `row <id>`)")
         elif status.startswith(("ready", "active")) and not row_keys(row) & named and needs_human(row, names):
             issues.append(f"ledger row '{label}' is next but its Needs/Owner names a human and no open ask names it (a human blocking the next step is an ask)")
-    status = v.parse_key_values(sections.get("Current State", "")).get("Status", "").lower()
+    state = v.parse_key_values(sections.get("Current State", ""))
+    status, said = state.get("Status", "").lower(), state.get("Waiting on", "")
+    if HUMAN_WAIT.match(said) and not MENTION.search(said):
+        issues.append(f"Current State `Waiting on: {said[:40]}` names a human but no ask code: write `<who>: <code>, …` (asks of this or another epic), or `nobody` when no human blocks")
     if status.startswith(("blocked", "waiting")) and not found and not refs:
         issues.append(f"Status is {status.split()[0]} but no open ask is under ## Waiting on")
     if len(found) > MAX_OPEN_ASKS:
         issues.append(f"{len(found)} open asks (aim for at most {MAX_OPEN_ASKS}): merge asks one human action resolves, close what no longer blocks")
     decided = sections.get("Decisions", "")
     for r in unknown(refs, repo, text):
-        issues.append(f"waits on {r['ref']}: no ask with that code exists in this repo (check the code, or qualify it `<repo>/<code>`)")
+        issues.append(f"{'waits on' if r['via'] == 'waits_on' else 'Waiting on:'} {r['ref']}: no ask with that code exists in this repo (check the code, or qualify it `<repo>/<code>`)")
     seen: set[str] = set()
     for a in found:
         label = f"ask {a['code']}" if a["code"] else f"ask '{a['question'][:40]}'"
