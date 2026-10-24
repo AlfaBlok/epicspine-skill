@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.10.24.8 — `--bind` takes an epic code
+
+- **Fixed: `spines.py --bind EPIC-4` (or `4`) found nothing** (the DOD-1 fresh-agent re-measure typed the code first and got "no spine found"). EPIC may now be a path or a code, matched against the file name or the `# EPIC-<n>:` title (`EPIC-1` never matches `EPIC-10`). The bind view moved to `scripts/bind.py` (spines.py stays under the 200-line cap). Tests: `tests/test_bind.py`. Skill 2026.10.24.8.
+
 ## 2026.10.24.7 — `spines.py --bind`: a cold agent binds in about 40 lines, in every repo
 
 - **New: `spines.py --bind [EPIC]`** (EPIC-0 DOD-1; the root-spine pointer worked only where a repo hand-wrote a line range, and agents that Read whole spine files took 187-282 lines). Prints, one line per non-blank line, the title, `## Current State`, `## Operating Learnings` and the open asks of `## Waiting on` (answered/superseded ones dropped) of the epic (default: the root) and every `Parent spine:` ancestor up to the root, nothing else. This repo: root 32 lines, EPIC-4 44. The global block's bind step (rule 2) and SKILL.md's Bind Path now say to run it and never Read whole spine files; this repo's AGENTS.md top line points at it, replacing the hand-kept `offset/limit` range and `tests/test_bind_range.py`. Tests: `tests/test_bind.py`. Skill 2026.10.24.7.

@@ -47,6 +47,14 @@ class BindTests(unittest.TestCase):
         self.assertNotIn("[answered", out)
         self.assertNotIn("\n\n", out)
 
+    def test_epic_code_finds_the_file(self):
+        (self.repo / "docs/EPIC-10-OTHER.md").write_text(spine("10", "Parent spine: [root](EPIC-0-ROOT.md)"))
+        for code in ("EPIC-1", "1", "epic-1"):
+            out = bind(self.repo, code)
+            self.assertIn("# EPIC-1: T1", out, code)
+            self.assertNotIn("EPIC-10", out, code)
+        self.assertIn("no spine found", bind(self.repo, "7"))
+
     def test_no_spine_says_so(self):
         empty = Path(self.tmp.name) / "none"
         empty.mkdir()
