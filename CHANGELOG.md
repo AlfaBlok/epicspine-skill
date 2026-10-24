@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026.10.24.9 — Runnable epics: `run_state`, draft until stamped ready
+
+- **New: an epic's Status says whether a wake may run it** (EPIC-7 E7-S1, agent_team EPIC-14 E14-S1; Jordi: switching a Delivery Manager on must not run every `active`/`ready` epic and ledger row). `spines.py --json` adds per node `run_state` (`planning` draft, `ready` ready, `running` active/blocked, `parked` deferred, `finished` review/done/superseded; any other or missing Status is `planning`), `runnable` (ready or running) and `has_children` (a child spine that is not finished); computed from the epic's own Status, not the rollup. `spines.py --active` appends `running`/`ready`/`planning (not runnable)` and `, has children`. New `scripts/run_state.py`. Doctrine: `references/spine-model.md` "Running" (a wake works only runnable epics; a spine with children steers and starts no child's rows; **draft until stamped ready**: only the user promotes `draft` to `ready`, no agent self-readies, the next standing wake starts a ready child and makes it `active`), one clause each in SKILL.md rule 10 and the global block (rule 6).
+- **Changed: `spine_new.py` scaffolds `Status: draft`** (was `ready`, which would auto-queue every new epic); its Spine Map row is `draft` too. `references/spine-creation.md` updated.
+- **New advisories** (`validate_spine.py`, `run-state:`; never `--strict`-promoted): `Status: active` with `Last attempted` empty or `scaffolded...`; `draft` epic whose ledger rows are `active`. Not added: a warning on an agent-authored draft→ready flip (a file validator cannot know the author).
+- Book (`index.html`) slide "Draft until stamped ready" (Part 4, 20 of 20; later slides renumbered) and explainer section 7. Tests: `tests/test_run_state.py`; scaffold expectations in `test_doctrine`, `test_epic_log`, `test_living_tree`, `test_outcome` now `draft`. Skill 2026.10.24.9.
+
 ## 2026.10.24.8 — `--bind` takes an epic code
 
 - **Fixed: `spines.py --bind EPIC-4` (or `4`) found nothing** (the DOD-1 fresh-agent re-measure typed the code first and got "no spine found"). EPIC may now be a path or a code, matched against the file name or the `# EPIC-<n>:` title (`EPIC-1` never matches `EPIC-10`). The bind view moved to `scripts/bind.py` (spines.py stays under the 200-line cap). Tests: `tests/test_bind.py`. Skill 2026.10.24.8.

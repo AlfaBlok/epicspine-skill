@@ -162,7 +162,16 @@ Next action: draft the doctrine page
   <tr><td><b>Rule</b></td><td colspan="2">Deep discussion stays in the ticket; only the durable consequence (changed intent, state or decision) is written back into the spine.</td></tr>
 </table>
 
-<h2>7 · Where we are honestly</h2>
+<h2>7 · Draft until stamped ready: the repo delivers itself</h2>
+<div class="flow">
+  <div class="step"><b>draft</b><br><span class="small muted">planning; every new epic and row starts here; no wake touches it</span></div><span class="arr">→</span>
+  <div class="step"><b>ready</b><br><span class="small muted">only the user stamps it &ldquo;ready for delivery&rdquo;; no agent self-readies</span></div><span class="arr">→</span>
+  <div class="step"><b>active</b><br><span class="small muted">the next standing wake starts it and records who</span></div><span class="arr">→</span>
+  <div class="step"><b>done</b><br><span class="small muted">parked (<code>deferred</code>) and finished work is never touched</span></div>
+</div>
+<p class="small muted">A manager can stay on at the root: you write into the spine and stamp what is ready; it delivers. <code>spines.py --json</code> carries <code>run_state</code>, <code>runnable</code> and <code>has_children</code> per epic.</p>
+
+<h2>8 · Where we are honestly</h2>
 <table>
   <tr><th>Works today</th><th>Being fixed now</th></tr>
   <tr>
