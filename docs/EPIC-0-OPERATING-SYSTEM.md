@@ -84,6 +84,7 @@ Risk: the fresh-agent bind was measured once (n=1) on Claude; the thin repo-bloc
 | Issue | Role | Owner / Assignment | Title | Status | Depends On | PR/Branch | Base | Latest Evidence | Last Verified | Next Action |
 |---|---|---|---|---|---|---|---|---|---|---|
 | draft | Ticket worker | worker (Opus 5.5, T3 thread) | Enforce manager-never-implements and push-on-close with hooks: PreToolUse `manager_guard.py` (allowlist-first Bash/Edit policy, subagents via `agent_id`) + Stop `push_gate.py` | deferred | none | PR #28 (feat/manager-guards) | 6ccb101 | PARKED 2026-10-13 by user (D18); archived 2026-10-24 as tags `archive/feat/manager-guards`, `archive/feat/dispatcher-guard` (branches deleted, PR #28 closed). Do not merge, install, or build on it | 2026-10-24 | none (parked: not raised again) |
+| draft | Ticket worker | seat pool | E13-S5b (agent_team EPIC-13): spine checker advisories in validate_spine.py: (1) Waiting on or Jordi-owned open row naming him with no coded ask, (2) Status done with unticked Done means, (3) 'nothing open for Jordi' beside an open coded ask; update references/ and prompt snippets; fixtures per advisory. Brief docs/handoffs/2026-10-24-e13-s5b-spine-checker.md | ready | none | none | main | brief written 2026-10-24; origin agent_team docs/spines/epic-13-one-status-model.md | 2026-10-24 | Delivery Manager dispatches a worker |
 
 Done tickets (39 rows, Next Action done/none, moved verbatim): [done ledger](root/steps.md#done-ledger).
 
