@@ -51,7 +51,7 @@ Steps: each is independently testable and closes only with evidence.
 | Issue | Role | Owner / Assignment | Title | Status | Depends On | PR/Branch | Base | Latest Evidence | Last Verified | Next Action |
 |---|---|---|---|---|---|---|---|---|---|---|
 | E5-S1 | Ticket worker | worker run_9a0d7ebe-08f5-4cc1-a847-1108f1f784c1 | persona file format + validator + listing | done | none | merged (branch deleted) | main | 633052c (674 tests OK; references/personas.md); DM verified: 674 tests OK, manifest match | 2026-10-24 | none |
-| E5-S2 | Ticket worker | unassigned | standing spine kind + scoreboard + validator | ready | E6-S1 (shared validator) | none | main | none | 2026-10-24 | dispatch after E6-S1 merges; also accept Team headers with a trailing (…) |
+| E5-S2 | Ticket worker | worker run_86cb23c5-5c72-4444-b558-72eeb0120c6f | standing spine kind + scoreboard + validator | review | none | e5-s2 | main | 008975b (standing.py, references/standing-spines.md, Team header `(…)` tolerance; tests + graph --strict 0 errors; manifest regenerated) | 2026-10-24 | DM verifies and merges e5-s2 |
 | E5-S3 | Ticket worker | worker run_c76affed (Sonnet 5.5, seat1) | writing contract for personas sharing a repo | done | none | main | main | 69372e6, 4c10634: references/persona-tasks.md; DM verified 660 tests OK, manifest match | 2026-10-24 | none |
 | E5-S4 | Ticket worker | worker run_98fc838e (with E6-S1) | validator accepts step codes (E5-S1) as Issue in row-as-ticket spines: spine_new.py scaffolds fail --strict | done | none | merged (branch deleted) | main | c804f48, merge 44ab11e; graph --strict 0 errors | 2026-10-24 | none |
 
