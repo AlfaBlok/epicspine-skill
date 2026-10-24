@@ -15,6 +15,7 @@ from urllib.parse import unquote, urlsplit
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import personas  # noqa: E402
 import run_state  # noqa: E402
+import standing  # noqa: E402
 import status_true  # noqa: E402
 
 
@@ -795,8 +796,10 @@ def validate_local(path: Path, *, dialect: str = "auto", ticket_source: Path | N
         elif is_empty(fields[field]) and field not in {"Parent spine", "Additional root rationale"}:
             warnings.append(f"unresolved field: {field}")
 
+    ongoing = standing.is_standing(fields)  # never closes: no Definition Of Done / Outcome demands
+    errors.extend(standing.errors(sections, state.get("status", ""), parse_table) if ongoing else [])
     for section in (COMPACT_SECTIONS if compact else REQUIRED_SECTIONS):
-        if section not in sections:
+        if section not in sections and not (ongoing and section == "Definition Of Done"):
             errors.append(f"missing section: {section}")
 
     for name in ("Mission", "Definition Of Done", *(() if compact else ("Validation Evidence",))):
@@ -1111,15 +1114,16 @@ def trackable(path: Path) -> dict[str, object]:
     allowed = "|".join(TRACKABLE_STATUSES)
     shown = status if len(status) <= 60 else status[:57] + "..."
     missing = [] if trackable_status(status) else [f"{where} '{shown}': start it with one of {allowed}" if status else f"{where} missing: add 'Status: <{allowed}>'"]
-    if spine:
+    ongoing = standing.is_standing(fields)  # never closes: no Outcome, no criteria demanded
+    if spine and not ongoing:
         missing += outcome_missing(fields, status, text)
-    if spine and names[0] not in ("Definition Of Done", done):
+    if spine and not ongoing and names[0] not in ("Definition Of Done", done):
         missing.append(f"heading '## {alias}' must be '## Definition Of Done'")
     items, heads = criteria(text, names), "/".join(names)
     matches = [(index, CRITERION_RE.match(line)) for index, line in items]
     bad = [index + 1 for index, match in matches if not match]
     ids = [match.group(1) for _, match in matches if match]
-    if not items:
+    if not items and not ongoing:
         missing.append(f"criteria `- [ ] ID text` under ## {heads}")
     if bad:
         missing.append(f"{len(bad)} criteria under ## {heads} not `- [ ] ID text` (lines {', '.join(map(str, bad[:5]))})")

@@ -20,10 +20,10 @@ EpicSpine defines how a persona is written as a markdown file and how a standing
 
 ## Done means
 
-- [ ] E5-1 Persona file format in references: generic only (frontmatter: name, template, model, host; body: Remit, Reads, Writes), no goal, cadence or write scope in it. What a persona does for a goal (cadence, write scope, goal-specific instructions) is the assignment, written in that epic's `## Team` table (persona, cadence, write scope, notes). A persona is not an epic; several personas work one epic (agent_team L-20). Validator + `spines.py --json` (or a sibling) lists a repo's personas and each epic's team.
-- [ ] E5-2 Standing spine kind: `## Targets` (target per period) and a Current State scoreboard (target vs actual for this period); a miss becomes a ledger row; never needs an Outcome; the validator accepts it.
-- [ ] E5-3 Tasks and hand-offs: a task is an Issue Ledger row with an assignee (Owner column) and a status; every persona wake starts with its queue (open rows assigned to it in the epics it is on); hand-off = reassign the row (several rows for several jobs); a task serving another goal goes in that goal's ledger with a link back; a task that outgrows a wake or two becomes a child epic. Every action is a commit signed by the persona; shared files keep a fixed shape; each section has a named writer via the assignment's write scope.
-- [ ] E5-4 Assignees must exist: the validator rejects a ledger row whose assignee is not a persona on that repo's team (persona files in the repo, or the epic's `## Team` table until files exist) or `Jordi`; `spines.py --json` lists each persona's queue.
+- [x] E5-1 Persona file format in references: generic only (frontmatter: name, template, model, host; body: Remit, Reads, Writes), no goal, cadence or write scope in it. What a persona does for a goal (cadence, write scope, goal-specific instructions) is the assignment, written in that epic's `## Team` table (persona, cadence, write scope, notes). A persona is not an epic; several personas work one epic (agent_team L-20). Validator + `spines.py --json` (or a sibling) lists a repo's personas and each epic's team. (2026-10-24: references/personas.md, personas.py; merge 1d4e9fc)
+- [x] E5-2 Standing spine kind: `## Targets` (target per period) and a Current State scoreboard (target vs actual for this period); a miss becomes a ledger row; never needs an Outcome; the validator accepts it. (2026-10-24: references/standing-spines.md, standing.py; merge 1acbdde)
+- [x] E5-3 Tasks and hand-offs: a task is an Issue Ledger row with an assignee (Owner column) and a status; every persona wake starts with its queue (open rows assigned to it in the epics it is on); hand-off = reassign the row (several rows for several jobs); a task serving another goal goes in that goal's ledger with a link back; a task that outgrows a wake or two becomes a child epic. Every action is a commit signed by the persona; shared files keep a fixed shape; each section has a named writer via the assignment's write scope. (2026-10-24: references/persona-tasks.md, 69372e6)
+- [x] E5-4 Assignees must exist: the validator rejects a ledger row whose assignee is not a persona on that repo's team (persona files in the repo, or the epic's `## Team` table until files exist) or `Jordi`; `spines.py --json` lists each persona's queue. (2026-10-24: personas.assignee_errors + spines.py --json personas/queue; merge 1d4e9fc)
 - [ ] E5-5 Asks as tasks: an ask to Jordi is a ledger row assigned to `Jordi` (same fields as an ask: what, why, impact, risk + rollback, recommendation); tried first on infra-vps EPIC-15, then adopted or dropped with a Decisions row.
 - [ ] E5-6 Used for real: zenod-social and infra-vps EPIC-15 spines and their persona files validate, with every ledger assignee a real persona or Jordi.
 
@@ -31,12 +31,13 @@ EpicSpine defines how a persona is written as a markdown file and how a standing
 
 Owner: Delivery Manager (agent-team console)
 Status: active
-Last attempted: 2026-10-24 DM wake run_aa2dd0a3: E5-S3 (69372e6) and E5-S1 (merged from e5-s1) verified and done
-Result: E5-S1, E5-S3, E5-S4 done; graph --strict 0 errors again; infra-vps EPIC-15 and zenod-social root Team headers fail --strict until E5-S2 tolerance and their own migration (E5-6)
-Evidence: EPIC-0-OPERATING-SYSTEM.md
+Last attempted: 2026-10-24 DM wake run_aa2dd0a3: E5-S1..S4 verified and merged (1d4e9fc, 69372e6, 44ab11e, 1acbdde); E5-1..E5-4 ticked
+Result: format, Team table, assignee check, queues, standing spines and the persona writing contract ship in the skill (694 tests OK, graph --strict 0); E5-5 and E5-6 need the infra-vps and zenod-social spines themselves
+Evidence: merges 1d4e9fc, 44ab11e, 1acbdde; 69372e6
 Waiting on: nobody
+Monitoring: infra-vps EPIC-15 and zenod-social root spine strict-clean since 2026-10-24 · next check 2026-10-25T20:00Z read-only `validate_spine.py --strict` on both · then tick E5-6, and E5-5 once infra-vps records the asks-as-tasks trial Decisions row
 Approved work: none
-Next action: E5-S2 (+Team header tolerance) dispatched; E5-6 migration runs in each repo's own thread (L-14); agent_team EPIC-11, zenod-social and infra-vps EPIC-15 wait on the format
+Next action: each repo's own thread (L-14) fixes its spine: infra-vps EPIC-15 ledger statuses `needs fix`/`needs diagnosis` (rows 2-6) to the vocabulary; zenod-social root row 1 `review` with empty PR/Branch; infra-vps runs the asks-as-tasks trial (persona-tasks.md)
 Source revision: main
 Verified at: 2026-10-24
 
@@ -51,7 +52,7 @@ Steps: each is independently testable and closes only with evidence.
 | Issue | Role | Owner / Assignment | Title | Status | Depends On | PR/Branch | Base | Latest Evidence | Last Verified | Next Action |
 |---|---|---|---|---|---|---|---|---|---|---|
 | E5-S1 | Ticket worker | worker run_9a0d7ebe-08f5-4cc1-a847-1108f1f784c1 | persona file format + validator + listing | done | none | merged (branch deleted) | main | 633052c (674 tests OK; references/personas.md); DM verified: 674 tests OK, manifest match | 2026-10-24 | none |
-| E5-S2 | Ticket worker | worker run_86cb23c5 (Sonnet 5.5, seat1) | standing spine kind + scoreboard + validator | active | none | e5-s2 | main | none | 2026-10-24 | DM verifies and merges |
+| E5-S2 | Ticket worker | worker run_86cb23c5-5c72-4444-b558-72eeb0120c6f | standing spine kind + scoreboard + validator | done | none | merged (branch deleted) | main | 721bfda, merge 1acbdde; DM verified 694 OK, graph --strict 0 | 2026-10-24 | none |
 | E5-S3 | Ticket worker | worker run_c76affed (Sonnet 5.5, seat1) | writing contract for personas sharing a repo | done | none | main | main | 69372e6, 4c10634: references/persona-tasks.md; DM verified 660 tests OK, manifest match | 2026-10-24 | none |
 | E5-S4 | Ticket worker | worker run_98fc838e (with E6-S1) | validator accepts step codes (E5-S1) as Issue in row-as-ticket spines: spine_new.py scaffolds fail --strict | done | none | merged (branch deleted) | main | c804f48, merge 44ab11e; graph --strict 0 errors | 2026-10-24 | none |
 

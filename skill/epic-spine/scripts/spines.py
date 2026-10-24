@@ -20,6 +20,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import doctrine as D  # noqa: E402
 import personas as P  # noqa: E402
 import run_state as R  # noqa: E402
+import standing as S  # noqa: E402
 import validate_spine as v  # noqa: E402
 from ask_refs import resolve, waits  # noqa: E402
 from grants import grants, uses  # noqa: E402
@@ -123,7 +124,7 @@ def _scan(repo: Path, refs: bool) -> dict:
         node = nodes[rel(path)] = {"id": m["id"], "path": rel(path), "title": title(m, path.stem), "parent": rel(m["parent"]) if parent_file(path, cache) else None,
                                    "type": m["fields"].get("Spine Type", "").lower() or ("root" if path == root else ""),
                                    "status": status, "rollup_status": status, "dod": dod, "outcome": v.outcome(m["text"]), "current_state": current_state(m["sections"]), "waiting_on": asks(m["text"], path, repo), "waits_on": waits(m["text"]),
-                                   "team": P.team_json(v.table_rows(m["sections"].get("Team", ""))),
+                                   "team": P.team_json(v.table_rows(m["sections"].get("Team", ""))), "standing": S.info(m["fields"], m["sections"], v.parse_table),
                                    "grants": [{**g, "source": rel(path), "inherited": False} for g in grants(m["text"], path, repo)], "children": [],
                                    "superseded_by": rel(sup) if (sup := link(path, m["fields"].get("Superseded by", ""), cache)) else None, **D.fields(m["text"], path == root)}
         if node["parent"]:  # a parent's grants apply to every descendant (standing-approvals.md)

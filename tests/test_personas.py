@@ -113,6 +113,13 @@ class PersonaTests(unittest.TestCase):
         team = "## Team\n\n| Persona | Cadence | Reads | Write scope | Notes |\n|---|---|---|---|---|\n| Watcher | daily | x | y | n |\n\n"
         self.assertEqual(self.check(epic([("Watcher", "ready")], team)), [])
 
+    def test_team_header_parenthetical_ignored(self):
+        team = "## Team\n\n| Persona | Cadence (console) | Write scope (only these) | Notes |\n|---|---|---|---|\n| Watcher | daily | this spine | n |\n\n"
+        self.assertEqual(self.check(epic([("Watcher", "ready")], team)), [])
+        self.assertIn("Team row 1 (watcher) has empty Cadence", self.check(epic([], team.replace("| daily |", "|  |"))))
+        self.assertIn("Team table missing column: Write scope", self.check(epic([], team.replace("Write scope (only these)", "Scope (only these)"))))
+        self.assertEqual(spines.P.team_json(v.table_rows(team))[0]["write_scope"], "this spine")
+
     def test_unknown_assignee_rejected(self):
         errors = self.check(epic([("Watcher", "ready"), ("Stranger", "ready"), ("unassigned", "done")]))
         self.assertEqual(len(errors), 2)
