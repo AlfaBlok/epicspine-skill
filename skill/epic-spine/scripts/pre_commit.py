@@ -7,7 +7,7 @@ a ticket if it has ``Ticket ID:``. A goal doc (``spines.is_goal``) must also be 
 v1 header, reachable from the root, agreeing with its parent's Spine Map (``spine_new.py``). Blocks only a newly added or
 renamed goal doc, and a modified one whose HEAD version already had ``Spine ID:`` (migrated). Warns, never blocks: a
 modified legacy goal doc (no ``Spine ID:`` at HEAD), a root spine without a ``Spine ID:`` header, ``Root spine: none`` and a goal
-spine whose ``## Current State`` has over 12 non-empty lines, and ``epic_log.ask_issues`` (human-asks.md checks: blocked/waiting row or epic with no open ask, ask missing a field or code, duplicate code, over 3 open, stale). ``Superseded by:`` must link to an existing goal doc (blocks).
+spine whose ``## Current State`` has over 12 non-empty lines, and ``epic_log.ask_issues`` (human-asks.md checks: blocked/waiting row or epic with no open ask, ask missing a field or code, duplicate code, over 3 open, stale) and ``grants.grant_issues`` (standing-approvals.md: unreadable grant line, reused code, grant cited after expiry or revoke). ``Superseded by:`` must link to an existing goal doc (blocks).
 Doctrine 2 (doctrine.py, references/spine-model.md): a newly *added* epic (``A``, not renamed) missing the title, Goal (Mission counts), Serves (not the root), Done means or Status word
 blocks; an existing epic only warns of the same gaps, of over 150 lines or a table cell over 200 characters; a staged page warns when it looks like an epic or no epic links it."""
 
@@ -21,10 +21,10 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import doctrine  # noqa: E402
-import epic_log  # noqa: E402
 import spine_fix  # noqa: E402
 import spines  # noqa: E402
 import validate_spine as v  # noqa: E402
+from grants import advisory  # noqa: E402
 
 
 def git(*args: str) -> subprocess.CompletedProcess:
@@ -130,7 +130,7 @@ def main() -> int:
         if not result["trackable"]:
             blocked = True
             say(f"{name}: not trackable: " + "; ".join(result["missing"]) + hint)
-        for note in epic_log.ask_issues(text, repo=Path.cwd()) if kind == "spine" else []:
+        for note in advisory(text, path) if kind == "spine" else []:
             say(f"{name}: {note} (advisory)")
         if kind == "spine" and v.validate_local(path).fails(strict=True):
             say(f"{name}: --strict issues (advisory; run validate_spine.py --strict)")

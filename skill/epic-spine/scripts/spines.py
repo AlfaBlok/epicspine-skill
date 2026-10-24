@@ -20,6 +20,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import doctrine as D  # noqa: E402
 import validate_spine as v  # noqa: E402
 from ask_refs import resolve, waits  # noqa: E402
+from grants import grants, uses  # noqa: E402
 from epic_log import active, asks, next_of, link_problems, render, rollup, stale  # noqa: E402
 
 ID_LINE = D.ID_LINE
@@ -119,8 +120,11 @@ def _scan(repo: Path, refs: bool) -> dict:
         dod = D.criteria(m["text"], "Definition Of Done") or D.criteria(m["text"], "Done means")
         node = nodes[rel(path)] = {"id": m["id"], "path": rel(path), "title": title(m, path.stem), "parent": rel(m["parent"]) if parent_file(path, cache) else None,
                                    "type": m["fields"].get("Spine Type", "").lower() or ("root" if path == root else ""),
-                                   "status": status, "rollup_status": status, "dod": dod, "outcome": v.outcome(m["text"]), "current_state": current_state(m["sections"]), "waiting_on": asks(m["text"], path, repo), "waits_on": waits(m["text"]), "children": [],
+                                   "status": status, "rollup_status": status, "dod": dod, "outcome": v.outcome(m["text"]), "current_state": current_state(m["sections"]), "waiting_on": asks(m["text"], path, repo), "waits_on": waits(m["text"]),
+                                   "grants": [{**g, "source": rel(path), "inherited": False} for g in grants(m["text"], path, repo)], "children": [],
                                    "superseded_by": rel(sup) if (sup := link(path, m["fields"].get("Superseded by", ""), cache)) else None, **D.fields(m["text"], path == root)}
+        if node["parent"]:  # a parent's grants apply to every descendant (standing-approvals.md)
+            node["grants"] += [{**g, "inherited": True} for g in nodes[node["parent"]]["grants"]]
         kids = list(header_kids.get(path, []))
         for _, target in m["rows"]:
             tm = meta(target, cache) if target else None
@@ -149,6 +153,9 @@ def _scan(repo: Path, refs: bool) -> dict:
     epics = set(docs) | {repo / p for p in nodes} | set(queue)
     for n in nodes.values():
         n["pages"] = D.pages(repo, repo / n["path"], epics)
+    used = uses([meta(repo / p, cache)["text"] for p in nodes])
+    for g in (g for n in nodes.values() for g in n["grants"]):
+        g["uses"] = used.get(g["code"], 0)
     if refs:  # `waits on` states: this repo's asks, else the sibling checkout `../<repo>`
         resolve(repo, list(nodes.values()), meta(root, cache)["text"] if root else "")
     orphan_pages, like_epic = D.page_report(repo, [repo / p for p in nodes] if root else [], epics, {repo / q["path"] for n in nodes.values() for q in n["pages"]})

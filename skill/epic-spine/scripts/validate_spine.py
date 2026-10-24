@@ -1120,8 +1120,8 @@ def trackable(path: Path) -> dict[str, object]:
             if not trackable_status(parse_fields(ticket).get("Status", "")):
                 missing.append(f"Status in ticket {ref}")
     doc = validate_local(path) if spine else None
-    from epic_log import ask_issues, repo_root  # human asks: advisory issues, never `missing`
-    return {"path": str(path), "trackable": not missing, "missing": missing, "warnings": doc.errors + doc.warnings if doc else [], "advisory": ask_issues(text, repo=repo_root(path)) if spine else []}
+    from grants import advisory  # human asks and standing approvals: advisory issues, never `missing`
+    return {"path": str(path), "trackable": not missing, "missing": missing, "warnings": doc.errors + doc.warnings if doc else [], "advisory": advisory(text, path) if spine else []}
 
 
 def main() -> int:
