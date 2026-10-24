@@ -69,7 +69,7 @@ def stale(repo: Path, nodes: list[dict], now: float | None = None) -> list[dict]
 def active(log: dict) -> str:
     """One line per open goal: `<title> — <status> — <path>` (+ stale mark), then `next: EPIC-<n>`, the code a new spine gets."""
     days = {s["path"]: s["days"] for s in log["stale"]}
-    return "\n".join([f"{n['title']} — {n['status']} — {n['path']}" + (f" — STALE {days[n['path']]}d" if n["path"] in days else "")
+    return "\n".join([f"{n['title']} — {n['status']} — {n['path']}" + f" — {n['run_state']}{'' if n['runnable'] else ' (not runnable)'}{', has children' if n['has_children'] else ''}" + (f" — STALE {days[n['path']]}d" if n["path"] in days else "")
                       for n in log["nodes"] if n["status"] in OPEN] + [f"next: EPIC-{next_of(log)}"])
 
 

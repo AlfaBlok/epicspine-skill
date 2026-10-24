@@ -19,6 +19,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import doctrine as D  # noqa: E402
 import personas as P  # noqa: E402
+import run_state as R  # noqa: E402
 import validate_spine as v  # noqa: E402
 from ask_refs import resolve, waits  # noqa: E402
 from grants import grants, uses  # noqa: E402
@@ -143,6 +144,7 @@ def _scan(repo: Path, refs: bool) -> dict:
                 visit(kid)
                 node["children"].append(rel(kid))
                 mismatches.extend({"path": rel(kid), "parent": rel(path), "problem": p} for p in link_problems(meta(kid, cache), m))
+        node.update(R.fields(status, [nodes[c]["status"] for c in node["children"]]))
         node["contributes"] = D.contributes(v.table_rows(m["sections"].get("Spine Map", "")), lambda cell: link(path, cell, cache), rel, node["children"])
         node["rollup_status"] = rollup(status, [nodes[c]["rollup_status"] for c in node["children"]], dod) if node["children"] or dod else status
         return node["rollup_status"]

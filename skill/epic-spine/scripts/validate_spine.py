@@ -14,6 +14,7 @@ from urllib.parse import unquote, urlsplit
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import personas  # noqa: E402
+import run_state  # noqa: E402
 import status_true  # noqa: E402
 
 
@@ -910,6 +911,7 @@ def validate_local(path: Path, *, dialect: str = "auto", ticket_source: Path | N
     tickets, ticket_errors = read_tickets(ticket_source or path, fields, sections)
     errors.extend(ticket_errors)
     warnings.extend(status_true.issues(text, sections, state.get("status", ""), header, rows))  # strict-promoted, see classify_diagnostic
+    warnings.extend(run_state.issues(text, sections, state, header, rows))  # advisory only
 
     if "YYYY-MM-DD" in fields.get("Updated", ""):
         warnings.append("Updated still contains a template date")
