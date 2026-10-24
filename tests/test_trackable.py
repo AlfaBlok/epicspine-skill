@@ -127,7 +127,7 @@ class TrackableTests(unittest.TestCase):
         for head in ("Acceptance", "Acceptance Criteria"):
             self.assertTrue(self.check(TICKET.format(status="ready", head=head, body="- [x] AC-1 y"))["trackable"], head)
         result = self.check(TICKET.format(status="wip", head="Acceptance", body="prose"))
-        self.assertEqual(["Status 'wip': start it with one of draft|ready|active|blocked|done|deferred", "criteria `- [ ] ID text` under ## Acceptance Criteria/Acceptance"], result["missing"])
+        self.assertEqual(["Status 'wip': start it with one of draft|ready|active|blocked|done|superseded|deferred", "criteria `- [ ] ID text` under ## Acceptance Criteria/Acceptance"], result["missing"])
         self.assertEqual([], result["warnings"])
         self.assertFalse(self.check("# Notes\n\nJust text.\n")["trackable"])
         self.assertFalse(v.trackable(self.dir / "nope.md")["trackable"])
@@ -219,7 +219,11 @@ class FixTests(unittest.TestCase):
         self.assertEqual(("# Notes\n\nStatus: wip\n- a\n", []), self.fix("# Notes\n\nStatus: wip\n- a\n"))
 
     def test_extended_synonyms_and_ambiguous_words_left_blocking(self) -> None:
-        cases = {"delivered (pending acceptance)": "done", "SUPERSEDED FOR EXECUTION — by X": "done", "complete / continue": "done",
+        superseded = self.spine("- [ ] A-1 a", status="SUPERSEDED FOR EXECUTION — by X")  # canonical now (closed, not done): kept; only its Outcome is missing
+        self.assertEqual((superseded, []), self.fix(superseded))
+        self.assertIn("## Outcome", " ".join(self.trackable_text(superseded)["missing"]))
+        self.assertNotIn("start it with one of", " ".join(self.trackable_text(superseded)["missing"]))
+        cases = {"delivered (pending acceptance)": "done", "Cancelled — by X": "superseded", "complete / continue": "done",
                  "ON HOLD — do not dispatch": "deferred", "proposed archetype": "draft"}
         for old, want in cases.items():
             self.assertIn(f"\nStatus: {want}", self.fix(self.spine("- [ ] A-1 a", status=old))[0], old)
@@ -260,7 +264,7 @@ class FixTests(unittest.TestCase):
         new, what = self.fix(self.header("Status: SHIP candidate — manager journey complete"))
         self.assertEqual(["Status moved from header to Current State"], what)
         self.assertIn("Status: SHIP candidate — manager journey complete", new)
-        self.assertEqual(["Current State Status 'SHIP candidate — manager journey complete': start it with one of draft|ready|active|blocked|done|deferred"],
+        self.assertEqual(["Current State Status 'SHIP candidate — manager journey complete': start it with one of draft|ready|active|blocked|done|superseded|deferred"],
                          self.trackable_text(new)["missing"][:1])
 
     def test_header_status_left_alone_when_ambiguous(self) -> None:
@@ -418,7 +422,7 @@ class PreCommitHookTests(unittest.TestCase):
         self.install()
         blocked = self.commit("docs/S.md", SPINE.format(**{**GOOD, "status": "x"}).replace("Status: x\n", ""))
         self.assertNotEqual(0, blocked.returncode)
-        self.assertIn("Current State Status missing: add 'Status: <draft|ready|active|blocked|done|deferred>'", blocked.stderr)
+        self.assertIn("Current State Status missing: add 'Status: <draft|ready|active|blocked|done|superseded|deferred>'", blocked.stderr)
         self.assertNotIn("epicspine: fixed", blocked.stderr)
 
     def test_fix_leaving_it_untrackable_still_blocks(self) -> None:
@@ -426,7 +430,7 @@ class PreCommitHookTests(unittest.TestCase):
         blocked = self.commit("docs/S.md", SPINE.format(**{**GOOD, "status": "planning", "done": "- ship"}))
         self.assertNotEqual(0, blocked.returncode)
         self.assertIn("epicspine: fixed docs/S.md: 1 criteria", blocked.stderr)
-        self.assertIn("Current State Status 'planning': start it with one of draft|ready|active|blocked|done|deferred", blocked.stderr)
+        self.assertIn("Current State Status 'planning': start it with one of draft|ready|active|blocked|done|superseded|deferred", blocked.stderr)
         self.assertNotIn("criteria `", blocked.stderr)
 
 

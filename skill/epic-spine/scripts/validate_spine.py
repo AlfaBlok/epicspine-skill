@@ -118,7 +118,7 @@ ACTIVE_STATUSES = {"active", "blocked", "review", "testing"}
 LEDGER_STATUSES = {"draft", "ready", "active", "blocked", "review", "testing", "done", "superseded", "deferred"}
 DECISION_OUTCOMES = {"accepted", "rejected", "superseded"}
 CHECKBOX_RE = re.compile(r"(?m)^\s*- \[[ xX]\]")
-TRACKABLE_STATUSES = ("draft", "ready", "active", "blocked", "done", "deferred")
+TRACKABLE_STATUSES = ("draft", "ready", "active", "blocked", "done", "superseded", "deferred")
 ID = r"[A-Z][A-Z0-9]*-\d+"
 STEP = r"[A-Z][A-Z0-9]*-[A-Z]*\d+"  # `E5-S1`: a step code
 CRITERION_RE = re.compile(rf"- \[[ xX]\] ({ID})(?=\s|$)")
@@ -913,7 +913,7 @@ def validate_local(path: Path, *, dialect: str = "auto", ticket_source: Path | N
 
     tickets, ticket_errors = read_tickets(ticket_source or path, fields, sections)
     errors.extend(ticket_errors)
-    warnings.extend(status_true.issues(text, sections, state.get("status", ""), header, rows))  # strict-promoted, see classify_diagnostic
+    warnings.extend(status_true.issues(text, sections, state.get("status", ""), header, rows))  # status-true strict-promoted (classify_diagnostic); closed-rows advisory
     warnings.extend(run_state.issues(text, sections, state, header, rows))  # advisory only
 
     if "YYYY-MM-DD" in fields.get("Updated", ""):
