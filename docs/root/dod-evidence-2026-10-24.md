@@ -41,3 +41,19 @@ Verdict: **met.**
   - `~/.claude` (no `-seat`) holds only policy/session files, no skills, CLAUDE.md or hooks: `check-global` prints `missing` for it. No harness here uses it (seats set `CLAUDE_CONFIG_DIR`); nothing installed, so no stale copy. Not changed (new config there is outside the re-sync step).
 
 Stale copies: none. Gap: none. Ordinary caveat: other machines (VPS1, agent_team vendored copies in `epicspine-vendored` stamps) were not inspected.
+
+## DOD-1 re-measure after the bind trim (run_ebab293c, main after 41dec46 + AGENTS.md pointer)
+
+Changes: root spine 141 → 99 lines (Decisions rows, 7 done ledger rows, Book Companion fields moved to `docs/root/{decisions,steps,book-companion}.md`, one link line each; `L-15..L-17 superseded` line dropped); AGENTS.md line 3 is an explicit bind instruction (`Read` offset 18 limit 45 for the root, `sed -n '/^## Current State/,/^## [^C]/p'` for the task epic), kept honest by `tests/test_bind_range.py`. Strict graph validation 0 errors; 656 tests OK.
+
+Fresh native subagent, no context, same task ("status + next action of EPIC-4", read-only), three rounds as the pointer improved:
+
+| Round | AGENTS.md pointer | Read before answering | Lines |
+|---|---|---|---|
+| 1 | in-block-adjacent line 10, "Read tool, not whole files", child via `grep` then Read | global-block whole 17 + EPIC-0 offset 18 limit 45 (**obeyed**) + EPIC-4 whole 125 | **187** |
+| 2 | line 10, `sed` for child | global-block 17 + EPIC-4 whole 124 + EPIC-0 whole 99 (pointer **ignored**) | **240** |
+| 3 | line 3, bold, imperative, root range + `sed` for child | global-block 16 + AGENTS.md 18 + EPIC-0 offset 18 limit 45 (45) + EPIC-4 `sed` Current State (15) = **94**; it then also printed EPIC-4 `## Outcome` (17) by its own choice to answer "status" = 111 | **94** bind / 111 with task detail |
+
+Verdict: **met in the best observed run (94 ≤ 100), not guaranteed.** Before: 282 (root 141, EPIC-4 whole). After: 94–111 when the pointer is followed, 187–240 when an agent ignores it (whole-file floor is now root 99 + child ~125 + block 16 + AGENTS 18 ≈ 258, so ranges, not size, carry DOD-1). n=3, one run per configuration; round 2 shows the pointer is advisory and position-sensitive (line 3 worked, line 10 did not once).
+
+Recommendation (skill change, out of scope here): make the shared global block's bind step say "read Current State and Learnings with offset/limit, never whole spine files" and ship a `spines.py --bind <epic>` that prints only the chain's Current State + Operating Learnings, so every repo gets the bounded read without a repo-specific pointer.
