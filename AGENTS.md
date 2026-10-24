@@ -7,6 +7,8 @@ Skill updates: auto
 
 Validate: `python3 -B skill/epic-spine/scripts/validate_spine.py --strict <spine>` (add `--graph` for the family); test: `python3 -B -m unittest discover -s tests`; after skill changes: `tools/epicspine-manifest.sh skill/epic-spine > MANIFEST.sha256`
 
+Bind read (Read tool, not whole files): `docs/EPIC-0-OPERATING-SYSTEM.md` offset 18 limit 45 (Current State through Operating Learnings), then only the task epic's `## Current State` (`grep -n '^## ' <epic>`, Read that range). `tests/test_bind_range.py` keeps the range covering Learnings.
+
 <!-- epicspine:begin repo-1 -->
 ## EpicSpine — always on, every task, every agent
 Root spine: docs/EPIC-0-OPERATING-SYSTEM.md. Read its Current State and Operating Learnings before acting.
