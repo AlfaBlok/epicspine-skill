@@ -17,6 +17,10 @@ CODE = re.compile(r"^(?:EPIC[- ]?|E)(\d+)\b")
 STALE_DAYS = 14
 STALE_ASK_DAYS = 7
 MAX_OPEN_ASKS = 3
+# Ask writing (human-asks.md "Writing an ask"; agent_team root L-13/L-14), advisory only:
+FUTURE_TRIGGER = re.compile(r"\bwhen pinged\b|\bbefore wave\b|\blater\b|\bonce\b[^.;—]{1,60}?\b(?:is|are) (?:up|live|ready|running|deployed|done)\b", re.I)
+NUMBERED_PARTS = re.compile(r"\(1\).*\(2\)", re.S)
+MAX_QUESTION_SENTENCE = 200
 HUMAN_WAIT = re.compile(r"@?[A-Z][a-z]+(?:'s\b|\s*[:—–(]|\s+-\s)")  # `Jordi: …`, `Jordi — …`, `Jordi's call` (best effort)
 
 
@@ -117,6 +121,19 @@ def needs_human(row: dict, names: set[str]) -> bool:
     return False
 
 
+def writing_issues(a: dict, label: str) -> list[str]:
+    """Ask-writing advisories (human-asks.md "Writing an ask"): a future trigger, several numbered parts, an over-long question sentence."""
+    out, q = [], a.get("question") or ""
+    m = FUTURE_TRIGGER.search(" ".join(x for x in (q, a.get("steps"), a.get("recommend")) if x))
+    if m:
+        out.append(f"{label} names a future trigger ('{m.group(0)}'): ask only for the step that blocks now; a later step stays plan text until it is next")
+    if NUMBERED_PARTS.search(q):
+        out.append(f"{label} lists several numbered parts: one decision per ask; split it, and drop parts that do not block now")
+    if any(len(sent) > MAX_QUESTION_SENTENCE for sent in re.split(r"(?<=[.?!])\s+", q)):
+        out.append(f"{label} has a question sentence over {MAX_QUESTION_SENTENCE} chars: lead with the decision in plain words (what, why, recommendation); details after")
+    return out
+
+
 def ask_issues(text: str, today: datetime.date | None = None, repo: Path | None = None) -> list[str]:
     """Advisory (never blocking): the checks of docs/doctrine/human-asks.md (missing field or code, duplicate code, over 3 open, stale, blocked/waiting or next row with no open ask or `waits on` reference; with ``repo``, a same-repo reference to a code that does not exist)."""
     today, issues = today or datetime.date.today(), []
@@ -154,6 +171,7 @@ def ask_issues(text: str, today: datetime.date | None = None, repo: Path | None 
         if a["code"] and (a["code"] in seen or re.search(rf"(?<![\w-]){re.escape(a['code'])}(?!\w)", decided)):
             issues.append(f"duplicate ask code {a['code']} (an open ask repeats it, or a Decisions row already cites it): codes are never reused")
         seen.add(a["code"] or "")
+        issues += writing_issues(a, label)
         if (today - datetime.date.fromisoformat(a["since"])).days > STALE_ASK_DAYS:
             issues.append(f"stale ask: {label} to @{a['who']} open since {a['since']}")
     return issues
