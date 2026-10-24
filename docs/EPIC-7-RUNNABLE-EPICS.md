@@ -20,8 +20,8 @@ An epic's own Status says whether a wake may work it: `spines.py --json` carries
 
 ## Done means
 
-- [ ] E7-1 `spines.py --json` adds `run_state`, `runnable`, `has_children` to every node exactly per the Status table in references/spine-model.md "Running"; one test per table row and for `has_children`; verified by the full suite and the agent_team root map sample
-- [ ] E7-2 `validate_spine.py` warns (advisory, never `--strict`-promoted) for `Status: active` with no start recorded and for a `draft` epic with `active` ledger rows, one positive and one negative fixture each
+- [x] E7-1 `spines.py --json` adds `run_state`, `runnable`, `has_children` to every node exactly per the Status table in references/spine-model.md "Running"; one test per table row and for `has_children`; verified by the full suite and the agent_team root map sample
+- [x] E7-2 `validate_spine.py` warns (advisory, never `--strict`-promoted) for `Status: active` with no start recorded and for a `draft` epic with `active` ledger rows, one positive and one negative fixture each
 - [ ] E7-3 the new version is rolled out to every machine config dir and repo the installer covers, with the reachable and unreachable list reported (not claimed as all)
 
 ## Current State
@@ -29,11 +29,11 @@ An epic's own Status says whether a wake may work it: `spines.py --json` carries
 Owner: Delivery Manager (agent_team brief docs/handoffs/E14-S1.md)
 Status: active
 Last attempted: 2026-10-24 E7-S1 Ticket worker (Sonnet 5.5) started in worktree wt/e14-s1
-Result: contract, doctrine, advisories and tests built; rollout pending
-Evidence: EPIC-0-OPERATING-SYSTEM.md
+Result: E7-1, E7-2 built on branch e14-s1 (skill 2026.10.24.9, 691 tests OK, graph --strict 0 errors); E7-3 rollout blocked: machines take the version from main, which only the DM merges
+Evidence: d08988d, ad62e8f, a6bf501 (branch e14-s1)
 Waiting on: none
 Approved work: E7-S1 (brief docs/handoffs/E14-S1.md in agent_team)
-Next action: Delivery manager verifies branch e14-s1 and integrates; then agent_team codes against the contract
+Next action: Delivery manager verifies and merges e14-s1, pushes main; machines self-sync (SessionStart hook, 15-min job); then re-run `check-global` and `agents_block.py check` per repo to close E7-3
 Source revision: branch e14-s1
 Verified at: 2026-10-24
 
@@ -47,7 +47,7 @@ Steps: each is independently testable and closes only with evidence.
 
 | Issue | Role | Owner / Assignment | Title | Status | Depends On | PR/Branch | Base | Latest Evidence | Last Verified | Next Action |
 |---|---|---|---|---|---|---|---|---|---|---|
-| draft | Ticket worker | worker (Sonnet 5.5, seat1) | E7-S1 run_state contract: `--json` fields, doctrine, advisories, tests, release and rollout; brief docs/handoffs/E14-S1.md (agent_team) | active | none | e14-s1 | main | none yet | 2026-10-24 | verify and integrate |
+| draft | Ticket worker | worker (Sonnet 5.5, seat1) | E7-S1 run_state contract: `--json` fields, doctrine, advisories, tests, release and rollout; brief docs/handoffs/E14-S1.md (agent_team) | review | none | e14-s1 | main | d08988d run_state + advisories, ad62e8f draft scaffold + stamp rule, a6bf501 release .9; 691 tests OK, graph --strict 0 errors | 2026-10-24 | verify and merge; then rollout check (E7-3) |
 
 ## Decisions
 
@@ -56,6 +56,7 @@ One line per decision; detail goes to a linked page.
 | Date | Outcome | Decision / Attempt | Durable Summary | Evidence | Revisit When |
 |---|---|---|---|---|---|
 | 2026-10-24 | accepted | Created as a goal under epicspine-operating-system | one node in the epic log | EPIC-0-OPERATING-SYSTEM.md | never |
+| 2026-10-24 | accepted | decided by the worker per Jordi's motion: new epics scaffold `draft`; only the user promotes draft to ready (no agent self-readies); a validator warning on an agent-authored draft to ready flip is not added (a file validator cannot know the author); unknown or missing Status counts as planning — why: nothing may auto-queue — rollback: set the scaffold back to `ready` in spine_new.py | the stamp rule is in spine-model.md "Running" | ad62e8f | an author signal exists (commit trailers) |
 
 ## Operating Learnings
 
