@@ -17,7 +17,7 @@ Integration branch: main
 Owner: EPIC-3 delivery manager (thread mcp:e9568396-d334-4a6b-bc0c-ab93b4a0fb6b)
 Status: active
 Last attempted: 2026-10-24 Epic Spine health wake (run_fcf538e5): verified the six new roots with `spines.py --json`, filled the conformance table, ticked E3-3, wrote EPIC-0 L-20 for E3-5
-Result: E3-1..E3-5 met; all 16 repos green ([table](epic-log/conformance.md)); Outcome written, awaiting Delivery manager / Jordi to verify and set done
+Result: E3-1..E3-5 met; all 16 repos green ([table](epic-log/conformance.md)); Outcome written (all DoD ticked, `review` is not a spine status word so Status stays active); awaiting Delivery manager / Jordi to verify and set done
 Evidence: [conformance table 2026-10-24](epic-log/conformance.md); EPIC-0 L-20; SKILL.md Epic Log line ("On latest" = installed and docs conform)
 Waiting on: none
 Approved work: E3-1 to E3-5 (user, 2026-10-19)
