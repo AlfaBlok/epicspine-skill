@@ -6,7 +6,7 @@ Never forces, commits, touches dirty files or kills processes. Deletes only what
    (``refs/heads/b:refs/heads/b``, upstream set only when none; <= 10 per run, 10 s each). Diverged from origin or rejected:
    an attention line, never retried with force. Off: ``EPICSPINE_PUSH_BRANCHES=off`` or ``Push branches: off`` in AGENTS.md.
 2. Return to main (auto_return.py): merge ``Ready: yes`` additive branches in main-direct repos, delete branches already in
-   main, report the rest (Ready but blocked; idle >= 3 d; idle >= 14 d: ask once keep / park / drop). Off: ``EPICSPINE_AUTOMERGE=off``.
+   main, report the rest (Ready but blocked; idle >= 3 d; idle >= 14 d: park it, no question). Off: ``EPICSPINE_AUTOMERGE=off``.
 3. Report only (lines for the status file's ``mess``, <= 3 per kind per repo): linked worktrees idle > 3 d and not merged into
    origin/<integration> (>= 14 d: ask the user once); merged + clean ones idle > 1 d (safe to remove); tracked changes in the
    main checkout for > 24 h (oldest changed-file mtime or first seen dirty by an earlier run); http servers running > 24 h from
@@ -85,6 +85,8 @@ def worktree_lines(top: Path, clock: Clock, integration: str, now: float, trees:
         files = changed(path, clock)
         stamp = out(git(["log", "-1", "--format=%ct", "HEAD"], path, clock, 3))
         merged = git(["merge-base", "--is-ancestor", "HEAD", base], path, clock, 3)
+        if out(git(["tag", "--contains", "HEAD", "--list", "archive/*"], path, clock, 3)):
+            continue
         if files is None or merged is None or not (stamp or "").isdigit():
             continue
         idle = now - max(int(stamp), mtime(path), *(mtime(path / f) for f in files[:50]))
@@ -92,7 +94,7 @@ def worktree_lines(top: Path, clock: Clock, integration: str, now: float, trees:
             if not files and idle > MERGED_IDLE:
                 lines.append(f"{top.name}: worktree {path} already merged — safe to remove (git worktree remove {path})")
         elif idle > WT_IDLE:
-            ask = " — ask the user once: keep / park / drop (references/hygiene.md)" if idle >= WT_ASK else " — merge it or remove it"
+            ask = f" — {auto_return.PARK}" if idle >= WT_ASK else " — merge it or remove it"
             lines.append(f"{top.name}: worktree {path} ({branch}) idle {int(idle // 86400)}d, not merged{ask}")
     return capped(lines, top.name, "worktrees")
 

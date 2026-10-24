@@ -12,7 +12,7 @@
 2. Already in main: a branch merged into ``origin/<integration>`` with no worktree is deleted locally; on origin only when named
    ``wt/*`` (others: one "merged - safe to delete" line). A branch whose tip IS the integration tip is kept (may be brand new).
 3. Everything else is report only: Ready but blocked (with the reason); unmerged and idle >= 3 d, one line; >= 14 d, one line
-   asking the user once: keep / park / drop (references/hygiene.md). Skipped for ``pr-approval`` repos.
+   telling the agent to park it, no question (archive tag, then delete); refs under an ``archive/*`` tag are never reported. Skipped for ``pr-approval`` repos.
 Fetches with ``--prune`` first (no network: nothing happens). Returns ``{"auto": [...], "mess": [...], "gone": [paths]}``.
 """
 
@@ -31,6 +31,7 @@ import repo_sync
 from session_sync import Clock, git, out
 
 READY_AFTER, MAX_MERGES, PR_SECONDS, IDLE, ASK, SHOWN = 2 * 3600, 3, 10.0, 3 * 86400, 14 * 86400, 3
+PARK = "park it now, no question (push and verify tag archive/<name>, delete the branch and worktree; references/hygiene.md)"
 DENY = re.compile(r"^\.github/|(^|/)\.git[a-z]*$")
 FORMAT = "%(refname)|%(objectname)|%(committerdate:unix)|%(trailers:key=Ready,valueonly,separator=%x2C)"
 
@@ -54,7 +55,7 @@ def cwds() -> list[str]:
 
 
 def listing(top: Path, clock: Clock, base: str, integration: str) -> dict[str, dict]:
-    """name -> {local, remote, ts, ready, merged} for every branch but the integration one (merged: every ref is in ``base``)."""
+    """name -> {local, remote, ts, ready, merged} for every branch but the integration one and refs under an ``archive/*`` tag (merged: every ref is in ``base``)."""
     def rows(*extra: str) -> list[list[str]]:
         text = out(git(["for-each-ref", *extra, f"--format={FORMAT}", "refs/heads", "refs/remotes/origin"], top, clock, 5)) or ""
         return [ln.split("|") for ln in text.splitlines() if ln.count("|") == 3]
@@ -63,10 +64,12 @@ def listing(top: Path, clock: Clock, base: str, integration: str) -> dict[str, d
         return (ref.removeprefix("refs/heads/"), True) if ref.startswith("refs/heads/") else (ref.removeprefix("refs/remotes/origin/"), False)
 
     in_base = {r[0] for r in rows("--merged", base)}
+    tags = (out(git(["for-each-ref", "--format=--merged=%(refname)", "refs/tags/archive"], top, clock, 4)) or "").split()
+    archived = {r[0] for r in rows(*tags)} if tags else set()
     found: dict[str, dict] = {}
     for ref, sha, ts, trailer in rows():
         name, local = split(ref)
-        if name in (integration, "HEAD") or not ts.isdigit():
+        if name in (integration, "HEAD") or not ts.isdigit() or (ref in archived and ref not in in_base):
             continue
         entry = found.setdefault(name, {"ts": 0, "ready": False, "merged": True})
         entry["local" if local else "remote"] = sha
@@ -199,7 +202,7 @@ def run(top: Path, clock: Clock, env: dict, text: str, integration: str, trees: 
     old, mid = [n for d, n in sorted(idle, reverse=True) if d * 86400 >= ASK], [n for d, n in sorted(idle, reverse=True) if IDLE <= d * 86400 < ASK]
     for items, line in ((blocked, "branch(es) marked Ready but not auto-merged: {items} — the manager merges them (ff or --no-ff, never squash)"),
                         (mid, "branch(es) not in {b} idle >= 3d: {items} — finish and mark `Ready: yes`, merge, or remove"),
-                        (old, "branch(es) not in {b} idle >= 14d: {items} — ask the user once: keep / park / drop (references/hygiene.md)"),
+                        (old, "branch(es) not in {b} idle >= 14d: {items} — " + PARK),
                         (safe, "branch(es) already in {b} — safe to delete: {items}")):
         if items:
             result["mess"].append(f"{label}: {len(items)} " + line.format(b=integration, items=many(items)))

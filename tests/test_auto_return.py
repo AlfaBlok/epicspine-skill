@@ -283,18 +283,31 @@ class CleanupAndEscalationTest(ReturnBase):
         entry = self.entry(clone)
         self.assertEqual(entry["mess"][:2], [
             "a: 2 branch(es) not in main idle >= 3d: feat/four, feat/three — finish and mark `Ready: yes`, merge, or remove",
-            "a: 2 branch(es) not in main idle >= 14d: feat/older, feat/old — ask the user once: keep / park / drop (references/hygiene.md)"])
+            f"a: 2 branch(es) not in main idle >= 14d: feat/older, feat/old — {auto_return.PARK}"])
         self.assertEqual(len(entry["mess"]), 3)  # + the worktree line for wt/active (idle 4 d); never a duplicate branch line
         self.assertIn("worktree", entry["mess"][2])
         self.assertTrue({"feat/new", "feat/old", "feat/older"} <= self.local(clone) and wt.is_dir())
 
-    def test_a_worktree_idle_for_two_weeks_asks_the_user_once(self) -> None:
+    def test_a_worktree_idle_for_two_weeks_is_told_to_park(self) -> None:
         _, clone = self.repo("a", POLICY)
         old = self.root / "a-old"
         git(clone, "worktree", "add", "-q", "-b", "wt/old", str(old), "main")
         self.work(old, {"o.md": "o\n"}, ready=False, hours=20 * 24)
         os.utime(old, (time.time() - 20 * 86400,) * 2)
-        self.assertEqual(self.entry(clone)["mess"], [f"a: worktree {old} (wt/old) idle 20d, not merged — ask the user once: keep / park / drop (references/hygiene.md)"])
+        self.assertEqual(self.entry(clone)["mess"], [f"a: worktree {old} (wt/old) idle 20d, not merged — {auto_return.PARK}"])
+
+    def test_a_branch_or_worktree_under_an_archive_tag_is_never_reported(self) -> None:
+        _, clone = self.repo("a", POLICY)
+        self.branch(clone, "feat/parked", ready=False, hours=40 * 24, push=True)
+        self.branch(clone, "feat/still-idle", ready=False, hours=40 * 24)
+        old = self.root / "a-parked"
+        git(clone, "worktree", "add", "-q", "-b", "wt/parked", str(old), "main")
+        self.work(old, {"p.md": "p\n"}, ready=False, hours=20 * 24)
+        os.utime(old, (time.time() - 20 * 86400,) * 2)
+        git(clone, "tag", "-a", "-m", "parked", "archive/feat-parked", "feat/parked")
+        git(clone, "tag", "-a", "-m", "parked", "archive/wt-parked", "wt/parked")
+        mess = self.entry(clone)["mess"]
+        self.assertEqual(mess, [f"a: 1 branch(es) not in main idle >= 14d: feat/still-idle — {auto_return.PARK}"])
 
     def test_pr_approval_repos_get_no_branch_reminders(self) -> None:
         _, clone = self.repo("a", {"AGENTS.md": "Integration policy: pr-approval\n"})
