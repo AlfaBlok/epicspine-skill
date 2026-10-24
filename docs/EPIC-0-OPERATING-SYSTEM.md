@@ -54,7 +54,6 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 - L-12 | integrating | `main-direct` is the default for every repo; PR/CI only for the declared `Deploy gate:` paths/workflows/branches whose push to main rolls a complex production deployment (e.g. zenod), never the whole repo; docs-only, additive and research changes stay main-direct | user doctrine 2026-10-16 | confirmed 2026-10-16
 - L-13 | any task | The delivery manager keeps the epic tree and the Book coherent: every new ask is placed in the tree (an existing goal, or a new leaf under the right parent) before work starts; at every launch, dispatch and record it resolves contradictions and writes the reasoning (Decisions) and current state | user doctrine 2026-10-19 | confirmed 2026-10-19
 - L-14 | doctrine | epicspine-skill owns the EpicSpine doctrine and orchestrates it from here; agent_team complies when its console reads repos; each repo applies the doctrine to its own spines in its own thread; learn what we are trying to accomplish here | Jordi 2026-10-19 | confirmed 2026-10-19
-- L-15..L-17 superseded: now skill doctrine (references/spine-model.md, global-block)
 - L-18 | any session | Never show other repos' state inside a session about one repo unless the conversation is explicitly about them; the background checker does its job and records, it never broadcasts machine-wide notices to every session | user 2026-10-24 | confirmed 2026-10-24
 - L-19 | branch hygiene | Parked work gets out of the way: archive it (annotated tag `archive/<name>`, pushed and verified), delete the branch, never remind or ask about it again; non-destructive cleanup needs no question | user 2026-10-24 | confirmed 2026-10-24
 - L-20 | reporting a repo "on latest" | "On latest EpicSpine" means installed AND conforming (`spines.py --json`: 0 orphans, 0 mismatches, each `looks_like_epic` page a coded epic or recorded exception), never just the skill or block version; proof is the [conformance table](epic-log/conformance.md) | EPIC-3 E3-5, Jordi 2026-10-19 (handoff step 7) | confirmed 2026-10-24
@@ -72,64 +71,23 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 | Issue | Role | Owner / Assignment | Title | Status | Depends On | PR/Branch | Base | Latest Evidence | Last Verified | Next Action |
 |---|---|---|---|---|---|---|---|---|---|---|
 | draft | Ticket worker | worker (Opus 5.5, T3 thread) | Enforce manager-never-implements and push-on-close with hooks: PreToolUse `manager_guard.py` (allowlist-first Bash/Edit policy, subagents via `agent_id`) + Stop `push_gate.py` | deferred | none | PR #28 (feat/manager-guards) | 6ccb101 | PARKED 2026-10-13 by user (D18); archived 2026-10-24 as tags `archive/feat/manager-guards`, `archive/feat/dispatcher-guard` (branches deleted, PR #28 closed). Do not merge, install, or build on it | 2026-10-24 | none (parked: not raised again) |
-| draft | Ticket worker | worker (Opus 5.5, T3 sub-agent) | ticket-34 Ask states & refs (agent_team L-12 duplicate cards): `superseded` state, done notes, `Waiting on:` codes as `waits_on[]` refs, advisories (D19 pt 4) | done | none | wt/ask-states-refs (removed) | 6be164a | merged e39fc79, 2026.10.23.1; 633 tests green; live JSON verified | 2026-10-23 | none |
-| draft | Ticket worker | worker (Opus 5.5, T3 sub-agent from agent_team EPIC-8 E8-S1) | ticket-35 Standing approvals: `[grant …]` lines, revoke/expiry, inheritance, `grants[]` in `--json`, advisories ([doctrine](doctrine/standing-approvals.md) v1) | done | none | wt/standing-approvals | 5bfaf22 | skill 2026.10.24.1; 643 tests green (10 new, tests/test_grants.py); live JSON on whatgpt_v3: EPIC-0 own E0-G1..G10, EPIC-1 inherits all 10 | 2026-10-24 | none |
-| draft | Ticket worker | worker (Opus 5.5, T3 sub-agent from agent_team EPIC-8 E8-S4) | ticket-36 Ask writing (agent_team L-13/L-14): blocking step only, decision first, one per ask; 3 advisories ([doctrine](doctrine/human-asks.md) v5) | done | none | wt/ask-writing | 2704724 | skill 2026.10.24.2; 649 tests green (6 new, tests/test_human_asks.py WritingTests) | 2026-10-24 | none |
-| draft | Ticket worker | worker (Opus 5.5, T3 sub-agent from agent_team) | ticket-37 SessionStart never shows other repos' state (L-18): `attention_lines` prints only the cwd repo's mess/stale, no `N more`; `repo_state.py` on request | done | none | wt/current-repo-attention | 65c7e2b | skill 2026.10.24.3; merged ec45219; 650 tests green; live attention_lines from agent_team empty | 2026-10-24 | none |
-| draft | Ticket worker | worker (Opus 5.5, T3 sub-agent from agent_team EPIC-8 E8-S8) | ticket-38 Asks in human format (agent_team L-14): `impact:`, `risk:`, `why <who>:` in `--json`; advisory if impact/risk/recommend missing ([doctrine](doctrine/human-asks.md) v6) | done | none | wt/ask-human-format | e17701e | skill 2026.10.24.4; 653 tests green (3 new + 3 updated, tests/test_human_asks.py) | 2026-10-24 | none |
-| draft | Ticket worker | worker (Opus 5.5, T3 sub-agent from agent_team EPIC-8 E8-S10) | ticket-39 Finish the job (agent_team L-16): no end-of-turn offers; global block rule 5, SKILL.md, preamble ([doctrine](doctrine/human-asks.md) v7) | done | none | wt/finish-the-job | e1619ca | skill 2026.10.24.5; tests green (1 new, tests/test_default_behaviors.py) | 2026-10-24 | none |
-| draft | Ticket worker | worker (Sonnet 5.5, seat pool) | ticket-40 Parked work leaves the way (L-19): park = verified `archive/<name>` tag, branch/worktree deleted, never asked again; skill doctrine + `auto_return.py` (CHANGELOG 2026.10.24.6) | done | none | wt/park-archives | b7e70df | skill 2026.10.24.6; merged ecb30c5; 655 tests green; archived-tag refs never reported; 3 branches archived 2026-10-24 | 2026-10-24 | none |
 
-Done tickets (32 rows, Next Action done/none, moved verbatim): [done ledger](root/steps.md#done-ledger).
+Done tickets (39 rows, Next Action done/none, moved verbatim): [done ledger](root/steps.md#done-ledger).
 
 ## Decisions
 
 | Date | Outcome | Decision / Attempt | Durable Summary | Evidence | Revisit When |
 |---|---|---|---|---|---|
-| 2026-10-19 | accepted | Personas lost the doctrine | "Installed" also needs every config dir (seat1, ~/.claude) pointing at the canonical checkout with hooks; tests must never touch real config. Detail and fix: EPIC-4 step 9. | EPIC-4 845e6ff | step 9 merged |
-| 2026-10-16 | accepted | Automatic trackable contract | Enforcement is `--trackable`, never `--strict`; the pre-commit hook fixes the unambiguous and blocks only on guesses; self-installs via SessionStart. [detail](root/decisions.md#d2) | user decisions 2026-10-16 | Dashboards need more fields |
-| 2026-10-09 | accepted | Two base roles | Every agent is a delivery manager or a worker; older identities are remits under them. | user decision 2026-10-09 | Role model changes |
-| 2026-10-09 | accepted | Stay in main, manager merges | Workers use local wt/<task> worktrees; the manager merges verified work to main. | user decision 2026-10-09 | User asks for PR review |
-| 2026-10-09 | accepted | Learnings tree | Root Always list plus a scoped index; depth is scope. | user decision 2026-10-09 | Learning model changes |
-| 2026-10-09 | accepted | Sweep as a worker brief | Hygiene is a dispatched brief, not a third base role. | user decision 2026-10-09 | Sweep needs its own role |
-| 2026-10-09 | accepted | Skill updates auto | `Skill updates: auto` is the default; upgrade between tasks. | user decision 2026-10-09 | User prefers manual |
-| 2026-10-09 | accepted | EPIC-2 and EPIC-1 closed | Both prior epics are done children of this root; their content is preserved. | user decision 2026-10-09 | Delivery scope resumes |
-| 2026-10-09 | accepted | Root wiring | This compact spine is the single root; EPIC-2 and EPIC-1 are its direct children. | user decision 2026-10-09 | Hierarchy needs re-scoping |
-| 2026-10-09 | accepted | No unrequested model changes | Every subagent, reviewers included, uses the default profile unless the user asks; fresh context gives review independence. | user decision 2026-10-09 | User names another model |
-| 2026-10-09 | accepted | Serialize MANIFEST-changing merges | One writer per spine and one MANIFEST merge at a time: agents-block landed first, kernel rebases second; the second merge regenerates MANIFEST. | thread collision a0380f46 vs 441c3c64 | Two branches touch MANIFEST |
-| 2026-10-09 | accepted | Comparison adoption fork | Adopt L-9, L-10 and L-11 in our own words from the Pocock/poteto comparison; tags checkpoint/pre-adoption (b620d50) and checkpoint/post-adoption guard it. [detail](root/decisions.md#d12) | user decision 2026-10-09; thread a0380f46 | Smoke or contract tests regress |
-| 2026-10-09 | accepted | L-9 asks on missing details | L-9 stays as written: ask one clear question with a recommendation when a detail is missing; the P2 smoke prompt was the bad test, rewritten. [detail](root/decisions.md#d13) | user decision 2026-10-09 | Over-asking becomes a recurring complaint |
-| 2026-10-10 | accepted | Shipped default vs repo profile | The public skill ships a vague vanilla default (lower-cost native worker); a repo's `Dispatch profile:` wins; this repo: native subagent, Sonnet 5.5. [detail](root/decisions.md#d14) | user decision 2026-10-10 | User changes profile |
-| 2026-10-10 | accepted | Skill freshness by content | Freshness = git tree hash of `skill/epic-spine/`, not repo head; harness symlinks resolve to the hub; cache returns the last result; 1-day window. [detail](root/decisions.md#d15) | user report 2026-10-10 (false stale; harness `linked`) | Freshness misreports again |
-| 2026-10-10 | accepted | Always-on is harness-neutral | Installing EpicSpine makes every major agent bind on its first reply in any repo: global block, per-adapter hooks, repo pointers; done on a cold-start pass. [detail](root/decisions.md#d16) | user decision 2026-10-10 | A major harness fails cold start |
-| 2026-10-10 | accepted | Profile is machine-wide | The worker profile is set once per machine (`~/.agents/epicspine-profile.md`); a repo's `Dispatch profile:` only overrides; unset: ask once, save there. [detail](root/decisions.md#d17) | user decision 2026-10-10 | User wants per-repo profiles |
-| 2026-10-13 | accepted | Park manager guard via blocking hooks (PR #28) | Hard-blocking the manager with PreToolUse/Stop hooks (PR #28) is parked as complex and unpredictable; preferred: re-inject a short manager reminder. [detail](root/decisions.md#d18) | user decision 2026-10-13; PR #28 comment | User revisits enforcement |
-| 2026-10-14 | accepted | Artifact host is machine env | Remote/headless hosts set `EPICSPINE_ARTIFACT_HOST` (`tailscale` default); links use MagicDNS, the server binds the tailnet IP only; unset keeps 127.0.0.1. [detail](root/decisions.md#d19) | infra-vps request 2026-10-14 | User wants HTTPS or another network |
-| 2026-10-14 | accepted | Shared rules live only in the skill | Improving EpicSpine = merge to main; repos hold only repo values; an old repo copy never outranks the live block; artifact host auto-detected. [detail](root/decisions.md#d20) | user intent 2026-10-14 | A harness without hooks misbehaves |
-| 2026-10-19 | accepted | Epic log = tree of goals | A goal is measurably accomplishable and states its purpose; spines are nested markdowns, one tree per repo; child `Parent spine:` is authoritative. [detail](root/decisions.md#d21) | user decision 2026-10-19 (handoff docs/handoffs/2026-10-19-spine-conformance.md) | Repos need a cross-repo portfolio root |
+
+21 decisions: [decisions table](root/decisions.md#decisions-table).
 
 ## EpicSpine Book Companion
 
 Status: active
 Book root: index.html
 Book steward: /root delivery manager
-Chapter map: index.html (part-grouped slide index)
-Leaf roots: index.html (single-file deck; leaves are slides)
-Canonical registry: none
-Registry row identity: none
-Generated registry view: none
-Author scope: slides of index.html plus tests/test_book_drift.py
-Root promotion authority: Book steward
-Registry write authority: read-only
-Archive location: git history
-Validation command: `uv run --with pytest pytest -q tests/test_book_drift.py`
 
-Binding rule: When `Status: active`, every agent bound to this spine is also a Book author. For material research, comparison, recommendation, reusable explanation, or substantial user-facing synthesis, update or add a slide in index.html without a separate request.
-
-Navigation rule: Every slide is reachable from the part-grouped index and links back to the Book root; the root promotes only current, foundational, or decision-significant slides.
-
-Registry rule: No canonical registry; the Book keeps no live structured collection.
-Landing exceptions: No slide for quick answers, transient status, raw logs, ticket debugging, or work with no durable user-facing knowledge.
+Binding rule, validation command and the remaining fields: [book-companion](root/book-companion.md).
 
 ## Spine Map
 
