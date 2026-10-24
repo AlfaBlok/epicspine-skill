@@ -19,12 +19,12 @@ Skill updates: auto
 
 Owner: /root delivery manager
 Status: active
-Last attempted: 2026-10-24 root DM wake (run_53683ac3): verified EPIC-3 Outcome and set it done; normalized EPIC-3 Decisions; DOD-3 ticked
-Result: EPIC-3 done (spines.py --json: six new roots, poly-maker, zenod 0 orphans/0 mismatches); DOD-3 green; DOD-1/DOD-2 evidence and ledger reconcile dispatched (seat1 run_da93bbb6, seat2 run_85ef60a9)
-Evidence: 259ed38 (655 tests OK; strict graph 0 errors)
+Last attempted: 2026-10-24 root DM wake (run_53683ac3): EPIC-3 verified and done; ledger made honest (89554d8); DOD-2 and DOD-3 ticked
+Result: DOD-2, DOD-3 met; DOD-1 not met as observed: prescribed bind path is 93 lines, a cold subagent read 282 (whole files) ([evidence](root/dod-evidence-2026-10-24.md))
+Evidence: 259ed38, 89554d8, d85992f
 Waiting on: none
 Approved work: none open beyond this root's DOD
-Next action: integrate the two workers' results: tick DOD-1/DOD-2 on proof, verify ledger reconcile; then write this root's Outcome and set review
+Next action: DOD-1 worker makes the cold bind read ≲100 lines in practice (line-ranged bind pointer, root detail to linked pages), then re-measures with a fresh agent; then write this root's Outcome and set review
 Source revision: main
 Verified at: 2026-10-24
 
@@ -64,7 +64,7 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 ## Definition Of Done
 
 - [ ] DOD-1 A cold agent binds in three hops (AGENTS.md → this root spine → the branch matching its task), reading ≲ 100 lines before acting.
-- [ ] DOD-2 The lean SKILL.md kernel and its Default Behaviors card are landed and installed copies re-synced.
+- [x] DOD-2 The lean SKILL.md kernel and its Default Behaviors card are landed and installed copies re-synced. (2026-10-24: [evidence](root/dod-evidence-2026-10-24.md), SKILL.md 72 lines, manifest match, seat1/seat2 link to the checkout)
 - [x] DOD-3 Strict graph validation and `python3 -B -m unittest discover -s tests` are green on main. (2026-10-24: 655 tests OK; `validate_spine.py --strict --graph docs/EPIC-*.md` 0 errors after EPIC-3 Decisions fix)
 
 ## Issue Ledger
