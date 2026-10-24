@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.10.24.11 — Tree cleanse: start-here text must not route to closed epics
+
+- **New: routing check in the tree cleanse** (agent_team EPIC-16 E16-S5; zenod's cleanse left its AGENTS.md naming a closed epic as the active surface). `references/tree-cleanse.md` gains step 5: after the sweep, AGENTS.md / CLAUDE.md / README.md (outside the EpicSpine block) name only what `spines.py --active` lists, or point at that command. `tree_audit.py` reports `routing names closed epic: <file>:<line> <epic>` (a finished epic's file name in those files, block excluded; its repo path instead when several spines share the name, e.g. every spine called EPIC_SPINE.md; JSON key `routing`). It matches file names and paths only; codes and titles stay a by-hand read. Tests: `tests/test_close_rows.py` (`test_routing_that_names_a_closed_epic`, `test_routing_matches_the_path_when_spines_share_a_file_name`). Skill 2026.10.24.11.
+
 ## 2026.10.24.10 — Closed epics close their rows; tree audit
 
 - **New: row status `superseded`** (closed, not done; EPIC-8 E8-S1, agent_team EPIC-16 E16-S1; Jordi: zenod closed 22 of 30 epics yet ~95 ledger rows inside them still read as live work). Issue Ledger vocabulary in `references/spine-model.md` and `persona-tasks.md`; `spine_fix` maps dropped, obsolete, wontfix, cancelled, abandoned to it (`superseded` is no longer mapped to `done`) and integrated, resolved to `done`; it is a trackable Status; a superseded child rolls up as done; persona queues already skip it. `spine_fix.row_word`/`row_open`/`epic_closed` are the one row vocabulary.
