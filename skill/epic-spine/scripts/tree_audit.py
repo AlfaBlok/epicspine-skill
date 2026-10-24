@@ -31,15 +31,18 @@ ROUTING_FILES = ("AGENTS.md", "CLAUDE.md", "README.md")
 BLOCK = re.compile(r"<!-- epicspine:begin .*?<!-- epicspine:end -->", re.DOTALL)
 
 
-def routing(repo: Path, closed: list[str]) -> list[dict]:
-    """Lines of the repo's start-here files (outside the EpicSpine block) naming a finished epic's file."""
+def routing(repo: Path, closed: list[str], spines_: list[str]) -> list[dict]:
+    """Lines of the repo's start-here files (outside the EpicSpine block) naming a finished epic's file: its file name, or its
+    repo path when another spine shares that name (every spine called EPIC_SPINE.md)."""
+    names = Counter(Path(rel).name for rel in spines_)
+    keys = {rel: re.compile(r"(?<![\w.-])" + re.escape(Path(rel).name) if names[Path(rel).name] == 1 else r"(?<![\w./-])" + re.escape(rel)) for rel in closed}
     found = []
     for name in ROUTING_FILES:
         if not (path := repo / name).is_file() or not closed:
             continue
         text = BLOCK.sub(lambda m: "\n" * m.group(0).count("\n"), D.read(path))
         for no, line in enumerate(text.splitlines(), 1):
-            found += [{"file": name, "line": no, "epic": rel} for rel in closed if Path(rel).name in line]
+            found += [{"file": name, "line": no, "epic": rel} for rel, key in keys.items() if key.search(line)]
     return found
 
 
@@ -59,7 +62,8 @@ def audit(repo: Path, now: float | None = None) -> dict:
                  "over_budget": [], "undecided": [], "root": None, "routing": []}
     words: Counter = Counter()
     closed: list[str] = []
-    for rel in [n["path"] for n in log["nodes"]] + [o["path"] for o in log["orphans"]]:
+    spine_paths = [n["path"] for n in log["nodes"]] + [o["path"] for o in log["orphans"]]
+    for rel in spine_paths:
         text = D.read(repo / rel)
         sections = v.parse_sections(text)
         status = D.status_word(text)
@@ -79,7 +83,7 @@ def audit(repo: Path, now: float | None = None) -> dict:
         if rel == log["root"]:
             out["root"] = {"path": rel, "status": status or None, "days": age(repo, rel, now)}
     out["nonstandard_row_words"] = dict(words.most_common())
-    out["routing"] = routing(repo, closed)
+    out["routing"] = routing(repo, closed, spine_paths)
     paths = " ".join(f["path"] for f in out["finished_with_open_rows"])
     out["sweep"] = f"cd {repo} && python3 {SCRIPTS / 'spine_fix.py'} --close --write {paths}" if paths else None
     return out

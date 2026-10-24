@@ -158,6 +158,13 @@ class TreeAuditTests(EpicLogCase):
         self.assertEqual([{"file": "AGENTS.md", "line": 2, "epic": "docs/a.md"}, {"file": "README.md", "line": 1, "epic": "docs/a.md"}], result["routing"])
         self.assertIn("routing names closed epic: AGENTS.md:2 docs/a.md", self.audit().stdout)
 
+    def test_routing_matches_the_path_when_spines_share_a_file_name(self) -> None:
+        self.new("docs/x/EPIC_SPINE.md", title="old")
+        self.write("docs/x/EPIC_SPINE.md", spine(rows=("done",)).replace("Spine ID: synthetic-compact-example", "Spine ID: x\nParent spine: [Root](../root.md)"))
+        self.new("docs/y/EPIC_SPINE.md", title="live")
+        self.write("AGENTS.md", "Start at docs/y/EPIC_SPINE.md\nOld: docs/x/EPIC_SPINE.md\n")
+        self.assertEqual([{"file": "AGENTS.md", "line": 2, "epic": "docs/x/EPIC_SPINE.md"}], json.loads(self.audit("--json").stdout)["routing"])
+
     def test_undecided_and_root_age_read_git(self) -> None:
         self.new("docs/c.md", title="gamma")
         env = {**os.environ, "GIT_AUTHOR_DATE": "2026-01-01T00:00:00", "GIT_COMMITTER_DATE": "2026-01-01T00:00:00"}
