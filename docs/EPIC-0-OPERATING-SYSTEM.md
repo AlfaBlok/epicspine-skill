@@ -87,6 +87,7 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 | draft | Ticket worker | worker (Opus 5.5, T3 sub-agent from agent_team EPIC-8 E8-S4) | ticket-36 Ask writing (agent_team L-13/L-14): blocking step only, decision first, one per ask; 3 advisories ([doctrine](doctrine/human-asks.md) v5) | done | none | wt/ask-writing | 2704724 | skill 2026.10.24.2; 649 tests green (6 new, tests/test_human_asks.py WritingTests) | 2026-10-24 | manager merges + releases |
 | draft | Ticket worker | worker (Opus 5.5, T3 sub-agent from agent_team) | ticket-37 SessionStart never shows other repos' state (L-18): `attention_lines` prints only the cwd repo's mess/stale, no `N more`; `repo_state.py` on request | done | none | wt/current-repo-attention | 65c7e2b | skill 2026.10.24.3; merged ec45219; 650 tests green; live attention_lines from agent_team empty | 2026-10-24 | none |
 | draft | Ticket worker | worker (Opus 5.5, T3 sub-agent from agent_team EPIC-8 E8-S8) | ticket-38 Asks in human format (agent_team L-14): `impact:`, `risk:`, `why <who>:` in `--json`; advisory if impact/risk/recommend missing ([doctrine](doctrine/human-asks.md) v6) | done | none | wt/ask-human-format | e17701e | skill 2026.10.24.4; 653 tests green (3 new + 3 updated, tests/test_human_asks.py) | 2026-10-24 | manager merges + releases; agent_team console shows the fields on ask cards |
+| draft | Ticket worker | worker (Opus 5.5, T3 sub-agent from agent_team EPIC-8 E8-S10) | ticket-39 Finish the job (agent_team L-16): no end-of-turn offers; global block rule 5, SKILL.md, preamble ([doctrine](doctrine/human-asks.md) v7) | done | none | wt/finish-the-job | e1619ca | skill 2026.10.24.5; tests green (1 new, tests/test_default_behaviors.py) | 2026-10-24 | manager merges + releases |
 
 Done tickets (20 rows, Next Action done/none, moved verbatim): [done ledger](root/steps.md#done-ledger).
 
@@ -137,7 +138,6 @@ Binding rule: When `Status: active`, every agent bound to this spine is also a B
 Navigation rule: Every slide is reachable from the part-grouped index and links back to the Book root; the root promotes only current, foundational, or decision-significant slides.
 
 Registry rule: No canonical registry; the Book keeps no live structured collection.
-
 Landing exceptions: No slide for quick answers, transient status, raw logs, ticket debugging, or work with no durable user-facing knowledge.
 
 ## Spine Map
