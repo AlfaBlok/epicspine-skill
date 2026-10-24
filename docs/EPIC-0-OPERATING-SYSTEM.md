@@ -19,12 +19,12 @@ Skill updates: auto
 
 Owner: /root delivery manager
 Status: active
-Last attempted: 2026-10-24 root DM wake (run_53683ac3): EPIC-3 verified and done; ledger made honest (89554d8); DOD-2 and DOD-3 ticked
-Result: DOD-2, DOD-3 met; DOD-1 met only when the repo pointer is followed: root 141→99 lines + line-ranged AGENTS.md pointer, fresh agent 94 lines (187–240 when ignored) ([evidence](root/dod-evidence-2026-10-24.md))
-Evidence: 259ed38, 89554d8, a61f07b..9b8e77a
+Last attempted: 2026-10-24 root DM wake (run_53683ac3): EPIC-3 closed; ledger made honest; root trimmed 141→99; `spines.py --bind` shipped (2026.10.24.8); DOD-1..3 ticked; Outcome written
+Result: all three Done means met; awaiting Jordi's verification of the Outcome
+Evidence: 259ed38, 89554d8, a61f07b, 85a86fd; [evidence page](root/dod-evidence-2026-10-24.md)
 Waiting on: none
 Approved work: none open beyond this root's DOD
-Next action: seat1 worker (run_119c141a, wt/bind-command) ships `spines.py --bind` and a global-block bind step that never reads whole spines, then re-measures; tick DOD-1 on proof, write Outcome, set review
+Next action: Jordi verifies the Outcome and sets done (root's Mission stays the standing goal; new asks open new children)
 Source revision: main
 Verified at: 2026-10-24
 
@@ -62,9 +62,22 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 
 ## Definition Of Done
 
-- [ ] DOD-1 A cold agent binds in three hops (AGENTS.md → this root spine → the branch matching its task), reading ≲ 100 lines before acting.
+- [x] DOD-1 A cold agent binds in three hops (AGENTS.md → this root spine → the branch matching its task), reading ≲ 100 lines before acting. (2026-10-24: `spines.py --bind`, skill 2026.10.24.8, merge 85a86fd; fresh agent 61 spine lines, was 282: [evidence](root/dod-evidence-2026-10-24.md))
 - [x] DOD-2 The lean SKILL.md kernel and its Default Behaviors card are landed and installed copies re-synced. (2026-10-24: [evidence](root/dod-evidence-2026-10-24.md), SKILL.md 72 lines, manifest match, seat1/seat2 link to the checkout)
 - [x] DOD-3 Strict graph validation and `python3 -B -m unittest discover -s tests` are green on main. (2026-10-24: 655 tests OK; `validate_spine.py --strict --graph docs/EPIC-*.md` 0 errors after EPIC-3 Decisions fix)
+
+## Outcome
+
+Verdict: accomplished
+Outcome: EpicSpine is a lean, always-on default: a cold agent binds with one `spines.py --bind` call (61 lines read, was 282), the 72-line SKILL.md kernel and Default Behaviors card ship with every installed copy linked to the canonical checkout, and 656 tests plus strict graph validation are green on main.
+Closed: 2026-10-24 by run_53683ac3-ba33-4027-ad9c-251e9144e36f
+Risk: the fresh-agent bind was measured once (n=1) on Claude; the thin repo-block template still says "read Current State and Operating Learnings" (the live global block, which outranks it, says `--bind`); Gemini cold start untested.
+
+| Done means | Evidence |
+|---|---|
+| DOD-1 | 85a86fd (skill 2026.10.24.8, `spines.py --bind`), [evidence](root/dod-evidence-2026-10-24.md): 61 lines |
+| DOD-2 | d85992f evidence page: SKILL.md 72 lines, manifest match, seat1/seat2 linked |
+| DOD-3 | 85a86fd: unittest OK (2 skipped), `validate_spine.py --strict --graph docs/EPIC-*.md` 0 errors |
 
 ## Issue Ledger
 
