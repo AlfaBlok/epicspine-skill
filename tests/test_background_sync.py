@@ -419,24 +419,26 @@ class SessionStartLinesTest(Base):
         self.write({"/r/a": {"attention": []}})
         self.assertEqual(bg.attention_lines(self.home, self.tmp), [])
 
-    def test_any_repo_but_the_current_one_is_listed_with_why(self) -> None:
+    def test_other_repos_are_never_shown_only_the_current_repos_mess_and_stale(self) -> None:
         here = self.tmp / "c"
         (here / "deeper").mkdir(parents=True)
-        self.write({"/r/a": {"attention": ["a (main): main diverged from origin/main (1 ahead, 1 behind)"]},
+        self.write({"/r/a": {"attention": ["a (main): main diverged from origin/main (1 ahead, 1 behind)"], "mess": ["a: 2 branches idle"], "stale": ["a: epic stale"]},
                     "/r/b": {"attention": ["b: old copy of the epic-spine skill at skills/epic-spine (1, installed 2)"]},
-                    str(here): {"attention": ["c (main): x"]}})
-        lines = bg.attention_lines(self.home, here / "deeper")  # a session anywhere inside c: c itself is left to the live check
-        self.assertEqual(len(lines), 2)
-        self.assertTrue(all(line.startswith("EpicSpine attention: ") for line in lines))
-        self.assertIn("a (main): main diverged", lines[0])
-        self.assertIn("b: old copy", lines[1])
-        self.assertEqual(len(bg.attention_lines(self.home, self.tmp)), 3)
+                    str(here): {"attention": ["c (main): x"], "mess": ["c: 3 branches idle"], "stale": ["c: epic stale"]}})
+        lines = bg.attention_lines(self.home, here / "deeper")  # a session anywhere inside c: only c's mess and stale; its attention is the live check's
+        self.assertEqual(lines, ["EpicSpine attention: c: 3 branches idle (background sync; change nothing)",
+                                 "EpicSpine attention: c: epic stale (background sync; change nothing)"])
+        self.assertEqual(bg.attention_lines(self.home, self.tmp), [])  # outside every repo: nothing about repos, no "N more" pointer
 
-    def test_at_most_five_then_n_more(self) -> None:
-        self.write({f"/r/{i}": {"attention": [f"r{i} (main): stuck"]} for i in range(8)})
+    def test_many_other_repos_print_nothing_and_no_pointer_to_the_status_file(self) -> None:
+        self.write({f"/r/{i}": {"attention": [f"r{i} (main): stuck"], "mess": [f"r{i}: idle"]} for i in range(8)})
+        self.assertEqual(bg.attention_lines(self.home, self.tmp), [])
+
+    def test_the_job_health_line_stays_while_other_repos_stay_hidden(self) -> None:
+        self.write({"/r/a": {"mess": ["a: idle"]}}, updated="2026-01-01T00:00:00Z")
         lines = bg.attention_lines(self.home, self.tmp)
-        self.assertEqual(len(lines), 6)
-        self.assertEqual(lines[-1].split(" (see")[0], "EpicSpine attention: 3 more")
+        self.assertEqual(len(lines), 1)
+        self.assertIn("has not run since", lines[0])
 
     def test_a_job_that_stopped_running_is_reported(self) -> None:
         self.write({}, updated="2026-01-01T00:00:00Z")
@@ -445,12 +447,11 @@ class SessionStartLinesTest(Base):
         self.assertIn("has not run since 2026-01-01T00:00:00Z", lines[0])
         self.assertIn("check-global", lines[0])
 
-    def test_session_start_prints_them_and_the_off_switch_silences_them(self) -> None:
-        self.write({"/r/a": {"attention": ["a (main): main diverged from origin/main (1 ahead, 1 behind)"]}})
+    def test_session_start_prints_only_this_repos_lines_and_the_off_switch_silences_them(self) -> None:
+        self.write({"/r/a": {"mess": ["a: other repo idle"]}, str(self.tmp): {"mess": ["here: 1 branch idle"]}})
         with mock.patch.object(ss, "sync_skill", return_value=None):
             notes = ss.run(dict(os.environ), home=self.home, cwd=self.tmp, clock=ss.Clock(30), skill_dir=self.skill)
-            self.assertEqual([n.split(" (background")[0] for n in notes if "diverged" in n],
-                             ["EpicSpine attention: a (main): main diverged from origin/main (1 ahead, 1 behind)"])
+            self.assertEqual([n for n in notes if "idle" in n], ["EpicSpine attention: here: 1 branch idle (background sync; change nothing)"])
             self.assertEqual(ss.run({"EPICSPINE_SYNC": "off"}, home=self.home, cwd=self.tmp, clock=ss.Clock(30)), [])
 
     def test_end_to_end_status_then_hook_line(self) -> None:
@@ -460,8 +461,9 @@ class SessionStartLinesTest(Base):
         git(other, "push", "-q", "origin", "main")
         commit(div, "o", "x")
         self.run_bg()
-        self.assertEqual(len(bg.attention_lines(self.home, self.tmp)), 1)
+        self.assertEqual(bg.attention_lines(self.home, self.tmp), [])  # another repo's divergence is recorded, never shown
         self.assertEqual(bg.attention_lines(self.home, div), [])  # the live check owns the current repo
+        self.assertEqual(bg.load(self.home)["repos"][str(div.resolve())]["attention"] != [], True)
 
 
 class CronTest(Base):

@@ -7,7 +7,8 @@ branches not in main N``. Dirty = tracked changes in the primary checkout; workt
 distinct local/origin branch names not merged into ``origin/<integration>``. More than 3 linked worktrees adds
 ``EpicSpine attention: <repo>: N open worktrees (cap 3) — finish or merge one before starting another``.
 ``python3 repo_state.py`` prints one row per repo from ``~/.agents/epicspine-sync-status.json`` (written by the background
-job): repo | main state | ahead/behind | worktrees | branches not in main | attention. Stdlib only; never raises.
+job): repo | main state | ahead/behind | worktrees | branches not in main | attention. On request only: SessionStart never
+shows another repo's state (L-18). Stdlib only; never raises.
 """
 
 from __future__ import annotations

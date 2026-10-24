@@ -362,15 +362,14 @@ class StateAndTableTest(ReturnBase):
         with redirect_stdout(empty):
             self.assertEqual(repo_state.main(["--home", str(self.tmp / "nowhere")]), 1)
 
-    def test_cap_attention_reaches_other_repos_through_the_status_file(self) -> None:
+    def test_cap_attention_is_recorded_in_the_status_file_not_shown_to_other_repos(self) -> None:
         _, clone = self.repo("abnb", POLICY)
         for i in range(4):
             self.branch(clone, f"wt/t{i}", ready=False, worktree=f"abnb-t{i}")
         self.assertEqual([a for a in self.entry(clone)["attention"] if "cap 3" in a],
                          ["abnb: 4 open worktrees (cap 3) — finish or merge one before starting another"])
         lines = bg.attention_lines(self.home, self.tmp)
-        self.assertIn("EpicSpine attention: abnb: 4 open worktrees (cap 3) — finish or merge one before starting another (background sync; "
-                      "tell the user which repo and why, change nothing)", lines)
+        self.assertEqual([], lines)  # recorded for `repo_state.py`, never broadcast into a session about another repo
 
     def test_background_json_carries_state(self) -> None:
         _, clone = self.repo("abnb", POLICY)
