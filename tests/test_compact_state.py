@@ -55,6 +55,17 @@ class CompactStateTests(unittest.TestCase):
             result = subprocess.run([sys.executable, str(SCRIPTS / "validate_spine.py"), "--strict", str(path)], capture_output=True, text=True)
         self.assertNotIn("ES-S-TICKET", result.stdout + result.stderr)
 
+    def test_step_code_issue_is_the_ticket_in_a_row_as_ticket_spine(self):
+        row = next(line for line in self.source().splitlines() if line.startswith("| draft | Ticket worker"))
+        coded = row.replace("| draft |", "| EX-S1 |", 1).replace("explanation | draft |", "explanation | done |")
+        text = self.source().replace(row, coded)
+        self.assertEqual([], self.document(text).errors)
+        self.assertTrue(any("invalid Issue" in e for e in self.document(text.replace("| EX-S1 |", "| not a code |")).errors))
+        github = text.replace("Spine profile: compact", "Spine profile: compact\nTicket backend: github").replace(coded, coded + "\n" + coded.replace("EX-S1", "https://github.com/example/repo/issues/7"))
+        self.assertTrue(any("invalid Issue" in e for e in self.document(github).errors))
+        full = self.source().replace("Spine profile: compact\n", "")  # not row-as-ticket
+        self.assertTrue(any("invalid Issue" in e for e in self.document(full.replace(row, coded)).errors))
+
     def test_draft_issue_still_fails_once_a_github_compact_epic_cites_real_issues(self):
         row = next(line for line in self.source().splitlines() if line.startswith("| draft | Ticket worker"))
         done = row.replace("explanation | draft |", "explanation | done |")
