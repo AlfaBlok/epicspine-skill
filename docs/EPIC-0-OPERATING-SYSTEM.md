@@ -19,14 +19,14 @@ Skill updates: auto
 
 Owner: /root delivery manager
 Status: active
-Last attempted: 2026-10-23 ticket-34 (e39fc79, skill 2026.10.23.1): ask lines agents write are all read (`superseded`, done notes, `Waiting on:` codes as `waits_on` refs), advisories name the canonical form
-Result: EPIC-3 open items: E3-3 six rootless repos and E3-5, both gated on EPIC-3-A1
-Evidence: e39fc79 (633 tests green; live `spines.py --json`: infra-vps EPIC-10-A8 superseded, EPIC-2-A9 done, Waiting-on refs); EPIC-3 011ab13
+Last attempted: 2026-10-24 ticket-37 (65c7e2b, merge ec45219, skill 2026.10.24.3): SessionStart prints only the current repo's attention (L-18); other repos only on request (`repo_state.py`)
+Result: done: live `attention_lines` from agent_team lists no other repo (abnb-agent, idea_scraper, house_decision, epicspine-skill gone); EPIC-3 open items unchanged: E3-3 six rootless repos and E3-5, both gated on EPIC-3-A1
+Evidence: ec45219 (650 tests green; 15 repos still recorded in the status file, `repo_state.py` prints them)
 Waiting on: Jordi: EPIC-3-A1 (root spines for the six rootless repos; asked in EPIC-3)
 Approved work: EPIC-3 Epic log and EPIC-4 Doctrine 2 (their ledgers hold the tickets)
 Next action: EPIC-3 closes E3-2/E3-3/E3-5 (ETA 1-2 days, E3-3 rootless repos gated on EPIC-3-A1); EPIC-0 free for E3-5's learning; then close this root's DOD
 Source revision: main
-Verified at: 2026-10-23
+Verified at: 2026-10-24
 
 ## Mission
 
@@ -85,6 +85,7 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 | draft | Ticket worker | worker (Opus 5.5, T3 sub-agent) | ticket-34 Ask states & refs (agent_team L-12 duplicate cards): `superseded` state, done notes, `Waiting on:` codes as `waits_on[]` refs, advisories (D19 pt 4) | done | none | wt/ask-states-refs (removed) | 6be164a | merged e39fc79, 2026.10.23.1; 633 tests green; live JSON verified | 2026-10-23 | agent_team console codes against human-asks.md v4 |
 | draft | Ticket worker | worker (Opus 5.5, T3 sub-agent from agent_team EPIC-8 E8-S1) | ticket-35 Standing approvals: `[grant …]` lines, revoke/expiry, inheritance, `grants[]` in `--json`, advisories ([doctrine](doctrine/standing-approvals.md) v1) | done | none | wt/standing-approvals | 5bfaf22 | skill 2026.10.24.1; 643 tests green (10 new, tests/test_grants.py); live JSON on whatgpt_v3: EPIC-0 own E0-G1..G10, EPIC-1 inherits all 10 | 2026-10-24 | manager merges + releases; agent_team E8-S3 console Approvals codes against console-contract.md |
 | draft | Ticket worker | worker (Opus 5.5, T3 sub-agent from agent_team EPIC-8 E8-S4) | ticket-36 Ask writing (agent_team L-13/L-14): blocking step only, decision first, one per ask; 3 advisories ([doctrine](doctrine/human-asks.md) v5) | done | none | wt/ask-writing | 2704724 | skill 2026.10.24.2; 649 tests green (6 new, tests/test_human_asks.py WritingTests) | 2026-10-24 | manager merges + releases |
+| draft | Ticket worker | worker (Opus 5.5, T3 sub-agent from agent_team) | ticket-37 SessionStart never shows other repos' state (L-18): `attention_lines` prints only the cwd repo's mess/stale, no `N more`; `repo_state.py` on request | done | none | wt/current-repo-attention | 65c7e2b | skill 2026.10.24.3; merged ec45219; 650 tests green; live attention_lines from agent_team empty | 2026-10-24 | none |
 
 Done tickets (20 rows, Next Action done/none, moved verbatim): [done ledger](root/steps.md#done-ledger).
 
