@@ -1,6 +1,6 @@
-# Human asks: contract (v5)
+# Human asks: contract (v6)
 
-Page of [EPIC-4](../EPIC-4-DOCTRINE-2.md). v1 was step 12 (agent_team M2-SKILL). v2 is step 17 (M2-SKILL2, Jordi, 2026-10-21). v3 is step 20 ([D19](decisions.md#d19), agent_team M2-35, 2026-10-22): reference lines, search before asking, consumed answers. v4 is D19's amendment (EPIC-0 ticket-34, 2026-10-23): `superseded` asks, done notes, `Waiting on:` code references, advisories on unreadable lines. v5 (EPIC-0 ticket-36, agent_team EPIC-8 E8-S4, 2026-10-24): ask-writing rules and their advisories. Earlier shapes are unchanged.
+Page of [EPIC-4](../EPIC-4-DOCTRINE-2.md). v1 was step 12 (agent_team M2-SKILL). v2 is step 17 (M2-SKILL2, Jordi, 2026-10-21). v3 is step 20 ([D19](decisions.md#d19), agent_team M2-35, 2026-10-22): reference lines, search before asking, consumed answers. v4 is D19's amendment (EPIC-0 ticket-34, 2026-10-23): `superseded` asks, done notes, `Waiting on:` code references, advisories on unreadable lines. v5 (EPIC-0 ticket-36, agent_team EPIC-8 E8-S4, 2026-10-24): ask-writing rules and their advisories. v6 (EPIC-0 ticket-38, agent_team EPIC-8 E8-S8, root L-14 amended, 2026-10-24): asks in human format, `impact:`, `risk:`, `why <who>:`. Earlier shapes are unchanged.
 
 An ask is a human action that blocks the NEXT step. A human named on a later step is a plan, not an ask: leave it as plain ledger text until that row is next.
 
@@ -11,7 +11,7 @@ Write one line per ask under `## Waiting on`, right after Current State.
 
 ```
 ## Waiting on
-- [ask E4-A3: do @Jordi since 2026-10-21 row S3] Patch the archiver for 1 h on vps1 so the Chainlink cutover can run — steps: [runbook](docs/runbooks/archiver-patch.md#run) (vps1, user root) — unblocks: S2, S3; each day waiting loses a day of archived ticks — recommend: do it tonight — effort: ~10 min — context: [why](docs/one-logger/notes.md#archiver)
+- [ask E4-A3: do @Jordi since 2026-10-24 row S3] Patch the archiver for 1 h on vps1 so the Chainlink cutover can run — context: the cutover found ticks missing since Monday; the archiver drops them — impact: the cutover (S2, S3) proceeds; each day waiting loses a day of archived ticks — risk: ~2 min gap in ticks while it restarts; rollback: start the old unit — recommend: do it tonight, low traffic — why Jordi: only you hold root on vps1 — steps: [runbook](docs/runbooks/archiver-patch.md#run) (vps1, user root) — unblocks: S2, S3 — effort: ~10 min
 ```
 
 **Tag:** `[ask <code>: <type> @<who> since <YYYY-MM-DD> row <id>]`
@@ -33,6 +33,7 @@ Write one line per ask under `## Waiting on`, right after Current State.
 - **Only the step that blocks now.** A human step later in the plan (a QR scan "when pinged", keys "before Wave 2") stays plain plan text and becomes an ask only when it is next. Asks ahead of time blur what is really blocking.
 - **Lead with the decision in plain words:** what, why it matters, the recommendation. Ids, jargon and steps come after, in the fields.
 - **One decision per ask.** Never fold non-blocking extras into a blocking ask: a key, a token widening, a redirect and a future scan are four asks at most, and only the one blocking now is written (whatgpt_v3 E0-A7 folded all four).
+- **In human format** (v6, root L-14 amended: "if it asks me a question, I need context, impact, risk, guidance in human format"). In plain words, each in its field: what is needed (the question); `context:` why this comes up; `impact:` what it unblocks and the cost of waiting; `risk:` what could go wrong on yes, and the rollback; `recommend:` the recommendation and why; `why <who>:` why it must be this human and not an agent. Ids, jargon and commands go after, in `steps:`.
 - An agent that answers asks for the human (an Unblocker) answers or splits them; it never rewrites an ask's wording. Phrasing is the asker's job.
 
 **Then the fields, each introduced by ` — `:**
@@ -41,10 +42,15 @@ Write one line per ask under `## Waiting on`, right after Current State.
 |---|---|---|
 | `steps:` | `do` | the exact commands, or a link to a runbook that has them, plus the host and user |
 | `options: A \| B` | `decide` | the choices |
-| `recommend:` | `decide`, `approve`, `do` | a concrete choice or action, never "your call" |
-| `unblocks:` | all | which rows proceed once answered, and the cost of waiting |
+| `recommend:` | `decide`, `approve`, `do` (v6: all) | a concrete choice or action and why, never "your call" |
+| `unblocks:` | all | which rows proceed once answered (before v6 also the cost of waiting, now in `impact:`) |
 | `effort:` | optional | e.g. `~10 min` |
-| `context:` | all | a page or anchor with the background |
+| `context:` | all | why this comes up, in plain words, or a page or anchor with the background |
+| `impact:` | all (v6) | in plain words: what it unblocks, the cost of waiting |
+| `risk:` | all (v6) | what could go wrong on yes, and the rollback |
+| `why <who>:` | all (v6) | why only this human can do it, not an agent, e.g. `why Jordi:` |
+
+Fields may come in any order. The v6 fields are required for open asks written from 2026-10-24 on; older asks stay valid.
 
 **Row status word:** the blocked row is set to `blocked`. Current State's `Waiting on:` lists the codes, e.g. `Jordi: E4-A3, E4-A4` (any ask code it names, this epic's or another's, `<repo>/<code>` across repos, is read as a reference); `nobody` or `none` (first word) means no human blocks, whatever follows.
 
@@ -97,10 +103,11 @@ Before raising an ask, check, in this order: the open asks in this repo's tree (
 ## In `spines.py --json` (per node)
 ```json
 "waiting_on": [{"code": "E4-A3", "who": "Jordi", "ask": "do", "question": "...", "steps": "docs/runbooks/archiver-patch.md#run (vps1, user root)",
-  "options": [], "recommend": "do it tonight", "unblocks": "S2, S3; each day waiting loses a day of archived ticks", "effort": "~10 min",
-  "context": "docs/one-logger/notes.md#archiver", "since": "2026-10-21", "row": "S3", "state": "open", "answer": null}]
+  "options": [], "recommend": "do it tonight, low traffic", "unblocks": "S2, S3", "effort": "~10 min",
+  "context": "the cutover found ticks missing since Monday; ...", "impact": "the cutover (S2, S3) proceeds; ...",
+  "risk": "~2 min gap in ticks while it restarts; rollback: start the old unit", "why": "only you hold root on vps1", "since": "2026-10-24", "row": "S3", "state": "open", "answer": null}]
 ```
-Unknown or missing fields are null. On an `answered` or `superseded` line, `code` is kept, and `ask`, `since` and `row` may be null (`who` too when superseded). `state` is `open`, `answered`, `done` (`· done` consumed answer; `answer` excludes the suffix) or `superseded`. `superseded_by` is the code after `by` (`[superseded …]`, or `superseded by` in an answered tag), else null. An ask type outside the four is kept as written (and warned). `waiting_on` never holds reference lines.
+Unknown or missing fields are null. `context` is repo-relative when it is a local link or path, else kept as written; `why` is the `why <who>:` text. On an `answered` or `superseded` line, `code` is kept, and `ask`, `since` and `row` may be null (`who` too when superseded). `state` is `open`, `answered`, `done` (`· done` consumed answer; `answer` excludes the suffix) or `superseded`. `superseded_by` is the code after `by` (`[superseded …]`, or `superseded by` in an answered tag), else null. An ask type outside the four is kept as written (and warned). `waiting_on` never holds reference lines.
 
 Reference lines are a separate per-node list, `[]` when there are none:
 ```json
@@ -122,6 +129,7 @@ The validator and the commit check warn on:
 - an ask that names a future trigger ("when pinged", "before Wave", "later", "once … is up"): ask only for the step that blocks now (best effort, over the question, `steps:` and `recommend:`);
 - a question that lists several numbered parts, "(1) … (2) …": one decision per ask;
 - a question sentence over 200 characters: lead with the decision in plain words;
+- an ask since 2026-10-24 that lacks `impact:`, `risk:` or `recommend:` (one line naming them; `recommend` there only for `provide`, the other types warn above): write it in human format;
 - more than 3 open asks;
 - an ask open for more than 7 days;
 - a `waits on` or `Waiting on:` code of this repo that no ask or Decisions row cites (a cross-repo one never warns, it reports `unresolved`);
