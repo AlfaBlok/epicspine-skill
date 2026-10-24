@@ -24,7 +24,7 @@ Result: all three Done means met; awaiting Jordi's verification of the Outcome
 Evidence: 259ed38, 89554d8, a61f07b, 85a86fd; [evidence page](root/dod-evidence-2026-10-24.md)
 Waiting on: none
 Approved work: none open beyond this root's DOD
-Next action: Jordi verifies the Outcome and sets done (root's Mission stays the standing goal; new asks open new children)
+Next action: Jordi verifies the Outcome (DOD-1..3); EPIC-5 in flight (E5-S1, E5-S3 dispatched 2026-10-24, run_aa2dd0a3); EPIC-1/2 stale ledger rows closed 2c504d7
 Source revision: main
 Verified at: 2026-10-24
 
@@ -84,7 +84,6 @@ Risk: the fresh-agent bind was measured once (n=1) on Claude; the thin repo-bloc
 | Issue | Role | Owner / Assignment | Title | Status | Depends On | PR/Branch | Base | Latest Evidence | Last Verified | Next Action |
 |---|---|---|---|---|---|---|---|---|---|---|
 | draft | Ticket worker | worker (Opus 5.5, T3 thread) | Enforce manager-never-implements and push-on-close with hooks: PreToolUse `manager_guard.py` (allowlist-first Bash/Edit policy, subagents via `agent_id`) + Stop `push_gate.py` | deferred | none | PR #28 (feat/manager-guards) | 6ccb101 | PARKED 2026-10-13 by user (D18); archived 2026-10-24 as tags `archive/feat/manager-guards`, `archive/feat/dispatcher-guard` (branches deleted, PR #28 closed). Do not merge, install, or build on it | 2026-10-24 | none (parked: not raised again) |
-| draft | Ticket worker | seat pool | E13-S5b (agent_team EPIC-13): spine checker advisories in validate_spine.py: (1) Waiting on or Jordi-owned open row naming him with no coded ask, (2) Status done with unticked Done means, (3) 'nothing open for Jordi' beside an open coded ask; update references/ and prompt snippets; fixtures per advisory. Brief docs/handoffs/2026-10-24-e13-s5b-spine-checker.md | ready | none | none | main | brief written 2026-10-24; origin agent_team docs/spines/epic-13-one-status-model.md | 2026-10-24 | Delivery Manager dispatches a worker |
 
 Done tickets (39 rows, Next Action done/none, moved verbatim): [done ledger](root/steps.md#done-ledger).
 
@@ -111,4 +110,5 @@ Binding rule, validation command and the remaining fields: [book-companion](root
 | epicspine-coordination-simplification | child | [EPIC-1 Coordination simplification](EPIC-1-COORDINATION-SIMPLIFICATION.md) | Compact state and trustworthy rollups | done | none | PR #22 | 2026-10-09 | Reference only; reopen if scope resumes |
 | epicspine-epic-log | child | [EPIC-3 Epic log](EPIC-3-EPIC-LOG.md) | Contributes the epic log: every goal in the 16 repos hangs in one tree from a root (0 orphans, 0 mismatches) and "on latest" means installed and conforming (Outcome: accomplished) | done | none | Outcome 2026-10-24; [conformance](epic-log/conformance.md) | 2026-10-24 | Reference only; reopen if scope resumes |
 | epicspine-doctrine-2 | child | [EPIC-4 Doctrine 2 semantic goal tree](EPIC-4-DOCTRINE-2.md) | Contributes the human layer: every epic now says what it achieves and why, how it serves its parent and what each child adds, and the agent_team console shows it (Outcome: accomplished) | done | none | Outcome 2026-10-22; skill 2026.10.22.5 | 2026-10-22 | Reference only; reopen if scope resumes |
-| persona-files-and-standing-spines | child | [EPIC-5: Persona files and standing spines](EPIC-5-PERSONA-AND-STANDING-SPINES.md) | doctrine for persona markdown files and for standing (never-closing, target-per-period) spines, so the console and any repo read teams the same way | ready | none | none | 2026-10-24 | dispatch E5-S1..S3 |
+| persona-files-and-standing-spines | child | [EPIC-5: Persona files and standing spines](EPIC-5-PERSONA-AND-STANDING-SPINES.md) | doctrine for persona markdown files and for standing (never-closing, target-per-period) spines, so the console and any repo read teams the same way | active | none | E5-S1, E5-S3 dispatched | 2026-10-24 | merge S1/S3, then S2 |
+| status-true-spines-the-checker-catches-what-makes-the-console-status-lie | child | [EPIC-6: Status-true spines: the checker catches what makes the console status lie](EPIC-6-STATUS-TRUE-SPINES.md) | contributes the checks the agent_team console status model (agent_team EPIC-13) depends on: free-text asks, done with open Done means, contradictory Waiting on | ready | none | none | 2026-10-24 | fill Goal, Serves and Done means |

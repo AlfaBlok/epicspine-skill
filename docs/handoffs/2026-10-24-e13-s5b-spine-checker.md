@@ -1,6 +1,6 @@
 # E13-S5b brief: spine checker advisories for the status model (from agent_team EPIC-13)
 
-Bound epic: docs/EPIC-0-OPERATING-SYSTEM.md (this repo). Origin: agent_team docs/spines/epic-13-one-status-model.md, step E13-S5 (part b); design deck http://100.86.141.63:58213/index.html slide 9. Independent: no dependency on the console work.
+Bound epic: docs/EPIC-6-STATUS-TRUE-SPINES.md (this repo, step E6-S1). Origin: agent_team docs/spines/epic-13-one-status-model.md, step E13-S5 (part b); design deck http://100.86.141.63:58213/index.html slide 9. Independent: no dependency on the console work.
 
 ## Why (Jordi 2026-10-24)
 The console's status is only as true as the spines behind it. Three spine shapes made it lie: free-text asks (zenod-social EPIC-0 showed a red Waiting-on line naming Jordi beside 'Waiting on you 0'); 'Status: done' with unticked Done means (this repo's EPIC-1 is flagged 'marked done while something under it is not green'); 'nothing open for Jordi' printed beside an open coded ask (infra-vps EPIC-2 showed it red).

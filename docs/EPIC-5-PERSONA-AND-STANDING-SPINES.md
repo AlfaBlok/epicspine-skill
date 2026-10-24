@@ -29,15 +29,15 @@ EpicSpine defines how a persona is written as a markdown file and how a standing
 
 ## Current State
 
-Owner: EPIC-5 manager (bind on dispatch)
-Status: ready
-Last attempted: scaffolded with spine_new.py on 2026-10-24
-Result: created, not started
+Owner: Delivery Manager (agent-team console)
+Status: active
+Last attempted: 2026-10-24 DM wake run_aa2dd0a3: dispatched E5-S1 (run_9a0d7ebe, branch e5-s1) and E5-S3 (run_c76affed, main-direct)
+Result: 2 workers running; E5-S2 sequenced after E5-S1 (both edit validate_spine.py, L-10)
 Evidence: EPIC-0-OPERATING-SYSTEM.md
 Waiting on: nobody
 Approved work: none
-Next action: draft E5-1..E5-5 in references; agent_team EPIC-11, zenod-social and infra-vps EPIC-15 wait on the format
-Source revision: uncommitted scaffold
+Next action: verify and merge E5-S1, land E5-S3, then dispatch E5-S2; agent_team EPIC-11, zenod-social and infra-vps EPIC-15 wait on the format
+Source revision: main
 Verified at: 2026-10-24
 
 ## Non-Goals
@@ -50,9 +50,9 @@ Steps: each is independently testable and closes only with evidence.
 
 | Issue | Role | Owner / Assignment | Title | Status | Depends On | PR/Branch | Base | Latest Evidence | Last Verified | Next Action |
 |---|---|---|---|---|---|---|---|---|---|---|
-| E5-S1 | Ticket worker | unassigned | persona file format + validator + listing | ready | none | none | main | none | 2026-10-24 | dispatch |
-| E5-S2 | Ticket worker | unassigned | standing spine kind + scoreboard + validator | ready | none | none | main | none | 2026-10-24 | dispatch |
-| E5-S3 | Ticket worker | unassigned | writing contract for personas sharing a repo | ready | none | none | main | none | 2026-10-24 | dispatch |
+| E5-S1 | Ticket worker | worker run_9a0d7ebe (Sonnet 5.5, seat1) | persona file format + validator + listing | active | none | e5-s1 | main | none | 2026-10-24 | dispatch |
+| E5-S2 | Ticket worker | unassigned | standing spine kind + scoreboard + validator | ready | E5-S1 (shared validator) | none | main | none | 2026-10-24 | dispatch |
+| E5-S3 | Ticket worker | worker run_c76affed (Sonnet 5.5, seat1) | writing contract for personas sharing a repo | active | none | main | main | none | 2026-10-24 | dispatch |
 
 ## Decisions
 
