@@ -53,6 +53,7 @@ Steps: each is independently testable and closes only with evidence.
 | E5-S1 | Ticket worker | worker run_9a0d7ebe (Sonnet 5.5, seat1) | persona file format + validator + listing | active | none | e5-s1 | main | none | 2026-10-24 | dispatch |
 | E5-S2 | Ticket worker | unassigned | standing spine kind + scoreboard + validator | ready | E5-S1 (shared validator) | none | main | none | 2026-10-24 | dispatch |
 | E5-S3 | Ticket worker | worker run_c76affed (Sonnet 5.5, seat1) | writing contract for personas sharing a repo | active | none | main | main | none | 2026-10-24 | dispatch |
+| E5-S4 | Ticket worker | unassigned | validator accepts step codes (E5-S1) as Issue in row-as-ticket spines: spine_new.py scaffolds fail --strict | ready | E5-S1 (shared validator) | none | main | `validate_spine.py --strict` on this spine: 3 ES-S-TICKET errors (pre-existing) | 2026-10-24 | dispatch after E5-S1 merges |
 
 ## Decisions
 
