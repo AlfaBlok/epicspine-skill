@@ -1,6 +1,6 @@
 # AGENTS.md
 
-**Bind: run `python3 skill/epic-spine/scripts/spines.py --bind [docs/EPIC-<n>-*.md]` (root by default; the epic plus every parent up to the root: Current State, Operating Learnings, open asks); do not Read whole spine files.**
+**Bind: run `python3 skill/epic-spine/scripts/spines.py --bind [<n> | docs/EPIC-<n>-*.md]` (root by default; the epic plus every parent up to the root: Current State, Operating Learnings, open asks); do not Read whole spine files.**
 
 Public EpicSpine skill source: `skill/epic-spine/` is canonical and deployed continuously from `main`.
 

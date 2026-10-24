@@ -57,3 +57,11 @@ Fresh native subagent, no context, same task ("status + next action of EPIC-4", 
 Verdict: **met in the best observed run (94 ≤ 100), not guaranteed.** Before: 282 (root 141, EPIC-4 whole). After: 94–111 when the pointer is followed, 187–240 when an agent ignores it (whole-file floor is now root 99 + child ~125 + block 16 + AGENTS 18 ≈ 258, so ranges, not size, carry DOD-1). n=3, one run per configuration; round 2 shows the pointer is advisory and position-sensitive (line 3 worked, line 10 did not once).
 
 Recommendation (skill change, out of scope here): make the shared global block's bind step say "read Current State and Learnings with offset/limit, never whole spine files" and ship a `spines.py --bind <epic>` that prints only the chain's Current State + Operating Learnings, so every repo gets the bounded read without a repo-specific pointer.
+
+## DOD-1 re-measure with `spines.py --bind` (run_119c141a, main d9a63a4; skill 2026.10.24.7)
+
+Shipped: `spines.py --bind [EPIC]` (root by default; the epic plus every `Parent spine:` ancestor: title, Current State, Operating Learnings, open asks), named in the global block, SKILL.md and AGENTS.md line 3. Line counts of the view: this repo root 32, EPIC-4 44 (EPIC-4 + root), poly-maker root 19, zenod root 23.
+
+Fresh native subagent, no context, task "status + next action of EPIC-4", read-only: global-block 17 (CLAUDE.md told it to read it) + `--bind docs/EPIC-4-DOCTRINE-2.md` 44 = **61 lines** (+ AGENTS.md ≈ 16 from session context ≈ 77), five tool calls, no whole spine file read, right answer. First try `--bind EPIC-4` (a code, not a path) printed "no spine found" (1 line): fixed in 2026.10.24.8 (codes accepted). n=1.
+
+Verdict: **DOD-1 met, and by the tool, not by a repo-specific range**: the view is ≤ 44 lines for root + EPIC-4, ≈ 60-80 with the block and AGENTS.md, in any repo the skill is installed in.
