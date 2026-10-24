@@ -3,12 +3,14 @@
 
 Lists: finished epics with open ledger rows (fix: the printed ``spine_fix.py --close`` sweep), epics whose Status word is missing or
 non-standard (root included), non-standard row Status words, stale goals (active/blocked, untouched 14+ days), epics over the
-150-line budget, undecided epics (draft/deferred/no Status, untouched 14+ days) and the root goal's Status and age."""
+150-line budget, undecided epics (draft/deferred/no Status, untouched 14+ days), the root goal's Status and age, and routing that
+names a finished epic (its file name in AGENTS.md, CLAUDE.md or README.md, outside the EpicSpine block)."""
 
 from __future__ import annotations
 
 import argparse
 import json
+import re
 import subprocess
 import sys
 import time
@@ -22,8 +24,23 @@ import spines  # noqa: E402
 import validate_spine as v  # noqa: E402
 from epic_log import STALE_DAYS  # noqa: E402
 from close_rows import column, ledger_rows, open_rows  # noqa: E402
+from spine_fix import epic_closed  # noqa: E402
 
 SCRIPTS = Path(__file__).resolve().parent
+ROUTING_FILES = ("AGENTS.md", "CLAUDE.md", "README.md")
+BLOCK = re.compile(r"<!-- epicspine:begin .*?<!-- epicspine:end -->", re.DOTALL)
+
+
+def routing(repo: Path, closed: list[str]) -> list[dict]:
+    """Lines of the repo's start-here files (outside the EpicSpine block) naming a finished epic's file."""
+    found = []
+    for name in ROUTING_FILES:
+        if not (path := repo / name).is_file() or not closed:
+            continue
+        text = BLOCK.sub(lambda m: "\n" * m.group(0).count("\n"), D.read(path))
+        for no, line in enumerate(text.splitlines(), 1):
+            found += [{"file": name, "line": no, "epic": rel} for rel in closed if Path(rel).name in line]
+    return found
 
 
 def age(repo: Path, rel: str, now: float) -> int | None:
@@ -39,12 +56,14 @@ def audit(repo: Path, now: float | None = None) -> dict:
     repo, now = repo.resolve(), now or time.time()
     log = spines.scan(repo, refs=False)
     out: dict = {"repo": str(repo), "finished_with_open_rows": [], "nonstandard_status": [], "nonstandard_row_words": {}, "stale": log["stale"],
-                 "over_budget": [], "undecided": [], "root": None}
+                 "over_budget": [], "undecided": [], "root": None, "routing": []}
     words: Counter = Counter()
+    closed: list[str] = []
     for rel in [n["path"] for n in log["nodes"]] + [o["path"] for o in log["orphans"]]:
         text = D.read(repo / rel)
         sections = v.parse_sections(text)
         status = D.status_word(text)
+        closed += [rel] if epic_closed(text) else []
         cells = [c[s].strip() for _, h, c in ledger_rows(text.split("\n")) if 0 < (s := column(h, "Status")) < len(c) - 1]
         words.update(c for c in cells if c and c.lower() not in v.LEDGER_STATUSES)
         if n := open_rows(text):
@@ -60,6 +79,7 @@ def audit(repo: Path, now: float | None = None) -> dict:
         if rel == log["root"]:
             out["root"] = {"path": rel, "status": status or None, "days": age(repo, rel, now)}
     out["nonstandard_row_words"] = dict(words.most_common())
+    out["routing"] = routing(repo, closed)
     paths = " ".join(f["path"] for f in out["finished_with_open_rows"])
     out["sweep"] = f"cd {repo} && python3 {SCRIPTS / 'spine_fix.py'} --close --write {paths}" if paths else None
     return out
@@ -76,6 +96,7 @@ def render(a: dict) -> str:
     lines += [f"over the {D.MAX_LINES}-line budget: {len(a['over_budget'])}"] + [f"  {o['path']}: {o['lines']} lines" for o in a["over_budget"]]
     lines += [f"undecided (draft/deferred/no Status, {STALE_DAYS}+ days untouched): {len(a['undecided'])}"]
     lines += [f"  {u['path']}: {u['status'] or '(none)'}, {u['days']}d" for u in a["undecided"]]
+    lines += [f"routing names closed epic: {len(a['routing'])}"] + [f"  routing names closed epic: {r['file']}:{r['line']} {r['epic']}" for r in a["routing"]]
     root = a["root"]
     lines.append(f"root: {root['path']}: Status {root['status'] or '(none)'}, last commit {root['days'] if root['days'] is not None else '?'}d ago" if root else "root: none")
     return "\n".join(lines)
