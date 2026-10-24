@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.10.24.12 — The sweep keeps what a row's Status cell said
+
+- **Fixed: `spine_fix.py --close` lost meaning when it overwrote a Status cell that said more than a status word** (agent_team EPIC-16 E16-S7; agent_team M4-S2 read `moved to M3-3 (docs/spines/m3-reddit-search.md); acceptance = M3-5` and became just `superseded`). When the old cell is more than one plain status word, the row's note gains `was: <old cell text>` (pipes stay escaped); a row without a Next Action cell gets `<id> was: <old cell>` on the epic's `Next action:` note. `references/tree-cleanse.md` step 4 says so. Tests: `tests/test_close_rows.py` (`test_a_cell_that_said_more_keeps_its_old_text`; the multi-word `blocked / waits` row in `test_open_rows_become_superseded_with_a_note` now carries its `was:`).
+- **Fixed: README routed readers to the closed EPIC-2** (`tree_audit.py --repo .` routing finding); it now points at the root spine (EPIC-0) and `spines.py --active`. Skill 2026.10.24.12.
+
 ## 2026.10.24.11 — Tree cleanse: start-here text must not route to closed epics
 
 - **New: routing check in the tree cleanse** (agent_team EPIC-16 E16-S5; zenod's cleanse left its AGENTS.md naming a closed epic as the active surface). `references/tree-cleanse.md` gains step 5: after the sweep, AGENTS.md / CLAUDE.md / README.md (outside the EpicSpine block) name only what `spines.py --active` lists, or point at that command. `tree_audit.py` reports `routing names closed epic: <file>:<line> <epic>` (a finished epic's file name in those files, block excluded; its repo path instead when several spines share the name, e.g. every spine called EPIC_SPINE.md; JSON key `routing`). It matches file names and paths only; codes and titles stay a by-hand read. Tests: `tests/test_close_rows.py` (`test_routing_that_names_a_closed_epic`, `test_routing_matches_the_path_when_spines_share_a_file_name`). Skill 2026.10.24.11.

@@ -65,7 +65,8 @@ class SweepTests(unittest.TestCase):
         new, what = close_rows.close_rows(text, "2026-10-24")
         note = "closed with epic 2026-10-20; successor: [Next](NEXT.md)"
         self.assertEqual([f"3 open rows -> superseded (ready 1, blocked / waits 1, ready-for-test 1); {note}"], what)
-        self.assertEqual(3, new.count(f"| superseded | none | codex/example | 6f63d378 | Synthetic draft only | 2026-09-06 | Read acceptance command · {note} |"))
+        self.assertEqual(2, new.count(f"| superseded | none | codex/example | 6f63d378 | Synthetic draft only | 2026-09-06 | Read acceptance command · {note} |"))
+        self.assertEqual(1, new.count(f"| Read acceptance command · {note}; was: blocked / waits |"))
         for kept in ("| done | none", "| deferred | none", "| superseded | none | codex/example | 6f63d378 | Synthetic draft only | 2026-09-06 | Read acceptance command |"):
             self.assertIn(kept, new)
         self.assertEqual((new, []), close_rows.close_rows(new, "2026-10-25"))  # idempotent
@@ -92,6 +93,17 @@ class SweepTests(unittest.TestCase):
         new, _ = close_rows.close_rows(short, "2026-10-24")
         self.assertIn("| superseded | none | codex/example | 6f63d378 | Synthetic draft only | 2026-09-06 |\n", new)
         self.assertIn("· ledger: closed with epic", new)
+
+    def test_a_cell_that_said_more_keeps_its_old_text(self) -> None:
+        moved = "moved to M3-3 (docs/spines/m3-reddit-search.md); acceptance = M3-5"
+        new, _ = close_rows.close_rows(spine(rows=(moved, "ready", r"blocked \| waits")), "2026-10-24")
+        note = "closed with epic 2026-10-20; successor: [Next](NEXT.md)"
+        self.assertIn(f"| superseded | none | codex/example | 6f63d378 | Synthetic draft only | 2026-09-06 | Read acceptance command · {note}; was: {moved} |", new)
+        self.assertIn(f"| Read acceptance command · {note} |", new)  # a plain status word adds nothing
+        self.assertIn(rf"· {note}; was: blocked \| waits |", new)  # pipes stay escaped
+        self.assertEqual((new, []), close_rows.close_rows(new, "2026-10-25"))
+        no_column = spine(rows=(moved,)).replace("| Last Verified | Next Action |", "| Last Verified | Notes |")
+        self.assertIn(f"· ledger: closed with epic 2026-10-20; successor: [Next](NEXT.md); draft was: {moved}", close_rows.close_rows(no_column, "2026-10-24")[0])
 
     def test_cli_dry_run_by_default_then_write(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
