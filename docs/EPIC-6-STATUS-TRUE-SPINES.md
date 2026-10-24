@@ -25,14 +25,14 @@ Integration policy: main-direct
 
 ## Current State
 
-Owner: unassigned
+Owner: Delivery Manager (agent-team console)
 Status: ready
 Last attempted: scaffolded with spine_new.py on 2026-10-24
 Result: created, not started
 Evidence: EPIC-0-OPERATING-SYSTEM.md
 Waiting on: none
 Approved work: none
-Next action: Delivery Manager dispatches a worker on E6-S1 (brief docs/handoffs/2026-10-24-e13-s5b-spine-checker.md)
+Next action: dispatch E6-S1 once EPIC-5 E5-S1 merges (shared validator, L-10) (brief docs/handoffs/2026-10-24-e13-s5b-spine-checker.md)
 Source revision: see git log
 Verified at: 2026-10-24
 
@@ -46,7 +46,7 @@ Steps: each is independently testable and closes only with evidence.
 
 | Issue | Role | Owner / Assignment | Title | Status | Depends On | PR/Branch | Base | Latest Evidence | Last Verified | Next Action |
 |---|---|---|---|---|---|---|---|---|---|---|
-| draft | Ticket worker | seat pool | E6-S1 (= agent_team E13-S5b) spine checker advisories + references; brief docs/handoffs/2026-10-24-e13-s5b-spine-checker.md | ready | none | none | main | brief written 2026-10-24 | 2026-10-24 | Delivery Manager dispatches a worker |
+| draft | Ticket worker | seat pool | E6-S1 (= agent_team E13-S5b) spine checker advisories + references; brief docs/handoffs/2026-10-24-e13-s5b-spine-checker.md | ready | none | none | main | brief written 2026-10-24 | 2026-10-24 | dispatch after EPIC-5 E5-S1 merges (both edit validate_spine.py, L-10); fold in E5-S4 |
 
 ## Decisions
 
