@@ -22,20 +22,30 @@ A finished epic shows no open work: ledger rows get a closed-not-done status `su
 
 - [x] E8-1 Row status `superseded` (closed, not done) in the vocabulary (spine-model, persona-tasks, `spine_fix` synonyms, trackable, rollup) and `spine_fix.py --close [--write]` sweeps a finished epic's open rows to it with a Next Action note, dry run by default, idempotent; tests in tests/test_close_rows.py
 - [x] E8-2 `validate_spine.py` advises `closed-rows:` (never a block) and `tree_audit.py --repo DIR [--json]` reports the seven groups plus the sweep command; proof run on a zenod copy reported
-- [ ] E8-3 Playbook references/tree-cleanse.md linked from SKILL.md; release rolled out per SYNC.md with the host list reported
+- [x] E8-3 Playbook references/tree-cleanse.md linked from SKILL.md; release rolled out per SYNC.md with the host list reported
 
 ## Current State
 
 Owner: Delivery Manager (agent_team brief docs/handoffs/E16-S1.md)
-Status: active
-Last attempted: 2026-10-24 E8-S1 worker (Opus 5.5) started in worktree wt/e16-s1-close-rows
-Result: E8-1, E8-2 met on branch wt/e16-s1-close-rows (skill 2026.10.24.10, 715 tests OK, graph --strict 0 errors); proof on a zenod copy: 18 finished epics, 80 open rows swept, re-run 0; E8-3 playbook done, rollout waits on merge (vps3 and vps1 config dirs symlink to each host's main checkout, both at .9)
+Status: done
+Last attempted: 2026-10-24 Delivery Manager merged wt/e16-s1-close-rows (6e1abf7), re-ran tests, checked rollout
+Result: E8-1, E8-2 met on branch wt/e16-s1-close-rows (skill 2026.10.24.10, 715 tests OK, graph --strict 0 errors); proof on a zenod copy: 18 finished epics, 80 open rows swept, re-run 0; E8-3 met: merged 6e1abf7, 715 tests OK on the merge; VERSION 2026.10.24.10 in vps3 and vps1 ~/.claude, ~/.claude_seat1, ~/.claude_seat2 (6/6); tree_audit on real zenod: 22 finished epics, 107 open rows
 Evidence: 3ba2722 vocabulary, 78f6201 sweep + advisory, 72320d0 tree_audit + playbook + tests, 18b2d9d release .10
 Waiting on: none
 Approved work: E8-S1 (brief docs/handoffs/E16-S1.md in agent_team)
-Next action: DM verifies and merges wt/e16-s1-close-rows, pushes main; vps3/vps1 self-sync (SessionStart, 15-min job), then check VERSION 2026.10.24.10 in each config dir and re-sync vendored copies (zenod/skills/epic-spine, per SYNC.md) to close E8-3
-Source revision: branch wt/e16-s1-close-rows
+Next action: none (closed). zenod's vendored copy re-sync and its sweep are agent_team E16-S3.
+Source revision: main 6e1abf7
 Verified at: 2026-10-24
+
+## Outcome
+
+Verdict: accomplished
+Outcome: A finished epic can no longer show open work: rows have a `superseded` status, `spine_fix.py --close` sweeps a closed epic's open rows, `validate_spine.py` advises `closed-rows:`, and `tree_audit.py` + references/tree-cleanse.md let any repo audit and cleanse its tree.
+- E8-1: 3ba2722, 78f6201; tests/test_close_rows.py (715 tests OK on merge 6e1abf7)
+- E8-2: 72320d0; zenod copy proof (80 rows / 18 epics, re-run 0) and real zenod audit (107 rows / 22 epics) 2026-10-24
+- E8-3: references/tree-cleanse.md linked from SKILL.md; release 2026.10.24.10 on vps3 + vps1, 3 config dirs each
+Risk: vendored copies (zenod/skills/epic-spine) re-sync per SYNC.md in each repo's own thread (zenod: agent_team E16-S3); `integrated`/`resolved` now autofix to `done` in every repo's pre-commit.
+Closed: 2026-10-24, Delivery Manager (agent_team EPIC-16)
 
 ## Non-Goals
 
@@ -47,7 +57,7 @@ Steps: each is independently testable and closes only with evidence.
 
 | Issue | Role | Owner / Assignment | Title | Status | Depends On | PR/Branch | Base | Latest Evidence | Last Verified | Next Action |
 |---|---|---|---|---|---|---|---|---|---|---|
-| draft | Ticket worker | worker (Opus 5.5) | E8-S1 superseded row status, sweep on close, advisory, tree_audit, playbook, release; brief docs/handoffs/E16-S1.md (agent_team) | review | none | wt/e16-s1-close-rows | main | 3ba2722, 78f6201, 72320d0, 18b2d9d; 715 tests OK, graph --strict 0 errors; zenod copy 80 rows / 18 epics | 2026-10-24 | verify and merge; then rollout check (E8-3) |
+| draft | Ticket worker | worker (Opus 5.5) | E8-S1 superseded row status, sweep on close, advisory, tree_audit, playbook, release; brief docs/handoffs/E16-S1.md (agent_team) | done | none | merged 6e1abf7 | main | 3ba2722, 78f6201, 72320d0, 18b2d9d; 715 tests OK, graph --strict 0 errors; zenod copy 80 rows / 18 epics | 2026-10-24 | none |
 
 ## Decisions
 
