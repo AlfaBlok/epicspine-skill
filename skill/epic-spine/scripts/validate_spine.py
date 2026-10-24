@@ -117,6 +117,7 @@ DECISION_OUTCOMES = {"accepted", "rejected", "superseded"}
 CHECKBOX_RE = re.compile(r"(?m)^\s*- \[[ xX]\]")
 TRACKABLE_STATUSES = ("draft", "ready", "active", "blocked", "done", "deferred")
 ID = r"[A-Z][A-Z0-9]*-\d+"
+STEP = r"[A-Z][A-Z0-9]*-[A-Z]*\d+"  # `E5-S1`: a step code
 CRITERION_RE = re.compile(rf"- \[[ xX]\] ({ID})(?=\s|$)")
 ITEM_RE = re.compile(r"(?:[-*]|\d+[.)])[ \t]+\S")
 DOD_ALIAS_RE = re.compile(r"(?i)exit test.*|acceptance( criteria)?|definition of done")
@@ -378,11 +379,16 @@ def table_rows(section: str) -> list[dict[str, str]]:
 
 
 def row_is_ticket(fields: dict[str, str], header: list[str], rows: list[list[str]]) -> bool:
-    """Compact or Doctrine 2 epic: the ledger row is the ticket, so Issue may stay `draft` unless github is declared and a real issue is cited."""
+    """Compact or Doctrine 2 epic: the ledger row is the ticket, so Issue may stay `draft` or be its step code unless github is declared and a real issue is cited."""
     if normalize(fields.get("Spine profile", "")).lower() != "compact" and normalize(fields.get("Doctrine", "")) != "2":
         return False
     cited = any(is_issue_reference(dict(zip(header, row)).get("Issue", "")) for row in rows)
     return not (cited and normalize(fields.get("Ticket backend", "")).lower() == "github")
+
+
+def placeholder_issue(issue: str, status: str, template_status: object, row_ticket: bool) -> bool:
+    """`draft` (only for draft rows unless the row is the ticket) or, in a row-as-ticket spine, the step code itself (`E5-S1`)."""
+    return (issue.lower() == "draft" or (row_ticket and re.fullmatch(STEP, issue) is not None)) and bool(status == "draft" or template_status or row_ticket)
 
 
 def read_tickets(path: Path, fields: dict[str, str], sections: dict[str, str]) -> tuple[list[dict[str, str]], list[str]]:
@@ -406,7 +412,7 @@ def read_tickets(path: Path, fields: dict[str, str], sections: dict[str, str]) -
             template_status = issue.lower() == "draft" and re.fullmatch(r"<[^<>]+>", status)
             if status not in LEDGER_STATUSES and not template_status:
                 errors.append(f"ledger row {number} has invalid Status: {status or '(empty)'}")
-            if issue.lower() == "draft" and (status == "draft" or template_status or row_ticket):
+            if placeholder_issue(issue, status, template_status, row_ticket):
                 continue
             if not is_issue_reference(issue):
                 errors.append(f"ledger row {number} has invalid Issue: expected an HTTPS GitHub issue URL (draft is allowed only for draft rows)")
@@ -888,8 +894,7 @@ def validate_local(path: Path, *, dialect: str = "auto", ticket_source: Path | N
                 else:
                     errors.append(f"ledger row {row_number} has invalid Status: {status or '(empty)'}")
             if "Issue" in values:
-                draft_reference = issue.lower() == "draft" and (status == "draft" or template_status or row_ticket)
-                if not draft_reference and not is_issue_reference(issue):
+                if not placeholder_issue(issue, status, template_status, row_ticket) and not is_issue_reference(issue):
                     errors.append(f"ledger row {row_number} has invalid Issue: expected an HTTPS GitHub issue URL (draft is allowed only for draft rows)")
             if status in ACTIVE_STATUSES:
                 for column in ("Owner / Assignment", "PR/Branch", "Base", "Last Verified", "Next Action"):
