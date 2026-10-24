@@ -33,6 +33,8 @@ Read in this order, then act:
 2. Root spine — `Current State` + `Operating Learnings` **Always**.
 3. Only the branch spine whose mission contains the task — its `Current State`, Decisions, and Issue Ledger.
 
+Run `python3 <skill dir>/scripts/spines.py --bind <epic>` for steps 2-3's Current State and Operating Learnings (the epic's and every `Parent spine:` ancestor's, up to the root; default root); never Read whole spine files.
+
 Fall back to read-only orientation when the role, spine, or issue is unclear. Binding fields, one compact line: role | bound spine | bound issue | steward | handoff.
 
 ## Load On Demand
