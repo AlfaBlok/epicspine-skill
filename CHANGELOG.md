@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.10.24.6 — Parked work leaves the way: archive tag, delete, never asked again
+
+- **Changed: park = archive and delete** (EPIC-0 ticket-40, root L-19). **Park** is now: push and verify the annotated tag `archive/<name>`, then delete the branch (local and origin) and its worktree; the agent never asks or reminds about it again, and cleans up anything archived first without a question (drop is the same by intent). Before, park kept the remote branch, so the background job flagged it "idle >= 14d: ask keep / park / drop" every session. Now the 14 d line says `park it now, no question (...)`, and branches or worktrees whose tip is under an `archive/*` tag are never reported (`auto_return.listing`, `local_mess.worktree_lines`). Global block rule 5, `git-doctrine.md`, `hygiene.md`, `session-sync.md`. Tests: `tests/test_auto_return.py` (new `test_a_branch_or_worktree_under_an_archive_tag_is_never_reported`). Skill 2026.10.24.6.
+
 ## 2026.10.24.5 — Finish the job: no end-of-turn "want me to do X?" offers
 
 - **New: a turn never ends offering follow-ups** (EPIC-0 ticket-39, agent_team EPIC-8 E8-S10, root L-16; an infra-vps EPIC-9 turn ended "Do you want me to do 2, 3, both, or leave it here?" where both moved the goal toward green or closed a known defect). The agent does now, unasked, what moves the goal toward green, closes a known defect or completes/cleans up the work just done; only an unrequested nice-to-have that unblocks nothing is named in one line and dropped; ask-tier items stay asks. One sentence in the always-on block (rule 5, Integrate), SKILL.md rule 10, and the worker dispatch preamble; `docs/doctrine/human-asks.md` v7: an end-of-turn offer is an ask in disguise, and an Unblocker answers it by this rule. The SessionStart hook spreads the block to every repo and seat. Tests: `tests/test_default_behaviors.py` (`test_finish_the_job_reaches_managers_and_workers`). Skill 2026.10.24.5.

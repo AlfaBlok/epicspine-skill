@@ -46,7 +46,7 @@ EXISTING_BUDGETS = {
     "assets/epic-spine-template.md": 292,  # raised +1: Current State Status line (machine-read contract), 2026-10-16
     "assets/github-issue-template.md": 85,
     "assets/sweep-brief.md": 25,
-    "scripts/auto_return.py": 206,  # raised +6 over the 200 new-file cap: Deploy gate / PR-CI policy blocks (logic lives in deploy_gate.py), 2026-10-16
+    "scripts/auto_return.py": 209,  # raised +9 over the 200 new-file cap: archive/* tags hidden from reports +3 (2026-10-24); Deploy gate / PR-CI policy blocks (logic lives in deploy_gate.py), 2026-10-16
     "scripts/global_install.py": 380,  # raised +15: install_guard hooks (worktree-safe pointer/hook/link paths, outside-HOME skip, settings.json never deleted; logic lives in install_guard.py), 2026-10-21; earlier +10: background-sync schedule step in run() + ensure_gate() split out of heal_repo for background_sync.py, 2026-10-16; earlier: Codex hooks + stop_push Stop hook registration, spine-less opt-out in heal_repo, 2026-10-16; earlier: SessionStart self-sync hook + local profile override, 2026-10-16; SessionStart self-installs the pre-commit gate in EpicSpine repos (heal_repo), 2026-10-16; machine-profile warning in SessionStart hook, 2026-10-16; --artifact-host settings env, 2026-10-14; live-block pointer, 2026-10-14; atomic upsert + SessionStart self-heal, 2026-10-14
     "scripts/agents_block.py": 255,  # raised: `Root spine: none` (spine-less repos) render/check, 2026-10-16; earlier: profile --set writes the local override + install-global syncs the canonical profile, 2026-10-16; pre-commit hook install/uninstall/check, 2026-10-16 (after install-global --profile + missing-profile notice, 2026-10-16)
     "scripts/migrate_spine.py": 170,
