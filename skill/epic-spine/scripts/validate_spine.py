@@ -14,6 +14,7 @@ from urllib.parse import unquote, urlsplit
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import personas  # noqa: E402
+import status_true  # noqa: E402
 
 
 REQUIRED_FIELDS = (
@@ -544,7 +545,7 @@ def classify_diagnostic(message: str, *, error: bool) -> dict[str, object]:
     lower = message.lower()
     required = any(term in lower for term in ("unresolved", "missing field:", "is empty", "without evidence", "required acceptance", "required evidence"))
     required = required or lower == "updated still contains a template date"
-    required = required or lower.startswith(("v2 discovery missing", "v2 human gates should include column", "v2 issue ledger should include", "v2 definition of done should have"))
+    required = required or lower.startswith(("v2 discovery missing", "v2 human gates should include column", "v2 issue ledger should include", "v2 definition of done should have", "status-true"))
     required = required or bool(re.match(r"v2 ledger row \d+ has no ", lower))
     if error:
         category = "required-data" if required else "structural"
@@ -908,6 +909,7 @@ def validate_local(path: Path, *, dialect: str = "auto", ticket_source: Path | N
 
     tickets, ticket_errors = read_tickets(ticket_source or path, fields, sections)
     errors.extend(ticket_errors)
+    warnings.extend(status_true.issues(text, sections, state.get("status", ""), header, rows))  # strict-promoted, see classify_diagnostic
 
     if "YYYY-MM-DD" in fields.get("Updated", ""):
         warnings.append("Updated still contains a template date")
