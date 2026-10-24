@@ -3,7 +3,8 @@
 
 1. Jordi named with no coded ask: a `## Waiting on` line or Current State `Waiting on:`, or an open ledger row he owns.
 2. `Status: done` (spine, or a ledger row citing a criterion ID) while a Done-means box is unticked.
-3. `Waiting on:` says nothing is open for him while a coded ask is open in the same spine."""
+3. `Waiting on:` says nothing is open for him while a coded ask is open in the same spine.
+Also `closed-rows:` (advisory, never strict-promoted): a finished epic with open ledger rows (sweep: `spine_fix.py --close`)."""
 from __future__ import annotations
 
 import re
@@ -45,6 +46,9 @@ def issues(text: str, sections: dict[str, str], status: str, header: list[str], 
         cited = sorted(i for i in boxes if re.search(rf"(?<![\w-]){i}(?![\w-])", f"{r.get('Title', '')} {r.get('Latest Evidence', '')}"))
         if r.get("Status", "").lower() == "done" and cited:
             out.append(f"status-true: ledger row {number} is done but cites unticked Done means {', '.join(cited)}")
+    from close_rows import open_rows
+    if n := open_rows(text):
+        out.append(f"closed-rows: finished epic with {n} open rows: run `spine_fix.py --close --write <this spine>` (they become superseded)")
     if NO_HUMAN.match(said) and any(a["code"] for a in open_asks):
         out.append("status-true: `Waiting on:` says nothing is open but ask " + ", ".join(a["code"] for a in open_asks if a["code"]) + " is open: list it, or answer it")
     return out
