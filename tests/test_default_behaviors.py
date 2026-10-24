@@ -70,6 +70,16 @@ class DefaultBehaviorsTest(unittest.TestCase):
             self.assertIn(field, preamble)
         self.assertIn("`Stop` hook", read("skill/epic-spine/references/artifacts.md"))
 
+    def test_finish_the_job_reaches_managers_and_workers(self) -> None:
+        """agent_team root L-16: a turn never ends offering follow-ups (EPIC-0 ticket-39)."""
+        preamble = read("skill/epic-spine/assets/dispatch-prompt-preamble.md")
+        for name, text in (("global-block", self.agents_block()), ("SKILL.md", self.card()), ("preamble", preamble)):
+            self.assertRegex(text, r"(?i)finish the job", name)
+            self.assertIn("toward green", text, name)
+            self.assertIn("known defect", text, name)
+            self.assertIn("nice-to-have", text, name)
+        self.assertIn("end-of-turn offer", read("docs/doctrine/human-asks.md"))
+
     def test_repo_block_is_thin_pointer_without_shared_rules(self) -> None:
         for name, text in (("template", read("skill/epic-spine/assets/agents-block.md")), ("AGENTS.md", self.repo_block())):
             self.assertLessEqual(len(text.strip().splitlines()), 8, name)

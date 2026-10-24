@@ -1,10 +1,12 @@
-# Human asks: contract (v6)
+# Human asks: contract (v7)
 
-Page of [EPIC-4](../EPIC-4-DOCTRINE-2.md). v1 was step 12 (agent_team M2-SKILL). v2 is step 17 (M2-SKILL2, Jordi, 2026-10-21). v3 is step 20 ([D19](decisions.md#d19), agent_team M2-35, 2026-10-22): reference lines, search before asking, consumed answers. v4 is D19's amendment (EPIC-0 ticket-34, 2026-10-23): `superseded` asks, done notes, `Waiting on:` code references, advisories on unreadable lines. v5 (EPIC-0 ticket-36, agent_team EPIC-8 E8-S4, 2026-10-24): ask-writing rules and their advisories. v6 (EPIC-0 ticket-38, agent_team EPIC-8 E8-S8, root L-14 amended, 2026-10-24): asks in human format, `impact:`, `risk:`, `why <who>:`. Earlier shapes are unchanged.
+Page of [EPIC-4](../EPIC-4-DOCTRINE-2.md). v1 was step 12 (agent_team M2-SKILL). v2 is step 17 (M2-SKILL2, Jordi, 2026-10-21). v3 is step 20 ([D19](decisions.md#d19), agent_team M2-35, 2026-10-22): reference lines, search before asking, consumed answers. v4 is D19's amendment (EPIC-0 ticket-34, 2026-10-23): `superseded` asks, done notes, `Waiting on:` code references, advisories on unreadable lines. v5 (EPIC-0 ticket-36, agent_team EPIC-8 E8-S4, 2026-10-24): ask-writing rules and their advisories. v6 (EPIC-0 ticket-38, agent_team EPIC-8 E8-S8, root L-14 amended, 2026-10-24): asks in human format, `impact:`, `risk:`, `why <who>:`. v7 (EPIC-0 ticket-39, agent_team EPIC-8 E8-S10, root L-16, 2026-10-24): end-of-turn offers. Earlier shapes are unchanged.
 
 An ask is a human action that blocks the NEXT step. A human named on a later step is a plan, not an ask: leave it as plain ledger text until that row is next.
 
 An action inside an active standing approval (`## Standing approvals`, own or a parent spine's) is not an ask: do it and cite `under <code>` in Decisions ([standing-approvals.md](standing-approvals.md)). At kickoff, propose the grants the build will need as one `approve` ask.
+
+An end-of-turn offer ("want me to do 2, 3, both, or leave it here?") is an ask in disguise; finish the job instead (v7, agent_team root L-16). Do it now, unasked, when it moves the goal toward green, closes a known defect, or completes or cleans up the work just done (loose ends, docs, leftovers). Only an unrequested nice-to-have that unblocks nothing is a no: mention it in one line and drop it. An ask-tier item stays an ask. An Unblocker answers such an offer by this rule (yes with what to do, or no with one line).
 
 ## Writing an ask
 Write one line per ask under `## Waiting on`, right after Current State.
