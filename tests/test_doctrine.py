@@ -30,7 +30,7 @@ class FieldTests(base.EpicLogCase):
                           {"id": "E1-2", "text": "<a second outcome (2-5 in all), or delete this line>", "done": False}], node["done_means"])
         self.assertEqual(node["done_means"], node["dod"])  # rollup reads the new heading too
         self.assertEqual([], node["missing_sections"])
-        self.assertEqual(("ready", {"long_cells": 0}), (node["status"], {"long_cells": node["size"]["long_cells"]}))
+        self.assertEqual(("draft", {"long_cells": 0}), (node["status"], {"long_cells": node["size"]["long_cells"]}))
         self.assertEqual(len((self.repo / "docs/EPIC-one.md").read_text().splitlines()), node["size"]["lines"])
         self.assertEqual([], node["pages"])
         self.assertEqual({}, node["contributes"])
@@ -164,7 +164,7 @@ class PageTests(base.EpicLogCase):
         node = {n["path"]: n for n in self.log()["nodes"]}["docs/EPIC-one.md"]
         for key in ("id", "path", "title", "parent", "type", "status", "rollup_status", "dod", "outcome", "current_state", "waiting_on", "children", "superseded_by"):
             self.assertIn(key, node)
-        self.assertEqual(("", "docs/root.md", "ready"), (node["type"], node["parent"], node["status"]))  # no Spine Type is written; `type` stays deprecated
+        self.assertEqual(("", "docs/root.md", "draft"), (node["type"], node["parent"], node["status"]))  # no Spine Type is written; `type` stays deprecated
 
 
 class ScaffoldAndValidatorTests(base.EpicLogCase):
@@ -177,7 +177,7 @@ class ScaffoldAndValidatorTests(base.EpicLogCase):
             self.assertNotIn(absent, text)
         order = [text.index(h) for h in ("## Goal", "## Serves", "## Done means", "## Current State", "## Issue Ledger", "## Decisions", "## Operating Learnings")]
         self.assertEqual(sorted(order), order)
-        self.assertIn("Status: ready", text)
+        self.assertIn("Status: draft", text)
         self.assertTrue(v.trackable(path)["trackable"], v.trackable(path))
         self.assertEqual(([], []), (v.validate_local(path).errors, v.validate_local(path).warnings[:0]))
         graph = subprocess.run([sys.executable, "-B", str(VALIDATOR_PATH), "--strict", "--graph", str(self.repo / "docs/root.md"), str(path)], capture_output=True, text=True)
@@ -187,7 +187,7 @@ class ScaffoldAndValidatorTests(base.EpicLogCase):
         self.assertEqual(0, self.new("docs/EPIC-one.md", "docs/root.md", "one").returncode)
         row = next(line for line in (self.repo / "docs/root.md").read_text().splitlines() if "EPIC-one.md" in line)
         self.assertIn("<one sentence: what this adds to the parent's goal>", row)
-        self.assertIn("| ready |", row)
+        self.assertIn("| draft |", row)
 
     def test_spine_type_is_optional_and_ignored_when_present(self) -> None:
         self.assertEqual(0, self.new("docs/EPIC-one.md", "docs/root.md", "one").returncode)
@@ -237,7 +237,7 @@ class PreCommitDoctrineTests(base.EpicLogCase):
         text = self.scaffold()
         for gap, cut in (("serves", text.replace("## Serves\n\n[EPIC-0: Root](root.md): <one sentence: how this serves its parent>\n\n", "")),
                          ("done_means", text.replace("## Done means\n\n", "## Notes\n\n")),
-                         ("goal", text.replace("## Goal\n\nP\n\n", "")), ("status", text.replace("Status: ready", "Status:"))):
+                         ("goal", text.replace("## Goal\n\nP\n\n", "")), ("status", text.replace("Status: draft", "Status:"))):
             with self.subTest(gap=gap):
                 self.git("reset", "-q")
                 blocked = self.commit("docs/EPIC-one.md", cut)

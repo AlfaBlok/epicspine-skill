@@ -85,7 +85,7 @@ Which epics a wake (a manager run, a scheduled or woken persona) may work is rea
 | review, done, superseded | finished | no |
 
 - A wake works only runnable epics; it never starts work in a planning, parked or finished one. Any other or missing Status counts as `draft`.
-- `draft` = planning: an epic stays `draft` until Jordi or the manager says it is defined (Goal, Done means, steps). `active` means someone has been started on it: Current State's `Last attempted` records who.
+- **Draft until stamped ready.** Every new epic and row enters as `draft` (planning; `spine_new.py` scaffolds `Status: draft`). Only the user promotes `draft` to `ready` ("ready for delivery"): that stamp is the start order. No agent self-readies: a persona or manager that scaffolds or edits an epic leaves it `draft`, and never writes `ready` on its own epic or a row's. The next standing wake picks up each `ready` child, starts its rows and sets it `active`; `Last attempted` records who was started. So a manager can stay on at the root and the repo delivers itself: the user writes into the spine and stamps what is ready.
 - `has_children`: the Spine Map (or a `Parent spine:` header) names at least one child that is not finished. A spine with children steers (reads the children, nudges, records) and does not start rows that belong to a child spine.
 - Advisories only (`validate_spine.py`, `run-state:`; never a block, not promoted by `--strict`): `Status: active` with `Last attempted` empty or `scaffolded...`; `draft` with ledger rows `active`.
 

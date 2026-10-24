@@ -41,6 +41,13 @@ class RunStateTests(EpicLogCase):
                 self.assertEqual(expected, nodes["docs/root.md"]["has_children"])
                 self.assertFalse(nodes["docs/E4-one-logger.md"]["has_children"])
 
+    def test_a_scaffolded_epic_is_draft_and_never_auto_queued(self) -> None:
+        self.new()
+        self.assertIn("Status: draft", (self.repo / "docs/E4-one-logger.md").read_text())
+        self.assertIn("| draft |", (self.repo / "docs/root.md").read_text().split("## Spine Map")[1])
+        node = {n["path"]: n for n in self.log()["nodes"]}["docs/E4-one-logger.md"]
+        self.assertEqual(("planning", False), (node["run_state"], node["runnable"]))
+
     def test_a_childless_spine_has_no_children(self) -> None:
         self.assertFalse(self.log()["nodes"][0]["has_children"])
 
@@ -59,8 +66,7 @@ class RunStateTests(EpicLogCase):
         self.new()
         lines = self.run_script("spines.py", "--active").stdout.splitlines()
         self.assertIn("— running, has children", lines[0])
-        self.assertTrue(lines[1].endswith("— ready"), lines[1])
-        self.assertNotIn("not runnable", "\n".join(lines))
+        self.assertTrue(lines[1].endswith("— planning (not runnable)"), lines[1])  # a scaffold is draft, never auto-queued
 
 
 class RunStateAdvisoryTests(unittest.TestCase):

@@ -34,7 +34,7 @@ class OutcomeCase(T.EpicLogCase):
         self.text = self.path.read_text()
 
     def edit(self, status: str = "draft", outcome: str = "", extra: str = "") -> dict:
-        text = self.text.replace("Status: ready", f"Status: {status}")
+        text = self.text.replace("Status: draft", f"Status: {status}")
         text = text.replace("Integration branch: main\n", f"Integration branch: main\n{extra}", 1)
         self.path.write_text(text.replace("## Current State", outcome + "## Current State", 1))
         return T.v.trackable(self.path)
@@ -111,9 +111,9 @@ class CurrentStateJsonTests(OutcomeCase):
         self.assertEqual(state["status"], self.node()["status"])
 
     def test_partial_labels_are_null(self) -> None:
-        self.path.write_text(re.sub(r"(?s)## Current State\n.*?\n## ", "## Current State\n\nStatus: ready\nResult:\n\n## ", self.text, count=1))
+        self.path.write_text(re.sub(r"(?s)## Current State\n.*?\n## ", "## Current State\n\nStatus: draft\nResult:\n\n## ", self.text, count=1))
         state = self.node()["current_state"]
-        self.assertEqual("ready", state["status"])
+        self.assertEqual("draft", state["status"])
         self.assertTrue(all(v is None for k, v in state.items() if k != "status"), state)
 
     def test_absent_section_is_null(self) -> None:

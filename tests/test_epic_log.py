@@ -110,7 +110,7 @@ class SpineNewTests(EpicLogCase):
         self.assertTrue(v.trackable(child)["trackable"], v.trackable(child))
         self.assertEqual([], v.validate_local(child).errors)
         text = child.read_text()
-        for line in ("Spine ID: e4-one-logger", "Root spine: [EPIC-0: Root](root.md)", "Parent spine: [EPIC-0: Root](root.md)", "Status: ready", "# EPIC-1: E4 one logger", "## Goal", "## Serves", "## Done means", "- [ ] E1-1 "):
+        for line in ("Spine ID: e4-one-logger", "Root spine: [EPIC-0: Root](root.md)", "Parent spine: [EPIC-0: Root](root.md)", "Status: draft", "# EPIC-1: E4 one logger", "## Goal", "## Serves", "## Done means", "- [ ] E1-1 "):
             self.assertIn(line, text)
         self.assertNotIn("Spine Type", text)
         root = self.repo / "docs/root.md"
@@ -167,7 +167,7 @@ class DiscoveryTests(EpicLogCase):
         self.new()
         self.new("docs/e4/E4-1-streams.md", "e4-one-logger", "E4-1 streams")
         child = self.repo / "docs/e4/E4-1-streams.md"
-        child.write_text(child.read_text().replace("Status: ready", "Status: done").replace("- [ ] E2-", "- [x] E2-"))
+        child.write_text(child.read_text().replace("Status: draft", "Status: done").replace("- [ ] E2-", "- [x] E2-"))
         log = self.log()
         self.assertEqual("docs/root.md", log["root"])
         by = {n["path"]: n for n in log["nodes"]}
@@ -177,7 +177,7 @@ class DiscoveryTests(EpicLogCase):
         self.assertEqual(["docs/e4/E4-1-streams.md"], by["docs/E4-one-logger.md"]["children"])
         leaf = by["docs/e4/E4-1-streams.md"]
         self.assertEqual(("done", "done", True), (leaf["status"], leaf["rollup_status"], leaf["dod"][0]["done"]))
-        self.assertEqual("ready", by["docs/E4-one-logger.md"]["status"])
+        self.assertEqual("draft", by["docs/E4-one-logger.md"]["status"])
         self.assertEqual("active", by["docs/E4-one-logger.md"]["rollup_status"])  # a done child, an open criterion
         self.assertEqual(([], []), (log["orphans"], log["mismatches"]))
         text = self.run_script("spines.py").stdout

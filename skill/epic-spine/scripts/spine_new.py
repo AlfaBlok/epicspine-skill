@@ -3,7 +3,7 @@
 
 Writes a compact epic titled ``# EPIC-<n>: NAME`` (n = highest code in the repo's goal titles + 1, legacy ``E4``/``EPIC 0`` included, or
 ``--code``; criterion IDs ``E<n>-``) that follows references/spine-model.md: Goal, Serves (linked to the parent), Done means (checkbox
-placeholders above the steps), Current State ``Status: ready``, Non-Goals, the steps ledger, Decisions, Operating Learnings; Root spine,
+placeholders above the steps), Current State ``Status: draft`` (planning: never auto-queued; only the user stamps it ``ready``), Non-Goals, the steps ledger, Decisions, Operating Learnings; Root spine,
 Parent spine, Integration branch/policy copied from the parent or AGENTS.md; no ``Spine Type:`` or version line. It registers a row in the
 parent's Spine Map (created when missing) whose Purpose is the child's one "contributes" sentence (``--purpose``, else a placeholder).
 ``--parent`` is the parent's path or Spine ID. Idempotent: an existing file is never overwritten, only (re)registered when it is a spine.
@@ -51,7 +51,7 @@ Integration branch: {branch}
 ## Current State
 
 Owner: unassigned
-Status: ready
+Status: draft
 Last attempted: scaffolded with spine_new.py on {today}
 Result: created, not started
 Evidence: {parent_link}
@@ -154,7 +154,7 @@ def main() -> int:
             branch=pm["fields"].get("Integration branch", "main"), purpose=a.purpose or a.title, prefix=f"E{code}"), encoding="utf-8")
         created = True
     name = (re.search(r"(?m)^# (.+)", S.read(child)) or [0, a.title])[1]
-    row = {"Spine ID": sid, "Relationship": "child", "Spine": f"[{name}]({link(child, parent)})", "Purpose": a.purpose or "<one sentence: what this adds to the parent's goal>", "Status": "ready",
+    row = {"Spine ID": sid, "Relationship": "child", "Spine": f"[{name}]({link(child, parent)})", "Purpose": a.purpose or "<one sentence: what this adds to the parent's goal>", "Status": "draft",
            "Last Rolled Up": date.today().isoformat(), "Next Action": "fill Goal, Serves and Done means"}
     registered = child not in {t for _, t in pm["rows"]}
     if registered:
