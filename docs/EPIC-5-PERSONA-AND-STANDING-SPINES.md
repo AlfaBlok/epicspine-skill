@@ -20,10 +20,12 @@ EpicSpine defines how a persona is written as a markdown file and how a standing
 
 ## Done means
 
-- [ ] E5-1 Persona file format in references (frontmatter: name, template, assigned epic(s) — a persona is not an epic, several personas work one epic (agent_team L-20) —, cadence, model, host, may-write; body: Remit, Reads, Writes) with a validator, and `spines.py --json` (or a sibling) lists a repo's personas.
+- [ ] E5-1 Persona file format in references: generic only (frontmatter: name, template, model, host; body: Remit, Reads, Writes), no goal, cadence or write scope in it. What a persona does for a goal (cadence, write scope, goal-specific instructions) is the assignment, written in that epic's `## Team` table (persona, cadence, write scope, notes). A persona is not an epic; several personas work one epic (agent_team L-20). Validator + `spines.py --json` (or a sibling) lists a repo's personas and each epic's team.
 - [ ] E5-2 Standing spine kind: `## Targets` (target per period) and a Current State scoreboard (target vs actual for this period); a miss becomes a ledger row; never needs an Outcome; the validator accepts it.
-- [ ] E5-3 Writing contract for personas sharing one epic: every action a commit signed by the persona, shared files with a fixed shape, hand-offs as ledger rows whose status says whose turn it is.
-- [ ] E5-4 Used for real: zenod-social root spine + its persona files validate.
+- [ ] E5-3 Tasks and hand-offs: a task is an Issue Ledger row with an assignee (Owner column) and a status; every persona wake starts with its queue (open rows assigned to it in the epics it is on); hand-off = reassign the row (several rows for several jobs); a task serving another goal goes in that goal's ledger with a link back; a task that outgrows a wake or two becomes a child epic. Every action is a commit signed by the persona; shared files keep a fixed shape; each section has a named writer via the assignment's write scope.
+- [ ] E5-4 Assignees must exist: the validator rejects a ledger row whose assignee is not a persona on that repo's team (persona files in the repo, or the epic's `## Team` table until files exist) or `Jordi`; `spines.py --json` lists each persona's queue.
+- [ ] E5-5 Asks as tasks: an ask to Jordi is a ledger row assigned to `Jordi` (same fields as an ask: what, why, impact, risk + rollback, recommendation); tried first on infra-vps EPIC-15, then adopted or dropped with a Decisions row.
+- [ ] E5-6 Used for real: zenod-social and infra-vps EPIC-15 spines and their persona files validate, with every ledger assignee a real persona or Jordi.
 
 ## Current State
 
@@ -34,7 +36,7 @@ Result: created, not started
 Evidence: EPIC-0-OPERATING-SYSTEM.md
 Waiting on: nobody
 Approved work: none
-Next action: draft E5-1..E5-3 in references; agent_team EPIC-11 and zenod-social wait on the format
+Next action: draft E5-1..E5-5 in references; agent_team EPIC-11, zenod-social and infra-vps EPIC-15 wait on the format
 Source revision: uncommitted scaffold
 Verified at: 2026-10-24
 
@@ -60,6 +62,7 @@ One line per decision; detail goes to a linked page.
 |---|---|---|---|---|---|
 | 2026-10-24 | accepted | Created as a goal under epicspine-operating-system | one node in the epic log | EPIC-0-OPERATING-SYSTEM.md | never |
 | 2026-10-24 | accepted | Requested by agent_team EPIC-12 (approved plan): EpicSpine owns the persona and standing-spine formats; the console only reads them | format owner = doctrine owner (agent_team L-12) | [agent_team EPIC-12](https://github.com/AlfaBlok/agent_team/blob/main/docs/spines/epic-12-zenod-live-heard-sold.md) | never |
+| 2026-10-24 | accepted | Persona generic, assignment (cadence, write scope, goal notes) in the epic's Team table; tasks = ledger rows with an assignee that must be a real persona or Jordi; asks-as-tasks trialled on infra-vps EPIC-15 | Jordi 2026-10-24 ('go for it'; 'you cannot make an owner that is not a persona in the repo') | [agent_team EPIC-12](https://github.com/AlfaBlok/agent_team/blob/main/docs/spines/epic-12-zenod-live-heard-sold.md) | after the EPIC-15 trial |
 
 ## Operating Learnings
 
