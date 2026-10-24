@@ -31,12 +31,12 @@ EpicSpine defines how a persona is written as a markdown file and how a standing
 
 Owner: Delivery Manager (agent-team console)
 Status: active
-Last attempted: 2026-10-24 DM wake run_aa2dd0a3: E5-S3 landed and verified (69372e6); E5-S1 (run_9a0d7ebe, branch e5-s1) running
-Result: E5-S3 done; E5-S2, E5-S4 and EPIC-6 E6-S1 all edit validate_spine.py, so they wait for E5-S1 (L-10)
+Last attempted: 2026-10-24 DM wake run_aa2dd0a3: E5-S3 (69372e6) and E5-S1 (merged from e5-s1) verified and done
+Result: persona format, Team table, assignee check and persona-tasks contract landed; graph --strict has 8 ES-S-TICKET errors on this spine (E5-S4); infra-vps EPIC-15 and zenod-social root Team headers (`Cadence (console)`, `Write scope (only these)`) now fail --strict
 Evidence: EPIC-0-OPERATING-SYSTEM.md
 Waiting on: nobody
 Approved work: none
-Next action: verify and merge E5-S1, then dispatch E5-S2 and E6-S1 (+E5-S4) one after the other; agent_team EPIC-11, zenod-social and infra-vps EPIC-15 wait on the format
+Next action: E6-S1+E5-S4 (validator, dispatched first: restores root DOD-3), then E5-S2 (+Team header tolerance); E5-6 migration runs in each repo's own thread (L-14); agent_team EPIC-11, zenod-social and infra-vps EPIC-15 wait on the format
 Source revision: main
 Verified at: 2026-10-24
 
@@ -50,7 +50,7 @@ Steps: each is independently testable and closes only with evidence.
 
 | Issue | Role | Owner / Assignment | Title | Status | Depends On | PR/Branch | Base | Latest Evidence | Last Verified | Next Action |
 |---|---|---|---|---|---|---|---|---|---|---|
-| E5-S1 | Ticket worker | worker run_9a0d7ebe-08f5-4cc1-a847-1108f1f784c1 | persona file format + validator + listing | review | none | e5-s1 | main | 633052c (674 tests OK; references/personas.md) | 2026-10-24 | manager verifies and merges e5-s1 |
+| E5-S1 | Ticket worker | worker run_9a0d7ebe-08f5-4cc1-a847-1108f1f784c1 | persona file format + validator + listing | done | none | merged (branch deleted) | main | 633052c (674 tests OK; references/personas.md); DM verified: 674 tests OK, manifest match | 2026-10-24 | none |
 | E5-S2 | Ticket worker | unassigned | standing spine kind + scoreboard + validator | ready | E5-S1 (shared validator) | none | main | none | 2026-10-24 | dispatch |
 | E5-S3 | Ticket worker | worker run_c76affed (Sonnet 5.5, seat1) | writing contract for personas sharing a repo | done | none | main | main | 69372e6, 4c10634: references/persona-tasks.md; DM verified 660 tests OK, manifest match | 2026-10-24 | none |
 | E5-S4 | Ticket worker | unassigned | validator accepts step codes (E5-S1) as Issue in row-as-ticket spines: spine_new.py scaffolds fail --strict | ready | E5-S1 (shared validator) | none | main | `validate_spine.py --strict` on this spine: 3 ES-S-TICKET errors (pre-existing) | 2026-10-24 | dispatch after E5-S1 merges |
