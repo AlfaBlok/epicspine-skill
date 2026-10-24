@@ -24,6 +24,11 @@ def slug(value: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", re.sub(r"\(.*", "", value).lower()).strip("-")
 
 
+def base(header: list[str]) -> dict[str, str]:
+    """Table header -> its name without a trailing ``(…)``: ``Cadence (console)`` counts as ``Cadence``."""
+    return {re.sub(r"\s*\(.*\)\s*$", "", h).strip(): h for h in header}
+
+
 def is_file(path: Path, text: str) -> bool:
     return path.parent.name == "personas" and text.startswith("---")
 
@@ -58,14 +63,16 @@ def repo_root(path: Path) -> Path:
 
 def team(rows: list[dict[str, str]], header: list[str], files: dict | None = None) -> tuple[list[str], list[str]]:
     """(persona slugs, errors) of an epic's ``## Team`` table; with persona files in the repo each persona must have one."""
-    out = [f"Team table missing column: {c}" for c in TEAM_COLUMNS if c not in header]
+    names = base(header)
+    out = [f"Team table missing column: {c}" for c in TEAM_COLUMNS if c not in names]
     people: list[str] = []
     for n, row in enumerate(rows, 1):
+        row = {c: row.get(h, "") for c, h in names.items()}
         who = slug(row.get("Persona", ""))
         if not who:
             out.append(f"Team row {n} has no persona")
             continue
-        out += [f"Team row {n} ({who}) has empty {c}" for c in TEAM_COLUMNS[1:] if c in header and not row.get(c, "").strip()]
+        out += [f"Team row {n} ({who}) has empty {c}" for c in TEAM_COLUMNS[1:] if c in names and not row.get(c, "").strip()]
         out += [f"Team lists {who} twice"] * (who in people)
         out += [f"Team persona {who} has no file personas/{who}.md"] * (bool(files) and who not in files)
         people.append(who)
@@ -88,6 +95,7 @@ def epic_errors(path: Path, sections: dict[str, str], header: list[str], rows: l
 
 
 def team_json(rows: list[dict[str, str]]) -> list[dict[str, str]]:
+    rows = [{c: r.get(h, "") for c, h in base(list(r)).items()} for r in rows]
     return [{"persona": slug(r.get("Persona", "")), "cadence": r.get("Cadence", ""), "write_scope": r.get("Write scope", ""), "notes": r.get("Notes", "")} for r in rows]
 
 

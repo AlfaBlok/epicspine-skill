@@ -30,6 +30,7 @@ ALLOWLIST: dict[str, str] = {"epic_log.py": "helper module of spines.py (rollup,
                              "doctrine.py": "helper module of spines.py / pre_commit.py (Doctrine 2 readers: epics, pages, JSON fields); documented with spines.py",
                              "ask_refs.py": "helper module of epic_log.py / spines.py (`waits on` references, D19); documented with spines.py",
                              "personas.py": "helper module of validate_spine.py / spines.py (persona files, Team tables, assignees); documented in personas.md",
+                             "standing.py": "helper module of validate_spine.py / spines.py (standing spines: Targets, scoreboard); documented in standing-spines.md",
                              "status_true.py": "helper module of validate_spine.py (status-true advisories); documented in spine-model.md",
                              "grants.py": "helper module of spines.py / validate_spine.py (standing approvals: grant lines, inheritance, uses); documented with spines.py"}
 
