@@ -55,6 +55,7 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 - L-13 | any task | The delivery manager keeps the epic tree and the Book coherent: every new ask is placed in the tree (an existing goal, or a new leaf under the right parent) before work starts; at every launch, dispatch and record it resolves contradictions and writes the reasoning (Decisions) and current state | user doctrine 2026-10-19 | confirmed 2026-10-19
 - L-14 | doctrine | epicspine-skill owns the EpicSpine doctrine and orchestrates it from here; agent_team complies when its console reads repos; each repo applies the doctrine to its own spines in its own thread; learn what we are trying to accomplish here | Jordi 2026-10-19 | confirmed 2026-10-19
 - L-15..L-17 superseded: now skill doctrine (references/spine-model.md, global-block)
+- L-18 | any session | Never show other repos' state inside a session about one repo unless the conversation is explicitly about them; the background checker does its job and records, it never broadcasts machine-wide notices to every session | user 2026-10-24 | confirmed 2026-10-24
 
 **Scoped index**: none yet.
 
