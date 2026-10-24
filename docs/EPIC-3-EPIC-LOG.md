@@ -16,14 +16,14 @@ Integration branch: main
 
 Owner: EPIC-3 delivery manager (thread mcp:e9568396-d334-4a6b-bc0c-ab93b4a0fb6b)
 Status: active
-Last attempted: 2026-10-22 E3-2 re-probe passed (house_decision); next-code (2026.10.22.7) and spines.py load fixes (2026.10.22.6) merged; 5 rooted repos migrated
-Result: E3-1, E3-2, E3-4 met. E3-3: every rooted repo green ([table](epic-log/conformance.md)); six rootless repos wait on EPIC-3-A1. E3-5 follows E3-3
+Last attempted: 2026-10-24 EPIC-3-A1 answered `all` (Jordi); root-spine threads launched in the six rootless repos
+Result: E3-1, E3-2, E3-4 met. E3-3: every rooted repo green ([table](epic-log/conformance.md)); six rootless repos getting roots (A1: all). E3-5 follows E3-3
 Evidence: [conformance scan 2026-10-22](epic-log/conformance.md)
-Waiting on: EPIC-3-A1
+Waiting on: none (six repo threads in flight)
 Approved work: E3-1 to E3-5 (user, 2026-10-19)
-Next action: E3-2 met (3 repos); rootless repos once EPIC-3-A1 is answered; then E3-5
-Source revision: main @ 21e3892
-Verified at: 2026-10-22
+Next action: verify each new root (0 orphans, 0 mismatches), fill conformance rows, tick E3-3; then E3-5 into EPIC-0, Outcome, close
+Source revision: main @ 53a837d
+Verified at: 2026-10-24
 
 ## Mission
 
@@ -86,5 +86,6 @@ Goal / Done means and doctrine versioning moved to [EPIC-4](EPIC-4-DOCTRINE-2.md
 | 2026-10-19 | accepted | Living-tree rules (E3-2, release 2026.10.19.3) | E3-2 living-tree rules (release 2026.10.19.3): `Goal: EPIC-<n>` on every ask; done closes, replaced gets `Superseded by:`; 14 d stale; handover to EPIC-4 step 3. [detail](epic-log/decisions.md#d13) | E3-2 merge 61d7e03 | EPIC-4 doctrine changes a rule |
 | 2026-10-22 | accepted | E3-3 bar under Doctrine 2 | Green = 0 `orphans`, 0 `mismatches`, and each `looks_like_epic` page made a coded epic or kept as a linked page / recorded exception; `orphan_pages` is advisory (spine-model.md), reported, not chased. | spine-model.md "Page and orphan checks are advisory" | doctrine makes pages blocking |
 | 2026-10-22 | accepted | spines.py speed is an EPIC-3 step | EPIC-4's open risk (cold spines.py vs the console's 15 s timeout) moves here with the scripts (EPIC-4 closed); measured 19-23 s, so it gets a step, not a watch. | 2026-10-22 timing on poly-maker | never |
+| 2026-10-24 | accepted | Roots for all six rootless repos (EPIC-3-A1: all) | Jordi chose `all` over the recommended three: idea_scraper, obsidian-brain, zenod-cloud, nectary, zenod_memory, alpha9_webflow_export each get a root spine, none recorded as an exception. zenod_memory has no commits (remote empty), so its root is its first commit. | e4b638c (console answer) | a repo owner rejects the root |
 | 2026-10-22 | accepted | spines.py timeout risk: mitigate, don't chase | The console's last-good cache covers slow scans; the skill only trims CPU (~15%) and makes the stale check timeout-safe. The git ls-files listing was dropped (no wall gain, L-1). | wt/spines-fast r1 report; agent_team spines.ts:290 | a cold-start fallback is seen in the console |
 | 2026-10-22 | accepted | Legacy goals keep their Spine ID as code | Migrated legacy goals are coded by their `Spine ID:` (zenod `C`, `E3-0`, ...) with titles and files unchanged (Non-Goals: no renames); new goals get `EPIC-<n>` from `spine_new`. Closed-by-replacement = `Status: done` + `Superseded by:` + Outcome (`--trackable` has no superseded word). | zenod PR #1420; spine-model.md epic definition | doctrine requires `# EPIC-<n>:` titles on every goal |
