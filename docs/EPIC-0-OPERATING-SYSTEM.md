@@ -19,12 +19,12 @@ Skill updates: auto
 
 Owner: /root delivery manager
 Status: active
-Last attempted: 2026-10-24 ticket-37 (65c7e2b, merge ec45219, skill 2026.10.24.3): SessionStart prints only the current repo's attention (L-18); other repos only on request (`repo_state.py`)
-Result: done: live `attention_lines` from agent_team lists no other repo (abnb-agent, idea_scraper, house_decision, epicspine-skill gone); EPIC-3 open items unchanged: E3-3 six rootless repos and E3-5, both gated on EPIC-3-A1
-Evidence: ec45219 (650 tests green; 15 repos still recorded in the status file, `repo_state.py` prints them)
-Waiting on: none (EPIC-3-A1 answered `all` and done)
-Approved work: EPIC-3 Epic log and EPIC-4 Doctrine 2 (their ledgers hold the tickets)
-Next action: Delivery manager verifies EPIC-3 Outcome (all five DoD ticked 2026-10-24, status review) and sets it done; then close this root's DOD
+Last attempted: 2026-10-24 root DM wake (run_53683ac3): verified EPIC-3 Outcome and set it done; normalized EPIC-3 Decisions; DOD-3 ticked
+Result: EPIC-3 done (spines.py --json: six new roots, poly-maker, zenod 0 orphans/0 mismatches); DOD-3 green; DOD-1/DOD-2 evidence and ledger reconcile dispatched (seat1 run_da93bbb6, seat2 run_85ef60a9)
+Evidence: 259ed38 (655 tests OK; strict graph 0 errors)
+Waiting on: none
+Approved work: none open beyond this root's DOD
+Next action: integrate the two workers' results: tick DOD-1/DOD-2 on proof, verify ledger reconcile; then write this root's Outcome and set review
 Source revision: main
 Verified at: 2026-10-24
 
