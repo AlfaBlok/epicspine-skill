@@ -37,7 +37,7 @@ Why: Jordi and the agent_team console must see what is open, settled and archive
 
 ## Waiting on
 
-- [ask EPIC-3-A1: decide @Jordi since 2026-10-22 row E3-3] Give a root spine to the six repos that have none (idea_scraper, obsidian-brain, zenod-cloud, nectary, zenod_memory, alpha9_webflow_export)? — options: all | none | pick — recommend: idea_scraper, obsidian-brain, zenod-cloud (active goals live there); none for the other three, recorded as exceptions — unblocks: E3-3 for those repos; nothing else waits — effort: ~1 min — context: [scan](epic-log/conformance.md)
+- [answered EPIC-3-A1 2026-10-24 @Jordi] Give a root spine to the six repos that have none (idea_scraper, obsidian-brain, zenod-cloud, nectary, zenod_memory, alpha9_webflow_export)? — options: all | none | pick — recommend: idea_scraper, obsidian-brain, zenod-cloud (active goals live there); none for the other three, recorded as exceptions — unblocks: E3-3 for those repos; nothing else waits — effort: ~1 min — context: [scan](epic-log/conformance.md) — answer: all
 
 ## Non-Goals
 
