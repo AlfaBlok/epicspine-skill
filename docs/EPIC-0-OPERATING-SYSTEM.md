@@ -20,11 +20,11 @@ Skill updates: auto
 Owner: /root delivery manager
 Status: active
 Last attempted: 2026-10-24 root DM wake (run_53683ac3): EPIC-3 verified and done; ledger made honest (89554d8); DOD-2 and DOD-3 ticked
-Result: DOD-2, DOD-3 met; DOD-1 not met as observed: prescribed bind path is 93 lines, a cold subagent read 282 (whole files) ([evidence](root/dod-evidence-2026-10-24.md))
-Evidence: 259ed38, 89554d8, d85992f
+Result: DOD-2, DOD-3 met; DOD-1 met only when the repo pointer is followed: root 141→99 lines + line-ranged AGENTS.md pointer, fresh agent 94 lines (187–240 when ignored) ([evidence](root/dod-evidence-2026-10-24.md))
+Evidence: 259ed38, 89554d8, a61f07b..9b8e77a
 Waiting on: none
 Approved work: none open beyond this root's DOD
-Next action: DOD-1 worker makes the cold bind read ≲100 lines in practice (line-ranged bind pointer, root detail to linked pages), then re-measures with a fresh agent; then write this root's Outcome and set review
+Next action: seat1 worker (run_119c141a, wt/bind-command) ships `spines.py --bind` and a global-block bind step that never reads whole spines, then re-measures; tick DOD-1 on proof, write Outcome, set review
 Source revision: main
 Verified at: 2026-10-24
 
