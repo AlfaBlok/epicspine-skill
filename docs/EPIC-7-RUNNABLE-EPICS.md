@@ -56,7 +56,7 @@ One line per decision; detail goes to a linked page.
 | Date | Outcome | Decision / Attempt | Durable Summary | Evidence | Revisit When |
 |---|---|---|---|---|---|
 | 2026-10-24 | accepted | Created as a goal under epicspine-operating-system | one node in the epic log | EPIC-0-OPERATING-SYSTEM.md | never |
-| 2026-10-24 | accepted | decided by the worker per Jordi's motion: new epics scaffold `draft`; only the user promotes draft to ready (no agent self-readies); a validator warning on an agent-authored draft to ready flip is not added (a file validator cannot know the author); unknown or missing Status counts as planning — why: nothing may auto-queue — rollback: set the scaffold back to `ready` in spine_new.py | the stamp rule is in spine-model.md "Running" | ad62e8f | an author signal exists (commit trailers) |
+| 2026-10-24 | accepted | New epics scaffold `draft`; only the user readies; unknown Status = planning; no draft-to-ready author warning (a file validator cannot know the author) | nothing may auto-queue; rule in spine-model.md Running | ad62e8f | an author signal exists |
 
 ## Operating Learnings
 
