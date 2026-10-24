@@ -4,6 +4,8 @@ Page of [EPIC-4](../EPIC-4-DOCTRINE-2.md). v1 was step 12 (agent_team M2-SKILL).
 
 An ask is a human action that blocks the NEXT step. A human named on a later step is a plan, not an ask: leave it as plain ledger text until that row is next.
 
+An action inside an active standing approval (`## Standing approvals`, own or a parent spine's) is not an ask: do it and cite `under <code>` in Decisions ([standing-approvals.md](standing-approvals.md)). At kickoff, propose the grants the build will need as one `approve` ask.
+
 ## Writing an ask
 Write one line per ask under `## Waiting on`, right after Current State.
 
