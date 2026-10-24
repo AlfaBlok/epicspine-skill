@@ -20,9 +20,9 @@ EpicSpine defines how a persona is written as a markdown file and how a standing
 
 ## Done means
 
-- [ ] E5-1 Persona file format in references (frontmatter: name, template, owns, cadence, model, host, may-write; body: Remit, Reads, Writes) with a validator, and `spines.py --json` (or a sibling) lists a repo's personas.
+- [ ] E5-1 Persona file format in references (frontmatter: name, template, assigned epic(s) — a persona is not an epic, several personas work one epic (agent_team L-20) —, cadence, model, host, may-write; body: Remit, Reads, Writes) with a validator, and `spines.py --json` (or a sibling) lists a repo's personas.
 - [ ] E5-2 Standing spine kind: `## Targets` (target per period) and a Current State scoreboard (target vs actual for this period); a miss becomes a ledger row; never needs an Outcome; the validator accepts it.
-- [ ] E5-3 Writing contract for personas sharing a repo: every action a commit signed by the persona, shared files with a fixed shape, requests to another persona as rows in that persona's spine ledger.
+- [ ] E5-3 Writing contract for personas sharing one epic: every action a commit signed by the persona, shared files with a fixed shape, hand-offs as ledger rows whose status says whose turn it is.
 - [ ] E5-4 Used for real: zenod-social root spine + its persona files validate.
 
 ## Current State
