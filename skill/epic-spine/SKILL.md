@@ -49,6 +49,7 @@ Fall back to read-only orientation when the role, spine, or issue is unclear. Bi
 | Sprint dialect v2 / SHIP-HARDEN | `references/sprint-dialect-v2.md` |
 | Ticket backend and issues | `references/ticket-backends.md`, `assets/github-issue-template.md` |
 | Structural validation and diagnostics | `references/structural-validation.md`, `scripts/validate_spine.py`, `scripts/spine_fix.py`, `scripts/status_true.py`, `scripts/run_state.py` |
+| Cleaning a stale epic tree: closed epics with open rows, non-standard Status words, stale/undecided epics | `references/tree-cleanse.md`, `scripts/tree_audit.py`, `scripts/close_rows.py` |
 | Personas, `## Team` tables, ledger assignees | `references/personas.md`, `scripts/personas.py` |
 | Standing spines: ongoing work with targets and a scoreboard, never closed | `references/standing-spines.md`, `scripts/standing.py` |
 | Operating learnings | `references/learnings.md` |
