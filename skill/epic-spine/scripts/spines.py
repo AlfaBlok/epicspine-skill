@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """The epic log: one tree of goals per repo, hung from the root spine (references/spine-model.md).
 
-``spines.py [--json | --active] --repo DIR`` finds the root (AGENTS.md ``Root spine:``, else a root-typed header), walks children
+``spines.py --bind [EPIC]`` prints the bind view (title, Current State, Operating Learnings of EPIC and its ancestors). ``spines.py [--json | --active] --repo DIR`` finds the root (AGENTS.md ``Root spine:``, else a root-typed header), walks children
 (a child's ``Parent spine:`` header decides; the parent's Spine Map must agree; links resolve against the file's folder, else
 the repo root) and lists goal docs outside the tree as orphans. Goal doc (epic) = a ``# EPIC-<n>:`` title or a ``Spine ID:`` line, never
 a name (doctrine.py; any other .md is a page, reported as ``pages`` / ``orphan_pages`` / ``looks_like_epic``); skipped: archive/,
@@ -164,12 +164,32 @@ def _scan(repo: Path, refs: bool) -> dict:
             "orphan_pages": orphan_pages, "looks_like_epic": like_epic, "stale": stale(repo, list(nodes.values()))}
 
 
+def bind(repo: Path, epic: str | None = None) -> str:
+    """The bind view: title, Current State, Operating Learnings and open Waiting on asks of the epic and every Parent spine up to the root."""
+    cache: dict = {None: repo}
+    start = Path(epic) if epic else find_root(repo, cache)
+    path = next((p.resolve() for p in (start, repo / start) if p.is_file()), None) if start else None
+    out: list[str] = []
+    while (m := path and meta(path, cache)) and path not in cache.setdefault("seen", set()):  # a parent cycle ends here
+        cache["seen"].add(path)
+        out.append(f"== {os.path.relpath(path, cache[None])}: " + next((l for l in m["text"].splitlines() if l.startswith("# ")), m["id"]))
+        for name in ("Current State", "Operating Learnings", "Waiting on"):
+            lines = [l for l in m["sections"].get(name, "").splitlines() if l.strip() and not (name == "Waiting on" and re.search(r"\[(answered|superseded)\b|^none\b", l.lstrip("- ")))]
+            out += [f"## {name}", *lines] if lines else []
+        path = parent_file(path, cache)
+    return "\n".join(out) or "no spine found: bind from the README's first screen"
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--repo", default=".")
     parser.add_argument("--json", action="store_true")
     parser.add_argument("--active", action="store_true", help="list open goals, one line each (stale marked)")
+    parser.add_argument("--bind", nargs="?", const="", metavar="EPIC", help="print the bind view of EPIC (default: root) and its ancestors")
     args = parser.parse_args()
+    if args.bind is not None:
+        print(bind(Path(args.repo).resolve(), args.bind or None))
+        return 0
     log = scan(Path(args.repo))
     print(json.dumps({**log, "next_code": next_of(log)}, indent=2) if args.json else active(log) if args.active else render(log))
     return 0

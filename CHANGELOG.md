@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.10.24.7 — `spines.py --bind`: a cold agent binds in about 40 lines, in every repo
+
+- **New: `spines.py --bind [EPIC]`** (EPIC-0 DOD-1; the root-spine pointer worked only where a repo hand-wrote a line range, and agents that Read whole spine files took 187-282 lines). Prints, one line per non-blank line, the title, `## Current State`, `## Operating Learnings` and the open asks of `## Waiting on` (answered/superseded ones dropped) of the epic (default: the root) and every `Parent spine:` ancestor up to the root, nothing else. This repo: root 32 lines, EPIC-4 44. The global block's bind step (rule 2) and SKILL.md's Bind Path now say to run it and never Read whole spine files; this repo's AGENTS.md top line points at it, replacing the hand-kept `offset/limit` range and `tests/test_bind_range.py`. Tests: `tests/test_bind.py`. Skill 2026.10.24.7.
+
 ## 2026.10.24.6 — Parked work leaves the way: archive tag, delete, never asked again
 
 - **Changed: park = archive and delete** (EPIC-0 ticket-40, root L-19). **Park** is now: push and verify the annotated tag `archive/<name>`, then delete the branch (local and origin) and its worktree; the agent never asks or reminds about it again, and cleans up anything archived first without a question (drop is the same by intent). Before, park kept the remote branch, so the background job flagged it "idle >= 14d: ask keep / park / drop" every session. Now the 14 d line says `park it now, no question (...)`, and branches or worktrees whose tip is under an `archive/*` tag are never reported (`auto_return.listing`, `local_mess.worktree_lines`). Global block rule 5, `git-doctrine.md`, `hygiene.md`, `session-sync.md`. Tests: `tests/test_auto_return.py` (new `test_a_branch_or_worktree_under_an_archive_tag_is_never_reported`). Skill 2026.10.24.6.

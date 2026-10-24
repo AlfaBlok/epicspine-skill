@@ -1,6 +1,6 @@
 # AGENTS.md
 
-**Bind: do not Read whole spine files** (Read returns every line). Root: `Read docs/EPIC-0-OPERATING-SYSTEM.md` offset 18 limit 45. Task epic: Bash `sed -n '/^## Current State/,/^## [^C]/p' docs/EPIC-<n>-*.md`. (`tests/test_bind_range.py` keeps the root range covering Operating Learnings.)
+**Bind: run `python3 skill/epic-spine/scripts/spines.py --bind [docs/EPIC-<n>-*.md]` (root by default; the epic plus every parent up to the root: Current State, Operating Learnings, open asks); do not Read whole spine files.**
 
 Public EpicSpine skill source: `skill/epic-spine/` is canonical and deployed continuously from `main`.
 
