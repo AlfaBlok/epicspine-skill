@@ -12,6 +12,9 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import personas  # noqa: E402
+
 
 REQUIRED_FIELDS = (
     "Status",
@@ -730,6 +733,8 @@ def validate_local(path: Path, *, dialect: str = "auto", ticket_source: Path | N
         return SpineDocument(path.resolve(), {}, {}, ["historical snapshot is not an active spine; exclude it from active/graph inventory"], [])
 
     text = path.read_text(encoding="utf-8")
+    if personas.is_file(path, text):
+        return SpineDocument(path.resolve(), {}, {}, personas.file_errors(path, text), [])
     fields = parse_fields(text)
     sections = parse_sections(text)
     for canon, alias in (("Mission", "goal"), ("Definition Of Done", "done means")):  # Doctrine 2 headings count
@@ -892,6 +897,9 @@ def validate_local(path: Path, *, dialect: str = "auto", ticket_source: Path | N
                         errors.append(f"ledger row {row_number} ({issue}) is {status} but {column} is empty")
             if status == "done" and "Latest Evidence" in values and is_empty(values["Latest Evidence"]):
                 errors.append(f"ledger row {row_number} ({issue}) is done without evidence")
+
+    if "Team" in sections:  # opt-in: Team table shape, persona existence, ledger assignees
+        errors.extend(personas.epic_errors(path, sections, header, [dict(zip(header, r)) for r in rows], parse_table))
 
     tickets, ticket_errors = read_tickets(ticket_source or path, fields, sections)
     errors.extend(ticket_errors)

@@ -18,6 +18,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import doctrine as D  # noqa: E402
+import personas as P  # noqa: E402
 import validate_spine as v  # noqa: E402
 from ask_refs import resolve, waits  # noqa: E402
 from grants import grants, uses  # noqa: E402
@@ -121,6 +122,7 @@ def _scan(repo: Path, refs: bool) -> dict:
         node = nodes[rel(path)] = {"id": m["id"], "path": rel(path), "title": title(m, path.stem), "parent": rel(m["parent"]) if parent_file(path, cache) else None,
                                    "type": m["fields"].get("Spine Type", "").lower() or ("root" if path == root else ""),
                                    "status": status, "rollup_status": status, "dod": dod, "outcome": v.outcome(m["text"]), "current_state": current_state(m["sections"]), "waiting_on": asks(m["text"], path, repo), "waits_on": waits(m["text"]),
+                                   "team": P.team_json(v.table_rows(m["sections"].get("Team", ""))),
                                    "grants": [{**g, "source": rel(path), "inherited": False} for g in grants(m["text"], path, repo)], "children": [],
                                    "superseded_by": rel(sup) if (sup := link(path, m["fields"].get("Superseded by", ""), cache)) else None, **D.fields(m["text"], path == root)}
         if node["parent"]:  # a parent's grants apply to every descendant (standing-approvals.md)
@@ -161,7 +163,8 @@ def _scan(repo: Path, refs: bool) -> dict:
     orphan_pages, like_epic = D.page_report(repo, [repo / p for p in nodes] if root else [], epics, {repo / q["path"] for n in nodes.values() for q in n["pages"]})
     orphans = [{"path": rel(d), "title": title(meta(d, cache), d.stem), "reason": "not reachable from the root" if meta(d, cache)["id"] else "no Spine ID header"} for d in queue]
     return {"root": rel(root) if root else None, "nodes": list(nodes.values()), "orphans": orphans, "mismatches": mismatches,
-            "orphan_pages": orphan_pages, "looks_like_epic": like_epic, "stale": stale(repo, list(nodes.values()))}
+            "orphan_pages": orphan_pages, "looks_like_epic": like_epic, "stale": stale(repo, list(nodes.values())),
+            "personas": P.roster(repo, list(nodes.values()), {n["path"]: v.table_rows(meta(repo / n["path"], cache)["sections"].get("Issue Ledger", "")) for n in nodes.values()})}
 
 
 def main() -> int:

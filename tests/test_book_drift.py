@@ -29,6 +29,7 @@ SKILL_DIR = ROOT / "skill" / "epic-spine"
 ALLOWLIST: dict[str, str] = {"epic_log.py": "helper module of spines.py (rollup, --active, stale, next code); documented with spines.py",
                              "doctrine.py": "helper module of spines.py / pre_commit.py (Doctrine 2 readers: epics, pages, JSON fields); documented with spines.py",
                              "ask_refs.py": "helper module of epic_log.py / spines.py (`waits on` references, D19); documented with spines.py",
+                             "personas.py": "helper module of validate_spine.py / spines.py (persona files, Team tables, assignees); documented in personas.md",
                              "grants.py": "helper module of spines.py / validate_spine.py (standing approvals: grant lines, inheritance, uses); documented with spines.py"}
 
 SKILL_FOLDERS = ("references", "scripts", "assets")

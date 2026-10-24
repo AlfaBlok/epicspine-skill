@@ -49,6 +49,7 @@ Fall back to read-only orientation when the role, spine, or issue is unclear. Bi
 | Sprint dialect v2 / SHIP-HARDEN | `references/sprint-dialect-v2.md` |
 | Ticket backend and issues | `references/ticket-backends.md`, `assets/github-issue-template.md` |
 | Structural validation and diagnostics | `references/structural-validation.md`, `scripts/validate_spine.py`, `scripts/spine_fix.py` |
+| Personas, `## Team` tables, ledger assignees | `references/personas.md`, `scripts/personas.py` |
 | Operating learnings | `references/learnings.md` |
 | Git, worktrees, integration, rollback; hygiene and sweeps | `references/git-doctrine.md`, `references/hygiene.md`, `assets/sweep-brief.md` |
 | Skill freshness and upgrades; session self-sync | `references/skill-update.md`, `references/session-sync.md`, `scripts/skill_update.py`, `scripts/session_sync.py`, `scripts/repo_sync.py`, `scripts/fetch_guard.py`, `scripts/vendored_skill.py`, `scripts/stop_push.py`, `scripts/codex_hooks.py`, `scripts/rehook.py`, `scripts/background_sync.py`, `scripts/local_mess.py`, `scripts/local_servers.py`, `scripts/auto_return.py`, `scripts/deploy_gate.py`, `scripts/repo_state.py`, `scripts/sync_schedule.py`, `assets/epicspine-profile.md` |
