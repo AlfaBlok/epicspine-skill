@@ -14,11 +14,11 @@ Page of [EPIC-3](../EPIC-3-EPIC-LOG.md) (E3-3). `spines.py --json` on every repo
 | sismic | yes | 1 | 0 | 0 | 0 | 3 | green |
 | testaments | yes | 1 | 0 | 0 | 0 | 0 | green |
 | epicspine-skill | yes | 5 | 0 | 0 | 0 | 2 | green |
-| idea_scraper | none | - | - | - | - | - | A1 `all`: root in progress (mcp:908a8617) |
-| obsidian-brain | none | - | - | - | - | - | A1 `all`: root in progress (mcp:ae7b32be) |
-| zenod-cloud | none | - | - | - | - | - | A1 `all`: root in progress (mcp:df6f29ed) |
-| nectary | none | - | - | - | - | - | A1 `all`: root in progress (mcp:b3711a17) |
-| zenod_memory | none | - | - | - | - | - | A1 `all`: root in progress (mcp:377938ea) |
-| alpha9_webflow_export | none | - | - | - | - | - | A1 `all`: root in progress (mcp:ca22629c) |
+| idea_scraper | none | - | - | - | - | - | green: 1 / 0 / 0 / 17 recorded as exceptions ([list](https://github.com/AlfaBlok/idea_scraper/blob/main/docs/spines/LOOKS_LIKE_EPIC_EXCEPTIONS.md)) / 133 (07891201) |
+| obsidian-brain | none | - | - | - | - | - | green: 1 / 0 / 0 / 0 / 346 (6a1a123) |
+| zenod-cloud | none | - | - | - | - | - | green: 1 / 0 / 0 / 0 / 0 (0dd9db7); root is `blocked` on the owner confirming the repo role (E0-4) |
+| nectary | none | - | - | - | - | - | green: 1 / 0 / 0 / 0 / 0 (b64991c) |
+| zenod_memory | none | - | - | - | - | - | green: 1 / 0 / 0 / 0 / 0 (79e7f71, first commit); root is `blocked` on its owner (EPIC-0-A1 in that repo) |
+| alpha9_webflow_export | none | - | - | - | - | - | green: 1 / 0 / 0 / 0 / 0 (15d0973) |
 
-Before = 2026-10-22 (skill 2026.10.22.5). The 2026-10-19 r1 counts used the pre-Doctrine-2 orphan definition and are in [the handoff](../handoffs/2026-10-19-spine-conformance.md).
+After = 2026-10-24 for the six rootless repos (EPIC-3-A1 `all`; roots by per-repo threads, verified by `spines.py --json` from this repo's skill). Before = 2026-10-22 (skill 2026.10.22.5). The 2026-10-19 r1 counts used the pre-Doctrine-2 orphan definition and are in [the handoff](../handoffs/2026-10-19-spine-conformance.md).

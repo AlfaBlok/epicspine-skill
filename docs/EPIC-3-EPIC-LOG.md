@@ -16,13 +16,13 @@ Integration branch: main
 
 Owner: EPIC-3 delivery manager (thread mcp:e9568396-d334-4a6b-bc0c-ab93b4a0fb6b)
 Status: active
-Last attempted: 2026-10-24 EPIC-3-A1 answered `all` (Jordi); root-spine threads launched in the six rootless repos
-Result: E3-1, E3-2, E3-4 met. E3-3: every rooted repo green ([table](epic-log/conformance.md)); six rootless repos getting roots (A1: all). E3-5 follows E3-3
-Evidence: [conformance scan 2026-10-22](epic-log/conformance.md)
-Waiting on: none (six repo threads in flight)
+Last attempted: 2026-10-24 Epic Spine health wake (run_fcf538e5): verified the six new roots with `spines.py --json`, filled the conformance table, ticked E3-3, wrote EPIC-0 L-20 for E3-5
+Result: E3-1..E3-5 met; all 16 repos green ([table](epic-log/conformance.md)); Outcome written, awaiting Delivery manager / Jordi to verify and set done
+Evidence: [conformance table 2026-10-24](epic-log/conformance.md); EPIC-0 L-20; SKILL.md Epic Log line ("On latest" = installed and docs conform)
+Waiting on: none
 Approved work: E3-1 to E3-5 (user, 2026-10-19)
-Next action: verify each new root (0 orphans, 0 mismatches), fill conformance rows, tick E3-3; then E3-5 into EPIC-0, Outcome, close
-Source revision: main @ 53a837d
+Next action: Delivery manager / Jordi verify the Outcome evidence and set Status: done
+Source revision: main @ ee4cf91
 Verified at: 2026-10-24
 
 ## Mission
@@ -37,7 +37,7 @@ Why: Jordi and the agent_team console must see what is open, settled and archive
 
 ## Waiting on
 
-- [answered EPIC-3-A1 2026-10-24 @Jordi] Give a root spine to the six repos that have none (idea_scraper, obsidian-brain, zenod-cloud, nectary, zenod_memory, alpha9_webflow_export)? — options: all | none | pick — recommend: idea_scraper, obsidian-brain, zenod-cloud (active goals live there); none for the other three, recorded as exceptions — unblocks: E3-3 for those repos; nothing else waits — effort: ~1 min — context: [scan](epic-log/conformance.md) — answer: all
+- [answered EPIC-3-A1 2026-10-24 @Jordi · done 2026-10-24 cad6da6] Give a root spine to the six repos that have none (idea_scraper, obsidian-brain, zenod-cloud, nectary, zenod_memory, alpha9_webflow_export)? — options: all | none | pick — recommend: idea_scraper, obsidian-brain, zenod-cloud (active goals live there); none for the other three, recorded as exceptions — unblocks: E3-3 for those repos; nothing else waits — effort: ~1 min — context: [scan](epic-log/conformance.md) — answer: all
 
 ## Non-Goals
 
@@ -47,9 +47,24 @@ No rename of existing files or header fields. Migration changes structure only (
 
 - [x] E3-1 The skill ships it: the definition, `spine_new.py`, `spines.py --json` and the commit check are released on main with tests green.
 - [x] E3-2 Agents keep it true: every new ask is answered with a `Goal: EPIC-<n>` line and lands in the tree; done or replaced goals close; goals active but untouched 14 days are flagged. Measured by tests plus 3 fresh sessions in different repos.
-- [ ] E3-3 Every repo conforms: `spines.py --json` on each repo on vps1 shows 0 orphans and 0 mismatches, or each exception is recorded in that repo; repos without a root were offered one and the answer is recorded. Proof: a published before/after table.
+- [x] E3-3 Every repo conforms: `spines.py --json` on each repo on vps1 shows 0 orphans and 0 mismatches, or each exception is recorded in that repo; repos without a root were offered one and the answer is recorded. Proof: a published before/after table.
 - [x] E3-4 The console sees it: the agent_team milestone picker lists poly-maker E4, read from `spines.py --json`.
-- [ ] E3-5 "On latest EpicSpine" means installed and conforming (E3-3 green): an Operating Learning in EPIC-0, and no current instruction says otherwise.
+- [x] E3-5 "On latest EpicSpine" means installed and conforming (E3-3 green): an Operating Learning in EPIC-0, and no current instruction says otherwise.
+
+## Outcome
+
+Verdict: accomplished
+Outcome: Every goal in the sixteen repos on vps1 hangs in one tree from a root spine (0 orphans, 0 mismatches, exceptions recorded), the skill ships the tools and the living-tree rules, the console picker reads it, and "on latest" now means installed and conforming (EPIC-0 L-20).
+Closed: 2026-10-24 by run_fcf538e5-b4e4-41ba-9932-733fd3caf7f9
+Risk: new roots in idea_scraper, obsidian-brain, zenod-cloud, nectary, zenod_memory and alpha9_webflow_export are stubs the owners should confirm (zenod-cloud and zenod_memory are `blocked` on their owners); the goal-staleness flag keeps surfacing them. None blocking.
+
+| Done means | Evidence |
+|---|---|
+| E3-1 | releases 2026.10.19.1..2, ledger rows (cab199a, 4639aa9, 88f00fa, 52cdd31..20b4602) |
+| E3-2 | 61d7e03, 7881e52; 3 fresh sessions (ledger) |
+| E3-3 | [conformance table](epic-log/conformance.md), after column filled for all 16 repos 2026-10-24 |
+| E3-4 | agent_team 9e53c7d; `/api/repos/poly-maker/docs` lists E4 |
+| E3-5 | EPIC-0 L-20; SKILL.md Epic Log line |
 
 ## Issue Ledger
 
@@ -59,11 +74,11 @@ No rename of existing files or header fields. Migration changes structure only (
 | draft | Ticket worker | worker (Sonnet 5.5) | E3-2 living tree: `Goal: EPIC-<n>`, Record duties, `--active`, 14 d stale, codes from `spine_new` [detail](epic-log/steps.md#ticket-2) | done | E3-1 | merged | main | tests 61d7e03 + 7881e52; 3 fresh sessions, 3 repos, unprompted: poly-maker e25fa5ad `Goal: EPIC-4`, zenod aa9a971f `Goal: EPIC-0`, house_decision 0c5418a5 `Goal: EPIC-1` (new spine, placed under root); sismic 21a5bf1b named no code, fixed in 2026.10.22.7 | 2026-10-22 | none |
 | draft | Ticket worker | worker (Sonnet 5.5, seat2) | `spines.py --active` prints `next: EPIC-<n>`; rule 6 names it for new goals (E3-2 probe gap) | done | none | merged | main | merged 7881e52 (2026.10.22.7); isolated suite OK; sismic --active ends `next: EPIC-1` | 2026-10-22 | none |
 | draft | Repo delivery manager | poly-maker thread mcp:aac4e0e3 | E3-3 migrate poly-maker: 3 orphans (analysis/*/SPINE.md), 14 looks_like_epic; E4 content untouched [detail](epic-log/steps.md#ticket-3) | done | E3-1 | main-direct | main | verified 2026-10-22: 58 nodes, 0 orphans, 0 mismatches, 14 pages recorded as exceptions (poly-maker 1dc21c66..69a3a0d8) | 2026-10-22 | none |
-| draft | Repo delivery manager | per-repo threads | E3-3 migrate infra-vps (39 looks_like_epic, retry mcp:decbc138), zenod (done: PR #1420, 2c34984), tax-assist-research (done: 8cebb7b), abnb-agent (done: 585732d); rootless repos per EPIC-3-A1 | active | E3-1 | per repo policy | main | zenod (29 nodes) abnb-agent (3) and tax-assist-research (18) verified 2026-10-22: 0 orphans, 0 mismatches, exceptions recorded | 2026-10-22 | await infra-vps |
-| draft | Delivery manager | EPIC-3 delivery manager | E3-3 conformance table, before/after per repo | active | E3-3 migrations | none | main | before column: [scan 2026-10-22](epic-log/conformance.md) | 2026-10-22 | after column when migrations land |
+| draft | Repo delivery manager | per-repo threads | E3-3 migrate infra-vps (39 looks_like_epic, retry mcp:decbc138), zenod (done: PR #1420, 2c34984), tax-assist-research (done: 8cebb7b), abnb-agent (done: 585732d); rootless repos per EPIC-3-A1 | done | E3-1 | per repo policy | main | zenod (29 nodes) abnb-agent (3) tax-assist-research (18) infra-vps (7) verified 2026-10-22; six rootless repos verified 2026-10-24 (EPIC-3-A1 `all`): 1 node each, 0 orphans, 0 mismatches, idea_scraper's 17 recorded as exceptions | 2026-10-24 | none |
+| draft | Delivery manager | EPIC-3 delivery manager | E3-3 conformance table, before/after per repo | done | E3-3 migrations | none | main | [table](epic-log/conformance.md): all 16 repos green, after column filled 2026-10-24 | 2026-10-24 | none |
 | draft | Repo delivery manager | agent_team | E3-4 console picker reads `spines.py --json` | done | E3-1 | none | main | 2026-10-22 live: `/api/repos/poly-maker/docs` lists `EPIC-4: ONE LOGGER` via `spines`, parent EPIC0.md (agent_team 9e53c7d); [screenshot](doctrine/evidence/polymaker-e4-done-means-2026-10-22.png) | 2026-10-22 | none |
 | draft | Ticket worker | worker (Sonnet 5.5, seat1/seat2) | spines.py under load: read each file once; stale check survives git timeouts (risk from EPIC-4: cold run vs console 15 s timeout) | done | none | merged | main | merged 83b4b9b (2026.10.22.6): ~15% less CPU, output byte-identical on poly-maker/zenod; isolated suite 625 OK; console last-good cache covers the rest | 2026-10-22 | none |
-| draft | Delivery manager | /root delivery manager | E3-5 learning "on latest = installed and conforming" + supersede sweep | draft | E3-3 | none | main | none | 2026-10-19 | write when the table is green |
+| draft | Delivery manager | /root delivery manager | E3-5 learning "on latest = installed and conforming" + supersede sweep | done | E3-3 | none | main | EPIC-0 L-20; sweep: SKILL.md Epic Log line, CHANGELOG 2026.10.19 and decisions already say installed and conforming; no instruction says otherwise (handoff is history) | 2026-10-24 | none |
 
 ## Decisions
 
@@ -87,5 +102,6 @@ Goal / Done means and doctrine versioning moved to [EPIC-4](EPIC-4-DOCTRINE-2.md
 | 2026-10-22 | accepted | E3-3 bar under Doctrine 2 | Green = 0 `orphans`, 0 `mismatches`, and each `looks_like_epic` page made a coded epic or kept as a linked page / recorded exception; `orphan_pages` is advisory (spine-model.md), reported, not chased. | spine-model.md "Page and orphan checks are advisory" | doctrine makes pages blocking |
 | 2026-10-22 | accepted | spines.py speed is an EPIC-3 step | EPIC-4's open risk (cold spines.py vs the console's 15 s timeout) moves here with the scripts (EPIC-4 closed); measured 19-23 s, so it gets a step, not a watch. | 2026-10-22 timing on poly-maker | never |
 | 2026-10-24 | accepted | Roots for all six rootless repos (EPIC-3-A1: all) | Jordi chose `all` over the recommended three: idea_scraper, obsidian-brain, zenod-cloud, nectary, zenod_memory, alpha9_webflow_export each get a root spine, none recorded as an exception. zenod_memory has no commits (remote empty), so its root is its first commit. | e4b638c (console answer) | a repo owner rejects the root |
+| 2026-10-24 | accepted | "On latest" is a rule, not a slogan (E3-5) | EPIC-0 L-20: "on latest" = installed AND conforming, proven by the conformance table; written by Epic Spine health under the 2026-10-19 approval of E3-1 to E3-5. | EPIC-0 L-20; [table](epic-log/conformance.md) | a doctrine change redefines conformance |
 | 2026-10-22 | accepted | spines.py timeout risk: mitigate, don't chase | The console's last-good cache covers slow scans; the skill only trims CPU (~15%) and makes the stale check timeout-safe. The git ls-files listing was dropped (no wall gain, L-1). | wt/spines-fast r1 report; agent_team spines.ts:290 | a cold-start fallback is seen in the console |
 | 2026-10-22 | accepted | Legacy goals keep their Spine ID as code | Migrated legacy goals are coded by their `Spine ID:` (zenod `C`, `E3-0`, ...) with titles and files unchanged (Non-Goals: no renames); new goals get `EPIC-<n>` from `spine_new`. Closed-by-replacement = `Status: done` + `Superseded by:` + Outcome (`--trackable` has no superseded word). | zenod PR #1420; spine-model.md epic definition | doctrine requires `# EPIC-<n>:` titles on every goal |

@@ -22,9 +22,9 @@ Status: active
 Last attempted: 2026-10-24 ticket-37 (65c7e2b, merge ec45219, skill 2026.10.24.3): SessionStart prints only the current repo's attention (L-18); other repos only on request (`repo_state.py`)
 Result: done: live `attention_lines` from agent_team lists no other repo (abnb-agent, idea_scraper, house_decision, epicspine-skill gone); EPIC-3 open items unchanged: E3-3 six rootless repos and E3-5, both gated on EPIC-3-A1
 Evidence: ec45219 (650 tests green; 15 repos still recorded in the status file, `repo_state.py` prints them)
-Waiting on: Jordi: EPIC-3-A1 (root spines for the six rootless repos; asked in EPIC-3)
+Waiting on: none (EPIC-3-A1 answered `all` and done)
 Approved work: EPIC-3 Epic log and EPIC-4 Doctrine 2 (their ledgers hold the tickets)
-Next action: EPIC-3 closes E3-2/E3-3/E3-5 (ETA 1-2 days, E3-3 rootless repos gated on EPIC-3-A1); EPIC-0 free for E3-5's learning; then close this root's DOD
+Next action: Delivery manager verifies EPIC-3 Outcome (all five DoD ticked 2026-10-24, status review) and sets it done; then close this root's DOD
 Source revision: main
 Verified at: 2026-10-24
 
@@ -57,6 +57,7 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 - L-15..L-17 superseded: now skill doctrine (references/spine-model.md, global-block)
 - L-18 | any session | Never show other repos' state inside a session about one repo unless the conversation is explicitly about them; the background checker does its job and records, it never broadcasts machine-wide notices to every session | user 2026-10-24 | confirmed 2026-10-24
 - L-19 | branch hygiene | Parked work gets out of the way: archive it (annotated tag `archive/<name>`, pushed and verified), delete the branch, never remind or ask about it again; non-destructive cleanup needs no question | user 2026-10-24 | confirmed 2026-10-24
+- L-20 | reporting a repo "on latest" | "On latest EpicSpine" means installed AND conforming (`spines.py --json`: 0 orphans, 0 mismatches, each `looks_like_epic` page a coded epic or recorded exception), never just the skill or block version; proof is the [conformance table](epic-log/conformance.md) | EPIC-3 E3-5, Jordi 2026-10-19 (handoff step 7) | confirmed 2026-10-24
 
 **Scoped index**: none yet.
 
