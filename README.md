@@ -49,7 +49,7 @@ python3 skill/epic-spine/scripts/validate_spine.py --strict --graph examples/EPI
 python3 -B -m unittest discover -s tests -v
 ```
 
-Expect `OK` for the example and a passing suite. The example is fully populated but its sample delivery remains unaccepted; validation proves document structure, not that a product shipped. For actual work in this repository, start at the [audit delivery spine](docs/EPIC-2-AUDIT-REMEDIATION.md).
+Expect `OK` for the example and a passing suite. The example is fully populated but its sample delivery remains unaccepted; validation proves document structure, not that a product shipped. For actual work in this repository, start at the [root spine](docs/EPIC-0-OPERATING-SYSTEM.md) and run `python3 skill/epic-spine/scripts/spines.py --active` for the open epics.
 
 Open the deck: [index.html](index.html)
 

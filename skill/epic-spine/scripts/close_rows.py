@@ -3,7 +3,8 @@
 
 A finished epic (Status done/superseded, or ``Superseded by:``) keeps no open work: each open Issue Ledger row becomes ``superseded``
 and its Next Action gets ``closed with epic <date>; successor: <Superseded by link or none>`` (date: the Outcome's Closed date, else
-today; no Next Action column: the epic's ``Next action:`` line gets it once). Dry run unless ``--write``; idempotent."""
+today; no Next Action column: the epic's ``Next action:`` line gets it once). A Status cell that said more than one plain status
+word (``moved to M3-3 ...``) adds ``was: <old cell>`` to that row's note, so the sweep loses no meaning. Dry run unless ``--write``; idempotent."""
 
 from __future__ import annotations
 
@@ -49,25 +50,27 @@ def close_rows(text: str, today: str) -> tuple[str, list[str]]:
     sup = v.parse_fields(text).get("Superseded by", "").strip()
     date = re.search(r"\d{4}-\d{2}-\d{2}", (v.outcome(text) or {}).get("closed_at") or "")
     note = f"closed with epic {date.group() if date else today}; successor: {'none' if v.is_empty(sup) or v.is_none(sup) else sup}".replace("|", "\\|")
-    lines, old, unnoted = text.split("\n"), Counter(), False
+    lines, old, unnoted = text.split("\n"), Counter(), []
     for i, header, cells in ledger_rows(lines):
         status, act = column(header, "Status"), column(header, "Next Action")
         if not 0 < status < len(cells) - 1 or not row_open(cells[status]):
             continue
-        old[cells[status].strip()] += 1
+        cell = cells[status].strip()
+        old[cell] += 1
         cells[status] = " superseded "
+        said = "" if re.fullmatch(r"[A-Za-z][\w-]*", cell) else f"; was: {cell}"  # cell is already pipe-escaped
         if 0 < act < len(cells) - 1 and len(cells) == len(header):  # a row short of cells gets the note on the epic instead
             was = cells[act].strip()
-            cells[act] = f" {was + ' · ' if was not in ('', '-') else ''}{note} "
+            cells[act] = f" {was + ' · ' if was not in ('', '-') else ''}{note}{said} "
         else:
-            unnoted = True
+            unnoted.append(f"{cells[1].strip()} was: {cell}" if said else "")
         lines[i] = "|".join(cells)
     if not old:
         return text, []
     state = v.parse_sections(text).get("Current State", "")
     at = next((i for i, l in enumerate(lines) if re.match(r"(?i)Next action:", l) and l in state), None)
     if unnoted and at is not None:
-        lines[at] += f" · ledger: {note}"
+        lines[at] += f" · ledger: {note}" + "".join(f"; {w}" for w in unnoted if w)
     return "\n".join(lines), [f"{sum(old.values())} open rows -> superseded (" + ", ".join(f"{w} {n}" for w, n in old.most_common()) + f"); {note}"]
 
 
