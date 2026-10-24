@@ -36,8 +36,8 @@ def next_of(log: dict) -> int:
 
 
 def rollup(own: str, kids: list[str], dod: list[dict]) -> str:
-    """Derived: blocked wins; all children and criteria done: done; any progress: active; else the own status."""
-    parts = kids + ["done" if d["done"] else "open" for d in dod]
+    """Derived: blocked wins; all children (a superseded child counts as done) and criteria done: done; any progress: active; else the own status."""
+    parts = ["done" if k == "superseded" else k for k in kids] + ["done" if d["done"] else "open" for d in dod]
     if own == "blocked" or "blocked" in kids:
         return "blocked"
     if parts and all(p == "done" for p in parts):

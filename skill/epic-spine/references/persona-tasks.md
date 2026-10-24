@@ -4,8 +4,8 @@ Several personas work one repo and one epic. This is how they hand work to each 
 
 ## A task is a ledger row
 
-- A task is an Issue Ledger row with an assignee in `Owner / Assignment` and a Status (draft / ready / active / blocked / done / deferred). One row per job; several jobs, several rows. The assignee is a persona on the epic's `## Team` table, or `Jordi`.
-- **Queue.** Every persona wake starts with its queue: the open rows (not done, not deferred) assigned to it, in every epic whose `## Team` table names it. Work the queue, then the epic's Next action; an empty queue means check Team cadence and stop.
+- A task is an Issue Ledger row with an assignee in `Owner / Assignment` and a Status (draft / ready / active / blocked / done / superseded / deferred). One row per job; several jobs, several rows. The assignee is a persona on the epic's `## Team` table, or `Jordi`.
+- **Queue.** Every persona wake starts with its queue: the open rows (not done, superseded or deferred) assigned to it, in every epic whose `## Team` table names it. Work the queue, then the epic's Next action; an empty queue means check Team cadence and stop.
 - **Hand-off = reassign the row.** Change the assignee, set Status `ready`, put what the next persona needs in Next Action, and commit. Never finish someone else's row, and never keep a row you cannot do.
 - **Another goal's task.** A task that serves a different goal goes in that goal's ledger, with a link back from the originating row (Depends On or Next Action).
 - **Outgrown task.** A row that needs more than a wake or two becomes a child epic (`spine_new.py`); the row stays as the pointer and rolls up the child's Outcome.
