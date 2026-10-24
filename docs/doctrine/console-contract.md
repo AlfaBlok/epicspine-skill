@@ -104,3 +104,20 @@ Added per node by step 11. The console's top card shows the Outcome when there i
 ## Waiting on
 
 Added per node by step 12, extended by step 17 (v2). `waiting_on` lists the structured asks under the epic's `## Waiting on` section, `[]` when there are none. Each item is `{code, who, ask, question, steps, options, recommend, unblocks, effort, context, since, row, state, answer}`; `ask` is `decide`, `approve`, `provide` or `do`; `state` is `open`, `answered` or `done` (an answered line marked `· done`, consumed by its owner: closed, never open work), `answer` is null while open; `context` and local links in `steps` are repo-relative and an external URL is kept as-is. Unknown or missing fields are null (a v1 line has `code` null). An `answered` line keeps `code`, `who`, `question`, the fields it still carries and `answer` (`ask`, `since` and `row` may be null). The format, the answer write-back and the advisory checks are in [human-asks.md](human-asks.md).
+
+## Standing approvals
+
+Added per node by EPIC-0 ticket-35 (agent_team EPIC-8). `grants` lists the grants in force on the epic, own first, then every ancestor's (nearest first), `[]` when none. Each item is `{code, who, scope, limits, expires, context, since, state, revoked, why, source, inherited, uses}`; `state` is `active`, `expired` or `revoked`; `source` is the spine path whose `## Standing approvals` line defines it and `inherited` is true when that is an ancestor; `uses` counts Decisions rows across the tree citing `under <code>`. Missing fields are null. Format, states, inheritance and checks: [standing-approvals.md](standing-approvals.md).
+
+```json
+"grants": [{"code": "E0-G1", "who": "Jordi", "scope": "whatgpt's own pg0 database: create db `whatgpt` + role `whatgpt_app`, ...; no change to other databases or pg0 config",
+            "limits": null, "expires": null, "context": null, "since": "2026-10-24", "state": "active", "revoked": null, "why": null,
+            "source": "docs/EPIC-0-ROOT.md", "inherited": true, "uses": 0}]
+```
+
+What the console shows and edits (an Approvals section per epic/milestone):
+1. Every grant in `grants`: code, scope, who and since, limits and expires when set, `uses`, and the state (expired and revoked muted). An inherited one names its `source` epic and is edited there.
+2. **Add** writes a new `- [grant <epic code>-G<n> @<who> since <today>] <scope> — limits: … — expires: …` line under the epic's `## Standing approvals` (created after `## Waiting on` when absent), `n` = the highest G-number in that section + 1.
+3. **Edit** rewrites that line's scope and fields in place, keeping code and `since`.
+4. **Revoke** rewrites the line as `- [revoked <code> <today> @<who>] <scope> — why: <reason>` and adds a Decisions row citing the code.
+5. The console never stores grants itself: the spine line is the only copy (agent_team L-12). Before the tools release `grants` is absent: render nothing.
