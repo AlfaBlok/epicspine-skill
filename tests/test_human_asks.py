@@ -233,6 +233,45 @@ class AdvisoryTests(unittest.TestCase):
         self.assertIn("stale ask", found[0])
 
 
+class WritingTests(unittest.TestCase):
+    """Ask-writing advisories (human-asks.md "Writing an ask"; agent_team root L-13/L-14), never blocking."""
+    def issues(self, line: str) -> list[str]:
+        return epic_log.ask_issues(spine_with(asks=line), TODAY)
+
+    def test_a_plain_ask_is_clean(self) -> None:
+        self.assertEqual([], self.issues(DECIDE2))
+
+    def test_future_triggers(self) -> None:
+        for q in ("Scan the QR when pinged?", "Provide the keys before Wave 2?", "Approve the redirect later?",
+                  "Approve the redirect once the site is up?"):
+            found = self.issues(DECIDE2.replace("Ship E4 with one logger or two?", q))
+            self.assertEqual(1, len(found), q)
+            self.assertIn("future trigger", found[0])
+        found = self.issues(DECIDE2.replace("recommend: one", "recommend: one, scan later"))
+        self.assertIn("future trigger ('later')", found[0])
+        self.assertEqual([], self.issues(DECIDE2.replace("Ship E4", "Ship E4 at once")))  # `once` alone is not a trigger
+
+    def test_numbered_parts(self) -> None:
+        found = self.issues(DECIDE2.replace("Ship E4 with one logger or two?", "(1) Ship E4 with one logger? (2) Rotate the keys?"))
+        self.assertEqual(1, len(found))
+        self.assertIn("several numbered parts", found[0])
+
+    def test_long_question_sentence(self) -> None:
+        long = "Ship E4 with one logger " + "and the archiver " * 12 + "or two?"
+        found = self.issues(DECIDE2.replace("Ship E4 with one logger or two?", long))
+        self.assertEqual(1, len(found))
+        self.assertIn("question sentence over 200 chars", found[0])
+        short = "Ship E4 with one logger or two? " + "It keeps the archiver simple. " * 6
+        self.assertEqual([], self.issues(DECIDE2.replace("Ship E4 with one logger or two?", short.strip())))
+
+    def test_answered_asks_are_not_checked(self) -> None:
+        found = self.issues("- [answered E4-A1 2026-10-22 @Jordi] Scan the QR when pinged? (1) a (2) b — answer: yes")
+        self.assertFalse([i for i in found if "future trigger" in i or "numbered parts" in i])
+
+    def test_trigger_word_is_case_insensitive(self) -> None:
+        self.assertIn("future trigger", " ".join(self.issues(DECIDE2.replace("Ship E4", "Later, ship E4"))))
+
+
 class TreeCase(LivingCase):
     def setUp(self) -> None:
         super().setUp()

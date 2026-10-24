@@ -1,6 +1,6 @@
-# Human asks: contract (v4)
+# Human asks: contract (v5)
 
-Page of [EPIC-4](../EPIC-4-DOCTRINE-2.md). v1 was step 12 (agent_team M2-SKILL). v2 is step 17 (M2-SKILL2, Jordi, 2026-10-21). v3 is step 20 ([D19](decisions.md#d19), agent_team M2-35, 2026-10-22): reference lines, search before asking, consumed answers. v4 is D19's amendment (EPIC-0 ticket-34, 2026-10-23): `superseded` asks, done notes, `Waiting on:` code references, advisories on unreadable lines. Earlier shapes are unchanged.
+Page of [EPIC-4](../EPIC-4-DOCTRINE-2.md). v1 was step 12 (agent_team M2-SKILL). v2 is step 17 (M2-SKILL2, Jordi, 2026-10-21). v3 is step 20 ([D19](decisions.md#d19), agent_team M2-35, 2026-10-22): reference lines, search before asking, consumed answers. v4 is D19's amendment (EPIC-0 ticket-34, 2026-10-23): `superseded` asks, done notes, `Waiting on:` code references, advisories on unreadable lines. v5 (EPIC-0 ticket-36, agent_team EPIC-8 E8-S4, 2026-10-24): ask-writing rules and their advisories. Earlier shapes are unchanged.
 
 An ask is a human action that blocks the NEXT step. A human named on a later step is a plan, not an ask: leave it as plain ledger text until that row is next.
 
@@ -28,6 +28,12 @@ Write one line per ask under `## Waiting on`, right after Current State.
 - `row` is optional: the ledger step this ask blocks.
 
 **Then:** the question, as one self-contained sentence. Every internal id in it gets a gloss: "S3 (patch the archiver)", never a bare "S3".
+
+**Write it so the human answers in seconds** (whoever raises it, the delivery manager first; agent_team root L-13, L-14):
+- **Only the step that blocks now.** A human step later in the plan (a QR scan "when pinged", keys "before Wave 2") stays plain plan text and becomes an ask only when it is next. Asks ahead of time blur what is really blocking.
+- **Lead with the decision in plain words:** what, why it matters, the recommendation. Ids, jargon and steps come after, in the fields.
+- **One decision per ask.** Never fold non-blocking extras into a blocking ask: a key, a token widening, a redirect and a future scan are four asks at most, and only the one blocking now is written (whatgpt_v3 E0-A7 folded all four).
+- An agent that answers asks for the human (an Unblocker) answers or splits them; it never rewrites an ask's wording. Phrasing is the asker's job.
 
 **Then the fields, each introduced by ` — `:**
 
@@ -113,6 +119,9 @@ The validator and the commit check warn on:
 - an ask missing a required field, or missing its code;
 - a duplicate code within an epic;
 - a bare internal id in the question (best effort);
+- an ask that names a future trigger ("when pinged", "before Wave", "later", "once … is up"): ask only for the step that blocks now (best effort, over the question, `steps:` and `recommend:`);
+- a question that lists several numbered parts, "(1) … (2) …": one decision per ask;
+- a question sentence over 200 characters: lead with the decision in plain words;
 - more than 3 open asks;
 - an ask open for more than 7 days;
 - a `waits on` or `Waiting on:` code of this repo that no ask or Decisions row cites (a cross-repo one never warns, it reports `unresolved`);
