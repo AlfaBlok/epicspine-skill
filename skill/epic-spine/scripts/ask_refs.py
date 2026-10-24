@@ -25,7 +25,7 @@ SUPERSEDED_BY = re.compile(r"\s*superseded by\s+((?:[\w.-]+/)?" + ASK_ID + ")")
 DONE = re.compile(r"\s*·\s*done\s+" + DATE + r"\b.*$")  # consumed answer, with an optional sha and note
 CANONICAL = ("`[ask <code>: <type> @<who> since <date> row <id>]`, `[answered <code> <date> @<who>]` (then ` · done <date> <sha>`), "
              "`[superseded <code> <date> by <code>]` or `[waits on [<repo>/]<code> row <id>]`")
-ASK_FIELD = re.compile(r"(steps|options|recommend|unblocks|effort|context|answer):\s*(.*)", re.S)
+ASK_FIELD = re.compile(r"(steps|options|recommend|unblocks|effort|context|impact|risk|why(?:\s+@?[\w.-]+)?|answer):\s*(.*)", re.S)  # `why <who>:` is `why`
 
 
 def ref(r: str | None, c: str, row: str | None, via: str) -> dict:
@@ -117,7 +117,7 @@ def asks(text: str, path: Path, repo: Path, problems: list[str] | None = None) -
         for part in parts:
             f = ASK_FIELD.fullmatch(part.strip())
             if f:
-                fields[last := f.group(1)] = f.group(2).strip()
+                fields[last := f.group(1).split()[0]] = f.group(2).strip()
             elif fields:  # a dash inside the previous field's text
                 fields[last] += " — " + part
             else:
@@ -126,15 +126,20 @@ def asks(text: str, path: Path, repo: Path, problems: list[str] | None = None) -
         steps = re.sub(r"\[[^\]]*\]\(([^)]+)\)", lambda k: ask_context(k.group(1), path, repo) or "", fields.get("steps", ""))
         out.append({"code": code, "who": who, "ask": kind, "question": question, "steps": steps or None, "options": options,
                     "recommend": fields.get("recommend") or None, "unblocks": fields.get("unblocks") or None, "effort": fields.get("effort") or None,
-                    "context": ask_context(fields.get("context", ""), path, repo), "since": since, "row": row,
+                    "context": ask_context(fields.get("context", ""), path, repo), "impact": fields.get("impact") or None,
+                    "risk": fields.get("risk") or None, "why": fields.get("why") or None, "since": since, "row": row,
                     "state": "open" if opened else "superseded" if superseded else "done" if done else "answered",
                     "answer": fields.get("answer") or None, "superseded_by": by})
     return out
 
 
 def ask_context(value: str, path: Path, repo: Path) -> str | None:
-    """A markdown link or bare path/URL: external kept as-is, local made repo-relative (the file's folder first, else the repo root)."""
-    target = (m.group(1) if (m := re.fullmatch(r"\[[^\]]*\]\(([^)]+)\)", value.strip())) else value.strip()).strip("<>")
+    """A markdown link or bare path/URL: external kept as-is, local made repo-relative (the file's folder first, else the repo root).
+    Plain words (v6 `context:` in human format) are kept as written."""
+    link = re.fullmatch(r"\[[^\]]*\]\(([^)]+)\)", value.strip())
+    if not link and re.search(r"\s", value.strip()):
+        return value.strip()
+    target = (link.group(1) if link else value.strip()).strip("<>")
     if not target or "://" in target or target.startswith("mailto:"):
         return target or None
     name, _, frag = target.partition("#")

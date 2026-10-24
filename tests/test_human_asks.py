@@ -26,6 +26,9 @@ DO = ("- [ask E4-A3: do @Jordi since 2026-10-21 row T4] Patch the archiver for 1
       " — recommend: do it tonight — effort: ~10 min — context: [why](docs/one-logger/notes.md#archiver)")
 DECIDE2 = "- [ask E4-A1: decide @Jordi since 2026-10-21 row T4] Ship E4 with one logger or two? — options: one | two — recommend: one — unblocks: T4 — context: [why](docs/one-logger/notes.md#loggers)"
 APPROVE2 = "- [ask E4-A2: approve @Ana since 2026-10-20] Approve the page? — recommend: approve — unblocks: T5 — context: https://example.com/page#top"
+HUMAN = ("- [ask E4-A6: approve @Jordi since 2026-10-24 row T4] Let the agent restart the archiver tonight? — context: the cutover found ticks missing since Monday"
+         " — impact: unblocks T4 (cutover); each day waiting loses a day of ticks — risk: 2 min gap in ticks; rollback: start the old unit"
+         " — recommend: yes, tonight — why Jordi: only you hold root on vps1 — unblocks: T4")
 ANSWERED_V2 = "- [answered E4-A3 2026-10-22 @Jordi] Patch the archiver? — answer: done"
 TODAY = datetime.date(2026, 10, 22)
 
@@ -48,12 +51,12 @@ class ParserTests(unittest.TestCase):
 
     def test_every_field(self) -> None:
         self.assertEqual([{"code": None, "who": "Jordi", "ask": "decide", "question": "Ship E4 with one logger or two?", "steps": None, "options": ["one", "two"], "recommend": "one",
-                           "unblocks": None, "effort": None, "context": "docs/one-logger/notes.md#loggers", "since": "2026-10-21", "row": "T4", "state": "open", "answer": None, "superseded_by": None}], self.parse(DECIDE))
+                           "unblocks": None, "effort": None, "context": "docs/one-logger/notes.md#loggers", "impact": None, "risk": None, "why": None, "since": "2026-10-21", "row": "T4", "state": "open", "answer": None, "superseded_by": None}], self.parse(DECIDE))
 
     def test_v2_do_ask_with_every_new_field(self) -> None:
         self.assertEqual({"code": "E4-A3", "who": "Jordi", "ask": "do", "question": "Patch the archiver for 1 h so the cutover (T4) can run?", "steps": "docs/x.md#run (vps1, user root)",
                           "options": [], "recommend": "do it tonight", "unblocks": "T4; each day waiting loses a day of ticks", "effort": "~10 min",
-                          "context": "docs/one-logger/notes.md#archiver", "since": "2026-10-21", "row": "T4", "state": "open", "answer": None, "superseded_by": None}, self.parse(DO)[0])
+                          "context": "docs/one-logger/notes.md#archiver", "impact": None, "risk": None, "why": None, "since": "2026-10-21", "row": "T4", "state": "open", "answer": None, "superseded_by": None}, self.parse(DO)[0])
 
     def test_steps_inline_commands_are_kept(self) -> None:
         line = DO.replace("[runbook](docs/x.md#run) (vps1, user root)", "`sudo systemctl restart archiver` on vps1")
@@ -109,6 +112,24 @@ class ParserTests(unittest.TestCase):
             self.assertEqual("docs/doctrine/human-asks.md#writing-an-ask", epic_log.asks(waiting(root_rel), repo / "docs/EPIC-4-DOCTRINE-2.md", repo)[0]["context"])
         with self.subTest("bare path"):
             self.assertEqual("docs/x.md", self.parse("- [ask: provide @J since 2026-10-21] Q? — context: docs/x.md")[0]["context"])
+
+
+    def test_human_format_fields(self) -> None:
+        ask = self.parse(HUMAN)[0]
+        self.assertEqual(("the cutover found ticks missing since Monday", "unblocks T4 (cutover); each day waiting loses a day of ticks",
+                          "2 min gap in ticks; rollback: start the old unit", "yes, tonight", "only you hold root on vps1"),
+                         (ask["context"], ask["impact"], ask["risk"], ask["recommend"], ask["why"]))
+        with self.subTest("any order, `why @<who>:` and `why:`"):
+            parts = HUMAN.split(" — ")
+            again = self.parse(" — ".join([parts[0], *reversed(parts[1:])]).replace("why Jordi:", "why @Ana:"))[0]
+            self.assertEqual({k: ask[k] for k in ("context", "impact", "risk", "recommend", "why", "unblocks")},
+                             {k: again[k] for k in ("context", "impact", "risk", "recommend", "why", "unblocks")})
+            self.assertEqual("only you", self.parse(HUMAN.replace("why Jordi: only you hold root on vps1", "why: only you"))[0]["why"])
+        with self.subTest("absent: null"):
+            bare = self.parse("- [ask E4-A7: decide @Jordi since 2026-10-24] Q? — options: a | b")[0]
+            self.assertEqual([None] * 5, [bare[k] for k in ("context", "impact", "risk", "recommend", "why")])
+        with self.subTest("`why it matters:` inside the question is not a field"):
+            self.assertIsNone(self.parse("- [ask E4-A8: provide @J since 2026-10-24] Key? Here is why it matters: speed")[0]["why"])
 
 
 def spine_with(ledger_status: str = "blocked", asks: str = "", status: str = "active") -> str:
@@ -268,6 +289,19 @@ class WritingTests(unittest.TestCase):
         found = self.issues("- [answered E4-A1 2026-10-22 @Jordi] Scan the QR when pinged? (1) a (2) b — answer: yes")
         self.assertFalse([i for i in found if "future trigger" in i or "numbered parts" in i])
 
+    def test_human_format_advisory(self) -> None:
+        self.assertEqual([], epic_log.ask_issues(spine_with(asks=HUMAN), TODAY))
+        for drop, lacks in ((" — impact: .*?(?= — )", "impact"), (" — risk: .*?(?= — )", "risk"), (" — (?:impact|risk): .*?(?= — )", "impact, risk")):
+            with self.subTest(lacks):
+                found = epic_log.ask_issues(spine_with(asks=re.sub(drop, "", HUMAN)), TODAY)
+                self.assertEqual([f"ask E4-A6 lacks {lacks}: write it in human format (context, impact, risk, recommend, why <who>) so the human answers in seconds"], found)
+        provide = "- [ask E4-A9: provide @J since 2026-10-24 row T4] Key? — unblocks: T4 — context: docs/k.md"
+        self.assertIn("lacks impact, risk, recommend", epic_log.ask_issues(spine_with(asks=provide), TODAY)[0])
+        no_rec = epic_log.ask_issues(spine_with(asks=HUMAN.replace(" — recommend: yes, tonight", "")), TODAY)
+        self.assertEqual(["ask E4-A6 is missing recommend"], no_rec)  # one warning, not two
+        self.assertEqual([], self.issues(DECIDE2))  # written before v6: still valid
+        self.assertFalse([i for i in self.issues("- [answered E4-A6 2026-10-24 @Jordi] Restart? — answer: yes") if "lacks" in i])  # only open asks
+
     def test_trigger_word_is_case_insensitive(self) -> None:
         self.assertIn("future trigger", " ".join(self.issues(DECIDE2.replace("Ship E4", "Later, ship E4"))))
 
@@ -298,9 +332,15 @@ class JsonTests(TreeCase):
         self.add_ask(DECIDE + "\n" + ANSWERED_V2)
         asks = self.node()["waiting_on"]
         self.assertEqual(["open", "answered"], [a["state"] for a in asks])
-        self.assertEqual({"code", "who", "ask", "question", "steps", "options", "recommend", "unblocks", "effort", "context", "since", "row", "state", "answer", "superseded_by"}, set(asks[0]))
+        self.assertEqual({"code", "who", "ask", "question", "steps", "options", "recommend", "unblocks", "effort", "context", "impact", "risk", "why", "since", "row", "state", "answer", "superseded_by"}, set(asks[0]))
         self.assertEqual(["one", "two"], asks[0]["options"])
         self.assertEqual([], next(n for n in self.log()["nodes"] if n["path"] == "docs/root.md")["waiting_on"])
+
+    def test_human_format_fields_in_json(self) -> None:
+        self.add_ask(HUMAN)
+        ask = self.node()["waiting_on"][0]
+        self.assertEqual(("the cutover found ticks missing since Monday", "2 min gap in ticks; rollback: start the old unit", "only you hold root on vps1"),
+                         (ask["context"], ask["risk"], ask["why"]))
 
     def test_this_repo_epic4_has_its_open_approve_ask(self) -> None:
         repo = Path(__file__).parents[1]

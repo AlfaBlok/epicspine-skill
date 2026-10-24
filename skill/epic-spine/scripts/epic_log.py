@@ -21,6 +21,7 @@ MAX_OPEN_ASKS = 3
 FUTURE_TRIGGER = re.compile(r"\bwhen pinged\b|\bbefore wave\b|\blater\b|\bonce\b[^.;—]{1,60}?\b(?:is|are) (?:up|live|ready|running|deployed|done)\b", re.I)
 NUMBERED_PARTS = re.compile(r"\(1\).*\(2\)", re.S)
 MAX_QUESTION_SENTENCE = 200
+HUMAN_FORMAT_SINCE = "2026-10-24"  # human-asks.md v6: asks written from this date carry impact, risk, recommend
 HUMAN_WAIT = re.compile(r"@?[A-Z][a-z]+(?:'s\b|\s*[:—–(]|\s+-\s)")  # `Jordi: …`, `Jordi — …`, `Jordi's call` (best effort)
 
 
@@ -122,7 +123,8 @@ def needs_human(row: dict, names: set[str]) -> bool:
 
 
 def writing_issues(a: dict, label: str) -> list[str]:
-    """Ask-writing advisories (human-asks.md "Writing an ask"): a future trigger, several numbered parts, an over-long question sentence."""
+    """Ask-writing advisories (human-asks.md "Writing an ask"): a future trigger, several numbered parts, an over-long question sentence,
+    and (v6, asks since HUMAN_FORMAT_SINCE) no impact, risk or recommend (`recommend` here only for `provide`: other types already warn)."""
     out, q = [], a.get("question") or ""
     m = FUTURE_TRIGGER.search(" ".join(x for x in (q, a.get("steps"), a.get("recommend")) if x))
     if m:
@@ -131,6 +133,9 @@ def writing_issues(a: dict, label: str) -> list[str]:
         out.append(f"{label} lists several numbered parts: one decision per ask; split it, and drop parts that do not block now")
     if any(len(sent) > MAX_QUESTION_SENTENCE for sent in re.split(r"(?<=[.?!])\s+", q)):
         out.append(f"{label} has a question sentence over {MAX_QUESTION_SENTENCE} chars: lead with the decision in plain words (what, why, recommendation); details after")
+    lacks = [n for n in ("impact", "risk", "recommend") if not a.get(n) and (n != "recommend" or a.get("ask") == "provide")]
+    if lacks and (a.get("since") or "") >= HUMAN_FORMAT_SINCE:
+        out.append(f"{label} lacks {', '.join(lacks)}: write it in human format (context, impact, risk, recommend, why <who>) so the human answers in seconds")
     return out
 
 
