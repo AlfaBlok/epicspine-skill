@@ -65,7 +65,7 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 
 - [ ] DOD-1 A cold agent binds in three hops (AGENTS.md → this root spine → the branch matching its task), reading ≲ 100 lines before acting.
 - [ ] DOD-2 The lean SKILL.md kernel and its Default Behaviors card are landed and installed copies re-synced.
-- [ ] DOD-3 Strict graph validation and `python3 -B -m unittest discover -s tests` are green on main.
+- [x] DOD-3 Strict graph validation and `python3 -B -m unittest discover -s tests` are green on main. (2026-10-24: 655 tests OK; `validate_spine.py --strict --graph docs/EPIC-*.md` 0 errors after EPIC-3 Decisions fix)
 
 ## Issue Ledger
 
@@ -149,5 +149,5 @@ Landing exceptions: No slide for quick answers, transient status, raw logs, tick
 |---|---|---|---|---|---|---|---|---|
 | epicspine-audit-remediation | child | [EPIC-2 Audit remediation](EPIC-2-AUDIT-REMEDIATION.md) | Audit remediation delivery | done | none | PR #16 | 2026-10-09 | Reference only; reopen if scope resumes |
 | epicspine-coordination-simplification | child | [EPIC-1 Coordination simplification](EPIC-1-COORDINATION-SIMPLIFICATION.md) | Compact state and trustworthy rollups | done | none | PR #22 | 2026-10-09 | Reference only; reopen if scope resumes |
-| epicspine-epic-log | child | [EPIC-3 Epic log](EPIC-3-EPIC-LOG.md) | Every goal is a coded EPIC in one tree per repo, kept true by agents | active | none | wt/epic-log r2 | 2026-10-19 | verify r2, merge, migrate poly-maker |
+| epicspine-epic-log | child | [EPIC-3 Epic log](EPIC-3-EPIC-LOG.md) | Contributes the epic log: every goal in the 16 repos hangs in one tree from a root (0 orphans, 0 mismatches) and "on latest" means installed and conforming (Outcome: accomplished) | done | none | Outcome 2026-10-24; [conformance](epic-log/conformance.md) | 2026-10-24 | Reference only; reopen if scope resumes |
 | epicspine-doctrine-2 | child | [EPIC-4 Doctrine 2 semantic goal tree](EPIC-4-DOCTRINE-2.md) | Contributes the human layer: every epic now says what it achieves and why, how it serves its parent and what each child adds, and the agent_team console shows it (Outcome: accomplished) | done | none | Outcome 2026-10-22; skill 2026.10.22.5 | 2026-10-22 | Reference only; reopen if scope resumes |

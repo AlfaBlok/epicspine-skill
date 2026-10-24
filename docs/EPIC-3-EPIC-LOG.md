@@ -15,13 +15,13 @@ Integration branch: main
 ## Current State
 
 Owner: EPIC-3 delivery manager (thread mcp:e9568396-d334-4a6b-bc0c-ab93b4a0fb6b)
-Status: active
-Last attempted: 2026-10-24 Epic Spine health wake (run_fcf538e5): verified the six new roots with `spines.py --json`, filled the conformance table, ticked E3-3, wrote EPIC-0 L-20 for E3-5
+Status: done
+Last attempted: 2026-10-24 root Delivery manager (run_53683ac3) verified the Outcome: `spines.py --json` on the six new roots, poly-maker and zenod shows 0 orphans and 0 mismatches; L-20 present; Decisions Outcome cells normalized to `superseded` (strict graph green). Before that: Epic Spine health wake (run_fcf538e5): verified the six new roots with `spines.py --json`, filled the conformance table, ticked E3-3, wrote EPIC-0 L-20 for E3-5
 Result: E3-1..E3-5 met; all 16 repos green ([table](epic-log/conformance.md)); Outcome written (all DoD ticked, `review` is not a spine status word so Status stays active); awaiting Delivery manager / Jordi to verify and set done
 Evidence: [conformance table 2026-10-24](epic-log/conformance.md); EPIC-0 L-20; SKILL.md Epic Log line ("On latest" = installed and docs conform)
 Waiting on: none
 Approved work: E3-1 to E3-5 (user, 2026-10-19)
-Next action: Delivery manager / Jordi verify the Outcome evidence and set Status: done
+Next action: none (done; reopen if scope resumes)
 Source revision: main @ ee4cf91
 Verified at: 2026-10-24
 
@@ -89,11 +89,11 @@ Goal / Done means and doctrine versioning moved to [EPIC-4](EPIC-4-DOCTRINE-2.md
 | 2026-10-19 | accepted | Nested markdowns, judgment | Progress inside a goal is written in its spine; a new measurable objective over several pushes gets a new linked spine (L-16); full text in EPIC-0. [detail](epic-log/decisions.md#d1) | user 2026-10-19 | never |
 | 2026-10-19 | accepted | Every goal has a code | A goal is named `EPIC-<n>: <short name>`, states its goal in one line and lists measurable success criteria; without a code it cannot be discussed. | user 2026-10-19 | never |
 | 2026-10-19 | superseded | Goal and Done means open every spine | Superseded (now EPIC-4): `## Goal` then `## Done means` open every spine; the commit check requires a non-empty Goal on new and migrated spines. [detail](epic-log/decisions.md#d3) | user 2026-10-19 via previous manager thread | never |
-| 2026-10-19 | superseded by `Spine format` | Spines record their doctrine | Superseded by `Spine format`: header `Doctrine: <release>` apart from `Spine dialect:`; `spine_new` writes it; `spines --json` emits `expected_sections`. [detail](epic-log/decisions.md#d4) | user 2026-10-19 via agent_team manager | a second shape change needs a migration path |
+| 2026-10-19 | superseded | Spines record their doctrine | Superseded by `Spine format`: header `Doctrine: <release>` apart from `Spine dialect:`; `spine_new` writes it; `spines --json` emits `expected_sections`. [detail](epic-log/decisions.md#d4) | user 2026-10-19 via agent_team manager | a second shape change needs a migration path |
 | 2026-10-19 | accepted | One status word per state | `Status:` in Current State is the only status source: paused = `deferred`, `blocked` = waiting on a named external dependency; `Waiting on:` never implies blocked. [detail](epic-log/decisions.md#d5) | user 2026-10-19 via agent_team manager (E4 showed Blocked vs `deferred`) | never |
-| 2026-10-19 | superseded by E4 single writer | agent_team does not rewrite E4 | Superseded by E4 single writer: agent_team aligns to EPIC-3 doctrine; the E4 rewrite belongs to the poly-maker E3-3 thread; its earlier reshape is superseded. [detail](epic-log/decisions.md#d6) | agent_team manager 2026-10-19 | never |
-| 2026-10-19 | superseded by EPIC-4 `Doctrine: <n>` | `Spine format: 2` extends format 1 | Superseded by EPIC-4 `Doctrine: <n>`: header `Spine format: <n>` (undeclared = 1); format 2 adds the human layer (Goal, serves, contributes, Done means). [detail](epic-log/decisions.md#d7) | Jordi 2026-10-19 | never |
-| 2026-10-19 | superseded by L-14 (a poly-maker thread writes E4) | E4 single writer | Jordi's agent_team thread "E4 test in polymaker" (d14c8f2e) owns E4's content; EPIC-3 checks only E4's structure and format, never its intent. | Jordi 2026-10-19 | never |
+| 2026-10-19 | superseded | agent_team does not rewrite E4 | Superseded by E4 single writer: agent_team aligns to EPIC-3 doctrine; the E4 rewrite belongs to the poly-maker E3-3 thread; its earlier reshape is superseded. [detail](epic-log/decisions.md#d6) | agent_team manager 2026-10-19 | never |
+| 2026-10-19 | superseded | `Spine format: 2` extends format 1 | Superseded by EPIC-4 `Doctrine: <n>`: header `Spine format: <n>` (undeclared = 1); format 2 adds the human layer (Goal, serves, contributes, Done means). [detail](epic-log/decisions.md#d7) | Jordi 2026-10-19 | never |
+| 2026-10-19 | superseded | E4 single writer | Jordi's agent_team thread "E4 test in polymaker" (d14c8f2e) owns E4's content; EPIC-3 checks only E4's structure and format, never its intent. | Jordi 2026-10-19 | never |
 | 2026-10-19 | accepted | Launch is the start order | Launching a persona from the console is the start order: `ready` before launch, `active` after; written where status is defined in the skill. [detail](epic-log/decisions.md#d9) | Jordi 2026-10-19 | never |
 | 2026-10-19 | accepted | Jordi talks to EPIC-3's manager directly | From now on EPIC-3 and spine-format questions come straight to this thread, not via the previous manager. | Jordi 2026-10-19 | never |
 | 2026-10-19 | accepted | Scope split with EPIC-4 | EPIC-4 owns Goal, Serves, contributes, Done means and `Doctrine: <n>`; EPIC-3 keeps tree tools, EPIC codes, status words, conformance, the console picker. [detail](epic-log/decisions.md#d11) | Jordi 2026-10-19 via orchestrator | never |
