@@ -43,6 +43,7 @@ Fall back to read-only orientation when the role, spine, or issue is unclear. Bi
 |---|---|
 | Creating a spine, any plan/proposal/epic/goal doc, or listing the repo's goals | `references/spine-creation.md`, `scripts/spine_new.py`, `scripts/spines.py`, `scripts/bind.py`, `scripts/doctrine.py`, `scripts/epic_log.py`, `scripts/ask_refs.py`, `scripts/grants.py`, `assets/epic-spine-template.md`, `assets/compact-spine-template.md` |
 | What every epic says, hierarchy, authority, write scope, profiles | `references/spine-model.md` |
+| Persona tasks: assignees, queues, hand-offs, signed commits, asks as tasks (trial) | `references/persona-tasks.md` |
 | Compact profile, state API, migration, rollups, projections | `references/compact-state.md`, `scripts/migrate_spine.py`, `references/execution-rollups.md`, `scripts/rollup_spine.py` |
 | Role binding, dispatch profile, role protocols, gates, bootstrapping | `references/roles-and-dispatch.md`, `references/role-protocols.md`, `references/dispatch-prompts.md` |
 | Sprint dialect v2 / SHIP-HARDEN | `references/sprint-dialect-v2.md` |
