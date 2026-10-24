@@ -46,7 +46,7 @@ Steps: each is independently testable and closes only with evidence.
 
 | Issue | Role | Owner / Assignment | Title | Status | Depends On | PR/Branch | Base | Latest Evidence | Last Verified | Next Action |
 |---|---|---|---|---|---|---|---|---|---|---|
-| draft | Ticket worker | worker run_98fc838e (Sonnet 5.5, seat1) | E6-S1 (= agent_team E13-S5b) spine checker advisories + references; brief docs/handoffs/2026-10-24-e13-s5b-spine-checker.md | active | none | e6-s1 | main | brief written 2026-10-24 | 2026-10-24 | DM verifies and merges; agent_team writes its own E13-S5 evidence (L-14) |
+| draft | Ticket worker | worker run_98fc838e (Sonnet 5.5, seat1) | E6-S1 (= agent_team E13-S5b) spine checker advisories + references; brief docs/handoffs/2026-10-24-e13-s5b-spine-checker.md | review | none | e6-s1 | main | 1174c69 (682 tests OK, graph --strict 0 errors; advisories: this repo 0, agent_team docs/spines 4 = 3 free-text Waiting on + 1 Jordi-owned open row, 0 done-unticked, 0 nothing-open-beside-ask) | 2026-10-24 | DM verifies and merges; agent_team writes its own E13-S5 evidence (L-14) |
 
 ## Decisions
 
