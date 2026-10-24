@@ -372,20 +372,20 @@ class SessionStartMessTest(MessBase):
         (self.home / ".agents").mkdir(exist_ok=True)
         (self.home / bg.STATUS).write_text(json.dumps({"version": 1, "updated": bg.now_iso(), "repos": repos}))
 
-    def test_mess_lines_show_for_the_current_repo_too_but_its_sync_attention_does_not(self) -> None:
+    def test_mess_lines_show_for_the_current_repo_only_and_its_sync_attention_does_not(self) -> None:
         here = self.tmp / "c"
         here.mkdir()
         self.write({str(here): {"attention": ["c (main): x"], "mess": ["c: worktree /w already merged — safe to remove (git worktree remove /w)"]},
                     "/r/a": {"attention": ["a: y"], "mess": []}})
         lines = bg.attention_lines(self.home, here)
         self.assertEqual([line.split(" (background")[0] for line in lines],
-                         ["EpicSpine attention: a: y", "EpicSpine attention: c: worktree /w already merged — safe to remove (git worktree remove /w)"])
+                         ["EpicSpine attention: c: worktree /w already merged — safe to remove (git worktree remove /w)"])
 
-    def test_output_stays_capped_at_five_plus_n_more(self) -> None:
-        self.write({f"/r/{i}": {"attention": [f"r{i}: stuck"], "mess": [f"r{i}: worktree /w{i} (b) idle 4d, not merged — merge it or remove it"]} for i in range(6)})
-        lines = bg.attention_lines(self.home, self.tmp)
-        self.assertEqual(len(lines), 6)
-        self.assertTrue(lines[-1].startswith("EpicSpine attention: 7 more"))
+    def test_output_stays_capped_at_five(self) -> None:
+        here = self.tmp / "c"
+        here.mkdir()
+        self.write({str(here): {"mess": [f"c: worktree /w{i} (b) idle 4d, not merged — merge it or remove it" for i in range(8)]}})
+        self.assertEqual(len(bg.attention_lines(self.home, here)), 5)
 
     def test_the_abnb_scenario_end_to_end(self) -> None:
         bare, clone = self.repo("abnb-agent")
@@ -398,9 +398,10 @@ class SessionStartMessTest(MessBase):
         self.assertEqual(len(entry["mess"]), 2)  # the 4-day worktree and the server; the 2.5-day one is under the 3-day bar
         self.assertIn("idle 4d, not merged", entry["mess"][0])
         self.assertIn("http server pid 900 serving", entry["mess"][1])
-        shown = bg.attention_lines(self.home, self.tmp)
+        self.assertEqual(bg.attention_lines(self.home, self.tmp), [])  # a session elsewhere never sees abnb-agent's mess
+        shown = bg.attention_lines(self.home, clone)
         self.assertEqual(len(shown), 2)
-        self.assertTrue(all(line.endswith("(background sync; tell the user which repo and why, change nothing)") for line in shown))
+        self.assertTrue(all(line.endswith("(background sync; change nothing)") for line in shown))
 
 
 if __name__ == "__main__":

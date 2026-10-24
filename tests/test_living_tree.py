@@ -144,7 +144,7 @@ class StaleTests(LivingCase):
         self.assertEqual([line], info["stale"])
         bg.save(home, {str(self.repo): info}, ss.SKILL_DIR)
         shown = [x for x in bg.attention_lines(home, self.repo) if "untouched" in x]
-        self.assertEqual([f"EpicSpine attention: {line} (background sync; tell the user which repo and why, change nothing)"], shown)
+        self.assertEqual([f"EpicSpine attention: {line} (background sync; change nothing)"], shown)
         (self.repo / "AGENTS.md").write_text("Root spine: none\n")
         self.assertEqual("", epic_log.attention(self.repo))
 

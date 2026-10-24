@@ -9,7 +9,7 @@ never force/commit, dirty files untouched), the pre-commit gate (``global_instal
 local_mess.py (backup-push local-only branches; auto_return.py merges ``Ready: yes`` additive branches and deletes merged ones;
 report idle/merged worktrees, old uncommitted changes, stale servers; repo_state.py counts). No AGENTS.md blocks are installed
 (they would be uncommitted files). 20 s per repo (+40 s local_mess), 5 min total, least recently synced first, no prompts, flock.
-Writes ``~/.agents/epicspine-sync-status.json``; SessionStart prints its ``EpicSpine attention:`` lines for any repo.
+Writes ``~/.agents/epicspine-sync-status.json``; SessionStart prints only the current repo's mess/stale lines from it (never another repo's state: L-18).
 ``EPICSPINE_SYNC=off`` disables. Silent (cron mail) unless ``-v``. Stdlib only; never raises."""
 
 from __future__ import annotations
@@ -162,7 +162,8 @@ def run(env: dict, home: Path, skill_dir: Path = SKILL_DIR, verbose: bool = Fals
 
 
 def attention_lines(home: Path, cwd: Path | None = None, now: float | None = None) -> list[str]:
-    """SessionStart: ``EpicSpine attention:`` lines from the status file for any repo but the current one (max 5 + 'N more')."""
+    """SessionStart: ``EpicSpine attention:`` lines for the repo containing cwd (its mess and stale; its live sync check covers ``attention``),
+    plus the job's own health line. Other repos are never shown (L-18); ``scripts/repo_state.py`` prints them on request."""
     data = load(home)
     if not data:
         return []
@@ -177,10 +178,9 @@ def attention_lines(home: Path, cwd: Path | None = None, now: float | None = Non
                      f"{Path(__file__).resolve().with_name('agents_block.py')} check-global` and re-run install-global if its schedule is missing")
     here = (cwd or Path.cwd()).resolve()
     for top, info in sorted(data.get("repos", {}).items()):
-        covered = here == Path(top) or Path(top) in here.parents  # the live SessionStart check covers the current repo's sync, not its mess
-        lines += [f"EpicSpine attention: {a} (background sync; tell the user which repo and why, change nothing)"
-                  for a in ([] if covered else info.get("attention", [])) + info.get("mess", []) + info.get("stale", [])]
-    return lines[:SHOWN] + ([f"EpicSpine attention: {len(lines) - SHOWN} more (see ~/{STATUS})"] if len(lines) > SHOWN else [])
+        if here == Path(top) or Path(top) in here.parents:
+            lines += [f"EpicSpine attention: {a} (background sync; change nothing)" for a in info.get("mess", []) + info.get("stale", [])]
+    return lines[:SHOWN]
 
 
 def main(argv: list[str] | None = None) -> int:
