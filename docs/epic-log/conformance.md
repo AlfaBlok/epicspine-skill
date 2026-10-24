@@ -14,11 +14,11 @@ Page of [EPIC-3](../EPIC-3-EPIC-LOG.md) (E3-3). `spines.py --json` on every repo
 | sismic | yes | 1 | 0 | 0 | 0 | 3 | green |
 | testaments | yes | 1 | 0 | 0 | 0 | 0 | green |
 | epicspine-skill | yes | 5 | 0 | 0 | 0 | 2 | green |
-| idea_scraper | none | - | - | - | - | - | EPIC-3-A1 |
-| obsidian-brain | none | - | - | - | - | - | EPIC-3-A1 |
-| zenod-cloud | none | - | - | - | - | - | EPIC-3-A1 |
-| nectary | none | - | - | - | - | - | EPIC-3-A1 |
-| zenod_memory | none | - | - | - | - | - | EPIC-3-A1 |
-| alpha9_webflow_export | none | - | - | - | - | - | EPIC-3-A1 |
+| idea_scraper | none | - | - | - | - | - | A1 `all`: root in progress (mcp:908a8617) |
+| obsidian-brain | none | - | - | - | - | - | A1 `all`: root in progress (mcp:ae7b32be) |
+| zenod-cloud | none | - | - | - | - | - | A1 `all`: root in progress (mcp:df6f29ed) |
+| nectary | none | - | - | - | - | - | A1 `all`: root in progress (mcp:b3711a17) |
+| zenod_memory | none | - | - | - | - | - | A1 `all`: root in progress (mcp:377938ea) |
+| alpha9_webflow_export | none | - | - | - | - | - | A1 `all`: root in progress (mcp:ca22629c) |
 
 Before = 2026-10-22 (skill 2026.10.22.5). The 2026-10-19 r1 counts used the pre-Doctrine-2 orphan definition and are in [the handoff](../handoffs/2026-10-19-spine-conformance.md).
