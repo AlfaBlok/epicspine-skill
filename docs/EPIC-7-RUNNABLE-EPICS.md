@@ -28,14 +28,27 @@ An epic's own Status says whether a wake may work it: `spines.py --json` carries
 
 Owner: Delivery Manager (agent-team console)
 Status: active
-Last attempted: 2026-10-25 DM wake run_57aac66f: E7-S1 found merged (d37094b); 724 tests OK, graph --strict 0; E7-3 rollout check dispatched (run_c59cfb38)
-Result: E7-1, E7-2 met on main; E7-3 open (rollout to every installer target, reachable/unreachable list)
-Evidence: d08988d, ad62e8f, a6bf501; merge d37094b
-Waiting on: none
+Last attempted: 2026-10-25 DM wake run_57aac66f: E7-S1 merged (d37094b); E7-3 rollout verified (run_c59cfb38, 0c6c0f9; DM re-checked vps3 + vps1 skill links, VERSION 2026.10.25.1)
+Result: all three Done means met; Outcome written; awaiting verification
+Evidence: merge d37094b; 0c6c0f9 [rollout table](epic7/rollout-2026-10-25.md); 724 tests OK
+Waiting on: nobody
 Approved work: E7-S1 (brief docs/handoffs/E14-S1.md in agent_team)
-Next action: verify the E7-3 rollout table (docs/epic7/rollout-2026-10-25.md), then write the Outcome
+Next action: Jordi verifies the Outcome and sets done; tax-assist-research commits its migrated AGENTS.md block in its own thread (L-14)
 Source revision: main
 Verified at: 2026-10-25
+
+## Outcome
+
+Verdict: accomplished
+Outcome: `spines.py --json` tells any console whether an epic may run (`run_state`, `runnable`, `has_children`), new epics scaffold `draft` until the user stamps them ready, two advisories catch active-without-start and draft-with-active-rows, and the release is live on every reachable config dir (vps3, vps1: 7 dirs, 2026.10.25.1).
+Closed: 2026-10-25 by run_57aac66f-3444-4b35-a403-0820839411dc
+Risk: Jordi's Mac unreachable (ssh timeout) so its install is unverified; tax-assist-research AGENTS.md block migrated on vps1 but uncommitted; whatgpt_webflow_export has no block until a session opens there.
+
+| Done means | Evidence |
+|---|---|
+| E7-1 | d08988d (run_state, runnable, has_children + tests); merge d37094b |
+| E7-2 | d08988d (run-state advisories, positive/negative fixtures); 724 tests OK on main 2026-10-25 |
+| E7-3 | 0c6c0f9 [rollout table](epic7/rollout-2026-10-25.md): 7 reachable config dirs on 2026.10.25.1; Mac and vps1-egress listed unreachable |
 
 ## Non-Goals
 
