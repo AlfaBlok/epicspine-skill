@@ -59,7 +59,7 @@ Steps: each is independently testable and closes only with evidence.
 | Issue | Role | Owner / Assignment | Title | Status | Depends On | PR/Branch | Base | Latest Evidence | Last Verified | Next Action |
 |---|---|---|---|---|---|---|---|---|---|---|
 | draft | Ticket worker | worker (Sonnet 5.5, seat1) | E7-S1 run_state contract: `--json` fields, doctrine, advisories, tests, release and rollout; brief docs/handoffs/E14-S1.md (agent_team) | done | none | merged d37094b (branch gone) | main | d08988d, ad62e8f, a6bf501; on main via d37094b; 724 tests OK 2026-10-25 | 2026-10-25 | none |
-| E7-S2 | Ticket worker | worker run_84d3be55 (Sonnet 5.5, seat2) | epic Status `review` (Outcome written, awaiting Jordi's verdict) is a trackable spine Status: spine_fix stops rewriting it to active; run_state = not runnable; validator, doctrine, tests, release | active | none | e7-s2 | main | spine_fix rewrote EPIC-6/7 review->active in 51c12e6 | 2026-10-25 | DM verifies and merges |
+| E7-S2 | Ticket worker | worker run_84d3be55 (Sonnet 5.5, seat2) | epic Status `review` (Outcome written, awaiting Jordi's verdict) is a trackable spine Status: spine_fix stops rewriting it to active; run_state = not runnable; validator, doctrine, tests, release | review | none | e7-s2 | main | c952215 (branch e7-s2, skill 2026.10.25.2; 728 tests OK; EPIC-6 kept `review` under the branch hook: f88e927) | 2026-10-25 | DM verifies and merges |
 
 ## Decisions
 
