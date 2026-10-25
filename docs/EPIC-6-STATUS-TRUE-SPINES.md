@@ -26,7 +26,7 @@ Integration policy: main-direct
 ## Current State
 
 Owner: Delivery Manager (agent-team console)
-Status: active
+Status: review
 Last attempted: 2026-10-25 DM wake run_21b34e03: removed agent-written Verdict/Closed (only Jordi marks the verdict); 2026-10-24 DM wake run_aa2dd0a3: E6-S1 (run_98fc838e) verified and merged (44ab11e)
 Result: both Done means met; Outcome written; awaiting verification
 Evidence: 1174c69, c804f48, merge 44ab11e; 682 tests OK; graph --strict 0 errors
