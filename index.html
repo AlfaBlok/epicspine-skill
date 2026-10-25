@@ -343,6 +343,67 @@
   .idx-part { padding: 10px 20px 3px; color: var(--gold); font-size: 11px; font-weight: 760; letter-spacing: .14em; text-transform: uppercase; }
   .index-close { width: 34px; height: 34px; font-size: 18px; }
 
+  /* Part 1 opener: the two core ideas (talk becomes a plan; the memory is the repo) */
+  h2.cs-h { font-size: clamp(40px, 5.4vw, 80px); letter-spacing: -.01em; }
+  .cs-sub { font-size: clamp(16px, 1.55vw, 23px); margin-top: 8px; }
+  .cs-flow { display: grid; grid-template-columns: minmax(0, 1fr) 72px minmax(0, 1.45fr); gap: 12px; align-items: center; }
+  .cs-flow3 { display: grid; grid-template-columns: minmax(0, 1fr) 64px minmax(0, 1.25fr) 64px minmax(0, 1fr); gap: 10px; align-items: stretch; }
+  .cs-arrow { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; color: var(--gold); font-size: 11px; font-weight: 760; letter-spacing: .1em; text-transform: uppercase; text-align: center; }
+  .cs-arrow::before { content: "\2192"; font-size: 38px; line-height: 1; font-weight: 400; }
+  .cs-card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; position: relative; }
+  .cs-lbl { color: var(--muted); font-size: 11px; font-weight: 760; letter-spacing: .14em; text-transform: uppercase; margin: 0 0 10px; }
+  .cs-chat { display: flex; flex-direction: column; gap: 8px; }
+  .cs-bub { background: var(--panel-2); border-radius: 14px 14px 14px 4px; padding: 7px 12px; max-width: 94%; font-size: clamp(13px, 1.05vw, 16px); line-height: 1.35; color: var(--ink); }
+  .cs-bub:nth-child(even) { align-self: flex-end; background: rgba(217, 173, 98, .14); border-radius: 14px 14px 4px 14px; }
+  .cs-bub i { display: block; font-style: normal; color: var(--muted); font-size: 10.5px; }
+  .cs-t1 { transform: rotate(-1.1deg); } .cs-t2 { transform: rotate(.9deg); } .cs-t3 { transform: rotate(-.5deg); }
+  .cs-node { display: flex; align-items: center; gap: 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel-2); padding: 6px 11px; font-size: clamp(13px, 1.05vw, 16px); }
+  .cs-node b { flex: 1; }
+  .cs-who { color: var(--muted); font-size: 11.5px; }
+  .cs-kids { margin: 7px 0 0 18px; padding-left: 14px; border-left: 2px solid rgba(217, 173, 98, .4); display: flex; flex-direction: column; gap: 7px; }
+  .cs-open { border: 2px solid var(--gold); background: rgba(217, 173, 98, .08); border-radius: 10px; padding: 9px 12px; }
+  .cs-open .cs-oh { display: flex; align-items: center; gap: 8px; font-weight: 780; font-size: clamp(14px, 1.15vw, 17px); margin-bottom: 4px; }
+  .cs-fld { display: grid; grid-template-columns: 92px 1fr; gap: 6px; padding: 4px 0; border-top: 1px dashed rgba(217, 173, 98, .3); font-size: clamp(12px, .95vw, 14.5px); line-height: 1.4; }
+  .cs-fld > i { font-style: normal; color: var(--gold); font-size: 10.5px; font-weight: 760; letter-spacing: .08em; text-transform: uppercase; padding-top: 2px; }
+  .cs-ck { display: block; } .cs-ck::before { content: "\2610  "; color: var(--muted); } .cs-ck.on::before { content: "\2611  "; color: var(--green); }
+  .cs-step { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+  .cs-pill { display: inline-block; border: 1.5px solid; border-radius: 999px; padding: 0 8px; font-size: 10.5px; font-weight: 760; letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; }
+  .cs-done { color: var(--green); } .cs-run { color: var(--bg); background: var(--gold); border-color: var(--gold); } .cs-wait { color: var(--blue); }
+  .cs-side { position: absolute; right: 14px; top: -14px; max-width: 380px; transform: rotate(1.5deg); border: 2px dashed var(--gold); border-radius: 10px; background: var(--bg); color: var(--gold); padding: 6px 10px; font-size: 12.5px; font-weight: 760; line-height: 1.3; }
+  .cs-life { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  .cs-st { border: 1px solid var(--line); border-radius: 8px; background: var(--panel); padding: 6px 12px; font-weight: 760; font-size: clamp(13px, 1.1vw, 16px); }
+  .cs-st small { display: block; color: var(--muted); font-weight: 400; font-size: 11.5px; }
+  .cs-to { color: var(--gold); font-weight: 780; }
+  .cs-stamp { display: inline-block; transform: rotate(-5deg); border: 2.5px solid var(--green); border-radius: 8px; padding: 3px 10px; color: var(--green); font-weight: 860; letter-spacing: .08em; }
+  .cs-punch { color: var(--ink); font-size: clamp(18px, 1.9vw, 28px); font-weight: 780; line-height: 1.25; }
+  .cs-punch span { color: var(--gold); }
+  .cs-agent { display: flex; align-items: flex-start; gap: 9px; padding: 7px 0; border-top: 1px dashed var(--line); font-size: clamp(13px, 1.05vw, 16px); }
+  .cs-agent:first-of-type { border-top: 0; }
+  .cs-av { flex: 0 0 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; color: var(--bg); font-size: 11px; font-weight: 860; }
+  .cs-agent small { display: block; color: var(--muted); font-size: 12px; }
+  .cs-repo { background: #0a0c0e; border: 1px solid var(--line); border-radius: 8px; padding: 13px 15px; color: #d9d4cb; font-family: var(--font-mono); font-size: clamp(11.5px, .92vw, 13.5px); line-height: 1.6; overflow-x: auto; white-space: nowrap; }
+  .cs-repo .d { color: var(--blue); } .cs-repo .h { color: var(--gold); } .cs-repo .m { color: #8b847a; } .cs-repo .g { color: var(--green); }
+  .cs-repo hr { border: 0; border-top: 1px dashed var(--line); margin: 8px 0; }
+  .cs-repo .cs-rt { font-family: var(--font-sans); font-weight: 780; color: var(--ink); font-size: 14px; margin-bottom: 6px; white-space: normal; }
+  .cs-bind { display: inline-block; font-family: var(--font-mono); font-size: 12.5px; background: var(--gold); color: var(--bg); border-radius: 6px; padding: 3px 9px; margin-bottom: 8px; font-weight: 700; }
+  .cs-know { display: flex; flex-direction: column; gap: 7px; }
+  .cs-know div { border: 1px solid var(--line); border-left: 4px solid var(--gold); border-radius: 6px; background: var(--panel-2); padding: 5px 10px; font-size: clamp(12.5px, 1vw, 15px); line-height: 1.35; }
+  .cs-know b { display: block; color: var(--gold); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; }
+  .cs-strip { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; color: var(--muted); font-size: clamp(13px, 1.05vw, 16px); }
+  .cs-strip span { border: 1px solid var(--line); border-radius: 8px; padding: 6px 12px; background: var(--panel); }
+  .cs-strip span.no { border-style: dashed; text-decoration: line-through; text-decoration-color: var(--red); }
+  .cs-loop { width: 100%; max-width: 470px; height: auto; display: block; justify-self: center; }
+  .cs-title-lead { color: var(--ink); font-size: clamp(26px, 2.6vw, 44px); font-weight: 780; line-height: 1.15; }
+  .cs-title-lead span { color: var(--gold); }
+  @media (max-width: 900px) {
+    .cs-flow, .cs-flow3 { grid-template-columns: 1fr; }
+    .cs-arrow { flex-direction: row; gap: 8px; }
+    .cs-arrow::before { content: "\2193"; font-size: 30px; }
+    .cs-side { position: static; transform: none; max-width: none; margin-top: 10px; }
+    .cs-fld { grid-template-columns: 1fr; gap: 2px; }
+    .cs-loop { max-width: 360px; }
+  }
+
   @media (max-width: 900px) {
     body { overflow: auto; }
     .deck { height: auto; min-height: 100vh; }
@@ -403,18 +464,33 @@
     </header>
     <div class="body two">
       <div>
-        <p class="lead">A living document that gives agent-assisted work durable memory, one authoritative intent, and a clean path from idea to proven outcome.</p>
+        <p class="cs-title-lead">Talk. It becomes a plan.<br><span>The memory is the repo.</span></p>
+        <p class="lead" style="margin-top:16px">A skill that turns loose chat into a tracked goal tree, kept as plain files in git next to the code, so every agent and every human picks up exactly where the last one stopped.</p>
         <p class="hint" style="margin-top:14px">Navigate with <b>&larr; &rarr;</b> or Space; press <b>G</b> for the part-grouped index. Deep-link with <code>#5</code>. Diagrams do the explaining; the text is only a caption.</p>
       </div>
-      <div class="screen">
-        <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span>docs/EPIC-0-OPERATING-SYSTEM.md</span></div>
-        <div class="screen-body">
-          <div class="row"><strong>Intent</strong><span>Why this work exists and what outcome we want.</span><b class="pill">spine</b></div>
-          <div class="row"><strong>State</strong><span>What is true now, what is blocked, what is next.</span><b class="pill">now</b></div>
-          <div class="row"><strong>Backlog</strong><span>Issues as executable tickets for one step each.</span><b class="pill">execute</b></div>
-          <div class="row"><strong>Evidence</strong><span>What code, tests and validation actually proved.</span><b class="pill">proof</b></div>
-        </div>
-      </div>
+      <svg class="cs-loop" viewBox="0 0 420 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="csloop-title csloop-desc"><title id="csloop-title">One loop: talk, plan, delivery, outcome</title>
+        <desc id="csloop-desc">A loop around the repo: you chat loosely, the chat becomes a goal tree, steps are delivered by agents, an outcome is written that you approve, and you talk again; every turn is written down in the repo.</desc>
+        <defs><marker id="csloop-ar" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" class="fa"/></marker></defs>
+        <circle cx="210" cy="210" r="140" fill="none" class="sr3" stroke-width="2" stroke-dasharray="6 7"/>
+        <path d="M272 84 A140 140 0 0 1 336 148" fill="none" class="sa" stroke-width="3" marker-end="url(#csloop-ar)"/>
+        <path d="M336 272 A140 140 0 0 1 272 336" fill="none" class="sa" stroke-width="3" marker-end="url(#csloop-ar)"/>
+        <path d="M148 336 A140 140 0 0 1 84 272" fill="none" class="sa" stroke-width="3" marker-end="url(#csloop-ar)"/>
+        <path d="M84 148 A140 140 0 0 1 148 84" fill="none" class="sa" stroke-width="3" marker-end="url(#csloop-ar)"/>
+        <rect x="145" y="44" width="130" height="54" rx="10" class="f2 si" stroke-width="1"/>
+        <text x="210" y="68" class="nn" text-anchor="middle">Talk</text>
+        <text x="210" y="87" class="sl" text-anchor="middle">loose chat</text>
+        <rect x="286" y="183" width="130" height="54" rx="10" class="ft sa" stroke-width="1.4"/>
+        <text x="351" y="207" class="nn" text-anchor="middle">Plan</text>
+        <text x="351" y="226" class="sl" text-anchor="middle">a goal tree</text>
+        <rect x="145" y="322" width="130" height="54" rx="10" class="f2 si" stroke-width="1"/>
+        <text x="210" y="346" class="nn" text-anchor="middle">Delivered</text>
+        <text x="210" y="365" class="sl" text-anchor="middle">owner + status</text>
+        <rect x="4" y="183" width="130" height="54" rx="10" class="f2 si" stroke-width="1"/>
+        <text x="69" y="207" class="nn" text-anchor="middle">Outcome</text>
+        <text x="69" y="226" class="sl" text-anchor="middle">you approve</text>
+        <text x="210" y="204" class="nn fa" text-anchor="middle">all in the repo</text>
+        <text x="210" y="226" class="sl" text-anchor="middle">plain files + git</text>
+      </svg>
     </div>
   </section>
 
@@ -442,14 +518,122 @@
         </div>
       </div>
       <div class="callout">
-        <p>The promise: a spine every fresh agent binds from in minutes, so the work outlives the conversation.</p>
+        <p>The fix is two ideas: <b>talk becomes a plan</b>, and <b>the memory is the repo</b>.</p>
       </div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Part 1 · What and why" data-title="Talk. It becomes a plan.">
+    <header>
+      <div class="eyebrow">Part 1 · What and why · idea 1</div>
+      <h2 class="cs-h">Talk. It becomes a plan.</h2>
+      <p class="cs-sub">Say it loosely. It is structured for you into goals that are tracked and delivered.</p>
+    </header>
+    <div class="body">
+      <div class="cs-flow">
+        <div class="cs-card">
+          <p class="cs-lbl">What you say</p>
+          <div class="cs-chat">
+            <div class="cs-bub cs-t1"><i>You · 09:02</i>users keep asking for Google sign-in</div>
+            <div class="cs-bub cs-t2"><i>09:03</i>don't break the email login though</div>
+            <div class="cs-bub cs-t3"><i>09:05</i>can it be live before Friday's launch?</div>
+            <div class="cs-bub cs-t2"><i>09:06</i>and always run the e2e tests before merging</div>
+          </div>
+        </div>
+        <div class="cs-arrow">structured<br>for you</div>
+        <div class="cs-card">
+          <p class="cs-lbl">What the repo keeps: a goal tree</p>
+          <div class="cs-node"><b>acme-app</b><span class="cs-who">root goal</span></div>
+          <div class="cs-kids">
+            <div class="cs-node"><b>EPIC-3 Billing</b><span class="cs-pill cs-done">done</span></div>
+            <div class="cs-open">
+              <div class="cs-oh">EPIC-4 Google sign-in <span class="cs-pill cs-run">in progress</span></div>
+              <div class="cs-fld"><i>Goal</i><span>Sign in with Google, live before Friday; email login keeps working.</span></div>
+              <div class="cs-fld"><i>Done means</i><span>
+                <span class="cs-ck on">Google button on the login page</span>
+                <span class="cs-ck">Email login still passes its tests</span>
+                <span class="cs-ck">You check it live</span></span></div>
+              <div class="cs-fld"><i>Steps</i><span>
+                <span class="cs-step">S1 OAuth app <span class="cs-who">· worker</span> <span class="cs-pill cs-done">done</span></span>
+                <span class="cs-step">S2 Login button <span class="cs-who">· worker</span> <span class="cs-pill cs-run">running</span></span>
+                <span class="cs-step">S3 Live check <span class="cs-who">· you</span> <span class="cs-pill cs-wait">waiting</span></span></span></div>
+              <div class="cs-fld"><i>Now</i><span>S1 merged. Next: S2, then your check.</span></div>
+            </div>
+            <div class="cs-node"><b>Learning L-2</b><span class="cs-who">always run e2e before merging</span></div>
+          </div>
+          <div class="cs-side">Chat on any node later: it lands back here</div>
+        </div>
+      </div>
+      <div class="cs-life">
+        <div class="cs-st">Goal<small>from your words</small></div><span class="cs-to">&rarr;</span>
+        <div class="cs-st">Steps delivered<small>each has an owner + status</small></div><span class="cs-to">&rarr;</span>
+        <div class="cs-st">Outcome written<small>what was achieved</small></div><span class="cs-to">&rarr;</span>
+        <span class="cs-stamp">YOU APPROVE &#10003;</span>
+      </div>
+      <p class="cs-punch">Unstructured in, structured out. <span>Nothing said is lost; everything said becomes trackable.</span></p>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Part 1 · What and why" data-title="The memory is the repo.">
+    <header>
+      <div class="eyebrow">Part 1 · What and why · idea 2</div>
+      <h2 class="cs-h">The memory is the repo.</h2>
+      <p class="cs-sub">Goals, status, decisions and lessons are plain files, committed in git next to the code.</p>
+    </header>
+    <div class="body">
+      <div class="cs-flow3">
+        <div class="cs-card">
+          <p class="cs-lbl">&#9312; Agents write</p>
+          <div class="cs-agent"><div class="cs-av" style="background:var(--blue)">M</div><div><b>Manager</b><small>goal, steps, current state</small></div></div>
+          <div class="cs-agent"><div class="cs-av" style="background:var(--green)">W</div><div><b>Worker</b><small>done + evidence, outcome</small></div></div>
+          <div class="cs-agent"><div class="cs-av" style="background:var(--violet)">R</div><div><b>Reviewer</b><small>a decision + its why</small></div></div>
+          <div class="cs-agent"><div class="cs-av" style="background:var(--gold)">You</div><div><b>You, correcting once</b><small>becomes a permanent rule</small></div></div>
+        </div>
+        <div class="cs-arrow">commit</div>
+        <div class="cs-repo">
+          <div class="cs-rt">&#9313; The repo: files + git history</div>
+          <span class="d">acme-app/</span><br>
+          &#9500;&#9472; <span class="d">src/</span> <span class="m">&larr; the code</span><br>
+          &#9492;&#9472; <span class="d">docs/</span> <span class="m">&larr; the memory</span><br>
+          &nbsp;&nbsp;&nbsp;&#9500;&#9472; EPIC-0-root.md<br>
+          &nbsp;&nbsp;&nbsp;&#9492;&#9472; <span class="h">EPIC-4-google-sign-in.md</span>
+          <hr>
+          <span class="m">## Decisions</span><br>
+          <span class="g">03-12</span> Google only, Apple later<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="m">why: 9 of 10 asks name Google</span><br>
+          <span class="m">## Operating Learnings</span><br>
+          <span class="g">L-2</span> Always run e2e before merging
+          <hr>
+          <span class="m">git log</span><br>
+          <span class="h">a41c9e2</span> EPIC-4 S1 OAuth app verified<br>
+          <span class="h">7be03d1</span> L-2 learned: e2e before merge<br>
+          <span class="h">19f0c55</span> EPIC-4 created from chat
+        </div>
+        <div class="cs-arrow">bind</div>
+        <div class="cs-card">
+          <p class="cs-lbl">&#9314; A new agent starts</p>
+          <span class="cs-bind">--bind EPIC-4</span>
+          <div class="cs-know">
+            <div><b>The goal</b>Google sign-in by Friday</div>
+            <div><b>Where it stands</b>S1 done, S2 running</div>
+            <div><b>What was decided, and why</b>Google only: 9 of 10 asks</div>
+            <div><b>Rules learned</b>L-2 e2e before merging</div>
+          </div>
+          <p class="cs-who" style="margin-top:8px">In seconds. No handover call.</p>
+        </div>
+      </div>
+      <div class="cs-strip">
+        <span><b>Repo</b> = the truth: goals, state, decisions, learnings, outcomes</span>
+        <span class="no">a separate database</span>
+        <span>Versioned, reviewable, on any machine.</span>
+      </div>
+      <p class="cs-punch">Status and lineage travel with the code. <span>Any new agent binds and has the whole build trace.</span></p>
     </div>
   </section>
 
   <section class="slide" data-part="Part 1 · What and why" data-title="One living spine">
     <header>
-      <div class="eyebrow">Part 1 · What and why · the promise</div>
+      <div class="eyebrow">Part 1 · What and why · the file under both ideas</div>
       <h2>One living spine carries intent; everything else carries detail.</h2>
     </header>
     <div class="body">
@@ -607,31 +791,33 @@
     </header>
     <div class="body">
       <div class="tiles">
-        <a class="tile" href="#4"><strong>Core loop</strong><span>Intent, issues, proof, Book.</span><span class="go">Loop &rarr;</span></a>
-        <a class="tile" href="#3"><strong>Spine model</strong><span>One intent; authority by artifact.</span><span class="go">Surfaces &rarr;</span></a>
-        <a class="tile" href="#7"><strong>Profiles: compact / full</strong><span>Document size control.</span><span class="go">Anatomy &rarr;</span></a>
-        <a class="tile" href="#7"><strong>Dialect v1 / v2</strong><span>Acceptance workflow; SHIP / HARDEN.</span><span class="go">Anatomy &rarr;</span></a>
-        <a class="tile" href="#8"><strong>Hierarchy + rollups</strong><span>Root to child; one level up.</span><span class="go">Hierarchy &rarr;</span></a>
-        <a class="tile" href="#9"><strong>Bind path</strong><span>AGENTS.md, root spine, branch spine.</span><span class="go">Bind &rarr;</span></a>
-        <a class="tile" href="#10"><strong>Roles + dispatch</strong><span>Manager and worker; who writes where.</span><span class="go">Roles &rarr;</span></a>
-        <a class="tile" href="#11"><strong>Dispatch profile</strong><span>Ask once, record it, reuse it.</span><span class="go">Profile &rarr;</span></a>
-        <a class="tile" href="#12"><strong>Ask-first + ready frontier</strong><span>Settle forks, then launch.</span><span class="go">Dispatch &rarr;</span></a>
-        <a class="tile" href="#13"><strong>Git doctrine</strong><span>Worktree, ff-only, revert on red.</span><span class="go">Git &rarr;</span></a>
-        <a class="tile" href="#14"><strong>Two-axis verification</strong><span>Standards and spec.</span><span class="go">Verify &rarr;</span></a>
-        <a class="tile" href="#15"><strong>Learnings</strong><span>Explicit, scoped memory.</span><span class="go">Learnings &rarr;</span></a>
-        <a class="tile" href="#16"><strong>Validation tooling</strong><span>Structural and graph checks.</span><span class="go">Tooling &rarr;</span></a>
-        <a class="tile" href="#17"><strong>Hygiene + sweeps</strong><span>Clean as you go.</span><span class="go">Hygiene &rarr;</span></a>
-        <a class="tile" href="#18"><strong>Skill install</strong><span>One hub, linked per harness.</span><span class="go">Install &rarr;</span></a>
-        <a class="tile" href="#19"><strong>Always-on bind</strong><span>A bind line on every harness.</span><span class="go">Always on &rarr;</span></a>
-        <a class="tile" href="#20"><strong>Skill updates</strong><span>Freshness by content, at bind.</span><span class="go">Updates &rarr;</span></a>
-        <a class="tile" href="#21"><strong>Book companion</strong><span>Chapters, leaves, contract.</span><span class="go">Book &rarr;</span></a>
-        <a class="tile" href="#23"><strong>Shortlists + HTML serving</strong><span>JSON to table-first page on 127.0.0.1.</span><span class="go">Shortlists &rarr;</span></a>
-        <a class="tile" href="#24"><strong>Ticket backends</strong><span>GitHub default; local files.</span><span class="go">Backends &rarr;</span></a>
-        <a class="tile" href="#25"><strong>Ticket lifecycle</strong><span>Draft to done, plus two off-path states.</span><span class="go">Lifecycle &rarr;</span></a>
-        <a class="tile" href="#26"><strong>Draft until stamped ready</strong><span>Only the user readies; the repo delivers itself.</span><span class="go">Stamp &rarr;</span></a>
-        <a class="tile" href="#27"><strong>One task end to end</strong><span>Goal to merged and recorded.</span><span class="go">Sequence &rarr;</span></a>
-        <a class="tile" href="#16"><strong>Migration</strong><span>Full to compact, hash-gated.</span><span class="go">Tooling &rarr;</span></a>
-        <a class="tile" href="#28"><strong>Dogfood invariant</strong><span>Skill, spine and Book move together.</span><span class="go">One repo &rarr;</span></a>
+        <a class="tile" href="#3"><strong>Talk becomes a plan</strong><span>Chat structured into a goal tree.</span><span class="go">Idea 1 &rarr;</span></a>
+        <a class="tile" href="#4"><strong>The memory is the repo</strong><span>Plain files in git; bind and know.</span><span class="go">Idea 2 &rarr;</span></a>
+        <a class="tile" href="#6"><strong>Core loop</strong><span>Intent, issues, proof, Book.</span><span class="go">Loop &rarr;</span></a>
+        <a class="tile" href="#5"><strong>Spine model</strong><span>One intent; authority by artifact.</span><span class="go">Surfaces &rarr;</span></a>
+        <a class="tile" href="#9"><strong>Profiles: compact / full</strong><span>Document size control.</span><span class="go">Anatomy &rarr;</span></a>
+        <a class="tile" href="#9"><strong>Dialect v1 / v2</strong><span>Acceptance workflow; SHIP / HARDEN.</span><span class="go">Anatomy &rarr;</span></a>
+        <a class="tile" href="#10"><strong>Hierarchy + rollups</strong><span>Root to child; one level up.</span><span class="go">Hierarchy &rarr;</span></a>
+        <a class="tile" href="#11"><strong>Bind path</strong><span>AGENTS.md, root spine, branch spine.</span><span class="go">Bind &rarr;</span></a>
+        <a class="tile" href="#12"><strong>Roles + dispatch</strong><span>Manager and worker; who writes where.</span><span class="go">Roles &rarr;</span></a>
+        <a class="tile" href="#13"><strong>Dispatch profile</strong><span>Ask once, record it, reuse it.</span><span class="go">Profile &rarr;</span></a>
+        <a class="tile" href="#14"><strong>Ask-first + ready frontier</strong><span>Settle forks, then launch.</span><span class="go">Dispatch &rarr;</span></a>
+        <a class="tile" href="#15"><strong>Git doctrine</strong><span>Worktree, ff-only, revert on red.</span><span class="go">Git &rarr;</span></a>
+        <a class="tile" href="#16"><strong>Two-axis verification</strong><span>Standards and spec.</span><span class="go">Verify &rarr;</span></a>
+        <a class="tile" href="#17"><strong>Learnings</strong><span>Explicit, scoped memory.</span><span class="go">Learnings &rarr;</span></a>
+        <a class="tile" href="#18"><strong>Validation tooling</strong><span>Structural and graph checks.</span><span class="go">Tooling &rarr;</span></a>
+        <a class="tile" href="#19"><strong>Hygiene + sweeps</strong><span>Clean as you go.</span><span class="go">Hygiene &rarr;</span></a>
+        <a class="tile" href="#20"><strong>Skill install</strong><span>One hub, linked per harness.</span><span class="go">Install &rarr;</span></a>
+        <a class="tile" href="#21"><strong>Always-on bind</strong><span>A bind line on every harness.</span><span class="go">Always on &rarr;</span></a>
+        <a class="tile" href="#22"><strong>Skill updates</strong><span>Freshness by content, at bind.</span><span class="go">Updates &rarr;</span></a>
+        <a class="tile" href="#23"><strong>Book companion</strong><span>Chapters, leaves, contract.</span><span class="go">Book &rarr;</span></a>
+        <a class="tile" href="#25"><strong>Shortlists + HTML serving</strong><span>JSON to table-first page on 127.0.0.1.</span><span class="go">Shortlists &rarr;</span></a>
+        <a class="tile" href="#26"><strong>Ticket backends</strong><span>GitHub default; local files.</span><span class="go">Backends &rarr;</span></a>
+        <a class="tile" href="#27"><strong>Ticket lifecycle</strong><span>Draft to done, plus two off-path states.</span><span class="go">Lifecycle &rarr;</span></a>
+        <a class="tile" href="#28"><strong>Draft until stamped ready</strong><span>Only the user readies; the repo delivers itself.</span><span class="go">Stamp &rarr;</span></a>
+        <a class="tile" href="#29"><strong>One task end to end</strong><span>Goal to merged and recorded.</span><span class="go">Sequence &rarr;</span></a>
+        <a class="tile" href="#18"><strong>Migration</strong><span>Full to compact, hash-gated.</span><span class="go">Tooling &rarr;</span></a>
+        <a class="tile" href="#30"><strong>Dogfood invariant</strong><span>Skill, spine and Book move together.</span><span class="go">One repo &rarr;</span></a>
       </div>
     </div>
   </section>
@@ -2404,7 +2590,7 @@
 </main>
 
 <div class="controls" role="group" aria-label="Slide navigation">
-  <span id="counter">1 / 30</span>
+  <span id="counter">1 / 32</span>
   <button type="button" id="index-btn" aria-label="Slide index" aria-expanded="false" title="Slide index (g)">&#9776;</button>
   <button type="button" id="prev" aria-label="Previous slide" title="Previous (left arrow)">&lsaquo;</button>
   <button type="button" id="next" aria-label="Next slide" title="Next (right arrow)">&rsaquo;</button>
