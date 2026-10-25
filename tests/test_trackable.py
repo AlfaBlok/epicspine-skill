@@ -69,7 +69,7 @@ class TrackableTests(unittest.TestCase):
         self.assertEqual([], self.spine()["missing"])
         for status in ("draft", "READY", "Active.", "blocked: x", "deferred"):
             self.assertTrue(self.spine(status=status)["trackable"], status)
-        for status in ("review", "planning", "", "draft | ready | active", "closed"):
+        for status in ("planning", "", "draft | ready | active", "closed"):
             self.assertFalse(self.spine(status=status)["trackable"], status)
         self.assertFalse(self.spine(status="done")["trackable"])  # closing needs ## Outcome (tests/test_outcome.py)
 
@@ -127,7 +127,7 @@ class TrackableTests(unittest.TestCase):
         for head in ("Acceptance", "Acceptance Criteria"):
             self.assertTrue(self.check(TICKET.format(status="ready", head=head, body="- [x] AC-1 y"))["trackable"], head)
         result = self.check(TICKET.format(status="wip", head="Acceptance", body="prose"))
-        self.assertEqual(["Status 'wip': start it with one of draft|ready|active|blocked|done|superseded|deferred", "criteria `- [ ] ID text` under ## Acceptance Criteria/Acceptance"], result["missing"])
+        self.assertEqual(["Status 'wip': start it with one of draft|ready|active|blocked|review|done|superseded|deferred", "criteria `- [ ] ID text` under ## Acceptance Criteria/Acceptance"], result["missing"])
         self.assertEqual([], result["warnings"])
         self.assertFalse(self.check("# Notes\n\nJust text.\n")["trackable"])
         self.assertFalse(v.trackable(self.dir / "nope.md")["trackable"])
@@ -197,7 +197,7 @@ class FixTests(unittest.TestCase):
         self.assertEqual(both, self.fix(both)[0])
 
     def test_status_synonyms(self) -> None:
-        cases = {"in progress": "active", "In-Progress — x": "active", "wip": "active", "Doing": "active", "review": "active", "testing": "active",
+        cases = {"in progress": "active", "In-Progress — x": "active", "wip": "active", "Doing": "active", "in review": "review", "In-Review — x": "review", "testing": "active",
                  "todo": "ready", "To Do": "ready", "planned": "ready", "open": "ready", "backlog": "ready",
                  "CLOSED": "done", "complete": "done", "Completed.": "done", "shipped": "done", "merged": "done",
                  "on hold": "deferred", "paused": "deferred", "parked": "deferred"}
@@ -206,6 +206,7 @@ class FixTests(unittest.TestCase):
             self.assertIn(f"\nStatus: {want}", new, old)
             self.assertEqual(1, len(what), old)
         self.assertIn("Status: active — x", self.fix(self.spine("- [ ] A-1 a", status="In-Progress — x"))[0])
+        self.assertEqual((self.spine("- [ ] A-1 a", status="review"), []), self.fix(self.spine("- [ ] A-1 a", status="review")))  # review is canonical: left alone
 
     def test_unknown_status_untouched_and_nothing_invented(self) -> None:
         text = self.spine("- [ ] A-1 a", status="planning").replace("Status: planning", "Status: planning")
@@ -264,7 +265,7 @@ class FixTests(unittest.TestCase):
         new, what = self.fix(self.header("Status: SHIP candidate — manager journey complete"))
         self.assertEqual(["Status moved from header to Current State"], what)
         self.assertIn("Status: SHIP candidate — manager journey complete", new)
-        self.assertEqual(["Current State Status 'SHIP candidate — manager journey complete': start it with one of draft|ready|active|blocked|done|superseded|deferred"],
+        self.assertEqual(["Current State Status 'SHIP candidate — manager journey complete': start it with one of draft|ready|active|blocked|review|done|superseded|deferred"],
                          self.trackable_text(new)["missing"][:1])
 
     def test_header_status_left_alone_when_ambiguous(self) -> None:
@@ -292,6 +293,8 @@ class FixTests(unittest.TestCase):
         new, what = self.fix(text)
         self.assertIn("| a | A | me | active |\n| b | B | me | weird |\n| c | C | me | review: waiting |", new)
         self.assertEqual(["ledger Status 'In Progress' -> active"], what)
+        keep = self.spine("- [ ] A-1 a").replace("| draft | A | me | draft |", "| a | A | me | review |\n| b | B | me | in review |")
+        self.assertIn("| a | A | me | review |\n| b | B | me | review |", self.fix(keep)[0])
         new, what = self.fix(TICKET.format(status="Closed", head="Acceptance", body="1. done it"))
         self.assertIn("Status: done\n", new)
         self.assertIn("- [ ] AC-1 done it", new)
@@ -405,6 +408,20 @@ class PreCommitHookTests(unittest.TestCase):
         self.assertEqual(committed, (self.repo / "docs/S.md").read_text())
         self.assertNotIn("docs/S.md", self.git("status", "--porcelain").stdout)
 
+    def test_hook_keeps_status_review_and_blocks_review_without_outcome(self) -> None:
+        self.install("none")
+        outcome = "\n## Outcome\n\nOutcome: Shipped.\n\n| Done means | Evidence |\n|---|---|\n| X-1 ship | abc1234 |\n"
+        bare = self.commit("docs/S.md", SPINE.format(**{**GOOD, "status": "review"}))
+        self.assertNotEqual(0, bare.returncode)
+        self.assertIn("review spine has no usable ## Outcome", bare.stderr)
+        done = self.commit("docs/S.md", SPINE.format(**{**GOOD, "status": "review"}) + outcome)
+        self.assertEqual(0, done.returncode, done.stderr)
+        self.assertNotIn("-> active", done.stderr)
+        self.assertIn("\nStatus: review\n", self.git("show", "HEAD:docs/S.md").stdout)
+        again = self.commit("docs/S.md", SPINE.format(**{**GOOD, "status": "in review"}) + outcome)
+        self.assertEqual(0, again.returncode, again.stderr)
+        self.assertIn("Status 'in review' -> review", again.stderr)
+
     def test_partially_staged_file_is_not_touched_and_blocks_with_command(self) -> None:
         self.install()
         path = self.repo / "docs/S.md"
@@ -422,7 +439,7 @@ class PreCommitHookTests(unittest.TestCase):
         self.install()
         blocked = self.commit("docs/S.md", SPINE.format(**{**GOOD, "status": "x"}).replace("Status: x\n", ""))
         self.assertNotEqual(0, blocked.returncode)
-        self.assertIn("Current State Status missing: add 'Status: <draft|ready|active|blocked|done|superseded|deferred>'", blocked.stderr)
+        self.assertIn("Current State Status missing: add 'Status: <draft|ready|active|blocked|review|done|superseded|deferred>'", blocked.stderr)
         self.assertNotIn("epicspine: fixed", blocked.stderr)
 
     def test_fix_leaving_it_untrackable_still_blocks(self) -> None:
@@ -430,7 +447,7 @@ class PreCommitHookTests(unittest.TestCase):
         blocked = self.commit("docs/S.md", SPINE.format(**{**GOOD, "status": "planning", "done": "- ship"}))
         self.assertNotEqual(0, blocked.returncode)
         self.assertIn("epicspine: fixed docs/S.md: 1 criteria", blocked.stderr)
-        self.assertIn("Current State Status 'planning': start it with one of draft|ready|active|blocked|done|superseded|deferred", blocked.stderr)
+        self.assertIn("Current State Status 'planning': start it with one of draft|ready|active|blocked|review|done|superseded|deferred", blocked.stderr)
         self.assertNotIn("criteria `", blocked.stderr)
 
 

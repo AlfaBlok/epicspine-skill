@@ -82,7 +82,8 @@ Which epics a wake (a manager run, a scheduled or woken persona) may work is rea
 | ready | ready | yes (defined, not started; launching a persona is the start order and makes it `active`) |
 | active, blocked | running | yes (`blocked`: a wake still works unblocked rows and checks the unblock) |
 | deferred | parked | no |
-| review, done, superseded | finished | no |
+| review | finished | no (Outcome written, waiting on the user's verification) |
+| done, superseded | finished | no |
 
 - A wake works only runnable epics; it never starts work in a planning, parked or finished one. Any other or missing Status counts as `draft`.
 - **Draft until stamped ready.** Every new epic and row enters as `draft` (planning; `spine_new.py` scaffolds `Status: draft`). Only the user promotes `draft` to `ready` ("ready for delivery"): that stamp is the start order. No agent self-readies: a persona or manager that scaffolds or edits an epic leaves it `draft`, and never writes `ready` on its own epic or a row's. The next standing wake picks up each `ready` child, starts its rows and sets it `active`; `Last attempted` records who was started. So a manager can stay on at the root and the repo delivers itself: the user writes into the spine and stamps what is ready.
@@ -111,7 +112,7 @@ Enforcement is `validate_spine.py --trackable` (valid Status, criteria as above,
 
 ## Outcome
 
-Every spine gets `## Outcome` written when its goal closes (done, abandoned or superseded). It holds the verdict, one sentence, each Done means item mapped to evidence links, residual risk/follow-ups, and date plus closing agent/run. `Status: done` (or a `Superseded by:` close) is invalid without a filled Outcome; `--trackable` blocks it, and `--fix` never invents one. The parent's rollup cites the child's outcome sentence. `spines.py --json` carries it per node as `outcome` (`null` when absent; shape in `docs/doctrine/console-contract.md`).
+Every spine gets `## Outcome` written when its goal closes (done, abandoned or superseded). It holds the verdict, one sentence, each Done means item mapped to evidence links, residual risk/follow-ups, and date plus closing agent/run. Outcome written without `Verdict:` (only the user marks it, writing `Verdict:` and `Closed:`) → epic `Status: review` (needs the Outcome sentence and Done-means table, no Verdict); the user's verdict → `done`. `Status: done` (or a `Superseded by:` close) is invalid without a filled Outcome; `--trackable` blocks it, and `--fix` never invents one. The parent's rollup cites the child's outcome sentence. `spines.py --json` carries it per node as `outcome` (`null` when absent; shape in `docs/doctrine/console-contract.md`).
 
 ```
 ## Outcome

@@ -55,6 +55,22 @@ class TrackableOutcomeTests(OutcomeCase):
             self.assertIn("write `## Outcome`", result["missing"][0])
         self.assertTrue(self.edit("done", OUTCOME)["trackable"])
 
+    def test_review_needs_the_sentence_and_table_but_no_verdict(self) -> None:
+        review = OUTCOME.replace("Verdict: partially accomplished\n", "").replace("Closed: 2026-10-20 by EPIC-4 delivery manager (run 7)\n", "")
+        self.assertTrue(self.edit("review", review)["trackable"])
+        self.assertTrue(self.edit("review", OUTCOME)["trackable"])  # a Verdict already there is not an error
+        for bad in ("", review.replace("Outcome: Shipped the parser; the console card is follow-up.", "Outcome: <one sentence>"),
+                    "## Outcome\n\nOutcome: Shipped.\n\n"):
+            result = self.edit("review", bad)
+            self.assertFalse(result["trackable"], bad)
+            self.assertIn("review spine has no usable ## Outcome", result["missing"][0])
+        self.assertFalse(self.edit("done", review)["trackable"])  # done still demands the Verdict
+
+    def test_fix_keeps_review_and_the_hook_agrees(self) -> None:
+        self.edit("review", OUTCOME)
+        spine_fix.main([self.path])
+        self.assertIn("\nStatus: review\n", self.path.read_text())
+
     def test_superseded_by_close_needs_an_outcome(self) -> None:
         extra = "Superseded by: [root](root.md)\n"
         self.assertFalse(self.edit("done", extra=extra)["trackable"])
