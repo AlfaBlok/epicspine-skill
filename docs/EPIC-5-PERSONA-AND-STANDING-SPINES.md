@@ -31,13 +31,13 @@ EpicSpine defines how a persona is written as a markdown file and how a standing
 
 Owner: Delivery Manager (agent-team console)
 Status: active
-Last attempted: 2026-10-24 DM wake run_aa2dd0a3: E5-S1..S4 verified and merged (1d4e9fc, 69372e6, 44ab11e, 1acbdde); E5-1..E5-4 ticked
-Result: format, Team table, assignee check, queues, standing spines and the persona writing contract ship in the skill (694 tests OK, graph --strict 0); E5-5 and E5-6 need the infra-vps and zenod-social spines themselves
-Evidence: merges 1d4e9fc, 44ab11e, 1acbdde; 69372e6
+Last attempted: 2026-10-25 DM wake run_39887a14: Jordi approved nj_b310a5d1; DM fixed infra-vps EPIC-15 rows R1-R5 (9409eb5) and zenod-social root E0-S1 (4c72143); both spines pass --strict with every assignee on the Team table or Jordi
+Result: E5-1..E5-4 met; E5-6 half met: spines validate, persona files missing in both repos (infra-vps none, zenod-social README only); E5-5 trial not started in infra-vps
+Evidence: infra-vps 9409eb5, zenod-social 4c72143; merges 1d4e9fc, 44ab11e, 1acbdde
 Waiting on: nobody
-Monitoring: infra-vps EPIC-15 and zenod-social root spine strict-clean since 2026-10-24 · 2026-10-25 wake run_21b34e03: still failing (infra-vps rows 2-6 Status `fixed, verify`; zenod root row 1 empty PR/Branch); Needs Jordi nj_b310a5d1 open · next check 2026-10-26T08:00Z · then tick E5-6, and E5-5 once infra-vps records the asks-as-tasks trial Decisions row
+Monitoring: E5-5 asks-as-tasks trial in infra-vps EPIC-15 since 2026-10-24 · next check 2026-10-26T08:00Z (a Jordi-assigned ledger row or a trial Decisions row in infra-vps EPIC-15) · then adopt or drop by a Decisions row and tick E5-5
 Approved work: none
-Next action: console Needs Jordi nj_b310a5d1 asks whether the DM may make these cell edits; else each repo's own thread (L-14) fixes its spine: infra-vps EPIC-15 ledger statuses `needs fix`/`needs diagnosis` (rows 2-6) to the vocabulary; zenod-social root row 1 `review` with empty PR/Branch; infra-vps runs the asks-as-tasks trial (persona-tasks.md)
+Next action: console Needs Jordi nj_958bad5c asks whether the DM may add persona files to both repos (then tick E5-6); E5-5 waits on infra-vps running the asks-as-tasks trial in its own thread (L-14)
 Source revision: main
 Verified at: 2026-10-25
 
