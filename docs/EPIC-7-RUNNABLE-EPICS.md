@@ -22,7 +22,7 @@ An epic's own Status says whether a wake may work it: `spines.py --json` carries
 
 - [x] E7-1 `spines.py --json` adds `run_state`, `runnable`, `has_children` to every node exactly per the Status table in references/spine-model.md "Running"; one test per table row and for `has_children`; verified by the full suite and the agent_team root map sample
 - [x] E7-2 `validate_spine.py` warns (advisory, never `--strict`-promoted) for `Status: active` with no start recorded and for a `draft` epic with `active` ledger rows, one positive and one negative fixture each
-- [ ] E7-3 the new version is rolled out to every machine config dir and repo the installer covers, with the reachable and unreachable list reported (not claimed as all)
+- [x] E7-3 the new version is rolled out to every machine config dir and repo the installer covers, with the reachable and unreachable list reported (not claimed as all); evidence: [rollout table](epic7/rollout-2026-10-25.md): 7 reachable config dirs (vps3 x3 Claude, vps1 x3 Claude + Codex) on 2026.10.25.1, 17 of 19 repo blocks current; unreachable: Jordi's Mac (ssh timeout), vps1-egress (no key); lagging block text: tax-assist-research, whatgpt_webflow_export (own repos' threads)
 
 ## Current State
 
