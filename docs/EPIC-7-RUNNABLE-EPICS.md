@@ -26,16 +26,16 @@ An epic's own Status says whether a wake may work it: `spines.py --json` carries
 
 ## Current State
 
-Owner: Delivery Manager (agent_team brief docs/handoffs/E14-S1.md)
+Owner: Delivery Manager (agent-team console)
 Status: active
-Last attempted: 2026-10-24 E7-S1 Ticket worker (Sonnet 5.5) started in worktree wt/e14-s1
-Result: E7-1, E7-2 built on branch e14-s1 (skill 2026.10.24.9, 691 tests OK, graph --strict 0 errors); E7-3 rollout blocked: machines take the version from main, which only the DM merges
-Evidence: d08988d, ad62e8f, a6bf501 (branch e14-s1)
+Last attempted: 2026-10-25 DM wake run_57aac66f: E7-S1 found merged (d37094b); 724 tests OK, graph --strict 0; E7-3 rollout check dispatched (run_c59cfb38)
+Result: E7-1, E7-2 met on main; E7-3 open (rollout to every installer target, reachable/unreachable list)
+Evidence: d08988d, ad62e8f, a6bf501; merge d37094b
 Waiting on: none
 Approved work: E7-S1 (brief docs/handoffs/E14-S1.md in agent_team)
-Next action: Delivery manager verifies and merges e14-s1, pushes main; machines self-sync (SessionStart hook, 15-min job); then re-run `check-global` and `agents_block.py check` per repo to close E7-3
-Source revision: branch e14-s1
-Verified at: 2026-10-24
+Next action: verify the E7-3 rollout table (docs/epic7/rollout-2026-10-25.md), then write the Outcome
+Source revision: main
+Verified at: 2026-10-25
 
 ## Non-Goals
 
@@ -47,7 +47,7 @@ Steps: each is independently testable and closes only with evidence.
 
 | Issue | Role | Owner / Assignment | Title | Status | Depends On | PR/Branch | Base | Latest Evidence | Last Verified | Next Action |
 |---|---|---|---|---|---|---|---|---|---|---|
-| draft | Ticket worker | worker (Sonnet 5.5, seat1) | E7-S1 run_state contract: `--json` fields, doctrine, advisories, tests, release and rollout; brief docs/handoffs/E14-S1.md (agent_team) | review | none | e14-s1 | main | d08988d run_state + advisories, ad62e8f draft scaffold + stamp rule, a6bf501 release .9; 691 tests OK, graph --strict 0 errors | 2026-10-24 | verify and merge; then rollout check (E7-3) |
+| draft | Ticket worker | worker (Sonnet 5.5, seat1) | E7-S1 run_state contract: `--json` fields, doctrine, advisories, tests, release and rollout; brief docs/handoffs/E14-S1.md (agent_team) | done | none | merged d37094b (branch gone) | main | d08988d, ad62e8f, a6bf501; on main via d37094b; 724 tests OK 2026-10-25 | 2026-10-25 | none |
 
 ## Decisions
 
