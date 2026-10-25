@@ -118,7 +118,7 @@ ACTIVE_STATUSES = {"active", "blocked", "review", "testing"}
 LEDGER_STATUSES = {"draft", "ready", "active", "blocked", "review", "testing", "done", "superseded", "deferred"}
 DECISION_OUTCOMES = {"accepted", "rejected", "superseded"}
 CHECKBOX_RE = re.compile(r"(?m)^\s*- \[[ xX]\]")
-TRACKABLE_STATUSES = ("draft", "ready", "active", "blocked", "done", "superseded", "deferred")
+TRACKABLE_STATUSES = ("draft", "ready", "active", "blocked", "review", "done", "superseded", "deferred")
 ID = r"[A-Z][A-Z0-9]*-\d+"
 STEP = r"[A-Z][A-Z0-9]*-[A-Z]*\d+"  # `E5-S1`: a step code
 CRITERION_RE = re.compile(rf"- \[[ xX]\] ({ID})(?=\s|$)")
@@ -1085,13 +1085,12 @@ def outcome(text: str) -> dict | None:
 
 
 def outcome_missing(fields: dict[str, str], state: str, text: str) -> list[str]:
-    """A spine closed (Status done/closed/superseded, or ``Superseded by:``) needs a written ``## Outcome`` (spine-model.md)."""
-    word = re.match(r"[a-z]+", state.lower().lstrip("`*_ "))
-    sup = fields.get("Superseded by", "")
-    if not ((word and word.group() in ("done", "closed", "superseded")) or not (is_empty(sup) or is_none(sup))):
-        return []
-    found = outcome(text) or {}
-    if found.get("verdict") and found.get("sentence"):
+    """A spine closed (Status done/closed/superseded, or ``Superseded by:``) needs a written ``## Outcome`` (spine-model.md); ``review`` needs it without ``Verdict:`` (only the user marks that)."""
+    word = (m.group() if (m := re.match(r"[a-z]+", state.lower().lstrip("`*_ "))) else "")
+    sup, found = fields.get("Superseded by", ""), outcome(text) or {}
+    if word == "review" and not (found.get("sentence") and found.get("evidence")):
+        return ["review spine has no usable ## Outcome: write `## Outcome` with `Outcome: <one sentence>` and a Done means | Evidence table (no `Verdict:`: the user marks it) before Status review"]
+    if not (word in ("done", "closed", "superseded") or not (is_empty(sup) or is_none(sup))) or (found.get("verdict") and found.get("sentence")):
         return []
     return ["closed spine has no usable ## Outcome: write `## Outcome` with `Verdict: " + " | ".join(VERDICTS) + "` and `Outcome: <one sentence>` (plus Closed, Risk, evidence per Done means) before closing"]
 

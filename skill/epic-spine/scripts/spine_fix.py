@@ -26,7 +26,8 @@ import validate_spine as v
 # Only a leading word that unambiguously means one status is mapped; "current", "generic", "prior", "guest" and the
 # like stay unmapped, so --trackable blocks on them instead of guessing.
 SYNONYMS = {
-    "active": "in progress|wip|doing|in review|review|testing",
+    "active": "in progress|wip|doing|testing",
+    "review": "in review",
     "ready": "todo|to do|planned|open|backlog",
     "done": "closed|complete|completed|delivered|shipped|merged|integrated|resolved",
     "superseded": "dropped|obsolete|wontfix|wont fix|cancelled|canceled|abandoned",  # closed, not done

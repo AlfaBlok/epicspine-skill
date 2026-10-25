@@ -29,6 +29,11 @@ class RunStateTests(EpicLogCase):
                 node = self.child(status)["docs/E4-one-logger.md"]
                 self.assertEqual((state, runnable), (node["run_state"], node["runnable"]))
 
+    def test_doctrine_table_and_closing_line_say_review(self) -> None:
+        text = (Path(__file__).parents[1] / "skill/epic-spine/references/spine-model.md").read_text()
+        self.assertIn("| review | finished | no (", text)
+        self.assertRegex(text, r"Outcome written without `Verdict:`.*`Status: review`.*verdict → `done`")
+
     def test_run_state_reads_the_own_status_not_the_rollup(self) -> None:
         nodes = self.child("active")
         self.assertEqual(("running", True), (nodes["docs/root.md"]["run_state"], nodes["docs/root.md"]["runnable"]))
