@@ -29,11 +29,11 @@ An epic's own Status says whether a wake may work it: `spines.py --json` carries
 Owner: Delivery Manager (agent-team console)
 Status: active
 Last attempted: 2026-10-25 DM wake run_21b34e03: removed agent-written Verdict/Closed (only Jordi marks the verdict); 2026-10-25 DM wake run_57aac66f: E7-S1 merged (d37094b); E7-3 rollout verified (run_c59cfb38, 0c6c0f9; DM re-checked vps3 + vps1 skill links, VERSION 2026.10.25.1)
-Result: all three Done means met; Outcome written; awaiting verification
+Result: E7-1..E7-3 met; reopened for defect E7-S2 (spine Status `review` rewritten to active by the hook)
 Evidence: merge d37094b; 0c6c0f9 [rollout table](epic7/rollout-2026-10-25.md); 724 tests OK
 Waiting on: nobody
 Approved work: E7-S1 (brief docs/handoffs/E14-S1.md in agent_team)
-Next action: Jordi verifies the Outcome and sets done; tax-assist-research commits its migrated AGENTS.md block in its own thread (L-14)
+Next action: E7-S2 (Status review legal, run_state not runnable) dispatched by run_21b34e03; then Status review and Jordi marks the verdict
 Source revision: main
 Verified at: 2026-10-25
 
@@ -59,6 +59,7 @@ Steps: each is independently testable and closes only with evidence.
 | Issue | Role | Owner / Assignment | Title | Status | Depends On | PR/Branch | Base | Latest Evidence | Last Verified | Next Action |
 |---|---|---|---|---|---|---|---|---|---|---|
 | draft | Ticket worker | worker (Sonnet 5.5, seat1) | E7-S1 run_state contract: `--json` fields, doctrine, advisories, tests, release and rollout; brief docs/handoffs/E14-S1.md (agent_team) | done | none | merged d37094b (branch gone) | main | d08988d, ad62e8f, a6bf501; on main via d37094b; 724 tests OK 2026-10-25 | 2026-10-25 | none |
+| E7-S2 | Ticket worker | worker run_84d3be55 (Sonnet 5.5, seat2) | epic Status `review` (Outcome written, awaiting Jordi's verdict) is a trackable spine Status: spine_fix stops rewriting it to active; run_state = not runnable; validator, doctrine, tests, release | active | none | e7-s2 | main | spine_fix rewrote EPIC-6/7 review->active in 51c12e6 | 2026-10-25 | DM verifies and merges |
 
 ## Decisions
 
@@ -67,6 +68,7 @@ One line per decision; detail goes to a linked page.
 | Date | Outcome | Decision / Attempt | Durable Summary | Evidence | Revisit When |
 |---|---|---|---|---|---|
 | 2026-10-24 | accepted | Created as a goal under epicspine-operating-system | one node in the epic log | EPIC-0-OPERATING-SYSTEM.md | never |
+| 2026-10-25 | accepted | decided by Delivery Manager: open E7-S2 to make spine `Status: review` legal (console protocol sets it after the Outcome; the pre-commit hook rewrote it to active) — why: status must be true, and a review epic must not run — rollback: revert the E7-S2 merge | known defect fix inside this epic's contract | 51c12e6 | never |
 | 2026-10-24 | accepted | New epics scaffold `draft`; only the user readies; unknown Status = planning; no draft-to-ready author warning (a file validator cannot know the author) | nothing may auto-queue; rule in spine-model.md Running | ad62e8f | an author signal exists |
 
 ## Operating Learnings
