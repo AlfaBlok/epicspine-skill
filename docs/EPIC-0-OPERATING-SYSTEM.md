@@ -19,12 +19,12 @@ Skill updates: auto
 
 Owner: /root delivery manager
 Status: active
-Last attempted: 2026-10-24 root DM wake (run_53683ac3): EPIC-3 closed; ledger made honest; root trimmed 141→99; `spines.py --bind` shipped (2026.10.24.8); DOD-1..3 ticked; Outcome written
+Last attempted: 2026-10-25 DM wake run_21b34e03: removed agent-written Verdict/Closed (only Jordi marks the verdict); 2026-10-24 root DM wake (run_53683ac3): EPIC-3 closed; ledger made honest; root trimmed 141→99; `spines.py --bind` shipped (2026.10.24.8); DOD-1..3 ticked; Outcome written
 Result: all three Done means met; awaiting Jordi's verification of the Outcome
 Evidence: 259ed38, 89554d8, a61f07b, 85a86fd; [evidence page](root/dod-evidence-2026-10-24.md)
 Waiting on: none
 Approved work: none open beyond this root's DOD
-Next action: Jordi verifies Outcomes of EPIC-0, EPIC-6, EPIC-7; EPIC-5 E5-5/E5-6 wait on infra-vps/zenod-social spines (Needs Jordi nj_b310a5d1)
+Next action: Jordi marks the verdict on EPIC-0, EPIC-6, EPIC-7 (Outcomes written, Status review for 6 and 7); EPIC-5 E5-5/E5-6 wait on infra-vps/zenod-social spines (Needs Jordi nj_b310a5d1)
 Source revision: main
 Verified at: 2026-10-25
 
@@ -68,9 +68,7 @@ Not a product or runtime; not a general issue tracker; do not restate the skill'
 
 ## Outcome
 
-Verdict: accomplished
 Outcome: EpicSpine is a lean, always-on default: a cold agent binds with one `spines.py --bind` call (61 lines read, was 282), the 72-line SKILL.md kernel and Default Behaviors card ship with every installed copy linked to the canonical checkout, and 656 tests plus strict graph validation are green on main.
-Closed: 2026-10-24 by run_53683ac3-ba33-4027-ad9c-251e9144e36f
 Risk: the fresh-agent bind was measured once (n=1) on Claude; the thin repo-block template still says "read Current State and Operating Learnings" (the live global block, which outranks it, says `--bind`); Gemini cold start untested.
 
 | Done means | Evidence |
@@ -112,5 +110,5 @@ Binding rule, validation command and the remaining fields: [book-companion](root
 | epicspine-doctrine-2 | child | [EPIC-4 Doctrine 2 semantic goal tree](EPIC-4-DOCTRINE-2.md) | Contributes the human layer: every epic now says what it achieves and why, how it serves its parent and what each child adds, and the agent_team console shows it (Outcome: accomplished) | done | none | Outcome 2026-10-22; skill 2026.10.22.5 | 2026-10-22 | Reference only; reopen if scope resumes |
 | persona-files-and-standing-spines | child | [EPIC-5: Persona files and standing spines](EPIC-5-PERSONA-AND-STANDING-SPINES.md) | doctrine for persona markdown files and for standing (never-closing, target-per-period) spines, so the console and any repo read teams the same way | active | none | E5-1..E5-4 met; merges 1d4e9fc, 1acbdde | 2026-10-24 | infra-vps/zenod-social adopt (E5-5, E5-6) |
 | status-true-spines-the-checker-catches-what-makes-the-console-status-lie | child | [EPIC-6: Status-true spines: the checker catches what makes the console status lie](EPIC-6-STATUS-TRUE-SPINES.md) | contributes the checks the agent_team console status model (agent_team EPIC-13) depends on: free-text asks, done with open Done means, contradictory Waiting on | review | none | Outcome 2026-10-24, merge 44ab11e | 2026-10-24 | Jordi verifies Outcome |
-| runnable-epics-run-state-contract | child | [EPIC-7: Runnable epics: run_state contract](EPIC-7-RUNNABLE-EPICS.md) | Defines which epics a wake may run (run_state/runnable/has_children from the Status they already carry), so a Delivery Manager never works finished or planning epics. | active | none | branch e14-s1 (not merged), skill 2026.10.24.9, 691 tests OK | 2026-10-24 | DM verifies and merges e14-s1; then roll out to other machines |
-| closed-epics-close-their-rows-tree-audit | child | [EPIC-8: Closed epics close their rows; tree audit](EPIC-8-CLOSED-EPICS-CLOSE-ROWS.md) | A finished epic shows no open work, and any repo's stale tree can be audited and swept from the skill. | active | none | branch wt/e16-s1-close-rows (not merged), skill 2026.10.24.10, 715 tests OK | 2026-10-24 | DM verifies and merges; then roll out (E8-3) |
+| runnable-epics-run-state-contract | child | [EPIC-7: Runnable epics: run_state contract](EPIC-7-RUNNABLE-EPICS.md) | Defines which epics a wake may run (run_state/runnable/has_children from the Status they already carry), so a Delivery Manager never works finished or planning epics. | review | none | Outcome 2026-10-25; merge d37094b; rollout 0c6c0f9 | 2026-10-25 | Jordi marks the verdict |
+| closed-epics-close-their-rows-tree-audit | child | [EPIC-8: Closed epics close their rows; tree audit](EPIC-8-CLOSED-EPICS-CLOSE-ROWS.md) | A finished epic shows no open work, and any repo's stale tree can be audited and swept from the skill. | done | none | Outcome 2026-10-24; merge 6e1abf7 | 2026-10-25 | Reference only; reopen if scope resumes |

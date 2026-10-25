@@ -28,7 +28,7 @@ An epic's own Status says whether a wake may work it: `spines.py --json` carries
 
 Owner: Delivery Manager (agent-team console)
 Status: active
-Last attempted: 2026-10-25 DM wake run_57aac66f: E7-S1 merged (d37094b); E7-3 rollout verified (run_c59cfb38, 0c6c0f9; DM re-checked vps3 + vps1 skill links, VERSION 2026.10.25.1)
+Last attempted: 2026-10-25 DM wake run_21b34e03: removed agent-written Verdict/Closed (only Jordi marks the verdict); 2026-10-25 DM wake run_57aac66f: E7-S1 merged (d37094b); E7-3 rollout verified (run_c59cfb38, 0c6c0f9; DM re-checked vps3 + vps1 skill links, VERSION 2026.10.25.1)
 Result: all three Done means met; Outcome written; awaiting verification
 Evidence: merge d37094b; 0c6c0f9 [rollout table](epic7/rollout-2026-10-25.md); 724 tests OK
 Waiting on: nobody
@@ -39,9 +39,7 @@ Verified at: 2026-10-25
 
 ## Outcome
 
-Verdict: accomplished
 Outcome: `spines.py --json` tells any console whether an epic may run (`run_state`, `runnable`, `has_children`), new epics scaffold `draft` until the user stamps them ready, two advisories catch active-without-start and draft-with-active-rows, and the release is live on every reachable config dir (vps3, vps1: 7 dirs, 2026.10.25.1).
-Closed: 2026-10-25 by run_57aac66f-3444-4b35-a403-0820839411dc
 Risk: Jordi's Mac unreachable (ssh timeout) so its install is unverified; tax-assist-research AGENTS.md block migrated on vps1 but uncommitted; whatgpt_webflow_export has no block until a session opens there.
 
 | Done means | Evidence |

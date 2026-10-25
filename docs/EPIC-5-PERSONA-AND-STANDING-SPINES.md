@@ -35,7 +35,7 @@ Last attempted: 2026-10-24 DM wake run_aa2dd0a3: E5-S1..S4 verified and merged (
 Result: format, Team table, assignee check, queues, standing spines and the persona writing contract ship in the skill (694 tests OK, graph --strict 0); E5-5 and E5-6 need the infra-vps and zenod-social spines themselves
 Evidence: merges 1d4e9fc, 44ab11e, 1acbdde; 69372e6
 Waiting on: nobody
-Monitoring: infra-vps EPIC-15 and zenod-social root spine strict-clean since 2026-10-24 · 2026-10-25T08:30Z still failing (infra-vps rows 2-6 Status `fixed, verify`; zenod root row 1 empty PR/Branch) · next check 2026-10-25T20:00Z · then tick E5-6, and E5-5 once infra-vps records the asks-as-tasks trial Decisions row
+Monitoring: infra-vps EPIC-15 and zenod-social root spine strict-clean since 2026-10-24 · 2026-10-25 wake run_21b34e03: still failing (infra-vps rows 2-6 Status `fixed, verify`; zenod root row 1 empty PR/Branch); Needs Jordi nj_b310a5d1 open · next check 2026-10-26T08:00Z · then tick E5-6, and E5-5 once infra-vps records the asks-as-tasks trial Decisions row
 Approved work: none
 Next action: console Needs Jordi nj_b310a5d1 asks whether the DM may make these cell edits; else each repo's own thread (L-14) fixes its spine: infra-vps EPIC-15 ledger statuses `needs fix`/`needs diagnosis` (rows 2-6) to the vocabulary; zenod-social root row 1 `review` with empty PR/Branch; infra-vps runs the asks-as-tasks trial (persona-tasks.md)
 Source revision: main

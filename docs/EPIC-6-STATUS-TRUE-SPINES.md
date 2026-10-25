@@ -27,20 +27,18 @@ Integration policy: main-direct
 
 Owner: Delivery Manager (agent-team console)
 Status: active
-Last attempted: 2026-10-24 DM wake run_aa2dd0a3: E6-S1 (run_98fc838e) verified and merged (44ab11e)
+Last attempted: 2026-10-25 DM wake run_21b34e03: removed agent-written Verdict/Closed (only Jordi marks the verdict); 2026-10-24 DM wake run_aa2dd0a3: E6-S1 (run_98fc838e) verified and merged (44ab11e)
 Result: both Done means met; Outcome written; awaiting verification
 Evidence: 1174c69, c804f48, merge 44ab11e; 682 tests OK; graph --strict 0 errors
 Waiting on: nobody
 Approved work: none
 Next action: Jordi verifies the Outcome and sets done; agent_team fixes its 4 advisories and records E13-S5 evidence in its own thread (L-14)
 Source revision: main
-Verified at: 2026-10-24
+Verified at: 2026-10-25
 
 ## Outcome
 
-Verdict: accomplished
 Outcome: `validate_spine.py` now flags the three spine shapes that made the console status lie (free-text asks naming Jordi, done with unticked Done means, "nothing open" beside an open ask), as advisories `--strict` promotes, and spine-model.md plus the dispatch preamble state the rules once.
-Closed: 2026-10-24 by run_aa2dd0a3-0bdd-4c5c-bc6c-79b32cba5e50
 Risk: agent_team has 4 advisories to fix (epic-7-team-url, m5-unblocked-web, root, epic-12 row 3); the human name `Jordi` is fixed in personas.py; done-row check fires only when a row cites an unticked criterion ID.
 
 | Done means | Evidence |
