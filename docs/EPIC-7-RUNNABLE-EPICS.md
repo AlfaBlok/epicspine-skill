@@ -27,13 +27,13 @@ An epic's own Status says whether a wake may work it: `spines.py --json` carries
 ## Current State
 
 Owner: Delivery Manager (agent-team console)
-Status: active
-Last attempted: 2026-10-25 DM wake run_21b34e03: removed agent-written Verdict/Closed (only Jordi marks the verdict); 2026-10-25 DM wake run_57aac66f: E7-S1 merged (d37094b); E7-3 rollout verified (run_c59cfb38, 0c6c0f9; DM re-checked vps3 + vps1 skill links, VERSION 2026.10.25.1)
-Result: E7-1..E7-3 met; reopened for defect E7-S2 (spine Status `review` rewritten to active by the hook)
-Evidence: merge d37094b; 0c6c0f9 [rollout table](epic7/rollout-2026-10-25.md); 724 tests OK
+Status: review
+Last attempted: 2026-10-25 DM wake run_21b34e03: E7-S2 (run_84d3be55) verified and merged d7b6e24 (release 2026.10.25.2); Status review
+Result: E7-1..E7-3 met; E7-S2 makes epic Status review legal and kept by the hook; Outcome written, awaiting Jordi's verdict
+Evidence: merges d37094b, d7b6e24; 0c6c0f9 rollout table; 728 tests OK
 Waiting on: nobody
 Approved work: E7-S1 (brief docs/handoffs/E14-S1.md in agent_team)
-Next action: E7-S2 (Status review legal, run_state not runnable) dispatched by run_21b34e03; then Status review and Jordi marks the verdict
+Next action: Jordi marks the verdict (console Mark accomplished)
 Source revision: main
 Verified at: 2026-10-25
 
@@ -46,6 +46,7 @@ Risk: Jordi's Mac unreachable (ssh timeout) so its install is unverified; tax-as
 |---|---|
 | E7-1 | d08988d (run_state, runnable, has_children + tests); merge d37094b |
 | E7-2 | d08988d (run-state advisories, positive/negative fixtures); 724 tests OK on main 2026-10-25 |
+| E7-S2 (defect) | c952215, merge d7b6e24: spine Status review legal, hook keeps it |
 | E7-3 | 0c6c0f9 [rollout table](epic7/rollout-2026-10-25.md): 7 reachable config dirs on 2026.10.25.1; Mac and vps1-egress listed unreachable |
 
 ## Non-Goals
@@ -59,7 +60,7 @@ Steps: each is independently testable and closes only with evidence.
 | Issue | Role | Owner / Assignment | Title | Status | Depends On | PR/Branch | Base | Latest Evidence | Last Verified | Next Action |
 |---|---|---|---|---|---|---|---|---|---|---|
 | draft | Ticket worker | worker (Sonnet 5.5, seat1) | E7-S1 run_state contract: `--json` fields, doctrine, advisories, tests, release and rollout; brief docs/handoffs/E14-S1.md (agent_team) | done | none | merged d37094b (branch gone) | main | d08988d, ad62e8f, a6bf501; on main via d37094b; 724 tests OK 2026-10-25 | 2026-10-25 | none |
-| E7-S2 | Ticket worker | worker run_84d3be55 (Sonnet 5.5, seat2) | epic Status `review` (Outcome written, awaiting Jordi's verdict) is a trackable spine Status: spine_fix stops rewriting it to active; run_state = not runnable; validator, doctrine, tests, release | review | none | e7-s2 | main | c952215 (branch e7-s2, skill 2026.10.25.2; 728 tests OK; EPIC-6 kept `review` under the branch hook: f88e927) | 2026-10-25 | DM verifies and merges |
+| E7-S2 | Ticket worker | worker run_84d3be55 (Sonnet 5.5, seat2) | epic Status `review` (Outcome written, awaiting Jordi's verdict) is a trackable spine Status: spine_fix stops rewriting it to active; run_state = not runnable; validator, doctrine, tests, release | done | none | merged d7b6e24 (branch deleted) | main | c952215, merge d7b6e24; 728 tests OK; hook keeps review (f88e927) | 2026-10-25 | none |
 
 ## Decisions
 

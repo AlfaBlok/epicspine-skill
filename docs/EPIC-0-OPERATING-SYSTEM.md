@@ -24,7 +24,7 @@ Result: all three Done means met; awaiting Jordi's verification of the Outcome
 Evidence: 259ed38, 89554d8, a61f07b, 85a86fd; [evidence page](root/dod-evidence-2026-10-24.md)
 Waiting on: none
 Approved work: none open beyond this root's DOD
-Next action: Jordi marks the verdict on EPIC-0, EPIC-6, EPIC-7 (Outcomes written, Status review for 6 and 7); EPIC-5 E5-5/E5-6 wait on infra-vps/zenod-social spines (Needs Jordi nj_b310a5d1)
+Next action: Jordi marks the verdict on EPIC-0, EPIC-6, EPIC-7 (Outcomes written; 6 and 7 Status review, release 2026.10.25.2); EPIC-5 E5-5/E5-6 wait on infra-vps/zenod-social spines (Needs Jordi nj_b310a5d1)
 Source revision: main
 Verified at: 2026-10-25
 
