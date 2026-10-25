@@ -5,7 +5,9 @@ Repo text outranks the live skill, so a copy of the skill checked into a repo ke
 it had when it was vendored (2026-10-16: zenod still named DeepSeek that way). A directory under the repo root
 (depth <= 4, bounded count and time; not .git, node_modules, worktrees or nested repos) holding a SKILL.md whose
 frontmatter name is epic-spine plus a VERSION whose date (YYYY.MM.DD prefix) is more than 7 days older than the installed
-skill's gets one ``EpicSpine attention:`` line (a copy a few releases behind is tolerated). Report only; nothing is
+skill's gets one ``EpicSpine attention:`` line (a copy a few releases behind is tolerated); a copy older than
+``DEPLOY_GATE_SINCE`` (the release that made every repo main-direct with a narrow ``Deploy gate:``) is flagged whatever its
+age once the installed skill has the rule, since it still steers agents to gate the whole repo. Report only; nothing is
 changed. Throttled per repo (10 minutes) like the skill sync. Stdlib only; never raises.
 """
 
@@ -22,6 +24,7 @@ from session_sync import Clock, due, read_version
 SKILL_NAME_RE = re.compile(r"\A---[ \t]*\n(?:[^\n]*\n){0,30}?name:[ \t]*epic-spine[ \t]*\n", re.IGNORECASE)
 SKIP_DIRS = {".git", "node_modules", "wt", "worktrees", ".worktrees", "__pycache__"}
 DEPTH, MAX_DIRS, MAX_LINES, TOLERANCE_DAYS = 4, 4000, 3, 7
+DEPLOY_GATE_SINCE = (2026, 10, 16, 12)
 
 
 def read(path: Path) -> str:
@@ -71,9 +74,13 @@ def check(top: Path, clock: Clock, home: Path, skill_dir: Path, throttle: bool =
     if want is None or (throttle and not due(home, name=stamp)):
         return []
     installed, notes = read_version(skill_dir), []
+    gated = (version_key(installed) or ()) >= DEPLOY_GATE_SINCE
     for copy in copies(top, clock, skill_dir):
-        have = release_date(read_version(copy))
-        if have is not None and (want - have).days > TOLERANCE_DAYS:
+        have, key = release_date(read_version(copy)), version_key(read_version(copy))
+        pre_gate = gated and key is not None and key < DEPLOY_GATE_SINCE
+        if have is not None and ((want - have).days > TOLERANCE_DAYS or pre_gate):
             notes.append(f"EpicSpine attention: {top.name}: old copy of the epic-spine skill at {copy.relative_to(top).as_posix()} "
-                         f"({read_version(copy)}, installed {installed}); agents reading it get stale rules — update or remove it")
+                         f"({read_version(copy)}, installed {installed}); agents reading it get stale rules — update or remove it"
+                         + ("; it predates the Deploy gate rule (2026.10.16.12): main-direct for every repo, PR/CI only for "
+                            "declared Deploy gate paths" if pre_gate else ""))
     return notes[:MAX_LINES]

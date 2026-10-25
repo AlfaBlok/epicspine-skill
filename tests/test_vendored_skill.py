@@ -83,6 +83,13 @@ class VendoredSkillTest(VendoredBase):
         (self.repo / "skill" / "epic-spine").symlink_to(self.installed)
         self.assertEqual(self.check(home=self.tmp / "h3"), [line("zenod", "a/b/c/epic-spine", "2026.10.01", "2026.10.16.8")])
 
+    def test_a_copy_predating_the_deploy_gate_rule_is_flagged_whatever_its_age(self) -> None:
+        (self.installed / "VERSION").write_text("2026.10.17.1\n")
+        self.vendor("a/epic-spine", "2026.10.16.11")  # one day old, but without the Deploy gate rule
+        self.vendor("b/epic-spine", "2026.10.16.12")  # has it
+        self.assertEqual(self.check(), [line("zenod", "a/epic-spine", "2026.10.16.11", "2026.10.17.1") + "; it predates the Deploy gate "
+                                        "rule (2026.10.16.12): main-direct for every repo, PR/CI only for declared Deploy gate paths"])
+
     def test_throttled_per_repo(self) -> None:
         self.vendor("skills/epic-spine")
         self.assertEqual(len(self.check()), 1)

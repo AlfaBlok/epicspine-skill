@@ -1,7 +1,12 @@
 """Deploy gate and PR/CI policy block the background auto-merge; gate parsing is conservative. Hermetic (temp HOME, bare origins, fake gh)."""
 from __future__ import annotations
 
+import contextlib
+import io
+import shutil
+import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -10,6 +15,8 @@ from test_auto_return import ReturnBase  # noqa: E402
 from test_background_sync import git  # noqa: E402
 
 import deploy_gate  # noqa: E402
+import repo_sync  # noqa: E402
+from session_sync import Clock  # noqa: E402
 
 GATED = {"AGENTS.md": "Integration policy: main-direct\nDeploy gate: deploy/, infra/**/*.tf, Dockerfile.prod\n", "README.md": "x\n"}
 
@@ -102,6 +109,63 @@ class AutoMergeGate(ReturnBase):
         bare, clone = self.repo("ok", {"AGENTS.md": "Integration policy: main-direct\nDeploy gate: none\n"})
         self.branch(clone, "feat/docs", {"docs/ok.md": "ok\n"})
         self.assertEqual(self.entry(clone)["auto"][0], "ok: merged feat/docs into main (--no-ff, pushed)")
+
+
+PUBLISH = "name: Publish image\non:\n  push:\n    branches: [main]\n  workflow_dispatch: {}\njobs: {}\n"
+ZENOD_POLICY = "Integration policy: main-direct via self-merged CI-gated PR (`main` requires the `ci` check: push `wt/<task>`)\n"
+
+
+class WholeRepoPolicy(unittest.TestCase):
+    def setUp(self) -> None:
+        self.tmp = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.tmp, ignore_errors=True)
+
+    def make(self, files: dict[str, str], name: str = "zenod") -> Path:
+        top = self.tmp / name
+        for rel, text in files.items():
+            (top / rel).parent.mkdir(parents=True, exist_ok=True)
+            (top / rel).write_text(text)
+        return top
+
+    def test_whole_repo_pr_or_non_main_direct_policy_without_a_gate(self) -> None:
+        for value in ("main-direct via self-merged CI-gated PR", "pr-approval", "manual merges by the owner", "main-direct; PRs for everything"):
+            self.assertEqual(deploy_gate.whole_repo(f"Integration policy: {value}\n"), value, value)
+        for text in ("", "Integration policy: main-direct\n", "Integration policy: main-direct (inherits root)\n",
+                     "Integration policy: main-direct via PR for deploys\nDeploy gate: deploy/, .github/workflows/publish.yml\n"):
+            self.assertIsNone(deploy_gate.whole_repo(text), text)
+
+    def test_the_attention_line_names_the_fix_and_the_every_push_workflow(self) -> None:
+        top = self.make({"AGENTS.md": ZENOD_POLICY, ".github/workflows/publish.yml": PUBLISH,
+                         ".github/workflows/ci.yml": "name: ci\non: [push, pull_request]\n",
+                         ".github/workflows/deploy-docs.yml": "name: deploy\non:\n  push:\n    paths-ignore: ['docs/**']\n"})
+        self.assertEqual(deploy_gate.attention(top), [
+            'EpicSpine attention: zenod: Integration policy "main-direct via self-merged CI-gated PR (main requires the…" gates the '
+            "whole repo through PR/CI (no Deploy gate declared), so docs/spine edits and console-written answers get stranded; "
+            ".github/workflows/publish.yml run(s) on every push to main — declare Deploy gate: <paths that roll prod>, keep "
+            "docs/spines main-direct, add paths-ignore for docs to the deploy workflow (references/git-doctrine.md)"])
+        with contextlib.redirect_stdout(io.StringIO()) as out:
+            self.assertEqual(deploy_gate.main(["--repo", str(top)]), 1)
+        self.assertIn("gates the whole repo", out.getvalue())
+
+    def test_the_policy_and_gate_are_read_from_the_root_spine_too(self) -> None:
+        top = self.make({"AGENTS.md": "Root spine: docs/EPIC-0.md. Read its Current State.\n", "docs/EPIC-0.md": "# E\n" + ZENOD_POLICY})
+        (line,) = deploy_gate.attention(top)
+        self.assertNotIn("every push", line)
+        (top / "docs/EPIC-0.md").write_text("# E\n" + ZENOD_POLICY + "Deploy gate: Dockerfile, .github/workflows/publish.yml\n")
+        self.assertEqual(deploy_gate.attention(top), [])  # an unreadable gate (bare Dockerfile) is auto_return's to report
+        (top / "docs/EPIC-0.md").write_text("# E\n" + ZENOD_POLICY + "Deploy gate: Dockerfile.prod, .github/workflows/publish.yml\n")
+        self.assertEqual(deploy_gate.attention(top), [])
+
+    def test_main_direct_and_no_policy_are_silent(self) -> None:
+        for agents in ("Integration policy: main-direct\n", "# no policy\n"):
+            self.assertEqual(deploy_gate.attention(self.make({"AGENTS.md": agents, ".github/workflows/publish.yml": PUBLISH}, "ok")), [])
+        self.assertEqual(deploy_gate.attention(self.tmp / "missing"), [])
+
+    def test_session_start_prints_it(self) -> None:
+        top = self.make({"AGENTS.md": ZENOD_POLICY})
+        subprocess.run(["git", "init", "-q", "-b", "main", str(top)], check=True)
+        notes = repo_sync.run(top, Clock(), self.tmp / "home", self.tmp / "skill")
+        self.assertEqual([n for n in notes if "gates the whole repo" in n], deploy_gate.attention(top))
 
 
 if __name__ == "__main__":

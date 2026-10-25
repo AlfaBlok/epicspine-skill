@@ -10,6 +10,8 @@
    but an origin gets the block with ``Root spine: none``; ambiguous also adds an attention line.
 3. vendored skill: an old copy of the epic-spine skill inside the repo gets an ``EpicSpine attention:`` line
    (vendored_skill.py; report only).
+4. policy: an Integration policy that sends the whole repo through PR/CI with no ``Deploy gate:`` gets an
+   ``EpicSpine attention:`` line (deploy_gate.attention; report only).
 Opt-out: a ``.epicspine-off`` file or an ``EpicSpine: off`` line in AGENTS.md skips both steps (and the
 Stop-hook push). Stdlib only; never raises.
 """
@@ -21,6 +23,7 @@ import io
 import re
 from pathlib import Path
 
+import deploy_gate
 import vendored_skill
 from fetch_guard import fetch
 from session_sync import SKILL_DIR, Clock, git, out
@@ -177,7 +180,8 @@ def run(cwd: Path, clock: Clock, home: Path | None = None, skill_dir: Path = SKI
     if not top or opted_out(Path(top)):
         return notes
     steps = (lambda: sync(Path(top), clock), lambda: install(Path(top), clock),
-             lambda: vendored_skill.check(Path(top), clock, home or Path.home(), skill_dir))
+             lambda: vendored_skill.check(Path(top), clock, home or Path.home(), skill_dir),
+             lambda: deploy_gate.attention(Path(top)))
     for step in steps:
         with contextlib.suppress(Exception):
             notes += step()
