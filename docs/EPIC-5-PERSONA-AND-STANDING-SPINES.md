@@ -31,13 +31,13 @@ EpicSpine defines how a persona is written as a markdown file and how a standing
 
 Owner: Delivery Manager (agent-team console)
 Status: active
-Last attempted: 2026-10-26 DM wake run_61c69e51: acting on EPIC-5-A1 (Unblocker yes): persona-files worker run_a6706700 (seat2) writing infra-vps and zenod-social personas/
-Result: E5-1..E5-4 met; E5-6 half met: spines validate, persona files missing in both repos (infra-vps none, zenod-social README only); E5-5 trial not started in infra-vps
+Last attempted: 2026-10-26 DM wake run_61c69e51: EPIC-5-A1 acted on: persona files generated and valid (run_a6706700) but not committed: infra-vps E15-R6 and zenod-social E0-S9 (rows added 10-26) fail --strict (empty PR/Branch); defect found (Jordi on a Team table demanded a persona file) -> E5-S5 run_83cd4392
+Result: E5-1..E5-4 met; E5-6 blocked by two new external rows owned by those repos' personas, plus E5-S5 (in flight); E5-5 waits on the infra-vps trial
 Evidence: infra-vps 9409eb5, zenod-social 4c72143; merges 1d4e9fc, 44ab11e, 1acbdde
 Waiting on: nobody
-Monitoring: E5-5 asks-as-tasks trial in infra-vps EPIC-15 since 2026-10-24 · next check 2026-10-26T08:00Z (a Jordi-assigned ledger row or a trial Decisions row in infra-vps EPIC-15) · then adopt or drop by a Decisions row and tick E5-5
+Monitoring: infra-vps E15-R6 and zenod-social E0-S9 PR/Branch filled (strict-clean) since 2026-10-26 · next check 2026-10-26T20:00Z · then persona-files commit under EPIC-5-A1 ; E5-5 asks-as-tasks trial in infra-vps EPIC-15 · next check 2026-10-26T20:00Z · then adopt or drop by a Decisions row
 Approved work: none
-Next action: verify run_a6706700's two commits (files + spines --strict), tick E5-6, mark EPIC-5-A1 done; E5-5 waits on infra-vps running the asks-as-tasks trial (L-14)
+Next action: merge E5-S5; when infra-vps E15-R6 and zenod-social E0-S9 have PR/Branch filled (their owners, L-14), re-run the persona-files worker (generator /tmp/pf/gen.py) under EPIC-5-A1 and tick E5-6
 Source revision: main
 Verified at: 2026-10-26
 
