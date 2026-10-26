@@ -62,7 +62,7 @@ def repo_root(path: Path) -> Path:
 
 
 def team(rows: list[dict[str, str]], header: list[str], files: dict | None = None) -> tuple[list[str], list[str]]:
-    """(persona slugs, errors) of an epic's ``## Team`` table; with persona files in the repo each persona must have one."""
+    """(persona slugs, errors) of an epic's ``## Team`` table; with persona files in the repo each persona must have one (the human, Jordi, is no persona)."""
     names = base(header)
     out = [f"Team table missing column: {c}" for c in TEAM_COLUMNS if c not in names]
     people: list[str] = []
@@ -74,7 +74,7 @@ def team(rows: list[dict[str, str]], header: list[str], files: dict | None = Non
             continue
         out += [f"Team row {n} ({who}) has empty {c}" for c in TEAM_COLUMNS[1:] if c in names and not row.get(c, "").strip()]
         out += [f"Team lists {who} twice"] * (who in people)
-        out += [f"Team persona {who} has no file personas/{who}.md"] * (bool(files) and who not in files)
+        out += [f"Team persona {who} has no file personas/{who}.md"] * (bool(files) and who not in files and who != HUMAN)
         people.append(who)
     return people, out
 
@@ -104,7 +104,7 @@ def roster(repo: Path, nodes: list[dict], ledgers: dict[str, list[dict[str, str]
     out = {k: {"name": k, "path": os.path.relpath(f, repo), **frontmatter(f.read_text())[0], "epics": [], "queue": []} for k, f in names(repo).items()}
     for n in nodes:
         for t in n["team"]:
-            out.setdefault(t["persona"], {"name": t["persona"], "path": None, "epics": [], "queue": []})["epics"].append(n["path"])
+            out.setdefault(t["persona"], {"name": "Jordi" if t["persona"] == HUMAN else t["persona"], "path": None, "epics": [], "queue": []})["epics"].append(n["path"])
     for epic, rows in ledgers.items():
         for r in rows:
             who = slug(r.get("Owner / Assignment", ""))

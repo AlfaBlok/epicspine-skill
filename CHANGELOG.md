@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.10.25.3 — Jordi on a Team table needs no persona file
+
+- **Fixed: a Team table listing the human `Jordi` failed with `Team persona jordi has no file personas/jordi.md`** in any repo that has persona files (infra-vps EPIC-15, E5-S5). `personas.team()` exempts `HUMAN` from the file requirement (empty-cell and duplicate checks still apply); `roster()` names a Team-row Jordi `Jordi`, as it does when he only has open rows. `references/personas.md` says so. Tests: `tests/test_personas.py` (`test_jordi_on_the_team_needs_no_file_but_other_personas_do`, `test_jordi_on_the_team_is_listed_as_himself`). Skill 2026.10.25.3.
+
 ## 2026.10.25.2 — Epic Status `review` is legal and stays `review`
 
 - **Fixed: the pre-commit hook rewrote a spine's `Status: review` to `active`** (EPIC-6/7 in 51c12e6) although the console protocol sets `review` once an `## Outcome` is written without `Verdict:` (only the user's verdict writes `Verdict:`/`Closed:` and makes it `done`). `spine_fix.py` maps only `in review` to `review` (was: `review` and `in review` to `active`; `testing` stays `active`); `validate_spine.py` `TRACKABLE_STATUSES` gains `review`, and a `review` spine needs an `## Outcome` with the Outcome sentence and a Done means | Evidence table, no `Verdict:` (`done` still needs it). `run_state`: `review` = finished, not runnable (already so; row added to the "Running" table in `references/spine-model.md`, plus the closing line). Global block step 6 said `Status: done` follows the Outcome; it now says `review`, then the user's verdict makes it `done`. Tests: `test_trackable.py`, `test_outcome.py`, `test_run_state.py`. Skill 2026.10.25.2.
