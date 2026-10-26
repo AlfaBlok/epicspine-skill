@@ -41,6 +41,10 @@ Next action: console Needs Jordi nj_958bad5c asks whether the DM may add persona
 Source revision: main
 Verified at: 2026-10-25
 
+## Waiting on
+
+- [answered EPIC-5-A1 2026-10-26 @Unblocker] May the epicspine-skill Delivery Manager add persona files to infra-vps and zenod-social so EPIC-5 can finish? (console Needs Jordi nj_958bad5c, raised 2026-10-25 by the Delivery Manager, row E5-6) — answer: yes, as proposed: new `personas/<name>.md` files only, one per persona already on infra-vps EPIC-15's and zenod-social root's Team tables, copied from the console persona; change no existing file; run `validate_spine.py --strict` on the files and both spines and revert the repo's commit if either fails; one commit per repo, main-direct — why: E5-6 Done means requires persona files in both repos; Jordi approved the same kind of cross-repo, reversible, docs-only edit for this same row on 2026-10-25 (nj_b310a5d1, done in 9409eb5 and 4c72143); new files grant no access, spend nothing and publish nothing — source: EPIC-5 Done means E5-6; Jordi's approve of nj_b310a5d1 (2026-10-25); E5-1 persona format (references/personas.md) — confidence: 80% — rollback: `git revert` the one commit in each repo (or delete the new personas/ files); the Team tables stay the assignee source until files exist (E5-4)
+
 ## Non-Goals
 
 Console UI (agent_team EPIC-11). Changing finish-line spines.
@@ -65,6 +69,7 @@ One line per decision; detail goes to a linked page.
 | 2026-10-24 | accepted | Created as a goal under epicspine-operating-system | one node in the epic log | EPIC-0-OPERATING-SYSTEM.md | never |
 | 2026-10-24 | accepted | Requested by agent_team EPIC-12 (approved plan): EpicSpine owns the persona and standing-spine formats; the console only reads them | format owner = doctrine owner (agent_team L-12) | [agent_team EPIC-12](https://github.com/AlfaBlok/agent_team/blob/main/docs/spines/epic-12-zenod-live-heard-sold.md) | never |
 | 2026-10-24 | accepted | Persona generic, assignment (cadence, write scope, goal notes) in the epic's Team table; tasks = ledger rows with an assignee that must be a real persona or Jordi; asks-as-tasks trialled on infra-vps EPIC-15 | Jordi 2026-10-24 ('go for it'; 'you cannot make an owner that is not a persona in the repo') | [agent_team EPIC-12](https://github.com/AlfaBlok/agent_team/blob/main/docs/spines/epic-12-zenod-live-heard-sold.md) | after the EPIC-15 trial |
+| 2026-10-26 | accepted | decided by Unblocker: EPIC-5-A1 (nj_958bad5c) yes, DM may add new persona files to infra-vps and zenod-social, validate --strict, one commit per repo | E5-6 needs them; same scope as Jordi's approved nj_b310a5d1; additive and reversible | Waiting on EPIC-5-A1; run_7983789d | rollback: git revert the commit in each repo |
 
 ## Operating Learnings
 
