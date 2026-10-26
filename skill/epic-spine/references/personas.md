@@ -38,7 +38,7 @@ All four keys and all three sections are required. A `goal`, `cadence` or `write
 
 ## Assignees
 
-A ledger row's `Owner / Assignment` is its assignee: a persona on the repo's team, or `Jordi` (an ask to Jordi is a row assigned to him). The team is the persona files when the repo has any, else the epic's Team table; with files, every Team persona must have one.
+A ledger row's `Owner / Assignment` is its assignee: a persona on the repo's team, or `Jordi` (an ask to Jordi is a row assigned to him). The team is the persona files when the repo has any, else the epic's Team table; with files, every Team persona must have one (`Jordi` on a Team table needs no file).
 
 The check is opt-in per epic: it runs only when the epic has a `## Team` section, and then rejects every non-draft row whose assignee is not on the team or `Jordi`. Epics without `## Team` keep validating with any value (`unassigned`, `worker (…)`, paths).
 

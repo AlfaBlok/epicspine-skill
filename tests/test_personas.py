@@ -134,6 +134,23 @@ class PersonaTests(unittest.TestCase):
         self.assertIn("Team persona fixer has no file personas/fixer.md", self.check(epic([("Watcher", "ready")]), files=("watcher",)))
         self.assertTrue(any("'Fixer'" not in e and "Stranger" in e for e in self.check(epic([("Stranger", "ready")]), files=("watcher", "fixer"))))
 
+    def test_jordi_on_the_team_needs_no_file_but_other_personas_do(self):
+        team = TEAM + "| Jordi | on ask | decisions | n |\n"
+        team = team.replace("\n\n| Jordi", "\n| Jordi")
+        self.assertEqual(self.check(epic([("Watcher", "ready"), ("Jordi", "blocked")], team=team), files=("watcher", "fixer")), [])
+        team = team.replace("| Fixer | hourly | repo | n |\n", "| Fixer | hourly | repo | n |\n| Ghost | daily | repo | n |\n")
+        self.assertEqual(self.check(epic([("Watcher", "ready")], team=team), files=("watcher", "fixer")), ["Team persona ghost has no file personas/ghost.md"])
+
+    def test_jordi_on_the_team_is_listed_as_himself(self):
+        self.persona("watcher")
+        (self.repo / "AGENTS.md").write_text("Root spine: docs/EPIC-1-T.md\n")
+        team = TEAM.replace("| Fixer | hourly | repo | n |\n", "| Jordi | on ask | decisions | n |\n")
+        (self.repo / "docs/EPIC-1-T.md").write_text(epic([("Jordi", "blocked")], team=team).replace("Spine ID: t\n", "Spine ID: t\nSpine Type: root\nRoot spine: self\nParent spine: none\n"))
+        by = {p["name"]: p for p in spines.scan(self.repo)["personas"]}
+        self.assertEqual(by["Jordi"]["epics"], ["docs/EPIC-1-T.md"])
+        self.assertEqual(len(by["Jordi"]["queue"]), 1)
+        self.assertNotIn("jordi", by)
+
     def test_legacy_spine_untouched(self):
         legacy = epic([("unassigned", "ready"), ("worker (run_1)", "active"), ("/root/delivery", "done")], team="")
         self.assertNotIn("## Team", legacy)
