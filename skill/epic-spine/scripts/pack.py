@@ -162,7 +162,7 @@ def check(schema: dict) -> list[str]:
         if rule.get("to") in secs and rule.get("by") not in secs[rule["to"]].get("writers", []):
             errs.append(f"rule {rkey}: {rule.get('by')} may not write {rule['to']}")
     for ckey, c in schema.get("checks", {}).items():
-        errs.extend(f"check {ckey}: unknown lifecycle {n}" for n in c.get("on", []) if n not in lcs)
+        errs.extend([f"check {ckey}: unknown lifecycle {n}" for n in c.get("on", []) if n not in lcs] + [f"check {ckey}: unknown kind {k}" for k in c.get("kinds", []) if not any(k in flds.get(lc.get("kind_field"), {}).get("values", []) for lc in lcs.values())])
         for at in c.get("at", []):
             if tuple(at.split(">")) not in {(t["from"], t["to"]) for lc in lcs.values() for t in lc["transitions"]}:
                 errs.append(f"check {ckey}: at {at} is not a transition")

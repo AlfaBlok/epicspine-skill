@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.10.27.5 — Social pack: no disclosure demanded of replies in our own threads; converting an old ledger passes the hook
+
+- **Fixed: `disclosure` blocked every Reddit reply** going `draft → posted` without "I built…", including the Responder's answers in our own threads, which the doctrine exempts (zenod-social message house Voice: "every post and every reply in someone else's thread"). Checks take an optional `kinds` list (like `platforms`); social's `disclosure` is `kinds: ["post", "outreach"]`; `pack.py check` flags an unknown kind. Found turning the pack on in zenod-social (agent_team EPIC-34 E34-S4), where 3 queued Responder drafts would have been blocked at posting.
+- **Fixed: converting an existing table to the pack failed the hook row by row** (every old row "removed", every new one "illegal new row -> posted/held", checks run on years-old posts). A HEAD table without the section's id column is treated as the conversion: rows are checked for shape, enums and ids only. Tests: `tests/test_pack_validate.py` (`test_reply_rows_start_at_draft_and_go_live_with_checks`, `test_converting_an_old_ledger_compares_no_rows`). Doc: `references/packs.md` Validate, `packs/social/README.md` Checks. Skill 2026.10.27.5.
+
 ## 2026.10.27.4 — Persona files are not orphan or looks-like-epic pages
 
 - **Fixed: every `personas/<name>.md` was flagged `orphan page: link it from an epic or another page (advisory)`** by the pre-commit hook (infra-vps a465c42, zenod-social 19f0de9; EPIC-5 E5-S6) and listed in `spines.py --json` `orphan_pages` / `looks_like_epic`. A persona file is an identity, not a page of the epic tree: `doctrine.page_report` (the one source for pre-commit, `spines.py` and `epic_log`; `tree_audit` reports goal-doc orphans only) skips files `personas.is_file` accepts. Tests: `tests/test_doctrine.py` (`test_persona_files_are_not_pages`, `test_persona_file_commit_gets_no_page_advisory`; an unlinked ordinary doc still gets the advisory). Skill 2026.10.27.4.
