@@ -48,7 +48,7 @@ A failed check keeps the draft a draft, with the reason in `checks`. Ideas: `new
 
 ## Checks (validator, E34-S2)
 
-At `draft → scheduled` / `draft → posted`: Reddit no link on line 1 and at most one link; disclosure ("I built…") in the first two lines on Reddit; no Never say phrase; caps (1 thread a day, 1 per community a week, 20 replies a day); hold rules (→ held). Every status change must be a listed transition by one of its roles.
+At `draft → scheduled` / `draft → posted`: Reddit no link on line 1 and at most one link; disclosure ("I built…") in the first two lines on Reddit; no Never say phrase; caps (1 thread a day, 1 per community a week, 20 replies a day); hold rules (→ held). At `scheduled → posted` / `draft → posted`: the link is in the row. Every status change must be a listed transition by one of its roles (the role is checked when the commit names its writer, `EPICSPINE_PERSONA`). How to run it: [references/packs.md](../../references/packs.md) Validate.
 
 ## From today's zenod-social (for E34-S4)
 

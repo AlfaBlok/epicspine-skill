@@ -6,7 +6,7 @@ what. A repo opts in with one AGENTS.md line, `Pack: social` (several: `Pack: so
 
   pack.py list [--repo PATH]   packs shipped (or the ones a repo has on)
   pack.py check [NAME ...]     self-consistency of each schema; exit 1 on errors
-  pack.py NAME --json [--repo PATH]  one JSON document of a repo's pack data (pack_export.py)
+  pack.py init NAME --repo P | validate [--repo P] [--staged] [--by ROLE] | NAME --json [--repo P]   (pack_init/_validate/_export.py)
 """
 from __future__ import annotations
 
@@ -173,8 +173,9 @@ def check(schema: dict) -> list[str]:
 
 def main(argv: list[str] | None = None) -> int:
     argv = sys.argv[1:] if argv is None else argv
-    if argv[:1] and argv[0] in available():
-        return __import__("pack_export").main(argv)
+    helper = {"init": "pack_init", "validate": "pack_validate"}.get(argv[0]) if argv else None
+    if helper or argv[:1] and argv[0] in available():  # logic lives in pack_init.py / pack_validate.py / pack_export.py
+        return __import__(helper).main(argv[1:]) if helper else __import__("pack_export").main(argv)
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     sub = ap.add_subparsers(dest="cmd", required=True)
     ls = sub.add_parser("list")

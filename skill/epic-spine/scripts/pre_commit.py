@@ -9,7 +9,9 @@ renamed goal doc, and a modified one whose HEAD version already had ``Spine ID:`
 modified legacy goal doc (no ``Spine ID:`` at HEAD), a root spine without a ``Spine ID:`` header, ``Root spine: none`` and a goal
 spine whose ``## Current State`` has over 12 non-empty lines, and ``epic_log.ask_issues`` (human-asks.md checks: blocked/waiting row or epic with no open ask, ask missing a field or code, duplicate code, over 3 open, stale) and ``grants.grant_issues`` (standing-approvals.md: unreadable grant line, reused code, grant cited after expiry or revoke). ``Superseded by:`` must link to an existing goal doc (blocks).
 Doctrine 2 (doctrine.py, references/spine-model.md): a newly *added* epic (``A``, not renamed) missing the title, Goal (Mission counts), Serves (not the root), Done means or Status word
-blocks; an existing epic only warns of the same gaps, of over 150 lines or a table cell over 200 characters; a staged page warns when it looks like an epic or no epic links it."""
+blocks; an existing epic only warns of the same gaps, of over 150 lines or a table cell over 200 characters; a staged page warns when it looks like an epic or no epic links it.
+Packs (pack_validate.py, references/packs.md): in a repo whose AGENTS.md turns a pack on (`Pack: social`), staged pack
+files that break the schema block, one line per issue; a repo with no pack is not touched."""
 
 from __future__ import annotations
 
@@ -21,6 +23,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import doctrine  # noqa: E402
+import pack_validate  # noqa: E402
 import spine_fix  # noqa: E402
 import spines  # noqa: E402
 import validate_spine as v  # noqa: E402
@@ -136,6 +139,14 @@ def main() -> int:
             say(f"{name}: --strict issues (advisory; run validate_spine.py --strict)")
     for note in page_notes(pages) if pages else []:
         say(note)
+    try:
+        issues = pack_validate.staged(Path.cwd())
+    except Exception as exc:  # a validator bug never blocks a commit
+        say(f"pack validator failed, not checked: {exc!r}")
+        issues = []
+    for issue in issues:
+        blocked = True
+        say(issue)
     if blocked:
         say("commit blocked; fix the above, or bypass once with git commit --no-verify")
     return int(blocked)

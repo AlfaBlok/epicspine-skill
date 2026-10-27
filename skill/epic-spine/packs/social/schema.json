@@ -254,6 +254,7 @@
     "disclosure": {"doc": "Reddit: say you built it in the first two lines", "at": ["draft>scheduled", "draft>posted"], "platforms": ["Reddit"], "params": {"within_lines": 2, "phrases": ["I built", "I build", "I'm the developer"]}},
     "never_say": {"doc": "no phrase from the brief's Never say", "at": ["draft>scheduled", "draft>posted"], "source": "brief.never_say"},
     "caps": {"doc": "posting caps", "at": ["draft>scheduled", "draft>posted"], "params": {"threads_per_day": 1, "per_community_per_week": 1, "replies_per_day": 20}},
-    "hold_rules": {"doc": "a match sends the draft to held instead of scheduled", "at": ["draft>scheduled"], "source": "brief.hold_rules"}
+    "hold_rules": {"doc": "a match sends the draft to held instead of scheduled", "at": ["draft>scheduled"], "source": "brief.hold_rules"},
+    "link_present": {"doc": "a post goes live with its link in the same commit", "at": ["scheduled>posted", "draft>posted"], "params": {"field": "link"}}
   }
 }
