@@ -10,6 +10,7 @@ import os
 import re
 from pathlib import Path
 
+import personas
 import validate_spine as v
 
 SKIP = {"archive", "node_modules", "vendor", "wt", "worktrees", "handoffs", "examples", "fixtures", "test", "tests", "__pycache__"}
@@ -138,10 +139,10 @@ def looks_like_epic(text: str) -> bool:
 
 
 def page_report(repo: Path, sources: list[Path], epics: set[Path], reached: set[Path] | None = None) -> tuple[list[str], list[str]]:
-    """(orphan_pages, looks_like_epic): pages no source epic reaches; pages that read like an epic. README/AGENTS/CHANGELOG-style files are ignored.
+    """(orphan_pages, looks_like_epic): pages no source epic reaches; pages that read like an epic. README/AGENTS/CHANGELOG-style files and persona files (``personas/<name>.md``) are ignored.
     ``reached`` is the pages of ``sources`` when the caller already holds them (``spines.scan``), else they are computed."""
     rel = lambda p: os.path.relpath(p, repo)  # noqa: E731
     reached = {repo / p["path"] for e in sources for p in pages(repo, e, epics)} if reached is None else reached
-    candidates = [p for p in docs(repo) if p not in epics and p.stem.lower() not in CONVENTIONAL]
+    candidates = [p for p in docs(repo) if p not in epics and p.stem.lower() not in CONVENTIONAL and not personas.is_file(p, read(p))]
     return ([rel(p) for p in candidates if p not in reached] if sources else [],
-            sorted(rel(p) for p in {*candidates, *reached} if p.stem.lower() not in CONVENTIONAL and looks_like_epic(read(p))) if sources else [])
+            sorted(rel(p) for p in {*candidates, *reached} if p.stem.lower() not in CONVENTIONAL and not personas.is_file(p, read(p)) and looks_like_epic(read(p))) if sources else [])

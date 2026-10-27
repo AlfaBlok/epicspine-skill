@@ -109,6 +109,14 @@ class PageTests(base.EpicLogCase):
         self.assertEqual(["docs/old-notes.md"], log["orphan_pages"])
         self.assertEqual([], log["orphans"])  # pages are not orphan epics
 
+    def test_persona_files_are_not_pages(self) -> None:
+        self.write("docs/root.md", self.root_text)
+        self.write("personas/watcher.md", "---\nname: Watcher\n---\n## Goal\n\nWatch.\n\nStatus: on\n")
+        self.write("docs/loose.md", "# Loose\n")
+        log = self.log()
+        self.assertEqual(["docs/loose.md"], log["orphan_pages"])
+        self.assertEqual([], log["looks_like_epic"])
+
     def test_looks_like_epic_needs_two_signals(self) -> None:
         self.write("docs/root.md", self.root_text + "\n[a](a.md) [b](b.md)\n")
         self.write("docs/a.md", PAGE_GOAL)  # linked page that reads as an epic
@@ -291,6 +299,12 @@ class PreCommitDoctrineTests(base.EpicLogCase):
         self.assertEqual(0, done.returncode, done.stderr)
         self.assertNotIn("orphan page", done.stderr)
         self.assertNotIn("looks like an epic", done.stderr)
+
+    def test_persona_file_commit_gets_no_page_advisory(self) -> None:
+        done = self.commit("personas/watcher.md", "---\nname: watcher\n---\n## Goal\n\nWatch.\n\nStatus: on\n")
+        self.assertEqual(0, done.returncode, done.stderr)
+        self.assertNotIn("personas/watcher.md: orphan page", done.stderr)
+        self.assertNotIn("personas/watcher.md: looks like an epic", done.stderr)
 
     def test_superseded_by_outside_the_repo_blocks_without_raising(self) -> None:
         text = self.scaffold().replace("Integration branch: main\n", "Integration branch: main\nSuperseded by: [x](../../outside.md)\n")
