@@ -1,0 +1,259 @@
+{
+  "pack": "social",
+  "version": 1,
+  "doc": "Social campaign desk: the typed files a social repo's personas write and the console reads (packs/social/README.md).",
+  "opt_in": "Pack: social",
+  "owner": "Jordi",
+  "approval_gate": false,
+  "roles": {
+    "Jordi": "the owner: console screens, digest and desk chat (the console's write API commits as Jordi)",
+    "Scout": "scans the channels each morning; writes topics, adds ideas",
+    "Writer": "turns ideas and topics into posts; schedules a draft when its checks pass",
+    "Publisher": "posts scheduled posts in their slot, expires stale ones, deletes pulled live posts",
+    "Responder": "answers replies to our posts (reply rows)",
+    "Engager": "disclosed replies in other people's threads (outreach rows)",
+    "Reporter": "measures posts after 48 h and writes the 3-day report"
+  },
+  "files": {
+    "brief": {
+      "doc": "The standing campaign brief, one per repo; each section lives in the file it already has (objective in the root spine, voice and key messages in the message house).",
+      "path": "data/brief.md",
+      "sections": {
+        "objective": {"path": "docs/spines/root.md", "heading": "Goal", "shape": "text", "writers": ["Jordi"]},
+        "targets": {"path": "docs/spines/root.md", "heading": "Targets", "shape": "text", "writers": ["Jordi"]},
+        "audience": {"heading": "Audience", "shape": "text", "writers": ["Jordi"]},
+        "key_messages": {"path": "data/message-house.md", "heading": "Points to emphasize", "shape": "table", "add_rows": ["Jordi"], "writers": ["Jordi"], "fields": {
+          "id": {"column": "#", "type": "id", "pattern": "^[1-9][0-9]*$"},
+          "message": {"column": "Message", "type": "text"},
+          "weight": {"column": "Weight", "type": "enum", "values": ["over", "normal", "under", "avoid"], "default": "normal"},
+          "source": {"column": "Source", "type": "text"},
+          "carried_by": {"column": "Carried by", "type": "refs", "computed": {"from": "posts.rows.messages"}}
+        }},
+        "voice": {"path": "data/message-house.md", "heading": "Voice", "shape": "list", "writers": ["Jordi"]},
+        "style_rules": {"path": "data/message-house.md", "heading": "Style rules", "shape": "list", "writers": ["Jordi", "Writer"]},
+        "never_say": {"path": "data/message-house.md", "heading": "Never say", "shape": "list", "writers": ["Jordi"]},
+        "topic_weights": {"path": "data/message-house.md", "heading": "Topic weights", "shape": "table", "add_rows": ["Jordi"], "writers": ["Jordi"], "fields": {
+          "topic": {"column": "Topic", "type": "text"},
+          "weight": {"column": "Weight (over / normal / under / avoid)", "type": "enum", "values": ["over", "normal", "under", "avoid"]},
+          "why": {"column": "Why", "type": "text"},
+          "source": {"column": "Source", "type": "text"},
+          "since": {"column": "Since", "type": "date"}
+        }},
+        "feedback_log": {"path": "data/message-house.md", "heading": "Feedback log", "shape": "table", "add_rows": ["Jordi"], "writers": ["Jordi", "Writer"], "fields": {
+          "date": {"column": "Date", "type": "date"},
+          "from": {"column": "From", "type": "text"},
+          "feedback": {"column": "Feedback (verbatim or close)", "type": "text"},
+          "landed": {"column": "Where it landed (section + line)", "type": "text"},
+          "applied_by": {"column": "Applied by", "type": "role"}
+        }},
+        "formats": {"heading": "Formats", "shape": "table", "add_rows": ["Jordi"], "writers": ["Jordi"], "fields": {
+          "format": {"column": "Format", "type": "enum", "values": ["text", "thread", "diagram", "screenshot", "demo clip", "video"]},
+          "share": {"column": "Share", "type": "percent"},
+          "example": {"column": "Example", "type": "url"}
+        }},
+        "examples": {"heading": "Examples", "shape": "table", "add_rows": ["Jordi"], "writers": ["Jordi"], "fields": {
+          "link": {"column": "Link", "type": "url"},
+          "verdict": {"column": "Like / dislike", "type": "enum", "values": ["like", "dislike"]},
+          "why": {"column": "Why", "type": "text"}
+        }},
+        "hold_rules": {"heading": "Hold for me", "shape": "table", "add_rows": ["Jordi"], "writers": ["Jordi"], "default": "none", "fields": {
+          "id": {"column": "Id", "type": "id", "pattern": "^R[0-9]+$"},
+          "match": {"column": "Hold a post when", "type": "text"},
+          "why": {"column": "Why", "type": "text"}
+        }}
+      }
+    },
+    "directions": {
+      "doc": "Jordi's steering: this week's highlights and do/don't, a voice note, the month's priorities.",
+      "path": "data/directions.md",
+      "sections": {
+        "week": {"heading": "Week", "shape": "table", "add_rows": ["Jordi"], "writers": ["Jordi"], "fields": {
+          "id": {"column": "Id", "type": "id", "pattern": "^H[0-9]+$"},
+          "highlight": {"column": "Highlight", "type": "text"},
+          "why": {"column": "Why", "type": "text"},
+          "until": {"column": "Until", "type": "date"},
+          "served_by": {"column": "Served by", "type": "refs", "computed": {"from": "posts.rows.highlight"}}
+        }},
+        "do_dont": {"heading": "This week only", "shape": "table", "add_rows": ["Jordi"], "writers": ["Jordi"], "fields": {
+          "kind": {"column": "Do / don't", "type": "enum", "values": ["do", "don't"]},
+          "rule": {"column": "Rule", "type": "text"},
+          "until": {"column": "Until", "type": "date"}
+        }},
+        "voice_note": {"heading": "Voice note", "shape": "text", "writers": ["Jordi"]},
+        "month": {"heading": "Month", "shape": "table", "add_rows": ["Jordi"], "writers": ["Jordi"], "fields": {
+          "id": {"column": "Id", "type": "id", "pattern": "^M[0-9]+$"},
+          "priority": {"column": "Priority", "type": "text"},
+          "why": {"column": "Why", "type": "text"},
+          "month": {"column": "Month", "type": "month"},
+          "served_by": {"column": "Served by", "type": "refs", "computed": {"from": "posts.rows.highlight"}}
+        }}
+      }
+    },
+    "topics": {
+      "doc": "Today's top topics from the Scout's scan; the table is replaced each morning, same shape.",
+      "path": "data/topics.md",
+      "sections": {
+        "rows": {"heading": null, "shape": "table", "rows": "replace", "add_rows": ["Scout"], "writers": ["Scout"], "fields": {
+          "rank": {"column": "Rank", "type": "number"},
+          "id": {"column": "Id", "type": "id", "pattern": "^T-[0-9]{4}-[0-9]+$"},
+          "topic": {"column": "Topic", "type": "text"},
+          "where": {"column": "Where", "type": "text"},
+          "link": {"column": "Evidence link", "type": "url"},
+          "heat": {"column": "Heat", "type": "number"},
+          "date": {"column": "Date", "type": "date"},
+          "reply_target": {"column": "Reply target", "type": "bool"},
+          "used_by": {"column": "Used by", "type": "refs", "computed": {"from": "posts.rows.topic"}}
+        }}
+      }
+    },
+    "ideas": {
+      "doc": "Ideas for posts: Jordi's drain (from: Jordi) and the Scout's; only the Writer moves an idea, nobody deletes one.",
+      "path": "data/ideas.md",
+      "sections": {
+        "rows": {"heading": null, "shape": "table", "add_rows": ["Jordi", "Scout"], "writers": ["Jordi", "Scout"], "fields": {
+          "id": {"column": "Id", "type": "id", "pattern": "^I-[0-9]+$"},
+          "date": {"column": "Date", "type": "date"},
+          "idea": {"column": "Idea", "type": "text"},
+          "format": {"column": "Format", "type": "text"},
+          "platform": {"column": "Platform", "type": "text"},
+          "from": {"column": "From", "type": "role"},
+          "link": {"column": "Link or asset", "type": "text"},
+          "state": {"column": "State", "type": "enum", "lifecycle": "idea"},
+          "why": {"column": "Why", "type": "text", "writers": ["Writer"]},
+          "became": {"column": "Became", "type": "refs", "computed": {"from": "posts.rows.idea"}}
+        }}
+      }
+    },
+    "posts": {
+      "doc": "One row per post, reply or outreach, from draft to its numbers; Jordi's feedback in its row.",
+      "path": "data/posts-ledger.md",
+      "sections": {
+        "rows": {"heading": null, "shape": "table", "add_rows": ["Writer", "Responder", "Engager"], "writers": ["Writer", "Responder", "Engager"], "fields": {
+          "id": {"column": "Id", "type": "id", "pattern": "^P-[0-9]{4}$"},
+          "date": {"column": "Date", "type": "date"},
+          "persona": {"column": "Persona", "type": "role"},
+          "kind": {"column": "Kind", "type": "enum", "values": ["post", "reply", "outreach"]},
+          "platform": {"column": "Platform", "type": "text"},
+          "community": {"column": "Community", "type": "text"},
+          "slot": {"column": "Slot", "type": "datetime"},
+          "title": {"column": "Title", "type": "text"},
+          "text": {"column": "Text", "type": "text", "writers": ["Writer", "Responder", "Engager", "Jordi"]},
+          "format": {"column": "Format", "type": "text"},
+          "assets": {"column": "Assets", "type": "refs", "ref": ["assets.rows"]},
+          "topic": {"column": "Topic", "type": "ref", "ref": ["topics.rows"]},
+          "highlight": {"column": "Highlight", "type": "ref", "ref": ["directions.week", "directions.month"]},
+          "messages": {"column": "Messages", "type": "refs", "ref": ["brief.key_messages"]},
+          "idea": {"column": "Idea", "type": "ref", "ref": ["ideas.rows"]},
+          "checks": {"column": "Checks", "type": "text"},
+          "link": {"column": "Link", "type": "url", "writers": ["Publisher", "Responder", "Engager"]},
+          "replies": {"column": "Replies", "type": "number", "writers": ["Responder", "Reporter"]},
+          "metrics": {"column": "Metrics", "type": "text", "writers": ["Reporter", "Responder", "Engager"]},
+          "result": {"column": "Result", "type": "text", "writers": ["Reporter", "Responder", "Engager", "Publisher"]},
+          "feedback": {"column": "Feedback", "type": "text", "writers": ["Jordi"]},
+          "status": {"column": "Status", "type": "enum", "lifecycle": "post"}
+        }}
+      }
+    },
+    "assets": {
+      "doc": "One library of diagrams, screenshots, clips, videos and logos; files under data/assets/.",
+      "path": "data/assets.md",
+      "dir": "data/assets/",
+      "sections": {
+        "rows": {"heading": null, "shape": "table", "add_rows": ["Jordi"], "writers": ["Jordi"], "fields": {
+          "id": {"column": "Id", "type": "id", "pattern": "^A-[0-9]+$"},
+          "kind": {"column": "Kind", "type": "enum", "values": ["diagram", "screenshot", "clip", "video", "logo"]},
+          "file": {"column": "File", "type": "path"},
+          "made_by": {"column": "Made by", "type": "role"},
+          "source": {"column": "Source", "type": "text"},
+          "cuts": {"column": "Cuts per channel", "type": "text"},
+          "used_by": {"column": "Used by", "type": "refs", "computed": {"from": "posts.rows.assets"}}
+        }}
+      }
+    },
+    "reports": {
+      "doc": "The Reporter's 3-day report, one file per report.",
+      "path": "data/reports/{date}.md",
+      "many": true,
+      "sections": {
+        "numbers": {"heading": "Numbers", "shape": "text", "writers": ["Reporter"]},
+        "best_worst": {"heading": "Best and worst", "shape": "text", "writers": ["Reporter"]},
+        "learned": {"heading": "Learned", "shape": "text", "writers": ["Reporter"]},
+        "highlights": {"heading": "Highlights covered", "shape": "text", "writers": ["Reporter"]},
+        "feedback": {"heading": "Feedback themes", "shape": "text", "writers": ["Reporter"]},
+        "cost": {"heading": "Cost", "shape": "text", "writers": ["Reporter"]}
+      }
+    }
+  },
+  "lifecycles": {
+    "post": {
+      "field": "posts.rows.status",
+      "kind_field": "posts.rows.kind",
+      "initial": "idea",
+      "path": ["idea", "draft", "scheduled", "posted", "measured"],
+      "states": {
+        "idea": "an ideas.md row; the ledger row is written at draft",
+        "draft": "written; the checks run",
+        "scheduled": "checks passed, has a slot",
+        "posted": "live; link added at once",
+        "measured": "48 h numbers in",
+        "held": "matched one of Jordi's hold rules (only those hold a post)",
+        "pulled": "pulled by Jordi: unscheduled, or deleted if live; link kept",
+        "expired": "best-before passed before its slot"
+      },
+      "transitions": [
+        {"from": "idea", "to": "draft", "by": ["Writer"], "kinds": ["post"], "when": "the Writer takes the idea"},
+        {"from": "draft", "to": "scheduled", "by": ["Writer"], "kinds": ["post"], "when": "every check passes and no hold rule matches"},
+        {"from": "draft", "to": "held", "by": ["Writer"], "kinds": ["post"], "when": "a hold rule matches"},
+        {"from": "held", "to": "scheduled", "by": ["Jordi"], "when": "Jordi releases it"},
+        {"from": "scheduled", "to": "posted", "by": ["Publisher"], "kinds": ["post"], "when": "its slot; the link is added in the same commit"},
+        {"from": "scheduled", "to": "expired", "by": ["Publisher"], "kinds": ["post"], "when": "best-before passed"},
+        {"from": "draft", "to": "posted", "by": ["Responder", "Engager"], "kinds": ["reply", "outreach"], "when": "every check passes"},
+        {"from": "posted", "to": "measured", "by": ["Reporter"], "when": "48 h after posting"},
+        {"from": "posted", "to": "measured", "by": ["Responder", "Engager"], "kinds": ["reply", "outreach"], "when": "48 h after posting"},
+        {"from": "draft", "to": "pulled", "by": ["Jordi"], "effect": "unschedule"},
+        {"from": "held", "to": "pulled", "by": ["Jordi"], "effect": "unschedule"},
+        {"from": "scheduled", "to": "pulled", "by": ["Jordi"], "effect": "unschedule"},
+        {"from": "posted", "to": "pulled", "by": ["Jordi"], "effect": "delete_live"},
+        {"from": "measured", "to": "pulled", "by": ["Jordi"], "effect": "delete_live"}
+      ]
+    },
+    "idea": {
+      "field": "ideas.rows.state",
+      "initial": "new",
+      "path": ["new", "picked up", "drafted", "posted"],
+      "states": {
+        "new": "dropped by Jordi or the Scout",
+        "picked up": "the Writer took it",
+        "drafted": "a post row carries it (became)",
+        "posted": "its post is live",
+        "parked": "not now; why says until when",
+        "epic": "too big for one post; why names the child epic"
+      },
+      "transitions": [
+        {"from": "new", "to": "picked up", "by": ["Writer"]},
+        {"from": "picked up", "to": "drafted", "by": ["Writer"]},
+        {"from": "drafted", "to": "posted", "by": ["Writer"]},
+        {"from": "new", "to": "parked", "by": ["Writer"]},
+        {"from": "picked up", "to": "parked", "by": ["Writer"]},
+        {"from": "parked", "to": "picked up", "by": ["Writer"]},
+        {"from": "new", "to": "epic", "by": ["Writer"]},
+        {"from": "picked up", "to": "epic", "by": ["Writer"]}
+      ]
+    }
+  },
+  "effects": {
+    "unschedule": "the post never goes out",
+    "delete_live": "the Publisher deletes the live post at once (C5); the row keeps its link"
+  },
+  "rules": {
+    "style_rule_from_feedback": {"doc": "the same feedback twice becomes a Style rule, with undo (C6)", "from": "posts.rows.feedback", "repeats": 2, "to": "brief.style_rules", "by": "Writer", "log": "brief.feedback_log", "undo": "revert that commit; the rule line names the feedback it came from"}
+  },
+  "checks": {
+    "transitions": {"doc": "a status change must be a listed transition, made by one of its roles", "on": ["post", "idea"]},
+    "link_rule": {"doc": "Reddit: no link in line 1, at most one link", "at": ["draft>scheduled", "draft>posted"], "platforms": ["Reddit"], "params": {"max_links": 1, "no_link_on_line": 1}},
+    "disclosure": {"doc": "Reddit: say you built it in the first two lines", "at": ["draft>scheduled", "draft>posted"], "platforms": ["Reddit"], "params": {"within_lines": 2, "phrases": ["I built", "I build", "I'm the developer"]}},
+    "never_say": {"doc": "no phrase from the brief's Never say", "at": ["draft>scheduled", "draft>posted"], "source": "brief.never_say"},
+    "caps": {"doc": "posting caps", "at": ["draft>scheduled", "draft>posted"], "params": {"threads_per_day": 1, "per_community_per_week": 1, "replies_per_day": 20}},
+    "hold_rules": {"doc": "a match sends the draft to held instead of scheduled", "at": ["draft>scheduled"], "source": "brief.hold_rules"}
+  }
+}
