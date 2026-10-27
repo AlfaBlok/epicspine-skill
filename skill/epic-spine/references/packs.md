@@ -12,7 +12,7 @@ Base EpicSpine knows goals, state, ledgers, asks, learnings and the Team table; 
 | `README.md` | the human doc: files, statuses, who writes what | E34-S1 |
 | `pack.py validate` (`scripts/pack_validate.py`, `pack_checks.py`) | checks a repo's files against the schema, in the commit hook too | E34-S2 |
 | `pack.py init <name>` (`scripts/pack_init.py`) | creates the files with the right headings and columns | E34-S2 |
-| `pack.py <name> --json` | exports the repo's typed data for the console, with computed back-links | E34-S3 |
+| `pack.py <name> --json` (`scripts/pack_export.py`) | exports the repo's typed data for the console, with computed back-links ("JSON export" below) | E34-S3 |
 
 ## Opt in
 
@@ -48,3 +48,37 @@ Addresses are dotted: `file.section` and `file.section.field` (single-table file
 **Who wrote it.** The writer's role is `--by`, else the `EPICSPINE_PERSONA` env var, else a `Persona: <role>` trailer in `--message`. When known, the validator also checks each transition's `by`, that the role may add rows (`add_rows`) and may write each changed cell (`writers`, field over section) or text section. When unknown, it checks transition legality only, not who. A value that names no pack role is itself an issue. The commit hook (pre-commit) cannot see the commit message, so a wake or the console's write API sets `EPICSPINE_PERSONA=<role>` for its commits (`Jordi` for console writes).
 
 **Commit hook.** `pre_commit.py` runs `pack_validate.staged()`: in a repo whose AGENTS.md turns a pack on, staged pack files with issues block the commit, one `epicspine: pack social: <file> [## section] [<id>]: <issue>` line each; a repo with no pack is not touched; a validator crash is reported and never blocks. Bypass once with `git commit --no-verify`.
+
+## JSON export (the console's one typed source)
+
+`python3 scripts/pack.py social --json [--repo <path>]` (code: `scripts/pack_export.py`, `export(name, repo)`) prints ONE JSON document; agent_team's console (E34-S5) codes against this shape. It never crashes on bad data: whatever it cannot read is a `warnings` entry and an empty value.
+
+- Top level, in this order: `schemaVersion` (this export contract, `1`; bumped on a breaking change), `pack`, `packVersion` (the schema's `version`), `repo` (absolute path), `generatedAt` (UTC, `YYYY-MM-DDTHH:MM:SSZ`), `warnings`, then one key per schema file in schema order (social: `brief`, `directions`, `topics`, `ideas`, `posts`, `assets`, `reports`), then `sources`.
+- A file with sections is an object keyed by section (`brief.objective`, `directions.week`); a file whose only section is `rows` is that array (`topics`, `ideas`, `posts`, `assets`); a `many` file is an array of `{date, path, <section>: …}` (`reports`, by file name, oldest first). Each section is read where it lives (its own `path`, else the file's) under its `## ` heading (any level; ends at the next heading of that level or higher; `heading: null` = the file's first table).
+- Section values by shape: `text` → string (trimmed body) or `null`; `list` → array of item strings (`-`, `*`, `1.` bullets; indented lines join the item); `table` → array of row objects.
+- A row: one key per schema field (field names, not column headers; columns matched by exact header, any order) plus `_line` (1-based line in its file, for the write API). Empty, `-`, `—`, `none`, `n/a` cells are `null`. By type: `number`/`percent` → number (leading number read, `40%` → 40); `bool` → `true`/`false`; `url` → the first URL in the cell (a markdown link gives its target); `enum` → lower-cased string; `ref` → one id or `null`; `refs` → array of ids (split on `,` `;` `·` spaces), `[]` when empty; `id`, `text`, `date`, `datetime`, `month`, `role`, `path` → string as written; `\|` in a cell is a literal `|`.
+- Computed fields (`computed: {from: "posts.rows.<f>"}`) are arrays of the ids of the rows whose `<f>` names this row: `brief.key_messages[].carried_by`, `directions.week|month[].served_by`, `topics[].used_by`, `ideas[].became`, `assets[].used_by`. A column the file keeps for them is ignored.
+- `warnings`: `[{file, line, message}]` (`line` is `null` for a whole file or section). Raised for: no `Pack: <name>` line in AGENTS.md; a file missing (`file missing`; tables and lists `[]`, text `null`); a `many` pattern with no files (`no files`); a section heading not found; a section with no table; missing or unknown columns (one per table); a row with more cells than headers (`row skipped`, it is not exported); a cell that does not fit its type (`not a number`, `not yes/no`, `no URL`, an enum value not allowed, an id off its `pattern`, a date not `YYYY-MM-DD`; the value is kept as written, except numbers and bools, which become `null`); a `ref`/`refs` id not found in its target (not for `rows: "replace"` targets such as topics, whose old ids go by design).
+- `sources`: `{"<file>.<section>": {path, heading, exists}}` for every non-`many` section: where the write API (E34-S6) saves it.
+
+Example (trimmed from `tests/fixtures/pack_social.golden.json`, the golden the tests compare against):
+
+```json
+{
+  "schemaVersion": 1, "pack": "social", "packVersion": 1, "repo": "/home/me/acme-social", "generatedAt": "2026-10-27T12:00:00Z",
+  "warnings": [{"file": "data/posts-ledger.md", "line": 8, "message": "row skipped: 24 cells under 22 columns (unescaped |?)"}],
+  "brief": {"objective": "Acme becomes a known voice in note-taking: 500 followers by December.", "voice": ["First person singular on Reddit."],
+            "key_messages": [{"id": "1", "message": "Your notes are plain files you own", "weight": "over", "source": "Positioning", "carried_by": ["P-0001", "P-0002"], "_line": 7}], "…": "…"},
+  "directions": {"week": [{"id": "H1", "highlight": "Launch of sync", "why": "the release", "until": "2026-11-02", "served_by": ["P-0001", "P-0003"], "_line": 7}], "do_dont": [], "voice_note": "Calmer this week.", "month": []},
+  "topics": [{"rank": 1, "id": "T-1026-1", "topic": "Files vs databases for notes", "where": "r/notes", "link": "https://reddit.com/r/notes/1", "heat": 8, "date": "2026-10-26", "reply_target": true, "used_by": ["P-0001"], "_line": 5}],
+  "ideas": [{"id": "I-1", "date": "2026-10-24", "idea": "Diagram of the commit flow", "format": "diagram", "platform": "X", "from": "Jordi", "link": "A-1", "state": "drafted", "why": null, "became": ["P-0001"], "_line": 5}],
+  "posts": [{"id": "P-0001", "date": "2026-10-25", "persona": "Writer", "kind": "post", "platform": "X", "community": null, "slot": "2026-10-25 10:00", "title": "Commit flow",
+             "text": "Every change is a commit | see the diagram", "format": "diagram", "assets": ["A-1"], "topic": "T-1026-1", "highlight": "H1", "messages": ["1", "2"], "idea": "I-1",
+             "checks": "ok", "link": "https://x.com/acme/status/10", "replies": 3, "metrics": "1.2k views", "result": "good", "feedback": "more like this", "status": "measured", "_line": 5}],
+  "assets": [{"id": "A-1", "kind": "diagram", "file": "data/assets/commit-flow.png", "made_by": "Jordi", "source": "drawn", "cuts": "X 16:9", "used_by": ["P-0001", "P-0003"], "_line": 5}],
+  "reports": [{"date": "2026-10-26", "path": "data/reports/2026-10-26.md", "numbers": "3 posts, 12 replies.", "best_worst": null, "learned": "Diagrams beat text.", "highlights": null, "feedback": null, "cost": null}],
+  "sources": {"brief.objective": {"path": "docs/spines/root.md", "heading": "Goal", "exists": true}, "posts.rows": {"path": "data/posts-ledger.md", "heading": null, "exists": true}, "…": "…"}
+}
+```
+
+Adding a field to the schema adds a key to its rows (non-breaking); renaming or removing one, or changing a value's type, bumps `schemaVersion`. Tests: `tests/test_pack_export.py` (golden, missing files, computed fields, and a read-only real-shape run over `zenod-social` when a checkout exists).
