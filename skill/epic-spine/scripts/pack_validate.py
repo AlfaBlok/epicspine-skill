@@ -70,8 +70,10 @@ def check_section(schema: dict, s: dict, at: str, new: str, old: str | None, rol
         return [f"{tag}: missing column(s) {', '.join(gone)}"]
     recs = [{k: r.get(f["column"], "") for k, f in flds.items()} for r in raw]
     otbl = md.table(md.body(old, s["heading"]))
-    olds = [{k: r.get(f["column"], "") for k, f in flds.items()} for r in otbl[1]] if otbl else []
     idk = next((k for k, f in flds.items() if f["type"] == "id"), None)
+    # HEAD's table without the id column is the conversion to the pack (pack init + reshape): no row to compare against
+    olds = [{k: r.get(f["column"], "") for k, f in flds.items()} for r in otbl[1]] if otbl and (not idk or flds[idk]["column"] in otbl[0]) else []
+    convert = bool(otbl and otbl[1]) and not olds
     lk = next((k for k, f in flds.items() if "lifecycle" in f), None)
     lc = schema["lifecycles"].get(flds[lk]["lifecycle"]) if lk else None
     out, seen = [], set()
@@ -98,7 +100,7 @@ def check_section(schema: dict, s: dict, at: str, new: str, old: str | None, rol
             for k in flds:
                 if k != lk and rec[k] != prev[k] and role not in pack.field_writers(schema, f"{at_key(schema, s)}.{k}"):
                     say(f"{role} may not write {flds[k]['column']}")
-        if not lc or flds[lk]["lifecycle"] not in on:
+        if not lc or flds[lk]["lifecycle"] not in on or convert:
             continue
         status, was = rec[lk].lower(), prev[lk].lower() if prev else None
         if not status:
@@ -117,7 +119,8 @@ def check_section(schema: dict, s: dict, at: str, new: str, old: str | None, rol
         ctx = {"rows": recs, "status": lk, "live": live, "source": source}
         for key, c in schema.get("checks", {}).items():
             plats = [x.lower() for x in c.get("platforms", [])]
-            if passed & set(c.get("at", [])) and (not plats or rec.get("platform", "").lower() in plats):
+            kinds = [x.lower() for x in c.get("kinds", [])]
+            if passed & set(c.get("at", [])) and (not plats or rec.get("platform", "").lower() in plats) and (not kinds or kind in kinds):
                 for m in run_check(key, c, rec, ctx):
                     say(f"{key}: {m}")
     if lc and s.get("rows") != "replace":

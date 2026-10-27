@@ -133,8 +133,21 @@ class Validate(unittest.TestCase):
 
     def test_reply_rows_start_at_draft_and_go_live_with_checks(self) -> None:
         reply = {"id": "P-0003", "kind": "reply", "status": "posted", "link": "https://x.y/r", "text": "Thanks!"}
-        self.assertIn("P-0003: disclosure", self.after("Responder", {}, reply))
-        self.assertEqual("", self.after("Responder", {}, {**reply, "platform": "X"}))
+        self.assertEqual("", self.after("Responder", {}, reply))  # a reply in our own thread: no disclosure needed
+        self.assertIn("P-0003: link_present", self.after("Responder", {}, {**reply, "link": ""}))
+        outreach = {**reply, "kind": "outreach", "persona": "Engager"}
+        self.assertIn("P-0003: disclosure", self.after("Engager", {}, outreach))
+        self.assertEqual("", self.after("Engager", {}, {**outreach, "platform": "X"}))
+
+    def test_converting_an_old_ledger_compares_no_rows(self) -> None:
+        old = self.repo.root / "data/posts-ledger.md"
+        old.write_text("# Posts ledger\n\n| Date | Persona | Platform | Link | Title | Status | Replies | Result |\n"
+                       "|---|---|---|---|---|---|---|---|\n| 2026-10-25 | Responder | Reddit (reply) | x | t | posted | 0 | ok |\n")
+        self.repo.commit()
+        self.assertEqual("", self.after(None, {"id": "P-0003", "kind": "reply", "status": "posted", "text": "Thanks!"}))
+        self.assertIn("Status 'left for Jordi' not one of", self.after(None, {"status": "left for Jordi"}))
+        self.repo.commit()
+        self.assertIn("P-0001: row removed", self.after(None))
 
 
 class InitAndHook(unittest.TestCase):
