@@ -60,7 +60,7 @@ Steps: each is independently testable and closes only with evidence.
 | E5-S3 | Ticket worker | worker run_c76affed (Sonnet 5.5, seat1) | writing contract for personas sharing a repo | done | none | main | main | 69372e6, 4c10634: references/persona-tasks.md; DM verified 660 tests OK, manifest match | 2026-10-24 | none |
 | E5-S4 | Ticket worker | worker run_98fc838e (with E6-S1) | validator accepts step codes (E5-S1) as Issue in row-as-ticket spines: spine_new.py scaffolds fail --strict | done | none | merged (branch deleted) | main | c804f48, merge 44ab11e; graph --strict 0 errors | 2026-10-24 | none |
 | E5-S5 | Ticket worker | worker run_83cd4392 | Jordi on a Team table needs no persona file | done | none | merged (branch deleted) | main | 89a1521, merge 085cf62; 730 tests OK | 2026-10-26 | none |
-| E5-S6 | Ticket worker | worker run_c14d5ebb (Sonnet 5.5, seat2) | persona files are not orphan pages (pre-commit flagged all 8 in infra-vps a465c42, zenod-social 19f0de9) | review | none | e5-s6 | main | none | 2026-10-27 | DM verifies and merges |
+| E5-S6 | Ticket worker | worker run_c14d5ebb (Sonnet 5.5, seat2) | persona files are not orphan pages (pre-commit flagged all 8 in infra-vps a465c42, zenod-social 19f0de9) | review | none | e5-s6 | main | none | 2026-10-27 | 4a19298 (branch e5-s6); DM verifies and merges |
 
 ## Decisions
 
