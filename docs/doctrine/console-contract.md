@@ -121,3 +121,7 @@ What the console shows and edits (an Approvals section per epic/milestone):
 3. **Edit** rewrites that line's scope and fields in place, keeping code and `since`.
 4. **Revoke** rewrites the line as `- [revoked <code> <today> @<who>] <scope> — why: <reason>` and adds a Decisions row citing the code.
 5. The console never stores grants itself: the spine line is the only copy (agent_team L-12). Before the tools release `grants` is absent: render nothing.
+
+## Pack data (social and other packs)
+
+A repo with `Pack: <name>` in AGENTS.md has typed `data/` files; the console reads them only through `python3 <skill>/scripts/pack.py <name> --json --repo <path>`, one JSON document (brief, directions, topics, ideas, posts, assets, reports, computed back-links, `warnings`, `sources`), and never parses those files itself. The shape is the contract in [references/packs.md, "JSON export"](../../skill/epic-spine/references/packs.md#json-export-the-consoles-one-typed-source); `schemaVersion` changes on a breaking change. Writes go through the console's write API to the file and heading `sources` names (agent_team E34-S6).
