@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.10.27.4 — Persona files are not orphan or looks-like-epic pages
+
+- **Fixed: every `personas/<name>.md` was flagged `orphan page: link it from an epic or another page (advisory)`** by the pre-commit hook (infra-vps a465c42, zenod-social 19f0de9; EPIC-5 E5-S6) and listed in `spines.py --json` `orphan_pages` / `looks_like_epic`. A persona file is an identity, not a page of the epic tree: `doctrine.page_report` (the one source for pre-commit, `spines.py` and `epic_log`; `tree_audit` reports goal-doc orphans only) skips files `personas.is_file` accepts. Tests: `tests/test_doctrine.py` (`test_persona_files_are_not_pages`, `test_persona_file_commit_gets_no_page_advisory`; an unlinked ordinary doc still gets the advisory). Skill 2026.10.27.4.
+
 ## 2026.10.27.3 — Pack validator in the commit hook, and `pack init`
 
 - **New: `pack.py validate`** (agent_team EPIC-34 E34-S2; `scripts/pack_validate.py`, content checks in `scripts/pack_checks.py`, Markdown reading in `scripts/pack_md.py`). In a repo whose AGENTS.md turns a pack on, each pack file present is checked against its schema: sections, required columns (computed ones excepted), enum and id values; row by row against HEAD, a status change must be a path of listed transitions matching the row's kind, rows of a lifecycle table are never removed, and the `checks` at the transitions the row passed run (Reddit link rule and disclosure, never-say from the message house, caps, hold rules, and the new `link_present`: going live carries the link). The writer's role comes from `--by`, `EPICSPINE_PERSONA` or a `Persona:` trailer; when known, each transition's `by`, `add_rows` and field `writers` are checked too; when unknown, legality only.
