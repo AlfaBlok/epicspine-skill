@@ -101,6 +101,21 @@ class Validate(unittest.TestCase):
         self.assertIn("P-0001: Writer may not write Feedback", self.after("Writer", {"feedback": "nice"}))
         self.assertIn("P-0003: Publisher may not add rows", self.after("Publisher", {}, {"id": "P-0003"}))
 
+    def test_jordi_drops_an_idea_new_or_picked_up_to_parked_only(self) -> None:
+        ideas = self.repo.root / "data/ideas.md"
+        head = ideas.read_text()
+
+        def rows(*states: str) -> str:
+            ideas.write_text(head + "".join(f"| I-{n} | 2026-10-27 | idea {n} | text | Reddit | Jordi | | {s} | |\n"
+                                            for n, s in enumerate(states, 1)))
+            return "\n".join(self.repo.issues("Jordi"))
+
+        rows("new", "picked up", "drafted")
+        self.repo.commit()
+        self.assertEqual("", rows("parked", "parked", "drafted"))
+        self.assertIn("I-3: illegal state change drafted -> parked by Jordi", rows("new", "picked up", "parked"))
+        self.assertIn("I-1: illegal state change new -> picked up by Jordi", rows("picked up", "picked up", "drafted"))
+
     def test_link_present_when_posted(self) -> None:
         self.assertIn("P-0002: link_present: posted without its link", self.after("Publisher", {}, {"id": "P-0002", "status": "posted"}))
 

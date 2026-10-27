@@ -74,7 +74,11 @@ class SocialPack(unittest.TestCase):
                 self.assertTrue(pack.field_writers(SOCIAL, addr), addr)
         self.assertEqual({"Jordi"}, pack.field_writers(SOCIAL, "posts.rows.feedback"))
         self.assertEqual({"Publisher", "Responder", "Engager"}, pack.field_writers(SOCIAL, "posts.rows.link"))
-        self.assertEqual({"Writer"}, pack.field_writers(SOCIAL, "ideas.rows.state"))
+        self.assertEqual({"Writer", "Jordi"}, pack.field_writers(SOCIAL, "ideas.rows.state"))
+
+    def test_jordi_may_drop_an_idea_and_nothing_else(self) -> None:
+        mine = {(t["from"], t["to"]) for t in SOCIAL["lifecycles"]["idea"]["transitions"] if "Jordi" in t["by"]}
+        self.assertEqual({("new", "parked"), ("picked up", "parked")}, mine)
 
     def test_repeat_feedback_becomes_a_style_rule_with_undo(self) -> None:
         rule = SOCIAL["rules"]["style_rule_from_feedback"]  # C6

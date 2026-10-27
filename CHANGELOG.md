@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.10.27.7 — Social pack: Jordi can drop an idea
+
+- **Fixed: Jordi could not drop an idea.** Every idea transition in `packs/social/schema.json` was `by: [Writer]` and rows are never deleted, so the console's `POST /api/tenants/:id/social/ideas/:id/drop` (commits as Jordi) was refused with `illegal state change new -> parked by Jordi` (found by agent_team EPIC-34 E34-S6). `new -> parked` and `picked up -> parked` are now `by: [Writer, Jordi]`; every other idea move stays the Writer's (Jordi cannot pick up, draft, unpark or park a drafted idea). Doc: `packs/social/README.md`, the ideas file doc. Tests: `tests/test_packs.py` (`test_jordi_may_drop_an_idea_and_nothing_else`), `tests/test_pack_validate.py` (`test_jordi_drops_an_idea_new_or_picked_up_to_parked_only`). agent_team EPIC-34 E34-S8. Skill 2026.10.27.7.
+
 ## 2026.10.27.6 — Social pack: no disclosure demanded of replies in our own threads; converting an old ledger passes the hook
 
 - **Fixed: `disclosure` blocked every Reddit reply** going `draft → posted` without "I built…", including the Responder's answers in our own threads, which the doctrine exempts (zenod-social message house Voice: "every post and every reply in someone else's thread"). Checks take an optional `kinds` list (like `platforms`); social's `disclosure` is `kinds: ["post", "outreach"]`; `pack.py check` flags an unknown kind. Found turning the pack on in zenod-social (agent_team EPIC-34 E34-S4), where 3 queued Responder drafts would have been blocked at posting.

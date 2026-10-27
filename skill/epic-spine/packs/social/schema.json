@@ -107,7 +107,7 @@
       }
     },
     "ideas": {
-      "doc": "Ideas for posts: Jordi's drain (from: Jordi) and the Scout's; only the Writer moves an idea, nobody deletes one.",
+      "doc": "Ideas for posts: Jordi's drain (from: Jordi) and the Scout's; the Writer moves an idea; Jordi may drop one (new or picked up -> parked); nobody deletes one.",
       "path": "data/ideas.md",
       "sections": {
         "rows": {"heading": null, "shape": "table", "add_rows": ["Jordi", "Scout"], "writers": ["Jordi", "Scout"], "fields": {
@@ -226,15 +226,15 @@
         "picked up": "the Writer took it",
         "drafted": "a post row carries it (became)",
         "posted": "its post is live",
-        "parked": "not now; why says until when",
+        "parked": "not now; why says until when (Writer), or Jordi dropped it",
         "epic": "too big for one post; why names the child epic"
       },
       "transitions": [
         {"from": "new", "to": "picked up", "by": ["Writer"]},
         {"from": "picked up", "to": "drafted", "by": ["Writer"]},
         {"from": "drafted", "to": "posted", "by": ["Writer"]},
-        {"from": "new", "to": "parked", "by": ["Writer"]},
-        {"from": "picked up", "to": "parked", "by": ["Writer"]},
+        {"from": "new", "to": "parked", "by": ["Writer", "Jordi"]},
+        {"from": "picked up", "to": "parked", "by": ["Writer", "Jordi"]},
         {"from": "parked", "to": "picked up", "by": ["Writer"]},
         {"from": "new", "to": "epic", "by": ["Writer"]},
         {"from": "picked up", "to": "epic", "by": ["Writer"]}
