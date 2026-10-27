@@ -9,7 +9,7 @@ A social campaign desk: personas scan, write, post, reply and measure; the owner
 | brief (`data/brief.md` + sections kept where they live) | the standing brief | objective (root `## Goal`), targets (root `## Targets`), audience, key messages with weight (message house `## Points to emphasize`, as a `# · Message · Weight · Source` table), voice, style rules, never say, topic weights, feedback log (message house), formats mix (format, share, example), examples (link, like/dislike, why), hold for me (R1…, default none) | Jordi; Writer adds style rules + feedback-log lines (C6) |
 | directions (`data/directions.md`) | a week highlight, a do/don't, the month's priority | `## Week` H1… (highlight, why, until, served by), `## This week only` (do / don't, rule, until), `## Voice note`, `## Month` M1… (priority, why, month, served by) | Jordi |
 | topics (`data/topics.md`) | a finding from today's scan, table replaced daily | rank, T-MMDD-n, topic, where, evidence link, heat, date, reply target, used by | Scout |
-| ideas (`data/ideas.md`) | an idea for a post | I-n, date, idea, format, platform, from (role), link or asset, state, why, became | Jordi and Scout add; only the Writer moves state |
+| ideas (`data/ideas.md`) | an idea for a post | I-n, date, idea, format, platform, from (role), link or asset, state, why, became | Jordi and Scout add; the Writer moves state, Jordi may drop (park) one |
 | posts (`data/posts-ledger.md`) | one post, reply or outreach | P-nnnn, date, persona, kind (post / reply / outreach), platform, community, slot, title, text, format, assets, topic, highlight, messages, idea, checks, link, replies, metrics, result, feedback, status | Writer, Responder, Engager write rows; Publisher the link; Reporter numbers; Jordi feedback (and text before its slot) |
 | assets (`data/assets.md` + `data/assets/`) | a diagram, screenshot, clip, video or logo | A-n, kind, file, made by, source, cuts per channel, used by | Jordi (Video Maker once it exists) |
 | reports (`data/reports/<date>.md`) | one 3-day report | Numbers, Best and worst, Learned, Highlights covered, Feedback themes, Cost | Reporter |
@@ -33,7 +33,7 @@ A social campaign desk: personas scan, write, post, reply and measure; the owner
 | draft, held, scheduled | pulled | Jordi | unscheduled, never goes out |
 | posted, measured | pulled | Jordi | the Publisher deletes the live post at once, link kept (C5) |
 
-A failed check keeps the draft a draft, with the reason in `checks`. Ideas: `new → picked up → drafted → posted`, or `parked` (why; back to picked up) or `epic` (too big for one post), all moved by the Writer.
+A failed check keeps the draft a draft, with the reason in `checks`. Ideas: `new → picked up → drafted → posted`, or `parked` (why; back to picked up) or `epic` (too big for one post), all moved by the Writer; Jordi may drop an idea (`new` or `picked up` → `parked`, the console's drop).
 
 ## Who writes what
 
