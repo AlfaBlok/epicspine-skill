@@ -1,0 +1,462 @@
+{
+  "schemaVersion": 1,
+  "pack": "social",
+  "packVersion": 1,
+  "repo": "<repo>",
+  "generatedAt": "2026-10-27T12:00:00Z",
+  "warnings": [
+    {
+      "file": "data/topics.md",
+      "line": 6,
+      "message": "heat: not a number: 'high'"
+    },
+    {
+      "file": "data/posts-ledger.md",
+      "line": 7,
+      "message": "status: 'approved' not one of ['idea', 'draft', 'scheduled', 'posted', 'measured', 'held', 'pulled', 'expired']"
+    },
+    {
+      "file": "data/posts-ledger.md",
+      "line": 8,
+      "message": "row skipped: 24 cells under 22 columns (unescaped |?)"
+    },
+    {
+      "file": "data/reports/2026-10-26.md",
+      "line": null,
+      "message": "no 'Best and worst' section (reports.best_worst)"
+    },
+    {
+      "file": "data/reports/2026-10-26.md",
+      "line": null,
+      "message": "no 'Highlights covered' section (reports.highlights)"
+    },
+    {
+      "file": "data/reports/2026-10-26.md",
+      "line": null,
+      "message": "no 'Feedback themes' section (reports.feedback)"
+    },
+    {
+      "file": "data/reports/2026-10-26.md",
+      "line": null,
+      "message": "no 'Cost' section (reports.cost)"
+    },
+    {
+      "file": "data/posts-ledger.md",
+      "line": 7,
+      "message": "assets: A-9 not found in assets.rows"
+    },
+    {
+      "file": "data/posts-ledger.md",
+      "line": 7,
+      "message": "messages: 3 not found in brief.key_messages"
+    }
+  ],
+  "brief": {
+    "objective": "Acme becomes a known voice in note-taking: 500 followers by December.",
+    "targets": "- 1 thread a day\n- replies answered within 3 h",
+    "audience": "Developers who keep notes in plain files.",
+    "key_messages": [
+      {
+        "id": "1",
+        "message": "Your notes are plain files you own",
+        "weight": "over",
+        "source": "Positioning",
+        "carried_by": [
+          "P-0001",
+          "P-0002"
+        ],
+        "_line": 7
+      },
+      {
+        "id": "2",
+        "message": "Every change is a commit",
+        "weight": "normal",
+        "source": "Positioning",
+        "carried_by": [
+          "P-0001"
+        ],
+        "_line": 8
+      }
+    ],
+    "voice": [
+      "First person singular on Reddit.",
+      "Plain words, no jargon."
+    ],
+    "style_rules": [
+      "Do disclose in the first two lines."
+    ],
+    "never_say": [
+      "\"first 100 free\""
+    ],
+    "topic_weights": [
+      {
+        "topic": "owning your notes",
+        "weight": "over",
+        "why": "core difference",
+        "source": "Jordi",
+        "since": "2026-10-20",
+        "_line": 28
+      }
+    ],
+    "feedback_log": [
+      {
+        "date": "2026-10-25",
+        "from": "Jordi",
+        "feedback": "too many emojis",
+        "landed": "Style rules, line 1",
+        "applied_by": "Writer",
+        "_line": 34
+      }
+    ],
+    "formats": [
+      {
+        "format": "text",
+        "share": 60,
+        "example": "https://x.com/acme/status/1",
+        "_line": 13
+      },
+      {
+        "format": "diagram",
+        "share": 40,
+        "example": "https://x.com/acme/status/2",
+        "_line": 14
+      }
+    ],
+    "examples": [
+      {
+        "link": "https://x.com/other/status/9",
+        "verdict": "like",
+        "why": "short, one claim, a screenshot",
+        "_line": 20
+      }
+    ],
+    "hold_rules": [
+      {
+        "id": "R1",
+        "match": "it names a competitor",
+        "why": "legal",
+        "_line": 26
+      }
+    ]
+  },
+  "directions": {
+    "week": [
+      {
+        "id": "H1",
+        "highlight": "Launch of sync",
+        "why": "the release",
+        "until": "2026-11-02",
+        "served_by": [
+          "P-0001",
+          "P-0003"
+        ],
+        "_line": 7
+      }
+    ],
+    "do_dont": [
+      {
+        "kind": "don't",
+        "rule": "mention pricing",
+        "until": "2026-11-02",
+        "_line": 13
+      }
+    ],
+    "voice_note": "Calmer this week.",
+    "month": [
+      {
+        "id": "M1",
+        "priority": "Testers",
+        "why": "we need 20",
+        "month": "2026-11",
+        "served_by": [],
+        "_line": 23
+      }
+    ]
+  },
+  "topics": [
+    {
+      "rank": 1,
+      "id": "T-1026-1",
+      "topic": "Files vs databases for notes",
+      "where": "r/notes",
+      "link": "https://reddit.com/r/notes/1",
+      "heat": 8,
+      "date": "2026-10-26",
+      "reply_target": true,
+      "used_by": [
+        "P-0001"
+      ],
+      "_line": 5
+    },
+    {
+      "rank": 2,
+      "id": "T-1026-2",
+      "topic": "Sync conflicts",
+      "where": "X",
+      "link": "https://x.com/a/status/3",
+      "heat": null,
+      "date": "2026-10-26",
+      "reply_target": false,
+      "used_by": [],
+      "_line": 6
+    }
+  ],
+  "ideas": [
+    {
+      "id": "I-1",
+      "date": "2026-10-24",
+      "idea": "Diagram of the commit flow",
+      "format": "diagram",
+      "platform": "X",
+      "from": "Jordi",
+      "link": "A-1",
+      "state": "drafted",
+      "why": null,
+      "became": [
+        "P-0001"
+      ],
+      "_line": 5
+    },
+    {
+      "id": "I-2",
+      "date": "2026-10-25",
+      "idea": "A video tour",
+      "format": "video",
+      "platform": "YouTube",
+      "from": "Scout",
+      "link": null,
+      "state": "parked",
+      "why": "after the launch",
+      "became": [],
+      "_line": 6
+    }
+  ],
+  "posts": [
+    {
+      "id": "P-0001",
+      "date": "2026-10-25",
+      "persona": "Writer",
+      "kind": "post",
+      "platform": "X",
+      "community": null,
+      "slot": "2026-10-25 10:00",
+      "title": "Commit flow",
+      "text": "Every change is a commit | see the diagram",
+      "format": "diagram",
+      "assets": [
+        "A-1"
+      ],
+      "topic": "T-1026-1",
+      "highlight": "H1",
+      "messages": [
+        "1",
+        "2"
+      ],
+      "idea": "I-1",
+      "checks": "ok",
+      "link": "https://x.com/acme/status/10",
+      "replies": 3,
+      "metrics": "1.2k views",
+      "result": "good",
+      "feedback": "more like this",
+      "status": "measured",
+      "_line": 5
+    },
+    {
+      "id": "P-0002",
+      "date": "2026-10-26",
+      "persona": "Responder",
+      "kind": "reply",
+      "platform": "Reddit",
+      "community": "r/notes",
+      "slot": null,
+      "title": "Reply on files",
+      "text": "Thanks, I built it on files",
+      "format": "text",
+      "assets": [],
+      "topic": "T-0999-9",
+      "highlight": null,
+      "messages": [
+        "1"
+      ],
+      "idea": null,
+      "checks": "ok",
+      "link": "https://reddit.com/r/notes/1/c",
+      "replies": 0,
+      "metrics": null,
+      "result": null,
+      "feedback": null,
+      "status": "posted",
+      "_line": 6
+    },
+    {
+      "id": "P-0003",
+      "date": "2026-10-27",
+      "persona": "Writer",
+      "kind": "post",
+      "platform": "X",
+      "community": null,
+      "slot": "2026-10-28 09:00",
+      "title": "Sync launch",
+      "text": "Sync is out",
+      "format": "text",
+      "assets": [
+        "A-1",
+        "A-9"
+      ],
+      "topic": null,
+      "highlight": "H1",
+      "messages": [
+        "3"
+      ],
+      "idea": null,
+      "checks": "ok",
+      "link": null,
+      "replies": null,
+      "metrics": null,
+      "result": null,
+      "feedback": null,
+      "status": "approved",
+      "_line": 7
+    }
+  ],
+  "assets": [
+    {
+      "id": "A-1",
+      "kind": "diagram",
+      "file": "data/assets/commit-flow.png",
+      "made_by": "Jordi",
+      "source": "drawn",
+      "cuts": "X 16:9",
+      "used_by": [
+        "P-0001",
+        "P-0003"
+      ],
+      "_line": 5
+    },
+    {
+      "id": "A-2",
+      "kind": "logo",
+      "file": "data/assets/logo.svg",
+      "made_by": "Jordi",
+      "source": "brand",
+      "cuts": null,
+      "used_by": [],
+      "_line": 6
+    }
+  ],
+  "reports": [
+    {
+      "date": "2026-10-26",
+      "path": "data/reports/2026-10-26.md",
+      "numbers": "3 posts, 12 replies.",
+      "best_worst": null,
+      "learned": "Diagrams beat text.",
+      "highlights": null,
+      "feedback": null,
+      "cost": null
+    }
+  ],
+  "sources": {
+    "brief.objective": {
+      "path": "docs/spines/root.md",
+      "heading": "Goal",
+      "exists": true
+    },
+    "brief.targets": {
+      "path": "docs/spines/root.md",
+      "heading": "Targets",
+      "exists": true
+    },
+    "brief.audience": {
+      "path": "data/brief.md",
+      "heading": "Audience",
+      "exists": true
+    },
+    "brief.key_messages": {
+      "path": "data/message-house.md",
+      "heading": "Points to emphasize",
+      "exists": true
+    },
+    "brief.voice": {
+      "path": "data/message-house.md",
+      "heading": "Voice",
+      "exists": true
+    },
+    "brief.style_rules": {
+      "path": "data/message-house.md",
+      "heading": "Style rules",
+      "exists": true
+    },
+    "brief.never_say": {
+      "path": "data/message-house.md",
+      "heading": "Never say",
+      "exists": true
+    },
+    "brief.topic_weights": {
+      "path": "data/message-house.md",
+      "heading": "Topic weights",
+      "exists": true
+    },
+    "brief.feedback_log": {
+      "path": "data/message-house.md",
+      "heading": "Feedback log",
+      "exists": true
+    },
+    "brief.formats": {
+      "path": "data/brief.md",
+      "heading": "Formats",
+      "exists": true
+    },
+    "brief.examples": {
+      "path": "data/brief.md",
+      "heading": "Examples",
+      "exists": true
+    },
+    "brief.hold_rules": {
+      "path": "data/brief.md",
+      "heading": "Hold for me",
+      "exists": true
+    },
+    "directions.week": {
+      "path": "data/directions.md",
+      "heading": "Week",
+      "exists": true
+    },
+    "directions.do_dont": {
+      "path": "data/directions.md",
+      "heading": "This week only",
+      "exists": true
+    },
+    "directions.voice_note": {
+      "path": "data/directions.md",
+      "heading": "Voice note",
+      "exists": true
+    },
+    "directions.month": {
+      "path": "data/directions.md",
+      "heading": "Month",
+      "exists": true
+    },
+    "topics.rows": {
+      "path": "data/topics.md",
+      "heading": null,
+      "exists": true
+    },
+    "ideas.rows": {
+      "path": "data/ideas.md",
+      "heading": null,
+      "exists": true
+    },
+    "posts.rows": {
+      "path": "data/posts-ledger.md",
+      "heading": null,
+      "exists": true
+    },
+    "assets.rows": {
+      "path": "data/assets.md",
+      "heading": null,
+      "exists": true
+    }
+  }
+}

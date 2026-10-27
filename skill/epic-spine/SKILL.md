@@ -51,7 +51,7 @@ Fall back to read-only orientation when the role, spine, or issue is unclear. Bi
 | Structural validation and diagnostics | `references/structural-validation.md`, `scripts/validate_spine.py`, `scripts/spine_fix.py`, `scripts/status_true.py`, `scripts/run_state.py` |
 | Cleaning a stale epic tree: closed epics with open rows, non-standard Status words, stale/undecided epics | `references/tree-cleanse.md`, `scripts/tree_audit.py`, `scripts/close_rows.py` |
 | Personas, `## Team` tables, ledger assignees | `references/personas.md`, `scripts/personas.py` |
-| Packs: a vertical's typed `data/` files a repo opts into (`Pack: social` in AGENTS.md); `packs/<name>/schema.json` + its README | `references/packs.md`, `scripts/pack.py` |
+| Packs: a vertical's typed `data/` files a repo opts into (`Pack: social` in AGENTS.md); `packs/<name>/schema.json` + its README | `references/packs.md`, `scripts/pack.py`, `scripts/pack_export.py` (`pack.py <name> --json`) |
 | Standing spines: ongoing work with targets and a scoreboard, never closed | `references/standing-spines.md`, `scripts/standing.py` |
 | Operating learnings | `references/learnings.md` |
 | Git, worktrees, integration, rollback; hygiene and sweeps | `references/git-doctrine.md`, `references/hygiene.md`, `assets/sweep-brief.md` |
