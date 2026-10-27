@@ -6,7 +6,7 @@ what. A repo opts in with one AGENTS.md line, `Pack: social` (several: `Pack: so
 
   pack.py list [--repo PATH]   packs shipped (or the ones a repo has on)
   pack.py check [NAME ...]     self-consistency of each schema; exit 1 on errors
-  pack.py init NAME --repo P | validate [--repo P] [--staged] [--by ROLE] | NAME --json [--repo P]   (pack_init/_validate/_export.py)
+  pack.py init NAME --repo P | validate [--repo P] [--staged] [--by ROLE] | NAME --json [--repo P] | NAME --wake-text   (pack_init/_validate/_export/_intake.py)
 """
 from __future__ import annotations
 
@@ -168,14 +168,14 @@ def check(schema: dict) -> list[str]:
                 errs.append(f"check {ckey}: at {at} is not a transition")
         if c.get("source") and c["source"] not in secs:
             errs.append(f"check {ckey}: source {c['source']} unknown")
-    return errs
+    return errs + __import__("pack_intake").check(schema)  # desk intake: targets resolve, the writer may write them
 
 
 def main(argv: list[str] | None = None) -> int:
     argv = sys.argv[1:] if argv is None else argv
     helper = {"init": "pack_init", "validate": "pack_validate"}.get(argv[0]) if argv else None
-    if helper or argv[:1] and argv[0] in available():  # logic lives in pack_init.py / pack_validate.py / pack_export.py
-        return __import__(helper).main(argv[1:]) if helper else __import__("pack_export").main(argv)
+    if helper or argv[:1] and argv[0] in available():  # logic lives in pack_init/_validate/_export/_intake.py
+        return __import__(helper).main(argv[1:]) if helper else __import__("pack_intake" if "--wake-text" in argv else "pack_export").main(argv)
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     sub = ap.add_subparsers(dest="cmd", required=True)
     ls = sub.add_parser("list")

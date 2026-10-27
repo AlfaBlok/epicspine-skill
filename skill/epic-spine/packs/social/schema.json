@@ -256,5 +256,76 @@
     "caps": {"doc": "posting caps", "at": ["draft>scheduled", "draft>posted"], "params": {"threads_per_day": 1, "per_community_per_week": 1, "replies_per_day": 20}},
     "hold_rules": {"doc": "a match sends the draft to held instead of scheduled", "at": ["draft>scheduled"], "source": "brief.hold_rules"},
     "link_present": {"doc": "a post goes live with its link in the same commit", "at": ["scheduled>posted", "draft>posted"], "params": {"field": "link"}}
+  },
+  "intake": {
+    "doc": "Desk chat intake: every line Jordi says to the desk is one of these kinds. The desk sorts it into one kind, writes it where the kind says through the console's write API (commits as Jordi, EPICSPINE_PERSONA=Jordi), and replies with where it landed.",
+    "unsure": "Cannot tell the kind, or it could be two: ask Jordi one line back naming the two likeliest kinds; never write a guess.",
+    "reply": "Every reply names where it landed: the file and section as a link ({link}, a repo path with its #anchor), the line it added or changed, who acts on it next and when, and undo (revert that commit).",
+    "external": {
+      "spine": {"doc": "a new child epic under the root spine (spine_new.py), Status draft, its dependencies named in it", "path": "docs/spines/<slug>.md", "writers": ["Delivery manager"]}
+    },
+    "kinds": {
+      "brief": {
+        "label": "Brief change",
+        "recognise": "changes the standing campaign, not one week and not one post: the objective, targets, audience, voice, a style rule, a phrase never to say, topic weights, the formats mix, an example liked or disliked, a hold rule",
+        "example": "never mention prices beyond what the site says",
+        "targets": ["brief.objective", "brief.targets", "brief.audience", "brief.voice", "brief.style_rules", "brief.never_say", "brief.topic_weights", "brief.formats", "brief.examples", "brief.hold_rules"],
+        "writer": "Jordi",
+        "acts": "every persona reads it from its next wake",
+        "screen": "Campaign brief",
+        "reply": "Brief, {section}: \"{line}\" ({link}). Every persona reads it from its next wake. Undo: revert {commit}."
+      },
+      "key_message": {
+        "label": "Key message",
+        "recognise": "a point to push, soften or drop across posts, or a new one; says more / less / stop about a message rather than a week's focus",
+        "example": "push the durable-state message harder",
+        "targets": ["brief.key_messages"],
+        "writer": "Jordi",
+        "acts": "the Writer weighs it from its next wake; carried-by on the Brief shows which posts carry it",
+        "screen": "Campaign brief",
+        "reply": "Key message #{id} weight → {weight}: \"{line}\" ({link}). Carried-by shows on the Brief. Undo: revert {commit}."
+      },
+      "priority": {
+        "label": "Priority",
+        "recognise": "what to highlight this week or this month, or a do / don't for this week only; has a time span (this week, this month, until a date)",
+        "example": "push the EpicSpine angle more this month",
+        "targets": ["directions.week", "directions.month", "directions.do_dont"],
+        "writer": "Jordi",
+        "acts": "the Writer and the Scout weigh it from their next wake",
+        "screen": "Ideas & priorities",
+        "reply": "Priority {id} for {period}: \"{line}\" ({link}). The Writer and Scout read it from their next wake ({next_wake}). Undo: revert {commit}."
+      },
+      "idea": {
+        "label": "Idea",
+        "recognise": "one post Jordi wants made: a topic, an angle, a link or a screenshot to post about; one post can carry it",
+        "example": "post idea: how git log saved me from a bad memory",
+        "targets": ["ideas.rows", "assets.rows"],
+        "set": {"ideas.rows.from": "Jordi", "ideas.rows.state": "new"},
+        "writer": "Jordi",
+        "acts": "the Writer picks it up on its next wake: new → picked up → draft / posted, or parked with why",
+        "screen": "Ideas & priorities",
+        "reply": "Added to My ideas as {id} (from: Jordi): \"{line}\" ({link}). The Writer picks it up on its next wake ({next_wake}); you see picked up → draft there and in the digest. Undo: revert {commit}."
+      },
+      "big_idea": {
+        "label": "Big idea → epic",
+        "recognise": "more than one post can carry: it needs a new tool, a new persona, a video or several posts",
+        "example": "do a post with a demo video of shared memory across Claude and Codex",
+        "targets": ["spine"],
+        "writer": "Delivery manager",
+        "acts": "the Delivery manager plans it; Home shows it as a blocked card until what it waits on exists",
+        "screen": "Home",
+        "reply": "That needs more than one post, so it is an epic: {code} \"{title}\" ({link}), waiting on {waits_on}. Home shows it as \"blocked: {waits_on}\". Nothing for you to do now. Undo: revert {commit}."
+      },
+      "feedback": {
+        "label": "Feedback on a post",
+        "recognise": "a verdict on a post that exists (names it, links it or quotes it): liked, disliked, wrong tone, pull it",
+        "example": "P-0143 was too salesy",
+        "targets": ["posts.rows.feedback", "brief.feedback_log"],
+        "writer": "Jordi",
+        "acts": "the Writer reads it in the digest; the same feedback twice becomes a Style rule (C6); \"pull it\" is the console's pull, not feedback",
+        "screen": "History",
+        "reply": "Feedback on {id}: \"{line}\" ({link}), logged in the Feedback log. The Writer reads it in the digest; a repeat becomes a Style rule. Undo: revert {commit}."
+      }
+    }
   }
 }
