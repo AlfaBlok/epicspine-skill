@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.10.27.1 — Packs: a vertical's typed files a repo opts into; `packs/social` first
+
+- **New: the pack mechanism** (agent_team EPIC-34 E34-S1). A pack is `skill/epic-spine/packs/<name>/schema.json` (files, sections, fields, lifecycles with legal transitions, which role writes what) plus a README; a repo turns it on with one AGENTS.md line, `Pack: social` (`EpicSpine packs: social` also read). `scripts/pack.py` loads a schema (`load`, `available`), reads a repo's opt-in (`enabled`, `pack.py list --repo`), and checks a schema is self-consistent (`check`, `pack.py check`: known roles, a writer for every file/section/field, every state reachable, refs/computed/effects/rules/checks resolve, no `path` step waits on the owner when `approval_gate` is false). Doc: `references/packs.md`.
+- **New: `packs/social`**: brief, directions (week + month), topics, ideas (from: Jordi), posts (messages, link, feedback), assets, reports; post statuses idea → draft → scheduled → posted → measured plus held, pulled, expired, with no approval gate (C1), pull deletes a live post (C5), repeated feedback (2x) becomes a Style rule with undo (C6); roles Jordi, Scout, Writer, Publisher, Responder, Engager, Reporter. The validator, `pack init` and the JSON export come next (E34-S2/S3) and read this schema. Tests: `tests/test_packs.py`. Skill 2026.10.27.1.
+
 ## 2026.10.25.3 — Jordi on a Team table needs no persona file
 
 - **Fixed: a Team table listing the human `Jordi` failed with `Team persona jordi has no file personas/jordi.md`** in any repo that has persona files (infra-vps EPIC-15, E5-S5). `personas.team()` exempts `HUMAN` from the file requirement (empty-cell and duplicate checks still apply); `roster()` names a Team-row Jordi `Jordi`, as it does when he only has open rows. `references/personas.md` says so. Tests: `tests/test_personas.py` (`test_jordi_on_the_team_needs_no_file_but_other_personas_do`, `test_jordi_on_the_team_is_listed_as_himself`). Skill 2026.10.25.3.
