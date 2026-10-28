@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import copy
 import io
+import subprocess
 import sys
 import unittest
 from contextlib import redirect_stdout
@@ -78,6 +79,61 @@ class IntakeCheck(unittest.TestCase):
         errs = broken(lambda s: s["intake"]["kinds"]["brief"].pop("recognise"))
         self.assertIn("intake brief: no recognise", errs)
         self.assertEqual([], broken(lambda s: s.pop("intake")))
+
+
+ROLE_TARGETS = {  # role -> (writable targets, status moves) the text must name
+    "Scout": (["`data/topics.md`", "replace the table each run", "`data/ideas.md`", "every column but Why"], []),
+    "Writer": (["`data/message-house.md` › Style rules", "`data/message-house.md` › Feedback log", "`data/ideas.md`: edit only Why", "`data/posts-ledger.md`", "every column but Link, Replies, Metrics, Result, Feedback"],
+               ["`idea → draft`", "`draft → scheduled`", "`draft → held`", "`new → picked up`", "`parked → picked up`", "hold_rules", "`held → scheduled` is Jordi's alone"]),
+    "Publisher": (["`data/posts-ledger.md`: edit only Link, Result"], ["`scheduled → posted`", "`scheduled → expired`", "link_present", "delete_live"]),
+    "Responder": (["`data/posts-ledger.md`", "add rows", "every column but Feedback"], ["`draft → posted`", "`posted → measured`", "reply, outreach rows"]),
+    "Engager": (["`data/posts-ledger.md`", "add rows", "every column but Replies, Feedback"], ["`draft → posted`", "`posted → measured`", "disclosure (Reddit)"]),
+    "Reporter": (["edit only Replies, Metrics, Result", "`data/reports/<date>.md` › Numbers", "Cost"], ["`posted → measured`"]),
+}
+
+
+class RoleText(unittest.TestCase):
+    def test_every_role_but_the_owner_has_a_text_naming_its_targets_and_moves(self) -> None:
+        self.assertEqual(set(SOCIAL["roles"]) - {"Jordi"}, set(ROLE_TARGETS))
+        for role, (targets, moves) in ROLE_TARGETS.items():
+            text = pack_intake.role_text(SOCIAL, role)
+            self.assertTrue(text.startswith(f"## Pack social: you are the {role}\n{SOCIAL['roles'][role].rstrip('.')}.\n"), role)
+            for needle in targets + moves:
+                self.assertIn(needle, text, f"{role}: {needle}")
+            self.assertTrue(text.rstrip().endswith(f"Every step is a commit signed `Persona: {role}` (`EPICSPINE_PERSONA={role}`); the hook rejects an illegal transition."))
+            if not moves:
+                self.assertIn("- none", text)
+
+    def test_a_role_is_told_only_its_own_moves(self) -> None:
+        self.assertNotIn("`scheduled → posted`", pack_intake.role_text(SOCIAL, "Writer"))
+        self.assertNotIn("`draft → scheduled`", pack_intake.role_text(SOCIAL, "Publisher"))
+        self.assertNotIn("data/posts-ledger.md", pack_intake.role_text(SOCIAL, "Scout"))
+        self.assertNotIn("`pulled`", pack_intake.role_text(SOCIAL, "Scout"))  # the Scout makes no post move
+
+    def test_generated_from_the_schema_alone(self) -> None:
+        s = copy.deepcopy(SOCIAL)
+        s["lifecycles"]["post"]["transitions"].append({"from": "posted", "to": "expired", "by": ["Scout"], "when": "x"})
+        self.assertIn("`posted → expired`: x", pack_intake.role_text(s, "Scout"))
+        s["approval_gate"] = True
+        self.assertIn("Nothing goes out without Jordi's approval.", pack_intake.role_text(s, "Writer"))
+
+    def test_cli_role(self) -> None:
+        out = io.StringIO()
+        with redirect_stdout(out):
+            self.assertEqual(0, pack.main(["social", "--wake-text", "--role", "writer"]))
+        self.assertEqual(pack_intake.role_text(SOCIAL, "Writer"), out.getvalue())
+
+    def test_the_owner_gets_the_desk_text(self) -> None:
+        out = io.StringIO()
+        with redirect_stdout(out):
+            self.assertEqual(0, pack.main(["social", "--wake-text", "--role", "Jordi"]))
+        self.assertEqual(pack_intake.wake_text(SOCIAL), out.getvalue())
+
+    def test_unknown_role_exits_2_with_the_role_list(self) -> None:
+        r = subprocess.run([sys.executable, "-B", str(Path(pack.__file__)), "social", "--wake-text", "--role", "Bob"], capture_output=True, text=True)
+        self.assertEqual(2, r.returncode)
+        self.assertEqual("", r.stdout)
+        self.assertIn("no role Bob; roles: Jordi, Scout, Writer, Publisher, Responder, Engager, Reporter", r.stderr)
 
 
 class WakeText(unittest.TestCase):

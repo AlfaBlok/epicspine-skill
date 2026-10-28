@@ -6,7 +6,7 @@ what. A repo opts in with one AGENTS.md line, `Pack: social` (several: `Pack: so
 
   pack.py list [--repo PATH]   packs shipped (or the ones a repo has on)
   pack.py check [NAME ...]     self-consistency of each schema; exit 1 on errors
-  pack.py init NAME --repo P | validate [--repo P] [--staged] [--by ROLE] | NAME --json [--repo P] | NAME --wake-text   (pack_init/_validate/_export/_intake.py)
+  pack.py init NAME --repo P | validate [--repo P] [--staged] [--by ROLE] | NAME --json [--repo P] | NAME --wake-text [--role R]   (pack_init/_validate/_export/_intake.py)
 """
 from __future__ import annotations
 

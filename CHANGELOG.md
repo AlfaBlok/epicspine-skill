@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.10.28.1 — Packs: per-persona wake text (`pack.py <name> --wake-text --role <Role>`)
+
+- **Added:** `pack.py social --wake-text --role Writer` prints, from the schema alone, what that persona may do: its one-line duty, the files/sections/columns it may write and rows it may add, its status moves (with `when`, `kinds` and the `checks` at each), the rules that bind it (hold rule → `held`, only Jordi releases; `pulled`; `approval_gate`; effects and rules naming the role) and the closing line "every step is a commit signed `Persona: <Role>`; the hook rejects an illegal transition". Role is case-insensitive; an unknown role exits 2 listing the roles; the owner (`Jordi`) gets the desk intake text; plain `--wake-text` (what agent_team's console calls) is byte-identical. Code: `scripts/pack_role.py` `role_text`, called by `pack_intake.main`. Doc: `references/packs.md` "Persona wake text" + CLI table. Tests: `tests/test_pack_intake.py` (`RoleText`, one per role in packs/social). EPIC-9 E9-S4. Skill 2026.10.28.1.
+
 ## 2026.10.27.7 — Social pack: Jordi can drop an idea
 
 - **Fixed: Jordi could not drop an idea.** Every idea transition in `packs/social/schema.json` was `by: [Writer]` and rows are never deleted, so the console's `POST /api/tenants/:id/social/ideas/:id/drop` (commits as Jordi) was refused with `illegal state change new -> parked by Jordi` (found by agent_team EPIC-34 E34-S6). `new -> parked` and `picked up -> parked` are now `by: [Writer, Jordi]`; every other idea move stays the Writer's (Jordi cannot pick up, draft, unpark or park a drafted idea). Doc: `packs/social/README.md`, the ideas file doc. Tests: `tests/test_packs.py` (`test_jordi_may_drop_an_idea_and_nothing_else`), `tests/test_pack_validate.py` (`test_jordi_drops_an_idea_new_or_picked_up_to_parked_only`). agent_team EPIC-34 E34-S8. Skill 2026.10.27.7.

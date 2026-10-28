@@ -14,6 +14,7 @@ Base EpicSpine knows goals, state, ledgers, asks, learnings and the Team table; 
 | `pack.py init <name>` (`scripts/pack_init.py`) | creates the files with the right headings and columns | E34-S2 |
 | `pack.py <name> --json` (`scripts/pack_export.py`) | exports the repo's typed data for the console, with computed back-links ("JSON export" below) | E34-S3 |
 | `pack.py <name> --wake-text` (`scripts/pack_intake.py`) | the desk intake rule a desk persona's prompt carries ("Desk intake" below) | E34-S10 |
+| `pack.py <name> --wake-text --role <Role>` (`pack_role.py`, `role_text`) | one persona's duties from the schema: what it may write, its status moves and checks, the rules that bind it ("Persona wake text" below) | E9-S4 |
 
 ## Opt in
 
@@ -70,6 +71,10 @@ The social pack's six kinds:
 | Idea (`idea`) | one post's worth: a topic, angle, link or screenshot | `data/ideas.md` row (`from: Jordi`, `state: new`), a file in `data/assets.md` | Jordi | `I-xx`, the Writer's next wake |
 | Big idea → epic (`big_idea`) | more than one post can carry (a tool, persona, video, a series) | a new child epic under the root spine | Delivery manager | the epic code + what it waits on, Home's blocked card |
 | Feedback on a post (`feedback`) | a verdict on an existing post | the post row's `Feedback` + message house `## Feedback log` | Jordi | the post id, logged; a repeat becomes a Style rule (C6) |
+
+## Persona wake text (what one role may do)
+
+`python3 scripts/pack.py social --wake-text --role Writer` prints, as short Markdown for that persona's wake prompt, generated from the schema alone (`pack_role.py`, `role_text(schema, role)`, no per-pack prose): the role's one-line duty (`roles`); the files, sections and columns it may write and the rows it may add (`writers`, `add_rows`, field `writers`; `rows: replace` says so); the status moves it may make, each with its `when`, `kinds` and the `checks` that run at it; the rules that bind it (a hold rule's `held`, which only the owner releases; the owner's `pulled`; `approval_gate`; `effects` and `rules` that name the role); and the closing line "every step is a commit signed `Persona: <Role>`; the hook rejects an illegal transition". The role name is case-insensitive. An unknown role exits 2 and lists the roles on stderr. The owner (`Jordi` in social) gets the desk intake rule above. Compatible with agent_team's console, which calls only `pack.py <name> --wake-text` (desk) and builds its own per-persona section from `schema.json` (E34-S12).
 
 ## JSON export (the console's one typed source)
 

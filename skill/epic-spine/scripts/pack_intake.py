@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Desk intake, `pack.py <name> --wake-text`: the kinds of desk-chat message a pack defines (references/packs.md "Desk intake").
+"""Wake text, `pack.py <name> --wake-text [--role R]`: the desk intake rule (references/packs.md "Desk intake") and, per
+persona, what its role may write (`role_text`, pack_role.py; "Persona wake text").
 
 A pack's `intake` says, per kind: how to recognise it, the pack sections or fields it lands in (`targets`; or an
 `external` target such as a new child spine), the role that writes it, and the reply naming where it landed. `check()`
@@ -13,6 +14,7 @@ import re
 import sys
 
 import pack
+from pack_role import role_text  # noqa: F401  (per-persona wake text lives in pack_role.py)
 
 
 def anchor(heading: str | None) -> str:
@@ -116,11 +118,19 @@ def wake_text(schema: dict) -> str:
 
 
 def main(argv: list[str]) -> int:
-    ap = argparse.ArgumentParser(prog="pack.py <name>", description="Print a pack's desk intake rule (wake text).")
+    ap = argparse.ArgumentParser(prog="pack.py <name>", description="Print a pack's wake text: the desk intake rule, or one role's duties.")
     ap.add_argument("name", choices=pack.available())
     ap.add_argument("--wake-text", action="store_true", required=True)
+    ap.add_argument("--role", help="the persona's role in the pack (default: the desk intake rule, which the owner gets too)")
     a = ap.parse_args(argv)
     schema = pack.load(a.name)
+    if a.role and a.role.lower() != str(schema.get("owner", "")).lower():
+        role = next((r for r in schema["roles"] if r.lower() == a.role.lower()), None)
+        if role is None:
+            print(f"pack {a.name} has no role {a.role}; roles: {', '.join(schema['roles'])}", file=sys.stderr)
+            return 2
+        sys.stdout.write(role_text(schema, role))
+        return 0
     if "intake" not in schema:
         print(f"pack {a.name} has no intake", file=sys.stderr)
         return 1
