@@ -51,7 +51,7 @@ Steps: each is independently testable and closes only with evidence.
 | E9-S1 | Ticket worker | seat pool | Pack mechanism (packs/<name>/, opt-in line, hook discovery) + social pack schema and writer table | done | none | merged 3ae4843 | main | 7c8b7bb, merge 3ae4843 (E34-S1, release 2026.10.27.1) | 2026-10-28 | none |
 | E9-S2 | Ticket worker | seat pool | Social pack validator in pre_commit (link, disclosure, never-say, caps, hold rules, illegal transitions) + `pack init social` | done | E9-S1 | merged 9acd869 | main | b665398, merge 9acd869 (E34-S2); E34-S4 fixes ab1ced4 | 2026-10-28 | none |
 | E9-S3 | Ticket worker | seat pool | `pack.py social --json` export + console-contract.md section | done | E9-S1 | merged 6f54429 | main | f0d861f, merge 6f54429 (E34-S3); console-contract.md 'Pack data' | 2026-10-28 | none |
-| E9-S4 | Ticket worker | worker run_4ce95ec6 (Sonnet 5.5, seat1) | Desk intake wake text (6 kinds) and per-persona wake text in the pack | active | E9-S1 | e9-s4 | main | desk intake 774f12e, merge 70d34d9 (E34-S10); per-persona text missing: worker run_4ce95ec6 | 2026-10-28 | DM verifies and merges |
+| E9-S4 | Ticket worker | worker run_4ce95ec6 (Sonnet 5.5, seat1) | Desk intake wake text (6 kinds) and per-persona wake text in the pack | review | E9-S1 | e9-s4 | main | desk intake 774f12e, merge 70d34d9 (E34-S10); per-persona `--wake-text --role` d851e3a (release 2026.10.28.1) | 2026-10-28 | DM verifies and merges
 | E9-S5 | Ticket worker | seat pool | Release: skill version bump, zenod-social turned on (agent_team E34-S4) passes | done | E9-S2, E9-S3 | main | main | releases 2026.10.27.1-.7; zenod-social `Pack: social`, `pack.py validate` ok, export 42 posts / 1 warning (2026-10-28) | 2026-10-28 | none |
 
 ## Decisions
