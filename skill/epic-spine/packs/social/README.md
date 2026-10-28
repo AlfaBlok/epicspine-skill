@@ -52,7 +52,7 @@ At `draft → scheduled` / `draft → posted`: Reddit no link on line 1 and at m
 
 ## Desk intake (6 kinds)
 
-What Jordi says in the desk chat is one of six kinds; the desk writes it where the kind says (as Jordi, through the console's write API) and replies with where it landed (file + section link) and undo. Brief change → brief sections (root Goal/Targets, message house, brief.md); Key message → message house Points to emphasize (+ weight); Priority → directions Week / Month / This week only; Idea → ideas.md row (from: Jordi, state new, + assets); Big idea → a new child epic (Delivery manager); Feedback on a post → the post's Feedback + message house Feedback log. Unsure: ask one line back. Source: `schema.json` `intake`; prompt text: `pack.py social --wake-text` ([references/packs.md](../../references/packs.md) Desk intake).
+What Jordi says in the desk chat is one of six kinds; the desk writes it where the kind says (as Jordi, through the console's write API) and replies with where it landed (file + section link) and undo. Brief change → brief sections (root Goal/Targets, message house, brief.md); Key message → message house Points to emphasize (+ weight); Priority → directions Week / Month / This week only; Idea → ideas.md row (from: Jordi, state new, + assets); Big idea → a new child epic (Delivery manager); Feedback on a post → the post's Feedback + message house Feedback log. Unsure: ask one line back. Source: `schema.json` `intake`; prompt text: `pack.py social --wake-text` (a persona's own: `--role Writer`; [references/packs.md](../../references/packs.md) Desk intake).
 
 ## From today's zenod-social (for E34-S4)
 
