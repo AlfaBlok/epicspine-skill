@@ -29,12 +29,13 @@ A repo opts into a vertical pack with one AGENTS.md line (`EpicSpine packs: soci
 
 Owner: Delivery Manager (agent-team console)
 Status: active
-Last attempted: 2026-10-28 DM wake run_8679887e (stall watch): reconciled: E9-S1..S3, S5 built by agent_team EPIC-34 workers (releases 2026.10.27.1-.7), verified on main (788 tests OK) and zenod-social (pack validate ok); E9-S4 per-persona wake text dispatched (run_4ce95ec6)
-Result: E9-1..E9-3 met; E9-4 half: zenod-social passes, console export-only read is agent_team E34-S5 (merged, deploy pending its D12)
+Last attempted: 2026-10-28 DM wake run_8679887e: reconciled E9-S1..S3, S5 (agent_team EPIC-34 builds, verified); E9-S4 per-persona wake text merged d0da7c1 (release 2026.10.28.1)
+Result: E9-1..E9-3 met; all E9 rows done; E9-4 half: zenod-social passes, console export-only read is agent_team E34-S5 (merged, deploy pending its D12)
 Evidence: merges 3ae4843, 6f54429, 9acd869, 70d34d9, 6b6c56e, db83b3c
 Waiting on: nobody
 Approved work: none
-Next action: verify and merge E9-S4; tick E9-4 when agent_team E34-S5 is deployed (its D12); then Outcome and Status review
+Next action: tick E9-4 when agent_team E34-S5 is deployed; then write the Outcome and set Status review
+Monitoring: agent_team E34-S5 deployed (console reads only the pack export) since 2026-10-28 · next check 2026-10-28T20:00Z agent_team epic-34 E34-S5 row · then tick E9-4, Outcome, Status review
 Source revision: main
 Verified at: 2026-10-28
 
@@ -51,7 +52,7 @@ Steps: each is independently testable and closes only with evidence.
 | E9-S1 | Ticket worker | seat pool | Pack mechanism (packs/<name>/, opt-in line, hook discovery) + social pack schema and writer table | done | none | merged 3ae4843 | main | 7c8b7bb, merge 3ae4843 (E34-S1, release 2026.10.27.1) | 2026-10-28 | none |
 | E9-S2 | Ticket worker | seat pool | Social pack validator in pre_commit (link, disclosure, never-say, caps, hold rules, illegal transitions) + `pack init social` | done | E9-S1 | merged 9acd869 | main | b665398, merge 9acd869 (E34-S2); E34-S4 fixes ab1ced4 | 2026-10-28 | none |
 | E9-S3 | Ticket worker | seat pool | `pack.py social --json` export + console-contract.md section | done | E9-S1 | merged 6f54429 | main | f0d861f, merge 6f54429 (E34-S3); console-contract.md 'Pack data' | 2026-10-28 | none |
-| E9-S4 | Ticket worker | worker run_4ce95ec6 (Sonnet 5.5, seat1) | Desk intake wake text (6 kinds) and per-persona wake text in the pack | review | E9-S1 | e9-s4 | main | desk intake 774f12e, merge 70d34d9 (E34-S10); per-persona `--wake-text --role` d851e3a (release 2026.10.28.1) | 2026-10-28 | DM verifies and merges
+| E9-S4 | Ticket worker | worker run_4ce95ec6 (Sonnet 5.5, seat1) | Desk intake wake text (6 kinds) and per-persona wake text in the pack | done | E9-S1 | merged (branch deleted) | desk 774f12e; per-persona d851e3a, merge d0da7c1 (release 2026.10.28.1); 794 tests OK | desk intake 774f12e, merge 70d34d9 (E34-S10); per-persona `--wake-text --role` d851e3a (release 2026.10.28.1) | none | DM verifies and merges
 | E9-S5 | Ticket worker | seat pool | Release: skill version bump, zenod-social turned on (agent_team E34-S4) passes | done | E9-S2, E9-S3 | main | main | releases 2026.10.27.1-.7; zenod-social `Pack: social`, `pack.py validate` ok, export 42 posts / 1 warning (2026-10-28) | 2026-10-28 | none |
 
 ## Decisions
