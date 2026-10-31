@@ -53,9 +53,9 @@ Expect `OK` for the example and a passing suite. The example is fully populated 
 
 Open the deck: [index.html](index.html)
 
-When published with GitHub Pages, the deck lives at:
+The deck is published with GitHub Pages at:
 
-https://alfablok.github.io/epicspine-skill/
+https://epicspine.dev/ (the old https://alfablok.github.io/epicspine-skill/ redirects there)
 
 ## Upgrading
 
