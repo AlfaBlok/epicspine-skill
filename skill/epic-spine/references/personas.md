@@ -12,6 +12,7 @@ name: watcher
 template: worker      # role template it starts from
 model: sonnet         # model alias or id
 host: vps1            # machine or runner it wakes on
+skills: [diagram-design]  # optional: team skills that are its key tools
 ---
 
 ## Remit
@@ -25,6 +26,8 @@ What kinds of thing it writes (never a path list: scope is per epic).
 ```
 
 All four keys and all three sections are required. A `goal`, `cadence` or `write scope` key (or a section of those names) is rejected: it belongs in the Team table.
+
+`skills:` is optional: the team skills that are this persona's key tools, named (with their "use when" line) in its wake brief. It is a list of skill names (lowercase, hyphens), inline `skills: [diagram-design, other]` or a block list (`skills:` then `- diagram-design` lines); absent or `skills: []` means none. A value that is not a list, or a name that is not a slug, is an error. When the repo has a team skill manifest, `skills/team-skills.json` (entries with a `name`), a declared skill missing from it is a warning; with no manifest there is no check.
 
 ## Team table: `## Team` in each epic
 
@@ -45,4 +48,4 @@ The check is opt-in per epic: it runs only when the epic has a `## Team` section
 ## Tools
 
 - `validate_spine.py personas/<name>.md` checks a persona file; `validate_spine.py <epic>` checks its Team table and assignees. `personas.py FILE...` checks files alone.
-- `spines.py --json` adds each node's `team` and a top-level `personas`: every persona (file or Team row) with `epics` and `queue` (its rows in `ready`, `active`, `blocked`, `review` or `testing`, across the tree); `Jordi` appears when he has open rows.
+- `spines.py --json` adds each node's `team` and a top-level `personas`: every persona (file or Team row) with its frontmatter, `skills` (a list, `[]` when none or no file), `epics` and `queue` (its rows in `ready`, `active`, `blocked`, `review` or `testing`, across the tree); `Jordi` appears when he has open rows.

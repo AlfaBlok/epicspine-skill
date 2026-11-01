@@ -743,7 +743,7 @@ def validate_local(path: Path, *, dialect: str = "auto", ticket_source: Path | N
 
     text = path.read_text(encoding="utf-8")
     if personas.is_file(path, text):
-        return SpineDocument(path.resolve(), {}, {}, personas.file_errors(path, text), [])
+        return SpineDocument(path.resolve(), {}, {}, personas.file_errors(path, text), personas.skill_warnings(path, text))
     fields = parse_fields(text)
     sections = parse_sections(text)
     for canon, alias in (("Mission", "goal"), ("Definition Of Done", "done means")):  # Doctrine 2 headings count

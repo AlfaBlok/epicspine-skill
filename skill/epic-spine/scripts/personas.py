@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Persona files (``personas/<name>.md``) and epic Team tables (references/personas.md): format rules and the assignee check.
 
-Pure helpers over text and parsed table rows (validate_spine.py and spines.py call them); ``personas.py FILE...`` prints each file's errors, exit 1 on any."""
+Pure helpers over text and parsed table rows (validate_spine.py and spines.py call them); ``personas.py FILE...`` prints each file's errors (exit 1 on any) and warnings (a ``skills:`` name missing from the repo's ``skills/team-skills.json``)."""
 
 from __future__ import annotations
 
+import json
 import os
 import re
 import sys
@@ -16,6 +17,8 @@ FORBIDDEN = {"goal", "cadence", "write scope"}  # assignment, not identity: live
 TEAM_COLUMNS = ("Persona", "Cadence", "Write scope")
 HUMAN = "jordi"
 OPEN = {"ready", "active", "blocked", "review", "testing"}
+SKILL = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+MANIFEST = Path("skills") / "team-skills.json"
 
 
 def slug(value: str) -> str:
@@ -34,9 +37,49 @@ def is_file(path: Path, text: str) -> bool:
 
 
 def frontmatter(text: str) -> tuple[dict[str, str], str]:
+    """Flat ``key: value`` pairs; a block list (``key:`` then ``- item`` lines) folds into ``[item, item]``."""
     head, _, body = text[3:].partition("\n---") if text.startswith("---") else ("", "", text)
-    pairs = (line.split(":", 1) for line in head.splitlines() if ":" in line)
-    return {k.strip().lower().replace("_", " ").replace("-", " "): v.strip().strip("\"'") for k, v in pairs}, body
+    out: dict[str, str] = {}
+    key = None
+    for line in head.splitlines():
+        item = re.match(r"^\s*-\s+(.*)$", line)
+        if item and key and (not out[key] or out[key].startswith("[")):
+            out[key] = f"[{', '.join(filter(None, [out[key][1:-1], item.group(1).strip()]))}]"
+        elif ":" in line:
+            k, v = line.split(":", 1)
+            key = k.strip().lower().replace("_", " ").replace("-", " ")
+            out[key] = v.strip().strip("\"'")
+    return out, body
+
+
+def skills(front: dict[str, str]) -> list[str] | None:
+    """The ``skills:`` list (team skill names: the persona's key tools, named in its wake brief); [] when absent or empty, None when not a list."""
+    value = re.sub(r"\s+#.*$", "", front.get("skills", "")).strip()
+    if not value:
+        return []
+    if not (value.startswith("[") and value.endswith("]")):
+        return None
+    return [v.strip().strip("\"'") for v in value[1:-1].split(",") if v.strip()]
+
+
+def team_skills(repo: Path) -> set[str] | None:
+    """Names in the repo's ``skills/team-skills.json`` (a list of ``{name}`` entries, or ``{"skills": [...]}``); None when there is no manifest."""
+    path = repo / MANIFEST
+    if not path.is_file():
+        return None
+    try:
+        data = json.loads(path.read_text())
+    except (OSError, ValueError):
+        return None
+    entries = data.get("skills", []) if isinstance(data, dict) else data
+    return {e["name"] for e in entries if isinstance(e, dict) and isinstance(e.get("name"), str)}
+
+
+def skill_warnings(path: Path, text: str) -> list[str]:
+    """Declared skills missing from the team manifest (no manifest, no check)."""
+    known = team_skills(repo_root(path))
+    declared = skills(frontmatter(text)[0]) or []
+    return [] if known is None else [f"persona skill {s!r} is not in {MANIFEST.as_posix()}" for s in declared if s not in known]
 
 
 def file_errors(path: Path, text: str) -> list[str]:
@@ -46,6 +89,10 @@ def file_errors(path: Path, text: str) -> list[str]:
     out += [f"persona file has a {k} field: that belongs to the assignment (the epic's Team table), not the persona" for k in sorted(FORBIDDEN & front.keys())]
     out += [f"persona file missing section: ## {s}" for s in BODY if s not in headings]
     out += [f"persona file has a ## {h} section: that belongs to the assignment (the epic's Team table)" for h in sorted(headings) if h.lower() in FORBIDDEN]
+    listed = skills(front)
+    if listed is None:
+        out.append("persona file skills: must be a list of team skill names, e.g. skills: [diagram-design]")
+    out += [f"persona skill {s!r} is not a skill name (lowercase, hyphens)" for s in listed or [] if not SKILL.match(s)]
     if front.get("name") and slug(front["name"]) != slug(path.stem):
         out.append(f"persona name {front['name']!r} does not match the file name {path.name}")
     return out
@@ -100,20 +147,24 @@ def team_json(rows: list[dict[str, str]]) -> list[dict[str, str]]:
 
 
 def roster(repo: Path, nodes: list[dict], ledgers: dict[str, list[dict[str, str]]]) -> list[dict]:
-    """Personas (files, then Team rows; Jordi when he has rows), each with its ``epics`` and ``queue``: its open ledger rows across the tree (a draft or finished row is nobody's queue)."""
-    out = {k: {"name": k, "path": os.path.relpath(f, repo), **frontmatter(f.read_text())[0], "epics": [], "queue": []} for k, f in names(repo).items()}
+    """Personas (files, then Team rows; Jordi when he has rows), each with its ``skills`` (from the file, else []), ``epics`` and ``queue``: its open ledger rows across the tree (a draft or finished row is nobody's queue)."""
+    out = {}
+    for k, f in names(repo).items():
+        front = frontmatter(f.read_text())[0]
+        out[k] = {"name": k, "path": os.path.relpath(f, repo), **front, "skills": skills(front) or [], "epics": [], "queue": []}
     for n in nodes:
         for t in n["team"]:
-            out.setdefault(t["persona"], {"name": "Jordi" if t["persona"] == HUMAN else t["persona"], "path": None, "epics": [], "queue": []})["epics"].append(n["path"])
+            out.setdefault(t["persona"], {"name": "Jordi" if t["persona"] == HUMAN else t["persona"], "path": None, "skills": [], "epics": [], "queue": []})["epics"].append(n["path"])
     for epic, rows in ledgers.items():
         for r in rows:
             who = slug(r.get("Owner / Assignment", ""))
             if r.get("Status", "").lower() in OPEN and (who in out or who == HUMAN):
-                out.setdefault(who, {"name": "Jordi", "path": None, "epics": [], "queue": []})["queue"].append({"epic": epic, "issue": r.get("Issue", ""), "title": r.get("Title", ""), "status": r.get("Status", "")})
+                out.setdefault(who, {"name": "Jordi", "path": None, "skills": [], "epics": [], "queue": []})["queue"].append({"epic": epic, "issue": r.get("Issue", ""), "title": r.get("Title", ""), "status": r.get("Status", "")})
     return list(out.values())
 
 
 if __name__ == "__main__":
     found = [(p, e) for p in sys.argv[1:] for e in file_errors(Path(p), Path(p).read_text())]
-    print(*(f"{p}: {e}" for p, e in found), sep="\n")
+    warned = [(p, w) for p in sys.argv[1:] for w in skill_warnings(Path(p), Path(p).read_text())]
+    print(*(f"{p}: {e}" for p, e in found), *(f"{p}: warning: {w}" for p, w in warned), sep="\n")
     sys.exit(int(bool(found)))
