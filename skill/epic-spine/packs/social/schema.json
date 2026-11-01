@@ -159,7 +159,7 @@
       "path": "data/assets.md",
       "dir": "data/assets/",
       "sections": {
-        "rows": {"heading": null, "shape": "table", "add_rows": ["Jordi"], "writers": ["Jordi"], "fields": {
+        "rows": {"heading": null, "shape": "table", "add_rows": ["Jordi", "Writer"], "writers": ["Jordi", "Writer"], "fields": {
           "id": {"column": "Id", "type": "id", "pattern": "^A-[0-9]+$"},
           "kind": {"column": "Kind", "type": "enum", "values": ["diagram", "screenshot", "clip", "video", "logo"]},
           "file": {"column": "File", "type": "path"},

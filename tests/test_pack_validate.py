@@ -101,6 +101,12 @@ class Validate(unittest.TestCase):
         self.assertIn("P-0001: Writer may not write Feedback", self.after("Writer", {"feedback": "nice"}))
         self.assertIn("P-0003: Publisher may not add rows", self.after("Publisher", {}, {"id": "P-0003"}))
 
+    def test_writer_adds_the_diagram_of_its_post_scout_may_not(self) -> None:
+        assets = self.repo.root / "data/assets.md"
+        assets.write_text(assets.read_text() + "| A-1 | diagram | data/assets/A-1-goal-tree.png | Writer | data/assets/A-1-goal-tree.json |  |\n")
+        self.assertEqual([], self.repo.issues("Writer"))
+        self.assertIn("A-1: Scout may not add rows", "\n".join(self.repo.issues("Scout")))
+
     def test_jordi_drops_an_idea_new_or_picked_up_to_parked_only(self) -> None:
         ideas = self.repo.root / "data/ideas.md"
         head = ideas.read_text()
