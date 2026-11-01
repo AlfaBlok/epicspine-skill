@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.11.01.3 — Epic Book: the agent updates the book in the same session
+
+- **Added: an always-on rule, "Epic Book".** Where a goal has a book (a human page generated from its spine, e.g. agent_team's `team.alpha9.io/book/<key>`), after substantial progress or a new idea the bound agent rewrites, in the same session, the spine fields the book quotes (Goal's first paragraph, Done means, Current State Phase, Last attempted, Result, Waiting on, Next action, Outcome) so each opens with a plain sentence the user can read cold, keeping every fact; agent detail moves past the opening or to Evidence and linked pages; then it checks the book renders. Why: the book quotes spine fields as written, so lines like agent_team's "Last step" read as agent notes. Block: `assets/global-block.md` (one line). Doc: `references/spine-model.md` "Book-Facing Fields" (field table, the rule, the check). Test: `tests/test_default_behaviors.py` `test_epic_book_fields_are_written_for_the_user_in_the_same_session`. agent_team EPIC-47 E47-S2. Skill 2026.11.01.3.
+
 ## 2026.11.01.2 — Social pack: the Writer adds its post's diagram to the assets library
 
 - **Changed: `packs/social` assets rows may be added and written by the Writer as well as Jordi**, so a persona makes the one diagram of its post (agent_team's `diagram` skill), files it under `data/assets/`, adds its `A-<n>` row (made by Writer) and lists it in the post's Assets; the console shows the image on the post card and in Jordi's approval inbox. Other roles still may not add asset rows. Doc: `packs/social/README.md` (files table, who writes what). Test: `tests/test_pack_validate.py` `test_writer_adds_the_diagram_of_its_post_scout_may_not`. agent_team EPIC-46 E46-S3. Skill 2026.11.01.2.

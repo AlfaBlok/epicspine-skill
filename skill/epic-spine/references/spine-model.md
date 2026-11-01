@@ -39,6 +39,21 @@ A spine is a snapshot of intent, facts and learnings, plus behaviours for mainte
 
 **Header details** (optional, one line each): `Spine profile:` compact|full (size), `Spine dialect:` v1|v2 (v2 adds SHIP/HARDEN), `Ticket backend:` github|local. <!-- open: header details -->
 
+## Book-Facing Fields
+
+Some repos generate a human page per goal from its spine, the **Epic Book** (agent_team: `https://team.alpha9.io/book/<milestone>`, built by its console from `spines.py --json` plus git). The spine is for agents; the book is for the user. The book quotes spine fields as written (first paragraph only, cut near 200 characters at a sentence end; links, run ids and shas stripped), so those fields are written for the user first:
+
+| Field the book quotes | Write it as |
+|---|---|
+| `## Goal`, first paragraph | what the goal achieves and why, two to four sentences, no ids or paths |
+| `## Done means` | each outcome as a result the user can check; the id stays at the front |
+| Current State `Phase:`, `Result:` | where we are now: what works, what does not yet |
+| Current State `Last attempted:` (the book's "Last step") | what was done last and what it changed for the user, in one sentence |
+| Current State `Waiting on:`, `Next action:` | who or what we wait for; the next thing that happens and who does it |
+| `## Outcome` | what the goal delivered, in one or two sentences |
+
+**Rule (always-on block, "Epic Book").** After substantial progress or a new idea (a step done, a finding that changes the plan, a new direction from the user), the agent bound to the goal rewrites these fields in the same session, before it ends, for its own epic and any parent whose picture changed: each opens with a plain sentence the user can read cold, keeping every fact; no run ids, row codes, file names or hand-off notes in that sentence. Agent detail goes after that opening, past the cut the book shows, or better to `Evidence:`, the ledger and linked pages. Then it checks the book renders the new text (agent_team: `console/scripts/check-curl.sh https://team.alpha9.io/book/<key>`, never a bare curl once auth is on). A repo with no book skips the check; plain opening sentences are still the default.
+
 ## Connected Spine Model
 
 Treat every EpicSpine as a node in a canonical ownership hierarchy:

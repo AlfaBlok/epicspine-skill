@@ -80,6 +80,17 @@ class DefaultBehaviorsTest(unittest.TestCase):
             self.assertIn("nice-to-have", text, name)
         self.assertIn("end-of-turn offer", read("docs/doctrine/human-asks.md"))
 
+    def test_epic_book_fields_are_written_for_the_user_in_the_same_session(self) -> None:
+        """agent_team EPIC-47 E47-2: after progress the agent updates the book (the spine fields it quotes) in the same session."""
+        block = self.agents_block()
+        line = next(l for l in block.splitlines() if l.startswith("Epic Book:"))
+        for needle in ("same session", "Goal's first paragraph", "Last attempted", "Next action", "plain sentence", "check the book renders", "Book-Facing Fields"):
+            self.assertIn(needle, line)
+        ref = read("skill/epic-spine/references/spine-model.md")
+        self.assertIn("## Book-Facing Fields", ref)
+        for needle in ("same session", "check-curl.sh", "read cold", "keeping every fact"):
+            self.assertIn(needle, ref)
+
     def test_repo_block_is_thin_pointer_without_shared_rules(self) -> None:
         for name, text in (("template", read("skill/epic-spine/assets/agents-block.md")), ("AGENTS.md", self.repo_block())):
             self.assertLessEqual(len(text.strip().splitlines()), 8, name)
