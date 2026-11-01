@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Epic Social · your social media team · join the waitlist</title>
+<meta name="description" content="Epic Social: four AI personas find ideas, research them, write the posts you approve and answer for your brand. You own everything. Alpha release: we are looking for testers.">
+<meta property="og:title" content="Epic Social · your social media team">
+<meta property="og:description" content="Four AI personas find ideas, research them and write the posts you approve. Alpha release: join the waitlist.">
+<!-- Epic Social waitlist (agent_team EPIC-10 · E10-S4, E10-S5, E10-S6; reworded for EPIC-10-A2 2026-11-01). Published at epicspine.dev/social/. No trackers; the only request is the waitlist form post. -->
+<style>
+  :root { --bg:#101214; --card:#191d20; --field:#0d0f11; --ink:#f2eee7; --mute:#b8b0a5; --line:#363d43; --a:#d9ad62; --on-a:#16120a; --g:#78b58c; --y:#c98a00; --v:#8f6fd9; --o:#d9783a; --soft:rgba(217,173,98,.13); }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; -webkit-text-size-adjust:100%; }
+  a { color:var(--a); }
+  .wrap { max-width:1120px; margin:0 auto; padding:0 20px; }
+  section { padding:56px 0; border-bottom:1px solid var(--line); }
+  .k { color:var(--mute); font-size:.78rem; letter-spacing:.09em; text-transform:uppercase; font-weight:700; margin-bottom:.5em; }
+  h1 { font-size:clamp(2.3rem,7vw,4.2rem); line-height:1.02; margin:0 0 .3em; letter-spacing:-.03em; }
+  h1 span { color:var(--a); }
+  h2 { font-size:clamp(1.7rem,4.6vw,2.6rem); line-height:1.08; margin:0 0 .3em; letter-spacing:-.02em; }
+  h3 { margin:0 0 .3em; font-size:1.1rem; }
+  .sub { font-size:clamp(1.05rem,2.4vw,1.25rem); color:var(--mute); margin:0 0 1.3em; max-width:60ch; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px 18px; box-shadow:none; }
+  .card p { margin:.3em 0 0; color:var(--mute); }
+  .grid { display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr)); }
+
+  nav { position:sticky; top:0; z-index:5; background:rgba(16,18,20,.93); backdrop-filter:saturate(1.4) blur(8px); border-bottom:1px solid var(--line); }
+  nav .wrap { display:flex; align-items:center; gap:14px; height:56px; }
+  .logo { font-weight:900; letter-spacing:-.02em; font-size:1.05rem; color:var(--ink); text-decoration:none; display:flex; align-items:center; gap:8px; }
+  .logo i { display:inline-grid; place-items:center; width:28px; height:28px; border-radius:8px; background:var(--a); color:var(--on-a); font-style:normal; font-size:.75rem; }
+  nav .links { margin-left:auto; display:flex; gap:18px; align-items:center; font-size:.92rem; }
+  nav .links a { color:var(--mute); text-decoration:none; }
+  @media (max-width:700px) { nav .links .hide-s { display:none; } }
+  .btn { display:inline-block; background:var(--a); color:var(--on-a) !important; font-weight:700; text-decoration:none; border-radius:10px; padding:11px 20px; border:0; font-size:1rem; cursor:pointer; font-family:inherit; }
+  .btn.sm { padding:7px 13px; font-size:.88rem; }
+  .btn.ghost { background:var(--card); color:var(--ink) !important; border:1px solid var(--line); }
+  .btn.ok { background:var(--g); color:#0d1a12 !important; }
+
+  .hero { padding:56px 0 44px; }
+  .hero .row { display:grid; grid-template-columns:1.2fr 1fr; gap:30px; align-items:center; }
+  .cta-row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .cta-row small { color:var(--mute); }
+  .stack { display:flex; flex-direction:column; gap:10px; }
+  .mini { display:flex; gap:10px; align-items:center; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:10px 12px; font-size:.92rem; }
+  .mini .t { color:var(--mute); font-size:.78rem; margin-left:auto; white-space:nowrap; }
+  @media (max-width:820px) { .hero .row { grid-template-columns:1fr; } }
+
+  .av { flex:none; display:inline-grid; place-items:center; width:34px; height:34px; border-radius:10px; color:#fff; font-weight:800; font-size:.85rem; }
+  .s { background:var(--v); } .c { background:var(--o); } .r { background:var(--g); } .sc { background:#4a78c9; } .you { background:#5d6676; }
+  .persona .top { display:flex; gap:10px; align-items:center; margin-bottom:6px; }
+  .persona .top b { font-size:1.12rem; }
+  .persona .when { display:inline-block; margin-top:10px; font-size:.8rem; font-weight:700; color:var(--a); background:var(--soft); border-radius:99px; padding:2px 10px; }
+
+  .stat { font-size:2.3rem; font-weight:900; letter-spacing:-.03em; color:var(--a); line-height:1; }
+
+  /* week demo */
+  .days { display:flex; gap:6px; overflow-x:auto; padding-bottom:4px; margin:16px 0 14px; }
+  .day { flex:1 0 64px; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:8px 6px; text-align:center; cursor:pointer; font:inherit; color:var(--ink); }
+  .day b { display:block; font-size:.95rem; } .day small { color:var(--mute); font-size:.72rem; }
+  .day .dots { display:flex; gap:3px; justify-content:center; margin-top:5px; min-height:8px; }
+  .day .dots i { width:8px; height:8px; border-radius:50%; }
+  .day[aria-selected="true"] { border:2px solid var(--a); background:var(--soft); }
+  .demo { display:grid; grid-template-columns:1fr 1fr; gap:14px; align-items:start; }
+  @media (max-width:820px) { .demo { grid-template-columns:1fr; } }
+  .ev { display:flex; gap:10px; align-items:flex-start; padding:10px 0; border-top:1px solid var(--line); }
+  .ev:first-child { border-top:0; }
+  .ev .t { color:var(--mute); font-size:.78rem; }
+  .ev p { margin:2px 0 0; color:var(--ink); }
+  .post { border:1px solid var(--line); border-radius:14px; background:var(--card); overflow:hidden; }
+  .post .bar { display:flex; align-items:center; gap:8px; padding:10px 14px; background:#15181b; border-bottom:1px solid var(--line); font-size:.85rem; }
+  .pill { display:inline-block; font-size:.74rem; font-weight:700; border-radius:99px; padding:2px 9px; }
+  .pill.wait { background:var(--soft); color:var(--a); } .pill.done { background:rgba(120,181,140,.15); color:var(--g); } .pill.edit { background:var(--soft); color:var(--a); }
+  .post .body { padding:14px; }
+  .visual { height:130px; border-radius:10px; background:linear-gradient(135deg,#ffd9a8,#ff9f6b 55%,#e8740c); display:grid; place-items:center; color:#fff; font-weight:900; font-size:1.3rem; text-shadow:0 1px 4px rgba(0,0,0,.25); margin-bottom:10px; text-align:center; padding:8px; }
+  .post textarea { width:100%; min-height:110px; font:inherit; border:1px solid var(--a); border-radius:8px; padding:8px; background:var(--field); color:var(--ink); }
+  .post .actions { display:flex; gap:8px; padding:0 14px 14px; flex-wrap:wrap; }
+  .note { font-size:.8rem; color:var(--mute); }
+
+  .steps { counter-reset:s; display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(min(190px,100%),1fr)); }
+  .steps .card::before { counter-increment:s; content:counter(s); display:inline-grid; place-items:center; width:28px; height:28px; border-radius:50%; background:var(--a); color:var(--on-a); font-weight:900; margin-bottom:8px; }
+
+  .repo { font-family:ui-monospace,Menlo,monospace; font-size:.86rem; background:var(--field); border:1px solid var(--line); color:#d7dce6; border-radius:12px; padding:14px 16px; white-space:pre; overflow-x:auto; line-height:1.55; }
+  .repo i { color:#8b95a7; font-style:normal; }
+  .idea { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px; }
+  .idea .n { display:inline-grid; place-items:center; width:26px; height:26px; border-radius:50%; background:var(--soft); color:var(--a); font-weight:900; margin-right:6px; }
+
+  .price { max-width:460px; margin:0 auto; text-align:center; border:2px solid var(--a); }
+  .price .amt { font-size:3.4rem; font-weight:900; letter-spacing:-.04em; line-height:1; margin:8px 0; }
+  .price .amt small { font-size:1rem; color:var(--mute); font-weight:600; letter-spacing:0; }
+  .price ul { list-style:none; padding:0; margin:16px 0; text-align:left; }
+  .price li { padding:7px 0 7px 28px; border-top:1px solid var(--line); position:relative; }
+  .price li::before { content:"✓"; position:absolute; left:4px; color:var(--g); font-weight:900; }
+  .soon { font-size:.88rem; color:var(--mute); background:var(--bg); border-radius:10px; padding:8px 12px; }
+
+  details { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 16px; margin-bottom:8px; }
+  summary { font-weight:700; cursor:pointer; }
+  details p { color:var(--mute); margin:.6em 0 0; }
+
+  form { display:grid; gap:12px; max-width:520px; }
+  label { font-weight:600; font-size:.92rem; display:block; }
+  input[type=text], input[type=email] { width:100%; font:inherit; padding:10px 12px; border:1px solid var(--line); border-radius:10px; margin-top:4px; background:var(--field); color:var(--ink); }
+  input[aria-invalid="true"] { border-color:#d2776d; }
+  .err { color:#d2776d; font-size:.82rem; min-height:1em; }
+  .hp { position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
+  .privacy { font-size:.82rem; color:var(--mute); margin:0; }
+  .chk { display:flex; gap:14px; flex-wrap:wrap; font-weight:400; margin-top:4px; }
+  .chk label { font-weight:400; display:flex; gap:6px; align-items:center; }
+  .thanks { background:rgba(120,181,140,.12); border:1px solid var(--g); border-radius:14px; padding:18px; max-width:520px; }
+  .cta-band { background:linear-gradient(180deg,#191d20,#101214); }
+  .alpha ul { margin:.4em 0 0; padding-left:20px; color:var(--mute); }
+  .alpha li { margin:.35em 0; }
+  .alpha li b { color:var(--ink); }
+  footer { padding:28px 0 60px; color:var(--mute); font-size:.85rem; }
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <a class="logo" href="#top"><i>ES</i>Epic Social</a>
+  <div class="links">
+    <a class="hide-s" href="#flow">How a post is made</a>
+    <a class="hide-s" href="#team">Team</a>
+    <a class="hide-s" href="#week">A week</a>
+    <a class="hide-s" href="#alpha">Alpha</a>
+    <a class="hide-s" href="#pricing">Pricing</a>
+    <a class="hide-s" href="#faq">FAQ</a>
+    <a class="btn sm" href="#join">Join the waitlist</a>
+  </div>
+</div></nav>
+
+<header class="hero" id="top"><div class="wrap row">
+  <div>
+    <div class="k" style="color:var(--a)">Alpha release · for founders, small businesses and creators</div>
+    <h1>Your social media team. <span>You approve every post.</span></h1>
+    <p class="sub">Epic Social is four AI personas on your brand. You, or our Idea persona, come up with the ideas; the team researches each one, writes the post with a diagram and puts it in your inbox. You approve it, or approve it with feedback. Everything they learn is kept in files you own.</p>
+    <div class="cta-row">
+      <a class="btn" href="#join">Join the waitlist</a>
+      <a class="btn ghost" href="#alpha">What alpha means</a>
+    </div>
+  </div>
+  <div class="stack" aria-label="What your team did this week (example)">
+    <div class="mini"><span class="av s">I</span>Added 2 ideas to your list, picked this week's 3<span class="t">Mon 08:00</span></div>
+    <div class="mini"><span class="av sc">Re</span>Researched Wednesday's idea: 3 sources, 1 question<span class="t">Tue 11:00</span></div>
+    <div class="mini"><span class="av c">W</span>Drafted Wednesday's post + diagram, waiting for you<span class="t">Tue 15:00</span></div>
+    <div class="mini"><span class="av r">R</span>Answered 6 replies on your posts<span class="t">Tue 20:00</span></div>
+  </div>
+</div></header>
+
+<section id="flow"><div class="wrap">
+  <div class="k">How a post is made</div>
+  <h2>Idea, research, draft, your OK.</h2>
+  <p class="sub">No random posts. Every post starts from an idea on your list and is researched before anyone writes a word.</p>
+  <div class="steps" style="margin-top:18px">
+    <div class="card"><h3>An idea</h3><p>Yours (a topic list, a voice note, a line in chat) or the Idea persona's, from what is trending in your space. Your list is kept sorted, strongest first.</p></div>
+    <div class="card"><h3>Research</h3><p>The Researcher digs into the idea: what has been said, sources, numbers, and the question your post will open with.</p></div>
+    <div class="card"><h3>A draft</h3><p>The Writer turns the research into a post in your voice: first person, a question first, one diagram.</p></div>
+    <div class="card"><h3>Your inbox</h3><p>Approve it, or approve it with feedback: the Writer applies your feedback and schedules it. Nothing goes out without your OK in the first two weeks.</p></div>
+    <div class="card"><h3>Posted</h3><p>It goes out on Reddit and X. The Responder answers the replies, and what worked feeds the next ideas.</p></div>
+  </div>
+  <p class="note" style="margin-top:14px">This is how our own team posts today: we run it for Zenod and for Epic Social itself.</p>
+</div></section>
+
+<section id="team"><div class="wrap">
+  <div class="k">Meet the team</div>
+  <h2>Four specialists, one brand: yours.</h2>
+  <p class="sub">Each one wakes on a schedule, does its job, and hands the work to the next through your repo.</p>
+  <div class="grid">
+    <div class="card persona"><div class="top"><span class="av s">I</span><b>Idea persona</b></div><p>Keeps your idea list: adds your topics, suggests its own from trends and a handful of competitors you choose, and picks the week's three.</p><span class="when">1st of the month + every Monday</span></div>
+    <div class="card persona"><div class="top"><span class="av sc">Re</span><b>Researcher</b></div><p>Researches each idea before it is written, and sends a weekly report with numbers: what worked, what competitors did.</p><span class="when">Before each post + weekly</span></div>
+    <div class="card persona"><div class="top"><span class="av c">W</span><b>Writer</b></div><p>Writes every post, text and diagram, in your brand voice, puts it in your inbox, and applies your feedback.</p><span class="when">3 times a week</span></div>
+    <div class="card persona"><div class="top"><span class="av r">R</span><b>Responder</b></div><p>Answers replies and mentions on your posts. Anything sensitive comes to you instead of getting an answer.</p><span class="when">Every 12 hours</span></div>
+  </div>
+</div></section>
+
+<section id="get"><div class="wrap">
+  <div class="k">What you get every week</div>
+  <h2>Steady presence, without the hours.</h2>
+  <div class="grid" style="margin-top:18px">
+    <div class="card"><div class="stat">3</div><h3>posts a week</h3><p>Each from a researched idea, written with a diagram, on Reddit and X.</p></div>
+    <div class="card"><div class="stat">12 h</div><h3>reply time</h3><p>Everyone who comments on or mentions your posts hears back within 12 hours.</p></div>
+    <div class="card"><div class="stat">1</div><h3>weekly report</h3><p>What worked, what didn't, what competitors did, with numbers.</p></div>
+    <div class="card"><div class="stat">✓</div><h3>approval inbox</h3><p>See every draft. Approve, or approve with feedback, in one tap. Nothing goes out in the first two weeks without your OK.</p></div>
+  </div>
+</div></section>
+
+<section id="week"><div class="wrap">
+  <div class="k">Try it · a week with your team</div>
+  <h2>Tap a day.</h2>
+  <p class="sub">An example week for a made-up bakery, "Forno Lume", so you can see who does what: idea, research, draft, your OK. Wednesday's post is waiting for you.</p>
+  <div class="days" role="tablist" id="days"></div>
+  <div class="demo">
+    <div class="card" id="log" aria-live="polite"></div>
+    <div>
+      <div class="post" id="post">
+        <div class="bar"><span class="av c" style="width:26px;height:26px;font-size:.7rem">W</span><b>Writer</b> · for Wed 10:00 · Reddit + X<span style="margin-left:auto" class="pill wait" id="pstate">Waiting for you</span></div>
+        <div class="body">
+          <div class="visual">Sourdough: 36 hours, 30 minutes of work.</div>
+          <div id="ptext">How long do you think good bread takes? Ours takes 36 hours, and we touch it for about 30 minutes. The rest is the dough working on its own: slow fermentation builds flavour no shortcut can. Fresh loaves from 7:00, Tuesday to Saturday. 🍞</div>
+        </div>
+        <div class="actions" id="pact">
+          <button class="btn ok sm" id="approve">Approve</button>
+          <button class="btn ghost sm" id="editb">Approve with feedback</button>
+        </div>
+      </div>
+      <p class="note">In the real console this is your approval inbox. Your feedback teaches the Writer: it is saved to your brand voice file.</p>
+    </div>
+  </div>
+</div></section>
+
+<section id="how"><div class="wrap">
+  <div class="k">How it works</div>
+  <h2>Five steps, then it runs.</h2>
+  <div class="steps" style="margin-top:18px">
+    <div class="card"><h3>Sign up</h3><p>Pick the plan, pay, and land in your console.</p></div>
+    <div class="card"><h3>Connect GitHub</h3><p>We create your team's repo in your own GitHub account. No GitHub yet? We walk you through a free one.</p></div>
+    <div class="card"><h3>Connect your accounts</h3><p>A guided step for each channel. You sign in on the platform's own page; we never see your password.</p></div>
+    <div class="card"><h3>Approve week one</h3><p>Give us your topics; the Idea persona adds its own. The first posts are researched and drafted; you approve them in your inbox.</p></div>
+    <div class="card"><h3>The team runs</h3><p>Posts, replies and reports on schedule. Watch it all in the console.</p></div>
+  </div>
+</div></section>
+
+<section id="own"><div class="wrap">
+  <div class="k">You own it</div>
+  <h2>Your brand's memory lives with you, not with us.</h2>
+  <p class="sub">The team works in a repo in your GitHub. Your brand voice, calendar, every post, every reply and every lesson learned are plain files you keep. Cancel any time and the repo stays yours.</p>
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr))">
+    <div class="repo">forno-lume-social/      <i>← your repo</i>
+├─ brand-voice.md       <i>how you sound, do's and don'ts</i>
+├─ ideas.md             <i>your idea list, strongest first</i>
+├─ research/            <i>the research behind each post</i>
+├─ calendar.md          <i>this week: what, when, where</i>
+├─ posts-ledger.md      <i>every post, link and result</i>
+├─ replies-log.md       <i>every reply the team sent</i>
+├─ reports/             <i>weekly reports</i>
+└─ learnings.md         <i>your corrections, kept for good</i></div>
+    <div class="stack">
+      <div class="card"><h3>Open source</h3><p>The engine behind the team is open source. If you'd rather run it yourself, on your own computer or server with your own AI key, you can, for free. We host it for people who'd rather not.</p></div>
+      <div class="card"><h3>Your accounts stay yours</h3><p>Posts go out from your own accounts through each platform's official tools, and every post says an AI helped write it where the platform asks for it.</p></div>
+    </div>
+  </div>
+  <h3 style="margin-top:30px">Under the hood: two ideas</h3>
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr))">
+    <div class="idea"><span class="n">1</span><b>Talk, and it becomes a plan.</b><p style="color:var(--mute);margin:.5em 0 0">Say what you want in plain words ("more about our weekend bakes"). It turns into a goal with clear steps that the team tracks and delivers. Nothing you say gets lost in a chat.</p></div>
+    <div class="idea"><span class="n">2</span><b>The memory is your repo.</b><p style="color:var(--mute);margin:.5em 0 0">Goals, progress, decisions and the reasons behind them are files in your repo, not rows in our database. Any new team member, human or AI, starts with the whole story.</p></div>
+  </div>
+</div></section>
+
+<section id="alpha" class="alpha"><div class="wrap" style="max-width:820px">
+  <div class="k">Alpha release</div>
+  <h2>This is an alpha. We're looking for testers.</h2>
+  <p class="sub">Epic Social works: our own team posts with it every day for Zenod. But it is early, and we want a few people to use it on their own accounts before we open it to everyone.</p>
+  <div class="card">
+    <h3>What alpha means</h3>
+    <ul>
+      <li><b>It is rough.</b> Some things will break or change from week to week. We fix them fast, and we tell you what changed.</li>
+      <li><b>We set it up with you.</b> Your brief, your channels and your first posts, together, by hand, while sign-up is not self-serve yet.</li>
+      <li><b>Your feedback decides what comes next.</b> A few lines a week, or a short call.</li>
+      <li><b>Nothing goes out without your OK.</b> Every post is a draft until you approve it.</li>
+    </ul>
+  </div>
+  <div class="grid" style="margin-top:14px">
+    <div class="card"><h3>Want to test it now?</h3><p>Testers run it on their own Reddit and X during the alpha, at about $10 a month. Read what we ask and apply: <a href="https://epicspine.dev/testers/">epicspine.dev/testers</a>.</p></div>
+    <div class="card"><h3>Rather wait?</h3><p>Join the waitlist. We'll write to you when Epic Social opens to more people. Nothing to pay, no commitment. <a href="#join">Join the waitlist</a></p></div>
+  </div>
+</div></section>
+
+<section id="pricing"><div class="wrap">
+  <div class="k" style="text-align:center">Pricing</div>
+  <h2 style="text-align:center">One plan, after the alpha.</h2>
+  <p class="sub" style="text-align:center;margin:0 auto">The price we plan once Epic Social opens. During the alpha, testers pay about $10 a month, and the waitlist costs nothing.</p>
+  <div class="card price" style="margin-top:18px">
+    <b>Epic Social</b>
+    <div class="amt">€99 <small>/ month, planned</small></div>
+    <ul>
+      <li>4 personas: Idea persona, Researcher, Writer, Responder</li>
+      <li>3 posts a week, each from a researched idea, with a diagram</li>
+      <li>Replies to comments and mentions every 12 hours</li>
+      <li>Weekly report with numbers</li>
+      <li>Approval inbox: approve, or approve with feedback</li>
+      <li>2 channels: Reddit and X</li>
+      <li>AI usage included, nothing else to pay us</li>
+      <li>Your repo, yours to keep</li>
+    </ul>
+    <a class="btn" href="#join" style="width:100%">Join the waitlist</a>
+    <p class="soon" style="margin-top:12px">Coming later: more posts a week, faster replies, more channels.</p>
+  </div>
+</div></section>
+
+<section id="faq"><div class="wrap" style="max-width:820px">
+  <div class="k">Questions</div>
+  <h2>FAQ</h2>
+  <details><summary>Is it AI?</summary><p>Yes. Every persona is an AI agent. We don't hide it: your profile and posts say AI helps run the account where the platform asks for it, and the Responder never pretends to be a person.</p></details>
+  <details><summary>Which networks?</summary><p>Reddit and X at launch: that is where our own team posts every day. More channels (LinkedIn, Instagram) come later; some platforms need to approve our app before we can post for you.</p></details>
+  <details><summary>Where do the ideas come from?</summary><p>From you first: a list of topics, a voice note, a line in chat. The Idea persona adds its own from what is trending in your space, and keeps the list sorted. Each idea is researched before the Writer drafts it.</p></details>
+  <details><summary>Do I have to approve everything?</summary><p>For the first two weeks, yes: nothing goes out without your OK. You approve a draft, or approve it with feedback and the Writer applies it before it goes out. After two weeks you choose: keep approving, or let the team post on its own and review after the fact.</p></details>
+  <details><summary>Will it reply to strangers or send DMs?</summary><p>No. The Responder only answers people who commented on or mentioned your posts. No cold replies, no DMs to strangers: platforms ban that, and it reads as spam.</p></details>
+  <details><summary>What happens if I cancel?</summary><p>The team stops working. Your repo, with your brand voice, calendar, every post and every lesson, stays in your GitHub. You can even run the open-source team on it yourself.</p></details>
+  <details><summary>Can I run it myself instead?</summary><p>Yes. The engine is open source. Bring your own server and your own AI key and run it for free. The hosted plan is for people who'd rather we handle the servers, the setup and the AI costs.</p></details>
+  <details><summary>What does "alpha" mean here?</summary><p>It works and we use it every day, but it is early: things change from week to week, and we set each team up by hand with you. We are looking for testers to use it on their own accounts and tell us what is broken.</p></details>
+  <details><summary>Can I test it now?</summary><p>Yes. Testers start during the alpha, at about $10 a month, with nothing to pay until your own team runs: <a href="https://epicspine.dev/testers/">epicspine.dev/testers</a>.</p></details>
+  <details><summary>What happens when I join the waitlist?</summary><p>Nothing yet: we keep your email and write to you when Epic Social opens to more people. No payment, no newsletter.</p></details>
+</div></section>
+
+<section id="join" class="cta-band" style="border-bottom:0"><div class="wrap">
+  <div class="k">Waitlist</div>
+  <h2>Join the waitlist.</h2>
+  <p class="sub">Epic Social is in alpha. Leave your email and we'll write to you when it opens to more people. Nothing to pay, no commitment. Want to start now? <a href="https://epicspine.dev/testers/">Apply to test it</a>.</p>
+  <form id="wl" method="post" action="https://team.alpha9.io/api/public/testers">
+    <div><label for="f-email">Email</label><input type="email" id="f-email" name="email" required maxlength="254" autocomplete="email" inputmode="email" placeholder="you@example.com"><div class="err" id="e-email"></div></div>
+    <input type="hidden" name="offer" value="waitlist-alpha">
+    <input type="hidden" name="source" value="social page">
+    <input type="hidden" name="back" value="https://epicspine.dev/social/">
+    <div class="hp" aria-hidden="true"><label for="website">Leave this empty</label><input id="website" name="website" tabindex="-1" autocomplete="off"></div>
+    <div><button class="btn" type="submit">Join the waitlist</button></div>
+    <p class="privacy">We keep only your email, on our own private list, to write to you about Epic Social. No payment, no newsletter, no sharing. Ask us and we delete it.</p>
+  </form>
+  <div class="thanks" id="thanks" hidden></div>
+</div></section>
+
+<footer><div class="wrap">EpicSpine · Epic Team · Epic Social<br>Alpha release. Epic Social runs on Epic Team and EpicSpine, open source. Our first team, running on our own product, posts for Zenod; Epic Social opens right after the Zenod launch. No cookies, no trackers.</div></footer>
+
+<script>
+  // ---- A week with your team (demo data, fictional bakery) ----
+  const P = { I:['s','Idea persona'], Re:['sc','Researcher'], W:['c','Writer'], R:['r','Responder'], Y:['you','You'] };
+  const WEEK = [
+    ['Mon','Ideas', [['I','08:00','Added 2 ideas to your list (autumn menu, why slow dough tastes better) and picked the week: Wed sourdough story, Fri weekend menu, Sun behind the scenes.'],['R','08:00','Answered 3 weekend comments on Sunday\'s post.'],['R','20:00','Nothing new to answer. Back at 08:00.']]],
+    ['Tue','Research', [['R','08:00','Answered a question about gluten-free options; flagged a complaint about a late order to you instead of replying.'],['Re','11:00','Researched Wednesday\'s idea: 3 sources on slow fermentation, "slow food" posts up this week, opening question: how long does good bread take?'],['W','15:00','Drafted Wednesday\'s post with a diagram from the research. It\'s in your inbox.'],['R','20:00','Answered 2 replies.']]],
+    ['Wed','Post', [['Y','09:12','You approve Wednesday\'s post, or approve it with feedback (try it on the right).'],['W','10:00','Posted to Reddit and X; added the links to the posts ledger.'],['R','20:00','Answered 4 replies on today\'s post.']]],
+    ['Thu','Draft', [['R','08:00','Answered 5 overnight replies.'],['Re','11:00','Researched Friday\'s weekend menu: what nearby bakeries posted, which dishes people ask about.'],['W','15:00','Drafted Friday\'s weekend menu post.'],['R','20:00','Answered 1 mention.']]],
+    ['Fri','Report', [['Re','09:00','Weekly report: Wednesday\'s post got 3× your usual replies. Competitors posted 9 times, mostly prices. Suggestion: more process stories.'],['W','10:00','Posted the weekend menu (approved with your feedback Thursday night: "mention the vegan loaf").'],['R','20:00','Answered 3 replies.']]],
+    ['Sat','Quiet', [['R','08:00','Answered 2 replies.'],['R','20:00','Nothing new.']]],
+    ['Sun','Post', [['W','10:00','Posted behind the scenes: shaping loaves at 5 am.'],['R','20:00','Answered 4 replies.'],['I','20:30','Read the Researcher\'s report: next week\'s ideas lean into process stories.']]]
+  ];
+  const daysEl = document.getElementById('days'), logEl = document.getElementById('log');
+  function av(k){ const [c,n]=P[k]; return '<span class="av '+c+'" style="width:30px;height:30px;font-size:.72rem">'+(k==='Y'?'You':k)+'</span>'; }
+  function show(i){
+    [...daysEl.children].forEach((b,j)=>b.setAttribute('aria-selected', j===i));
+    const [d,,evs] = WEEK[i];
+    logEl.innerHTML = '<div class="k">'+d+'</div>' + evs.map(([k,t,txt])=>'<div class="ev">'+av(k)+'<div><span class="t">'+P[k][1]+' · '+t+'</span><p>'+txt+'</p></div></div>').join('');
+  }
+  WEEK.forEach(([d,tag,evs],i)=>{
+    const b = document.createElement('button'); b.className='day'; b.setAttribute('role','tab');
+    const who = [...new Set(evs.map(e=>e[0]))].filter(k=>k!=='Y');
+    b.innerHTML = '<b>'+d+'</b><small>'+tag+'</small><span class="dots">'+who.map(k=>'<i class="'+P[k][0]+'"></i>').join('')+'</span>';
+    b.onclick = ()=>show(i); daysEl.appendChild(b);
+  });
+  show(2);
+
+  // ---- Approve / Edit on the sample post ----
+  const st = document.getElementById('pstate'), txt = document.getElementById('ptext'), act = document.getElementById('pact');
+  function setState(cls, label){ st.className = 'pill '+cls; st.textContent = label; }
+  function bindActions(){
+    document.getElementById('approve').onclick = ()=>{ setState('done','Approved · goes out Wed 10:00'); act.innerHTML = '<button class="btn ghost sm" id="undo">Undo</button>'; document.getElementById('undo').onclick = reset; };
+    document.getElementById('editb').onclick = ()=>{
+      const cur = txt.textContent; setState('edit','Your feedback');
+      txt.innerHTML = cur.replace(/[<>&]/g,'') + '<textarea id="ta" aria-label="Your feedback" placeholder="e.g. mention the vegan loaf" style="margin-top:10px;min-height:70px"></textarea>';
+      act.innerHTML = '<button class="btn ok sm" id="save">Approve with feedback</button><button class="btn ghost sm" id="cancel">Cancel</button>';
+      document.getElementById('save').onclick = ()=>{ const f = document.getElementById('ta').value.trim(); txt.textContent = cur; setState('done', f ? 'Approved with feedback' : 'Approved · goes out Wed 10:00'); act.innerHTML = '<span class="note">'+(f ? 'The Writer applies your feedback, then it goes out.' : 'Approved.')+'</span> <button class="btn ghost sm" id="undo">Undo</button>'; document.getElementById('undo').onclick = ()=>reset(cur); };
+      document.getElementById('cancel').onclick = ()=>reset(cur);
+    };
+  }
+  function reset(keep){ if (typeof keep === 'string') txt.textContent = keep; setState('wait','Waiting for you'); act.innerHTML = '<button class="btn ok sm" id="approve">Approve</button><button class="btn ghost sm" id="editb">Approve with feedback</button>'; bindActions(); }
+  bindActions();
+
+  // ---- Waitlist (E10-S6, EPIC-10-A2): a plain form post to the console's sign-up list (offer waitlist-alpha, email only, no payment).
+  // The console answers 303 back to this page with ?signed=1 or ?error=<code>#join.
+  const form = document.getElementById('wl'), thanks = document.getElementById('thanks');
+  form.querySelector('input[name=back]').value = location.origin + location.pathname;
+  const src = new URLSearchParams(location.search).get('src');
+  if (src) form.querySelector('input[name=source]').value = 'social page?' + src.slice(0, 40);
+  form.addEventListener('submit', e=>{
+    const email = document.getElementById('f-email').value.trim(), bad = !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
+    document.getElementById('e-email').textContent = bad ? 'Please enter a valid email.' : '';
+    document.getElementById('f-email').setAttribute('aria-invalid', bad ? 'true' : 'false');
+    if (bad) e.preventDefault();
+  });
+  const q = new URLSearchParams(location.search);
+  if (q.get('signed') === '1') {
+    form.hidden = true; thanks.hidden = false;
+    thanks.innerHTML = '<h3>You\'re on the list.</h3><p>Thanks. We\'ll write to you when Epic Social opens to more people. Nothing to pay. Want to start sooner? <a href="https://epicspine.dev/testers/">Apply to test it</a>.</p>';
+  } else if (q.get('error')) {
+    const msg = { email: 'That email does not look right. Please check it.', too_many: 'Too many tries from here. Please try again in an hour.', full: 'The list is full for now. Please try again later.' }[q.get('error')] || 'Something went wrong. Please try again.';
+    document.getElementById('e-email').textContent = msg;
+  }
+</script>
+</body>
+</html>
