@@ -26,6 +26,8 @@
   .card p { margin:.3em 0 0; color:var(--mute); }
   .grid { display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr)); }
 
+  .family { font-size:12px; letter-spacing:.04em; color:var(--mute); padding:6px 0; border-bottom:1px solid var(--line); }
+  .family a { color:var(--mute); text-decoration:none; } .family b { color:var(--a); font-weight:760; }
   nav { position:sticky; top:0; z-index:5; background:rgba(16,18,20,.93); backdrop-filter:saturate(1.4) blur(8px); border-bottom:1px solid var(--line); }
   nav .wrap { display:flex; align-items:center; gap:14px; height:56px; }
   .logo { font-weight:900; letter-spacing:-.02em; font-size:1.05rem; color:var(--ink); text-decoration:none; display:flex; align-items:center; gap:8px; }
@@ -117,6 +119,8 @@
 </head>
 <body>
 
+<!-- E43-S2 (EPIC-43): the brand family's shared header line, as on epicspine.dev, team.alpha9.io and social.alpha9.io -->
+<div class="family" aria-label="The Epic family"><div class="wrap"><a href="https://epicspine.dev/">EpicSpine</a> · Epic Team · <b>Epic Social</b></div></div>
 <nav><div class="wrap">
   <a class="logo" href="#top"><i>ES</i>Epic Social</a>
   <div class="links">
