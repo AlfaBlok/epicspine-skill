@@ -1,4 +1,6 @@
 """Persona files, epic Team tables and the assignee rule (references/personas.md); legacy spines (no Team section) stay untouched."""
+import json
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -7,6 +9,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parents[1] / "skill" / "epic-spine" / "scripts"))
 import spines  # noqa: E402
 import validate_spine as v  # noqa: E402
+
+SCRIPT = Path(__file__).parents[1] / "skill" / "epic-spine" / "scripts" / "personas.py"
 
 PERSONA = "---\nname: {n}\ntemplate: worker\nmodel: sonnet\nhost: vps1\n{x}---\n\n## Remit\n\nr\n\n## Reads\n\nr\n\n## Writes\n\nw\n"
 ROW = "| https://github.com/o/r/issues/{n} | Worker | {who} | t | {st} | none | b | main | e | 2026-10-24 | go |\n"
@@ -169,6 +173,44 @@ class PersonaTests(unittest.TestCase):
         self.assertEqual([r["issue"] for r in by["watcher"]["queue"]], ["https://github.com/o/r/issues/1"])
         self.assertEqual([r["issue"] for r in by["fixer"]["queue"]], ["https://github.com/o/r/issues/3"])
         self.assertEqual([r["issue"] for r in by["Jordi"]["queue"]], ["https://github.com/o/r/issues/4"])
+
+    def test_skills_optional_inline_or_block_list(self):
+        self.assertEqual(self.persona("watcher"), [])
+        self.assertEqual(self.persona("watcher", "skills: []\n"), [])
+        self.assertEqual(self.persona("watcher", "skills: [diagram-design, other-tool]\n"), [])
+        self.assertEqual(self.persona("watcher", "skills:\n  - diagram-design\n  - other\n"), [])
+        front = spines.P.frontmatter(PERSONA.format(n="w", x="skills:\n  - diagram-design\n  - other\n"))[0]
+        self.assertEqual(spines.P.skills(front), ["diagram-design", "other"])
+        self.assertEqual(front["host"], "vps1")
+
+    def test_skills_must_be_a_list_of_slugs(self):
+        self.assertEqual(self.persona("watcher", "skills: diagram-design\n"), ["persona file skills: must be a list of team skill names, e.g. skills: [diagram-design]"])
+        self.assertEqual(self.persona("watcher", "skills: [Diagram Design]\n"), ["persona skill 'Diagram Design' is not a skill name (lowercase, hyphens)"])
+
+    def test_skills_checked_against_the_team_manifest_when_present(self):
+        path = self.repo / "personas" / "watcher.md"
+        path.write_text(PERSONA.format(n="watcher", x="skills: [diagram-design, ghost]\n"))
+        self.assertEqual(v.validate_local(path).warnings, [])  # no manifest, no check
+        (self.repo / "skills").mkdir()
+        (self.repo / "skills" / "team-skills.json").write_text(json.dumps({"skills": [{"name": "diagram-design", "use_when": "a diagram"}]}))
+        doc = v.validate_local(path)
+        self.assertEqual(doc.errors, [])
+        self.assertEqual(doc.warnings, ["persona skill 'ghost' is not in skills/team-skills.json"])
+        (self.repo / "skills" / "team-skills.json").write_text(json.dumps([{"name": "diagram-design"}, {"name": "ghost"}]))
+        self.assertEqual(v.validate_local(path).warnings, [])
+        (self.repo / "skills" / "team-skills.json").write_text(json.dumps([{"name": "diagram-design"}]))
+        run = subprocess.run([sys.executable, "-B", str(SCRIPT), str(path)], capture_output=True, text=True)
+        self.assertEqual(run.returncode, 0)  # a warning never fails the check
+        self.assertIn("warning: persona skill 'ghost' is not in skills/team-skills.json", run.stdout)
+
+    def test_roster_carries_skills(self):
+        self.persona("watcher", "skills: [diagram-design]\n")
+        self.persona("fixer")
+        (self.repo / "AGENTS.md").write_text("Root spine: docs/EPIC-1-T.md\n")
+        (self.repo / "docs/EPIC-1-T.md").write_text(epic([("Watcher", "ready")]).replace("Spine ID: t\n", "Spine ID: t\nSpine Type: root\nRoot spine: self\nParent spine: none\n"))
+        by = {p["name"]: p for p in spines.scan(self.repo)["personas"]}
+        self.assertEqual(by["watcher"]["skills"], ["diagram-design"])
+        self.assertEqual(by["fixer"]["skills"], [])
 
     def test_cli_checks_persona_files(self):
         self.persona("watcher")

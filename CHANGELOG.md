@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.11.01.6 — Personas: a persona file may declare its team skills
+
+- **Added: optional `skills:` frontmatter in persona files** (`personas/<name>.md`): the team skills that are the persona's key tools, named in its wake brief, as an inline list `skills: [diagram-design]` or a block list. Not a list, or a name that is not a slug (lowercase, hyphens), is an error; when the repo has a `skills/team-skills.json` manifest (entries with `name`), a declared skill missing from it is a warning (`personas.py` prints `warning:` and still exits 0; `validate_spine.py` reports it as a warning); no manifest, no check. `spines.py --json` `personas` carries `skills` for every persona (`[]` when none). Doc: `references/personas.md`. Tests: `tests/test_personas.py` (`test_skills_optional_inline_or_block_list`, `test_skills_must_be_a_list_of_slugs`, `test_skills_checked_against_the_team_manifest_when_present`, `test_roster_carries_skills`). agent_team EPIC-53 E53-S2. Skill 2026.11.01.6.
+
 ## 2026.11.01.5 — Asks: a snoozed ask keeps its own field
 
 - **Added: ` — snoozed until: <YYYY-MM-DD>` on an open `[ask …]` line.** The human snoozes an ask (agent_team console: Snooze 3 days / 1 week / 1 month); the line stays open and the inbox hides it and leaves it out of every count until that day; Unsnooze removes the field. `spines.py --json` reads it as `snoozed_until` (present only on a snoozed line), so it no longer glues onto the field before it. Doc: `docs/doctrine/human-asks.md` (Snoozed, and the `--json` paragraph). Test: `tests/test_human_asks.py` `test_snoozed_until_is_its_own_field`. agent_team EPIC-48 E48-S3. Skill 2026.11.01.5.
