@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.11.01.5 — Asks: a snoozed ask keeps its own field
+
+- **Added: ` — snoozed until: <YYYY-MM-DD>` on an open `[ask …]` line.** The human snoozes an ask (agent_team console: Snooze 3 days / 1 week / 1 month); the line stays open and the inbox hides it and leaves it out of every count until that day; Unsnooze removes the field. `spines.py --json` reads it as `snoozed_until` (present only on a snoozed line), so it no longer glues onto the field before it. Doc: `docs/doctrine/human-asks.md` (Snoozed, and the `--json` paragraph). Test: `tests/test_human_asks.py` `test_snoozed_until_is_its_own_field`. agent_team EPIC-48 E48-S3. Skill 2026.11.01.5.
+
 ## 2026.11.01.4 — Social pack: the Video Maker role registers its clips
 
 - **Added: role `Video Maker` in `packs/social`**, which may add and write `assets` rows (alongside Jordi and the Writer), so a clip it renders is registered as `Made by: Video Maker` with its files under `data/assets/<id>/`. Assets carry no status, so the role has no status moves; nothing else changed and no role lost anything. Doc: `packs/social/README.md` (files table, who writes what). Tests: `tests/test_pack_validate.py` `test_video_maker_registers_its_clip_publisher_may_not`, `tests/test_packs.py` (role list), `tests/test_pack_intake.py` (wake text). zenod-social EPIC-9 E9-S6, approved as ask EPIC-9-A2 (2026-11-01). Skill 2026.11.01.4.
