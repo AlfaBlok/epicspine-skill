@@ -93,6 +93,11 @@ class ParserTests(unittest.TestCase):
         self.assertEqual(("answered", "one", "Jordi", "Ship E4 with one logger or two?"), (answered["state"], answered["answer"], answered["who"], answered["question"]))
         self.assertEqual((None, None, None), (answered["ask"], answered["since"], answered["row"]))
 
+    def test_snoozed_until_is_its_own_field(self) -> None:
+        ask = self.parse("- [ask E4-A3: decide @Jordi since 2026-10-21 row T4] Ship E4 with one logger or two? — options: one | two — unblocks: T4 — snoozed until: 2026-11-08")[0]
+        self.assertEqual(("open", "2026-11-08", "T4", "Ship E4 with one logger or two?"), (ask["state"], ask["snoozed_until"], ask["unblocks"], ask["question"]))
+        self.assertNotIn("snoozed_until", self.parse(DECIDE)[0])
+
     def test_dash_inside_a_field_and_noise_lines(self) -> None:
         ask = self.parse("intro text", "- not an ask", "- [ask: provide @Jordi since 2026-10-21] Need the key? — context: [k](k.md) — recommend: use prod — the shared one")[0]
         self.assertEqual("use prod — the shared one", ask["recommend"])

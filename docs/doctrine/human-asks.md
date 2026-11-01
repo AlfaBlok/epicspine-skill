@@ -76,6 +76,8 @@ So an `ask` line is open, an `answered` line is answered but not yet cleaned up,
 
 **Superseded:** an ask replaced by another before it was answered becomes `- [superseded <code> <YYYY-MM-DD> by [<repo>/]<code>] <question> …`. It is closed like `done`; the new ask carries the wait.
 
+**Snoozed:** the human may snooze an open ask (e.g. the console's Snooze: 3 days / 1 week / 1 month). The line stays an open `[ask …]` and gets one field at its end, ` — snoozed until: <YYYY-MM-DD>`; Unsnooze removes it. Until that day the inbox hides the ask and leaves it out of every count; it is still open (it still blocks its row and counts toward the 3-ask limit), and from that day it shows again with no edit. Agents do not snooze asks for the human.
+
 ## Consumed answers
 After acting on an `[answered ...]` line, the owner appends ` · done <YYYY-MM-DD> <sha>` to it (the commit that acted on the answer; a short note may follow, and the marker may also sit inside the tag after `@<who>`, with ` superseded by <code>`):
 
@@ -109,7 +111,7 @@ Before raising an ask, check, in this order: the open asks in this repo's tree (
   "context": "the cutover found ticks missing since Monday; ...", "impact": "the cutover (S2, S3) proceeds; ...",
   "risk": "~2 min gap in ticks while it restarts; rollback: start the old unit", "why": "only you hold root on vps1", "since": "2026-10-24", "row": "S3", "state": "open", "answer": null}]
 ```
-Unknown or missing fields are null. `context` is repo-relative when it is a local link or path, else kept as written; `why` is the `why <who>:` text. On an `answered` or `superseded` line, `code` is kept, and `ask`, `since` and `row` may be null (`who` too when superseded). `state` is `open`, `answered`, `done` (`· done` consumed answer; `answer` excludes the suffix) or `superseded`. `superseded_by` is the code after `by` (`[superseded …]`, or `superseded by` in an answered tag), else null. An ask type outside the four is kept as written (and warned). `waiting_on` never holds reference lines.
+Unknown or missing fields are null. `context` is repo-relative when it is a local link or path, else kept as written; `why` is the `why <who>:` text. On an `answered` or `superseded` line, `code` is kept, and `ask`, `since` and `row` may be null (`who` too when superseded). `state` is `open`, `answered`, `done` (`· done` consumed answer; `answer` excludes the suffix) or `superseded`. `superseded_by` is the code after `by` (`[superseded …]`, or `superseded by` in an answered tag), else null. An ask type outside the four is kept as written (and warned). `snoozed_until` (`YYYY-MM-DD`) is present only on a line carrying ` — snoozed until: <date>`. `waiting_on` never holds reference lines.
 
 Reference lines are a separate per-node list, `[]` when there are none:
 ```json

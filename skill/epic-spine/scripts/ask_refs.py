@@ -25,7 +25,7 @@ SUPERSEDED_BY = re.compile(r"\s*superseded by\s+((?:[\w.-]+/)?" + ASK_ID + ")")
 DONE = re.compile(r"\s*·\s*done\s+" + DATE + r"\b.*$")  # consumed answer, with an optional sha and note
 CANONICAL = ("`[ask <code>: <type> @<who> since <date> row <id>]`, `[answered <code> <date> @<who>]` (then ` · done <date> <sha>`), "
              "`[superseded <code> <date> by <code>]` or `[waits on [<repo>/]<code> row <id>]`")
-ASK_FIELD = re.compile(r"(steps|options|recommend|unblocks|effort|context|impact|risk|why(?:\s+@?[\w.-]+)?|answer):\s*(.*)", re.S)  # `why <who>:` is `why`
+ASK_FIELD = re.compile(r"(steps|options|recommend|unblocks|effort|context|impact|risk|why(?:\s+@?[\w.-]+)?|snoozed(?:\s+until)?|answer):\s*(.*)", re.S)  # `why <who>:` is `why`, `snoozed until:` is `snoozed`
 
 
 def ref(r: str | None, c: str, row: str | None, via: str) -> dict:
@@ -129,7 +129,8 @@ def asks(text: str, path: Path, repo: Path, problems: list[str] | None = None) -
                     "context": ask_context(fields.get("context", ""), path, repo), "impact": fields.get("impact") or None,
                     "risk": fields.get("risk") or None, "why": fields.get("why") or None, "since": since, "row": row,
                     "state": "open" if opened else "superseded" if superseded else "done" if done else "answered",
-                    "answer": fields.get("answer") or None, "superseded_by": by})
+                    "answer": fields.get("answer") or None, "superseded_by": by,
+                    **({"snoozed_until": d.group(0)} if (d := re.match(DATE, fields.get("snoozed", ""))) else {})})
     return out
 
 
