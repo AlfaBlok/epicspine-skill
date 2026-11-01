@@ -107,6 +107,12 @@ class Validate(unittest.TestCase):
         self.assertEqual([], self.repo.issues("Writer"))
         self.assertIn("A-1: Scout may not add rows", "\n".join(self.repo.issues("Scout")))
 
+    def test_video_maker_registers_its_clip_publisher_may_not(self) -> None:
+        assets = self.repo.root / "data/assets.md"
+        assets.write_text(assets.read_text() + "| A-2 | clip | data/assets/demo-01/master.mp4 | Video Maker | library clip demo-01 | x: x.mp4 |\n")
+        self.assertEqual([], self.repo.issues("Video Maker"))
+        self.assertIn("A-2: Publisher may not add rows", "\n".join(self.repo.issues("Publisher")))
+
     def test_jordi_drops_an_idea_new_or_picked_up_to_parked_only(self) -> None:
         ideas = self.repo.root / "data/ideas.md"
         head = ideas.read_text()

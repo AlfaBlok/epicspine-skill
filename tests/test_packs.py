@@ -67,7 +67,7 @@ class SocialPack(unittest.TestCase):
         self.assertEqual(["Jordi"], SOCIAL["files"]["posts"]["sections"]["rows"]["fields"]["feedback"].get("writers"))
 
     def test_every_file_and_field_has_a_writer_from_the_role_list(self) -> None:
-        roles = {"Jordi", "Scout", "Writer", "Publisher", "Responder", "Engager", "Reporter"}
+        roles = {"Jordi", "Scout", "Writer", "Publisher", "Responder", "Engager", "Reporter", "Video Maker"}
         self.assertEqual(roles, set(SOCIAL["roles"]))
         for fkey, who in pack.writers(SOCIAL).items():
             with self.subTest(file=fkey):

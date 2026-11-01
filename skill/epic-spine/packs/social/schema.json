@@ -12,7 +12,8 @@
     "Publisher": "posts scheduled posts in their slot, expires stale ones, deletes pulled live posts",
     "Responder": "answers replies to our posts (reply rows)",
     "Engager": "disclosed replies in other people's threads (outreach rows)",
-    "Reporter": "measures posts after 48 h and writes the 3-day report"
+    "Reporter": "measures posts after 48 h and writes the 3-day report",
+    "Video Maker": "renders demo clips and registers each one in the assets library (row + data/assets/<id>/)"
   },
   "files": {
     "brief": {
@@ -159,7 +160,7 @@
       "path": "data/assets.md",
       "dir": "data/assets/",
       "sections": {
-        "rows": {"heading": null, "shape": "table", "add_rows": ["Jordi", "Writer"], "writers": ["Jordi", "Writer"], "fields": {
+        "rows": {"heading": null, "shape": "table", "add_rows": ["Jordi", "Writer", "Video Maker"], "writers": ["Jordi", "Writer", "Video Maker"], "fields": {
           "id": {"column": "Id", "type": "id", "pattern": "^A-[0-9]+$"},
           "kind": {"column": "Kind", "type": "enum", "values": ["diagram", "screenshot", "clip", "video", "logo"]},
           "file": {"column": "File", "type": "path"},

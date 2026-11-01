@@ -89,6 +89,7 @@ ROLE_TARGETS = {  # role -> (writable targets, status moves) the text must name
     "Responder": (["`data/posts-ledger.md`", "add rows", "every column but Feedback"], ["`draft → posted`", "`posted → measured`", "reply, outreach rows"]),
     "Engager": (["`data/posts-ledger.md`", "add rows", "every column but Replies, Feedback"], ["`draft → posted`", "`posted → measured`", "disclosure (Reddit)"]),
     "Reporter": (["edit only Replies, Metrics, Result", "`data/reports/<date>.md` › Numbers", "Cost"], ["`posted → measured`"]),
+    "Video Maker": (["`data/assets.md`: add rows"], []),
 }
 
 
@@ -133,7 +134,7 @@ class RoleText(unittest.TestCase):
         r = subprocess.run([sys.executable, "-B", str(Path(pack.__file__)), "social", "--wake-text", "--role", "Bob"], capture_output=True, text=True)
         self.assertEqual(2, r.returncode)
         self.assertEqual("", r.stdout)
-        self.assertIn("no role Bob; roles: Jordi, Scout, Writer, Publisher, Responder, Engager, Reporter", r.stderr)
+        self.assertIn("no role Bob; roles: Jordi, Scout, Writer, Publisher, Responder, Engager, Reporter, Video Maker", r.stderr)
 
 
 class WakeText(unittest.TestCase):

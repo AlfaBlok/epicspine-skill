@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.11.01.4 — Social pack: the Video Maker role registers its clips
+
+- **Added: role `Video Maker` in `packs/social`**, which may add and write `assets` rows (alongside Jordi and the Writer), so a clip it renders is registered as `Made by: Video Maker` with its files under `data/assets/<id>/`. Assets carry no status, so the role has no status moves; nothing else changed and no role lost anything. Doc: `packs/social/README.md` (files table, who writes what). Tests: `tests/test_pack_validate.py` `test_video_maker_registers_its_clip_publisher_may_not`, `tests/test_packs.py` (role list), `tests/test_pack_intake.py` (wake text). zenod-social EPIC-9 E9-S6, approved as ask EPIC-9-A2 (2026-11-01). Skill 2026.11.01.4.
+
 ## 2026.11.01.3 — Epic Book: the agent updates the book in the same session
 
 - **Added: an always-on rule, "Epic Book".** Where a goal has a book (a human page generated from its spine, e.g. agent_team's `team.alpha9.io/book/<key>`), after substantial progress or a new idea the bound agent rewrites, in the same session, the spine fields the book quotes (Goal's first paragraph, Done means, Current State Phase, Last attempted, Result, Waiting on, Next action, Outcome) so each opens with a plain sentence the user can read cold, keeping every fact; agent detail moves past the opening or to Evidence and linked pages; then it checks the book renders. Why: the book quotes spine fields as written, so lines like agent_team's "Last step" read as agent notes. Block: `assets/global-block.md` (one line). Doc: `references/spine-model.md` "Book-Facing Fields" (field table, the rule, the check). Test: `tests/test_default_behaviors.py` `test_epic_book_fields_are_written_for_the_user_in_the_same_session`. agent_team EPIC-47 E47-S2. Skill 2026.11.01.3.

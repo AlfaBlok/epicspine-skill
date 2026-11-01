@@ -11,7 +11,7 @@ A social campaign desk: personas scan, write, post, reply and measure; the owner
 | topics (`data/topics.md`) | a finding from today's scan, table replaced daily | rank, T-MMDD-n, topic, where, evidence link, heat, date, reply target, used by | Scout |
 | ideas (`data/ideas.md`) | an idea for a post | I-n, date, idea, format, platform, from (role), link or asset, state, why, became | Jordi and Scout add; the Writer moves state, Jordi may drop (park) one |
 | posts (`data/posts-ledger.md`) | one post, reply or outreach | P-nnnn, date, persona, kind (post / reply / outreach), platform, community, slot, title, text, format, assets, topic, highlight, messages, idea, checks, link, replies, metrics, result, feedback, status | Writer, Responder, Engager write rows; Publisher the link; Reporter numbers; Jordi feedback (and text before its slot) |
-| assets (`data/assets.md` + `data/assets/`) | a diagram, screenshot, clip, video or logo | A-n, kind, file, made by, source, cuts per channel, used by | Jordi; the Writer adds the diagram of its own post (made with the `diagram` skill) |
+| assets (`data/assets.md` + `data/assets/`) | a diagram, screenshot, clip, video or logo | A-n, kind, file, made by, source, cuts per channel, used by | Jordi; the Writer adds the diagram of its own post (made with the `diagram` skill); the Video Maker adds the clips it renders |
 | reports (`data/reports/<date>.md`) | one 3-day report | Numbers, Best and worst, Learned, Highlights covered, Feedback themes, Cost | Reporter |
 
 "Used by", "served by", "carried by" and "became" are computed by the export from post fields; nobody types them.
@@ -48,6 +48,7 @@ A failed check keeps the draft a draft, with the reason in `checks`. Ideas: `new
 | Publisher | scheduled → posted (link) / expired; deletes pulled live posts | post a draft or held post, change text |
 | Responder · Engager | reply / outreach rows: draft → posted → measured; replies, metrics | top-level posts |
 | Reporter | posted → measured, metrics, result, reports | any other status |
+| Video Maker | renders clips and registers each in `data/assets.md` (row, made by Video Maker) + `data/assets/<id>/` | posts, ideas, topics, any status |
 
 ## Checks (validator, E34-S2)
 
