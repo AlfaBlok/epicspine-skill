@@ -1,6 +1,6 @@
 # Pack: social
 
-A social campaign desk: personas scan, write, post, reply and measure; the owner (Jordi) steers by a brief, directions, ideas and after-the-fact feedback. **No approval gate**: a draft that passes its checks is scheduled and posted in its slot; only the owner's own hold rules hold a post. Opt in: `Pack: social` in the repo's AGENTS.md. Machine-read source: [`schema.json`](schema.json) (this page summarises it; the schema wins).
+A social campaign desk: personas scan, write, post, reply and measure; the owner (Jordi) steers by a brief, directions, ideas and after-the-fact feedback. **No global approval gate**: a draft that passes its checks is scheduled and posted in its slot; only the owner's own hold rules hold a post (the rule `Kind: post` holds every post: approve-before-posting, below). Opt in: `Pack: social` in the repo's AGENTS.md. Machine-read source: [`schema.json`](schema.json) (this page summarises it; the schema wins).
 
 ## Files
 
@@ -25,7 +25,8 @@ A social campaign desk: personas scan, write, post, reply and measure; the owner
 | idea | draft | Writer | takes the idea |
 | draft | scheduled | Writer | every check passes, no hold rule matches |
 | draft | held | Writer | a hold rule matches |
-| held | scheduled | Jordi | releases it |
+| held | scheduled | Jordi | approves it (the console writes `Approved <date>` in the row's Feedback) |
+| held | scheduled | Writer | Jordi approved it with feedback (`Approved with feedback <date>: …` in Feedback): the Writer applies it to the text, then schedules it |
 | scheduled | posted | Publisher | its slot; link in the same commit |
 | scheduled | expired | Publisher | best-before passed |
 | draft | posted | Responder, Engager | reply / outreach rows, checks pass |
@@ -35,20 +36,22 @@ A social campaign desk: personas scan, write, post, reply and measure; the owner
 
 A failed check keeps the draft a draft, with the reason in `checks`. Ideas: `new → picked up → drafted → posted`, or `parked` (why; back to picked up) or `epic` (too big for one post), all moved by the Writer; Jordi may drop an idea (`new` or `picked up` → `parked`, the console's drop).
 
+**Approve before posting (opt-in per campaign, agent_team E46-S2).** The pack keeps no global gate; a campaign that wants Jordi to approve every post adds the hold rule `Kind: post` to its brief's Hold for me table (the console's "Approve every post" switch writes it). Every new post then goes `draft → held`; Jordi approves (→ `scheduled`), approves with feedback (stays `held` until the Writer applies it and schedules it) or drops it (→ `pulled`). The `approved` check makes `held → scheduled` need Jordi's `Approved` note in Feedback, a column only Jordi writes.
+
 ## Who writes what
 
 | Role | Writes | May not |
 |---|---|---|
-| Jordi (console, digest, desk chat) | brief, directions, ideas (from: Jordi), assets, post feedback, release held, pull any | (nothing waits for him) |
+| Jordi (console, digest, desk chat) | brief, directions, ideas (from: Jordi), assets, post feedback, approve held (with or without feedback), pull any | (nothing waits for him unless a hold rule holds it) |
 | Scout | topics; adds ideas | posts |
-| Writer | post rows as draft; draft → scheduled / held; idea state; style rule from 2× feedback (C6, undo = revert) | schedule a failing draft, release held, post |
+| Writer | post rows as draft; draft → scheduled / held; held → scheduled once Jordi approved it with feedback and the feedback is applied; idea state; style rule from 2× feedback (C6, undo = revert) | schedule a failing draft, release a held post Jordi did not approve, post |
 | Publisher | scheduled → posted (link) / expired; deletes pulled live posts | post a draft or held post, change text |
 | Responder · Engager | reply / outreach rows: draft → posted → measured; replies, metrics | top-level posts |
 | Reporter | posted → measured, metrics, result, reports | any other status |
 
 ## Checks (validator, E34-S2)
 
-At `draft → scheduled` / `draft → posted`: Reddit no link on line 1 and at most one link; disclosure ("I built…") in the first two lines on Reddit for posts and outreach (a reply in our own thread needs none); no Never say phrase; caps (1 thread a day, 1 per community a week, 20 replies a day); hold rules (→ held). At `scheduled → posted` / `draft → posted`: the link is in the row. Every status change must be a listed transition by one of its roles (the role is checked when the commit names its writer, `EPICSPINE_PERSONA`). How to run it: [references/packs.md](../../references/packs.md) Validate.
+At `draft → scheduled` / `draft → posted` (the text checks also at `draft → held` and `held → scheduled`): Reddit no link on line 1 and at most one link; disclosure ("I built…") in the first two lines on Reddit for posts and outreach (a reply in our own thread needs none); no Never say phrase; caps (1 thread a day, 1 per community a week, 20 replies a day); hold rules (→ held). At `held → scheduled`: Jordi's `Approved` note in Feedback (`approved`). At `scheduled → posted` / `draft → posted`: the link is in the row. Every status change must be a listed transition by one of its roles (the role is checked when the commit names its writer, `EPICSPINE_PERSONA`). How to run it: [references/packs.md](../../references/packs.md) Validate.
 
 ## Desk intake (6 kinds)
 

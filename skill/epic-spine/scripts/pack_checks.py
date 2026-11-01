@@ -2,7 +2,8 @@
 
 link_rule (max links, none on line n), disclosure (a phrase in the first lines), never_say (the brief's list),
 hold_rules (a quoted phrase, or `field: value`, from the brief's hold table: matched means held, not scheduled), caps
-(per platform: posts a day, posts per community a week, replies a day, counting rows in the live states), link_present."""
+(per platform: posts a day, posts per community a week, replies a day, counting rows in the live states), link_present,
+approved (a phrase in a field only the owner writes: a held post goes out with Jordi's `Approved` note in its Feedback)."""
 from __future__ import annotations
 
 import datetime as dt
@@ -54,6 +55,10 @@ def run_check(key: str, c: dict, rec: dict, ctx: dict) -> list[str]:
     if key == "hold_rules":
         return [f"matches hold rule {r.get('id') or r.get('match')} ({r.get('match')}): it goes to held, not scheduled"
                 for r in ctx["source"](c["source"]) if r.get("match") and holds(r["match"], rec)]
+    if key == "approved":
+        field, phrase = p.get("field", "feedback"), p.get("phrase", "approved")
+        return [] if phrase.lower() in (rec.get(field) or "").lower() else [
+            f"no approval from Jordi in {field} (his console Approve writes {phrase.capitalize()!r} there): it stays held"]
     if key == "link_present":
         return [] if URL.match(rec.get(p.get("field", "link"), "")) else ["posted without its link (add it in the same commit)"]
     if key == "caps":

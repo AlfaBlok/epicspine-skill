@@ -60,7 +60,11 @@ class SocialPack(unittest.TestCase):
         self.assertEqual({"draft", "held", "scheduled", "posted", "measured"}, set(pulls))
         self.assertEqual("delete_live", pulls["posted"]["effect"])  # C5
         mine = [t for t in lc["transitions"] if t["to"] == "pulled" or t["from"] == "held" and t["to"] == "scheduled"]
-        self.assertTrue(all(t["by"] == ["Jordi"] for t in mine))
+        # E46-S2: the Writer's held -> scheduled is Jordi's approval too: the `approved` check demands his note in Feedback,
+        # a field only Jordi writes.
+        self.assertTrue(all(t["by"] == ["Jordi"] or t["by"] == ["Writer"] and t["from"] == "held" for t in mine))
+        self.assertEqual(["held>scheduled"], SOCIAL["checks"]["approved"]["at"])
+        self.assertEqual(["Jordi"], SOCIAL["files"]["posts"]["sections"]["rows"]["fields"]["feedback"].get("writers"))
 
     def test_every_file_and_field_has_a_writer_from_the_role_list(self) -> None:
         roles = {"Jordi", "Scout", "Writer", "Publisher", "Responder", "Engager", "Reporter"}

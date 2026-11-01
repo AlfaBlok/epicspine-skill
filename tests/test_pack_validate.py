@@ -142,6 +142,28 @@ class Validate(unittest.TestCase):
         self.assertIn("hold_rules: matches hold rule R1", self.after("Writer", {"status": "scheduled", "text": text}))
         self.assertEqual("", self.after("Writer", {"status": "held", "text": text}))
 
+    def test_approval_gate_held_to_scheduled_needs_jordis_approved_note(self) -> None:
+        # agent_team E46-S2: a campaign that wants every post approved holds them all (hold rule `Kind: post`);
+        # Jordi's Approve writes "Approved" in Feedback; with feedback, the Writer applies it and schedules it.
+        held = {"status": "held", "slot": "2026-10-30 09:00"}
+        self.assertEqual("", self.after("Writer", held))
+        self.repo.commit()
+        self.assertIn("P-0001: approved: no approval from Jordi in feedback", self.after("Jordi", {**held, "status": "scheduled"}))
+        self.assertIn("P-0001: approved: no approval from Jordi", self.after("Writer", {**held, "status": "scheduled"}))
+        self.assertEqual("", self.after("Jordi", {**held, "status": "scheduled", "feedback": "Approved 2026-11-01"}))
+        self.after("Jordi", {**held, "feedback": "Approved with feedback 2026-11-01: say it shorter"})
+        self.repo.commit()
+        approved = {**held, "feedback": "Approved with feedback 2026-11-01: say it shorter"}
+        self.assertEqual("", self.after("Writer", {**approved, "status": "scheduled", "text": GOOD + "<br>Shorter."}))
+        self.assertIn("never_say: says never-say phrase", self.after("Writer", {**approved, "status": "scheduled", "text": GOOD + "<br>revolutionary"}))
+        self.assertIn("illegal status change held -> scheduled by Publisher", self.after("Publisher", {**approved, "status": "scheduled"}))
+
+    def test_hold_rule_kind_post_holds_every_post_and_held_drafts_pass_the_text_checks(self) -> None:
+        from pack_checks import holds
+        self.assertTrue(holds("Kind: post", {"kind": "post", "title": "", "text": ""}))
+        self.assertFalse(holds("Kind: post", {"kind": "reply", "title": "", "text": ""}))
+        self.assertIn("P-0001: disclosure", self.after("Writer", {"status": "held", "text": "Plan your week.<br>Free."}))
+
     def test_a_removed_row(self) -> None:
         self.repo.ledger({})
         self.assertIn("P-0002: row removed", "\n".join(self.repo.issues()))
