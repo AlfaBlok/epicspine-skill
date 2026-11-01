@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Epic Social: test it with me</title>
+<meta name="description" content="An agent team that runs your Reddit and X. You talk, it drafts, nothing goes out until you approve. Looking for testers at about $10/month.">
+<meta property="og:title" content="Epic Social: test it with me">
+<meta property="og:description" content="An agent team that runs your Reddit and X. You talk, it drafts, nothing goes out until you approve.">
+<meta property="og:image" content="https://epicspine.dev/testers/how-it-works.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  :root { --bg:#101214; --panel:#191d20; --ink:#f2eee7; --muted:#b8b0a5; --line:#363d43; --gold:#d9ad62; --green:#78b58c; --red:#d2776d;
+    --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); line-height:1.55; }
+  main { max-width: 760px; margin: 0 auto; padding: 48px 20px 64px; }
+  a { color: var(--gold); }
+  .kicker { color: var(--gold); font-size: 13px; letter-spacing: .12em; text-transform: uppercase; }
+  h1 { font-size: clamp(30px, 6vw, 44px); line-height: 1.12; margin: 10px 0 14px; }
+  h2 { font-size: 22px; margin: 36px 0 10px; }
+  p, li { color: var(--muted); font-size: 17px; }
+  strong { color: var(--ink); }
+  img { width: 100%; border-radius: 10px; border: 1px solid var(--line); margin: 18px 0 6px; }
+  .cap { font-size: 13px; color: var(--muted); }
+  ul { padding-left: 20px; }
+  form { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 22px; margin-top: 14px; }
+  label { display:block; font-size: 14px; color: var(--ink); margin: 14px 0 6px; }
+  label:first-child { margin-top: 0; }
+  input, textarea { width:100%; padding: 11px 12px; border-radius: 8px; border:1px solid var(--line); background:#0d0f11; color:var(--ink); font: inherit; font-size: 16px; }
+  textarea { min-height: 96px; resize: vertical; }
+  button { margin-top: 18px; background: var(--gold); color:#16120a; border:0; border-radius: 8px; padding: 12px 20px; font-weight: 700; font-size: 16px; cursor:pointer; }
+  .hp { position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
+  .msg { display:none; border-radius: 10px; padding: 14px 16px; margin-top: 14px; font-size: 16px; }
+  .ok { background: rgba(120,181,140,.12); border:1px solid var(--green); color: var(--ink); }
+  .err { background: rgba(210,119,109,.12); border:1px solid var(--red); color: var(--ink); }
+  .small { font-size: 13px; }
+  footer { margin-top: 48px; font-size: 13px; color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <div class="kicker">Epic Social · testers wanted</div>
+  <h1>How do you keep Reddit and X going every day without living on them?</h1>
+  <p>I couldn't. So I built myself an agent team that does it. I send it ideas (often a voice note while walking), it turns them into draft posts with one diagram each, and <strong>nothing goes out until I approve it</strong>, or approve with a note it applies. Then it posts, answers replies and DMs, and sends me one digest in the evening.</p>
+  <img src="how-it-works.png" alt="How my agent team runs my Reddit and X: me with a voice note, an idea queue, the agent team drafts, I approve, it is posted and replies follow.">
+  <div class="cap">It runs on EpicSpine, the way my agents keep goals and state in the repo instead of in my head.</div>
+
+  <h2>What testers get</h2>
+  <ul>
+    <li><strong>Your own team</strong> (Scout, Writer, Publisher, Responder) on your Reddit and X, in your own private space.</li>
+    <li><strong>Your voice, your approval</strong>: drafts wait for you; you say yes, no, or "yes, but shorter".</li>
+    <li><strong>Set up with me</strong>: we write your brief together on a call, and you talk to me directly while it is rough.</li>
+    <li><strong>About $10/month</strong> while testing. Nothing to pay now: I'll send a payment link when your team is ready to run.</li>
+  </ul>
+
+  <h2 id="signup">Want to test it?</h2>
+  <div id="ok" class="msg ok">Thanks, you're on the list. I'll email you myself when your spot opens.</div>
+  <div id="err" class="msg err">That didn't go through. Check the email address and try again.</div>
+  <form method="post" action="https://team.alpha9.io/api/public/testers">
+    <label for="email">Email</label>
+    <input id="email" name="email" type="email" required maxlength="254" autocomplete="email" placeholder="you@example.com">
+    <label for="name">Name (optional)</label>
+    <input id="name" name="name" maxlength="120" autocomplete="name">
+    <label for="useCase">What would you use it for?</label>
+    <textarea id="useCase" name="useCase" maxlength="1000" placeholder="e.g. launching my SaaS on Reddit, keeping my X account alive, a community I run"></textarea>
+    <input type="hidden" name="plan" value="tester-10usd-month">
+    <input type="hidden" name="source" value="epicspine.dev/testers">
+    <div class="hp" aria-hidden="true"><label for="website">Leave this empty</label><input id="website" name="website" tabindex="-1" autocomplete="off"></div>
+    <button type="submit">Count me in</button>
+    <p class="small">I keep your email and answer privately, only to contact you about the test. No newsletter, no sharing. Ask me to delete it any time.</p>
+  </form>
+
+  <footer>Epic Social is the social side of <a href="https://epicspine.dev/">EpicSpine</a>. Built by Jordi.</footer>
+</main>
+<script>
+  (function () {
+    var q = new URLSearchParams(location.search);
+    if (q.get("signed")) document.getElementById("ok").style.display = "block";
+    else if (q.get("error")) document.getElementById("err").style.display = "block";
+    var src = q.get("utm_source") || q.get("src");
+    if (src) document.querySelector('input[name="source"]').value = "epicspine.dev/testers?" + src.slice(0, 40);
+  })();
+</script>
+</body>
+</html>

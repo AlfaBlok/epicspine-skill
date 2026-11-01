@@ -1,0 +1,10 @@
+{"title": "How my agent team runs my Reddit and X",
+ "subtitle": "I talk; the team drafts; nothing goes out until I approve it.",
+ "layout": "flow",
+ "nodes": [{"id": "me", "label": "Me, walking", "sub": "a voice note with ideas", "tone": "warm"},
+           {"id": "i", "label": "Idea queue", "sub": "topics become ideas", "tone": "default"},
+           {"id": "t", "label": "Agent team", "sub": "Writer, Scout, Publisher", "tone": "accent"},
+           {"id": "a", "label": "I approve", "sub": "or approve with feedback", "tone": "warm"},
+           {"id": "p", "label": "Posted", "sub": "replies and DMs follow", "tone": "muted"}],
+ "edges": [["me", "i", "dump"], ["i", "t", "draft"], ["t", "a", "ask"], ["a", "p", "go"]],
+ "footer": "Epic Social · epicspine.dev/testers"}
