@@ -3,391 +3,636 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Epic Social · your social media team · join the waitlist</title>
-<meta name="description" content="Epic Social: four AI personas find ideas, research them, write the posts you approve and answer for your brand. You own everything. Alpha release: we are looking for testers.">
-<meta property="og:title" content="Epic Social · your social media team">
-<meta property="og:description" content="Four AI personas find ideas, research them and write the posts you approve. Alpha release: join the waitlist.">
-<!-- Epic Social waitlist (agent_team EPIC-10 · E10-S4, E10-S5, E10-S6; reworded for EPIC-10-A2 2026-11-01). Published at epicspine.dev/social/. No trackers; the only request is the waitlist form post. -->
+<title>Epic Social: AI agents that build your reputation. Join the waitlist.</title>
+<meta name="description" content="Epic Social is a small team of AI agents that find ideas, write your posts and answer replies. You approve every post. Alpha release: join the waitlist, or apply to test it.">
+<meta property="og:title" content="Epic Social: AI agents that build your reputation">
+<meta property="og:description" content="They find ideas, write posts and answer replies. You approve every post. Alpha release: join the waitlist.">
+<meta name="theme-color" content="#f9f8f3">
+<link rel="preload" href="fonts/funnel-display-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/funnel-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<!-- Epic Social waitlist (agent_team EPIC-10, E10-S4..S6; Hallmark redesign 2026-11-02 on Jordi's review). Published at epicspine.dev/social/. No trackers, no third-party requests: fonts are served from this site; the only outside request is the waitlist form post. -->
 <style>
-  :root { --bg:#101214; --card:#191d20; --field:#0d0f11; --ink:#f2eee7; --mute:#b8b0a5; --line:#363d43; --a:#d9ad62; --on-a:#16120a; --g:#78b58c; --y:#c98a00; --v:#8f6fd9; --o:#d9783a; --soft:rgba(217,173,98,.13); }
-  * { box-sizing:border-box; }
-  html { scroll-behavior:smooth; }
-  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; -webkit-text-size-adjust:100%; }
-  a { color:var(--a); }
-  .wrap { max-width:1120px; margin:0 auto; padding:0 20px; }
-  section { padding:56px 0; border-bottom:1px solid var(--line); }
-  .k { color:var(--mute); font-size:.78rem; letter-spacing:.09em; text-transform:uppercase; font-weight:700; margin-bottom:.5em; }
-  h1 { font-size:clamp(2.3rem,7vw,4.2rem); line-height:1.02; margin:0 0 .3em; letter-spacing:-.03em; }
-  h1 span { color:var(--a); }
-  h2 { font-size:clamp(1.7rem,4.6vw,2.6rem); line-height:1.08; margin:0 0 .3em; letter-spacing:-.02em; }
-  h3 { margin:0 0 .3em; font-size:1.1rem; }
-  .sub { font-size:clamp(1.05rem,2.4vw,1.25rem); color:var(--mute); margin:0 0 1.3em; max-width:60ch; }
-  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px 18px; box-shadow:none; }
-  .card p { margin:.3em 0 0; color:var(--mute); }
-  .grid { display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr)); }
+/* Hallmark · shape: Narrative Workflow (swapped from the draw's Stat-Led: the page tells how a post is made) · genre: atmospheric · theme: Refract (by request, with Cobalt and Console explored) · redesign: full · job: join
+ * hero: Stage · nav: slab · footer: colophon block · imagery: the product built (the approval inbox, playing) · signature: a post drafted, approved and answered live on water light · refract: water/pool, accent swapped to a bright pink at Jordi's ask
+ * axes: light/grotesk-sans/cool · posture: restrained · contrast: pass · fold: pass · draw: b45a7a · v2.0.0 */
+/* Hallmark · pre-emit critique: P4 H5 E4 S4 R4 V4 · weakest: S, a waitlist page could be anyone's; led with the real post flow (idea, research, draft, your OK, replies) playing in the hero instead of claims */
+/* Hallmark · waive 47c · the approval inbox built as a sample inside the hero figure · the inbox is private to each customer, no public screen to capture */
+/* Hallmark · reworded "Idea persona" to "Ideas agent", "four AI personas" to "four AI agents" · Jordi: not too techy, AI agents */
+/* Hallmark · waive 79 · the water stage runs to y 860 at 1440 x 900; only the head column ends at 726, the hero's lit panel fills the screen */
+/* Hallmark · waive 44c · Stage visual bleeding off the outer edge; the water light runs to the right edge of the window by design of the hero */
+/* Hallmark · dismissed 70 · the thanks shows only on ?signed=1, after the console at team.alpha9.io/api/public/testers stored the email and answered 303 */
+/* Hallmark · answered F7 · avatars, status chips and the day picker are round like the controls they sit with, by the theme's soft-pill language */
+/* Hallmark · dropped #how (five setup steps), the repo tree and "Under the hood: two ideas" · Jordi: minimalist, not too techy; ownership kept as one plain section, setup kept in the alpha list */
 
-  .family { font-size:12px; letter-spacing:.04em; color:var(--mute); padding:6px 0; border-bottom:1px solid var(--line); }
-  .family a { color:var(--mute); text-decoration:none; } .family b { color:var(--a); font-weight:760; }
-  nav { position:sticky; top:0; z-index:5; background:rgba(16,18,20,.93); backdrop-filter:saturate(1.4) blur(8px); border-bottom:1px solid var(--line); }
-  nav .wrap { display:flex; align-items:center; gap:14px; height:56px; }
-  .logo { font-weight:900; letter-spacing:-.02em; font-size:1.05rem; color:var(--ink); text-decoration:none; display:flex; align-items:center; gap:8px; }
-  .logo i { display:inline-grid; place-items:center; width:28px; height:28px; border-radius:8px; background:var(--a); color:var(--on-a); font-style:normal; font-size:.75rem; }
-  nav .links { margin-left:auto; display:flex; gap:18px; align-items:center; font-size:.92rem; }
-  nav .links a { color:var(--mute); text-decoration:none; }
-  @media (max-width:700px) { nav .links .hide-s { display:none; } }
-  .btn { display:inline-block; background:var(--a); color:var(--on-a) !important; font-weight:700; text-decoration:none; border-radius:10px; padding:11px 20px; border:0; font-size:1rem; cursor:pointer; font-family:inherit; }
-  .btn.sm { padding:7px 13px; font-size:.88rem; }
-  .btn.ghost { background:var(--card); color:var(--ink) !important; border:1px solid var(--line); }
-  .btn.ok { background:var(--g); color:#0d1a12 !important; }
+@font-face { font-family: "Funnel Display"; src: url("fonts/funnel-display-latin.woff2") format("woff2"); font-weight: 300 500; font-display: swap; }
+@font-face { font-family: "Funnel Sans"; src: url("fonts/funnel-sans-latin.woff2") format("woff2"); font-weight: 400 500; font-display: swap; }
 
-  .hero { padding:56px 0 44px; }
-  .hero .row { display:grid; grid-template-columns:1.2fr 1fr; gap:30px; align-items:center; }
-  .cta-row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
-  .cta-row small { color:var(--mute); }
-  .stack { display:flex; flex-direction:column; gap:10px; }
-  .mini { display:flex; gap:10px; align-items:center; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:10px 12px; font-size:.92rem; }
-  .mini .t { color:var(--mute); font-size:.78rem; margin-left:auto; white-space:nowrap; }
-  @media (max-width:820px) { .hero .row { grid-template-columns:1fr; } }
+:root {
+  color-scheme: light;
+  --space-3xs: 2px; --space-2xs: 4px; --space-xs: 8px; --space-sm: 12px; --space-md: 16px; --space-lg: 24px; --space-xl: 40px; --space-2xl: 64px; --space-3xl: 96px; --space-4xl: 144px;
+  --text-xs: 0.8125rem; --text-sm: 0.875rem; --text-md: 1rem; --text-lg: 1.25rem; --text-xl: 1.5625rem; --text-2xl: 1.953rem; --text-3xl: 2.441rem;
+  --text-display: clamp(2.75rem, 4.4vw + 1rem, 5rem);
+  --text-section: clamp(2rem, 2.5vw + 1rem, 3.5rem); --text-title: clamp(1.25rem, 0.75vw + 0.875rem, 1.625rem); --text-lead: clamp(1.125rem, 0.35vw + 1rem, 1.375rem);
+  --text-figure: clamp(3.5rem, 5vw + 1rem, 6rem);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-micro: 120ms; --dur-short: 220ms; --dur-long: 420ms;
+  --container: 1360px; --gutter: 64px; --gap-columns: 32px; --section-gap-s: 120px; --section-gap: 144px;
+  --z-raised: 10; --z-sticky-nav: 300;
+  --color-paper: oklch(98.2% 0.006 95); --color-paper-2: oklch(96.4% 0.006 95); --color-paper-3: oklch(93.6% 0.008 95);
+  --color-ink: oklch(23% 0.035 245); --color-ink-2: oklch(36% 0.035 245); --color-muted: oklch(48% 0.025 240);
+  --color-rule: oklch(89.5% 0.008 230); --color-rule-2: oklch(80% 0.012 230);
+  --color-accent: oklch(55% 0.235 358); --color-accent-hi: oklch(49% 0.22 358); --color-accent-ink: oklch(99% 0.003 95);
+  --color-accent-soft: oklch(95% 0.03 358); --color-accent-bright: oklch(66% 0.25 358);
+  --color-focus: oklch(50% 0.2 358);
+  --color-ok: oklch(48% 0.12 160); --color-ok-soft: oklch(95% 0.035 160);
+  --color-error: oklch(52% 0.19 27);
+  --color-shade: oklch(86% 0.05 212); --color-shade-2: oklch(74% 0.07 220); --color-light: oklch(99.7% 0.004 95);
+  --color-clear: oklch(99.7% 0.004 95 / 0.84);
+  --edge-btn: inset 0 1px 0 oklch(100% 0 0 / 0.28);
+  --edge-light: inset 0 1px 0 oklch(100% 0 0 / 0.9), inset 0 0 0 1px oklch(100% 0 0 / 0.55);
+  --shadow-card: 18px 28px 48px -26px oklch(52% 0.09 220 / 0.38), 2px 3px 6px -2px oklch(40% 0.05 230 / 0.12);
+  --shadow-cast: 28px 40px 70px -30px oklch(60% 0.11 212 / 0.5);
+  --font-display: "Funnel Display", ui-sans-serif, system-ui, sans-serif; --font-body: "Funnel Sans", ui-sans-serif, system-ui, sans-serif;
+  --radius-card: 22px; --radius-inner: 12px; --radius-pill: 999px; --rule-hair: 1px;
+  --tracking-display: -0.032em; --display-weight: 400;
+}
 
-  .av { flex:none; display:inline-grid; place-items:center; width:34px; height:34px; border-radius:10px; color:#fff; font-weight:800; font-size:.85rem; }
-  .s { background:var(--v); } .c { background:var(--o); } .r { background:var(--g); } .sc { background:#4a78c9; } .you { background:#5d6676; }
-  .persona .top { display:flex; gap:10px; align-items:center; margin-bottom:6px; }
-  .persona .top b { font-size:1.12rem; }
-  .persona .when { display:inline-block; margin-top:10px; font-size:.8rem; font-weight:700; color:var(--a); background:var(--soft); border-radius:99px; padding:2px 10px; }
+*, *::before, *::after { box-sizing: border-box; }
+html, body { overflow-x: clip; }
+html { scroll-behavior: smooth; scroll-padding-top: var(--space-3xl); scrollbar-color: var(--color-muted) var(--color-paper); }
+body { caret-color: var(--color-accent); margin: 0; background: var(--color-paper); color: var(--color-ink); font-family: var(--font-body); font-size: 1.0625rem; line-height: 1.6; -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: 100%; }
+::selection { background: color-mix(in oklab, var(--color-accent) 22%, transparent); color: var(--color-ink); }
+:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 0.18em; text-decoration-color: var(--color-rule-2); transition: text-decoration-color var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out); }
+a:hover { text-decoration-color: var(--color-accent); color: var(--color-accent-hi); }
+h1, h2, h3 { margin: 0; font-family: var(--font-display); font-weight: var(--display-weight); font-synthesis: none; letter-spacing: var(--tracking-display); line-height: 1.04; overflow-wrap: break-word; min-width: 0; text-wrap: balance; color: var(--color-ink); }
+h1 { font-size: var(--text-display); max-width: 11ch; line-height: 1.02; }
+h2 { font-size: var(--text-section); max-width: 20ch; }
+h3 { font-size: var(--text-title); line-height: 1.2; letter-spacing: -0.015em; }
+p { margin: 0; text-wrap: pretty; }
+ul { margin: 0; padding: 0; list-style: none; }
+button, input, textarea { font: inherit; color: inherit; }
+[hidden] { display: none !important; }
+.container { width: 100%; max-width: var(--container); margin-inline: auto; padding-inline: var(--gutter); }
+.lead { font-size: var(--text-lead); line-height: 1.45; color: var(--color-ink-2); max-width: 44ch; }
+.muted { color: var(--color-muted); }
+.small { font-size: var(--text-sm); }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
-  .stat { font-size:2.3rem; font-weight:900; letter-spacing:-.03em; color:var(--a); line-height:1; }
+/* Controls */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-xs); min-height: 48px; padding: 0 var(--space-lg); border: 0; border-radius: var(--radius-pill); background: var(--color-accent); color: var(--color-accent-ink); font: 500 var(--text-md)/1 var(--font-body); text-decoration: none; white-space: nowrap; cursor: pointer; box-shadow: var(--edge-btn), var(--shadow-card); transition: background-color var(--dur-short) var(--ease-out), transform var(--dur-micro) var(--ease-out); }
+.btn:hover { background: var(--color-accent-hi); color: var(--color-accent-ink); }
+.btn:active { transform: translateY(1px); }
+.btn:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
+.btn:disabled { opacity: 0.55; cursor: not-allowed; }
+.btn--clear { background: transparent; color: var(--color-ink); box-shadow: inset 0 0 0 1px var(--color-rule-2); }
+.btn--clear:hover { background: var(--color-paper-2); color: var(--color-ink); box-shadow: inset 0 0 0 1px var(--color-ink-2); }
+.btn--sm { min-height: 44px; padding: 0 var(--space-md); font-size: var(--text-sm); }
 
-  /* week demo */
-  .days { display:flex; gap:6px; overflow-x:auto; padding-bottom:4px; margin:16px 0 14px; }
-  .day { flex:1 0 64px; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:8px 6px; text-align:center; cursor:pointer; font:inherit; color:var(--ink); }
-  .day b { display:block; font-size:.95rem; } .day small { color:var(--mute); font-size:.72rem; }
-  .day .dots { display:flex; gap:3px; justify-content:center; margin-top:5px; min-height:8px; }
-  .day .dots i { width:8px; height:8px; border-radius:50%; }
-  .day[aria-selected="true"] { border:2px solid var(--a); background:var(--soft); }
-  .demo { display:grid; grid-template-columns:1fr 1fr; gap:14px; align-items:start; }
-  @media (max-width:820px) { .demo { grid-template-columns:1fr; } }
-  .ev { display:flex; gap:10px; align-items:flex-start; padding:10px 0; border-top:1px solid var(--line); }
-  .ev:first-child { border-top:0; }
-  .ev .t { color:var(--mute); font-size:.78rem; }
-  .ev p { margin:2px 0 0; color:var(--ink); }
-  .post { border:1px solid var(--line); border-radius:14px; background:var(--card); overflow:hidden; }
-  .post .bar { display:flex; align-items:center; gap:8px; padding:10px 14px; background:#15181b; border-bottom:1px solid var(--line); font-size:.85rem; }
-  .pill { display:inline-block; font-size:.74rem; font-weight:700; border-radius:99px; padding:2px 9px; }
-  .pill.wait { background:var(--soft); color:var(--a); } .pill.done { background:rgba(120,181,140,.15); color:var(--g); } .pill.edit { background:var(--soft); color:var(--a); }
-  .post .body { padding:14px; }
-  .visual { height:130px; border-radius:10px; background:linear-gradient(135deg,#ffd9a8,#ff9f6b 55%,#e8740c); display:grid; place-items:center; color:#fff; font-weight:900; font-size:1.3rem; text-shadow:0 1px 4px rgba(0,0,0,.25); margin-bottom:10px; text-align:center; padding:8px; }
-  .post textarea { width:100%; min-height:110px; font:inherit; border:1px solid var(--a); border-radius:8px; padding:8px; background:var(--field); color:var(--ink); }
-  .post .actions { display:flex; gap:8px; padding:0 14px 14px; flex-wrap:wrap; }
-  .note { font-size:.8rem; color:var(--mute); }
+/* Family line and nav (slab) */
+.family { font-size: var(--text-xs); color: var(--color-muted); border-bottom: var(--rule-hair) solid var(--color-rule); }
+.family .container { display: flex; gap: var(--space-md); padding-block: var(--space-2xs); }
+.family a { text-decoration: none; }
+.family a:hover { text-decoration: underline; }
+.family b { font-weight: 500; color: var(--color-ink); }
+.nav { position: sticky; top: 0; z-index: var(--z-sticky-nav); background: color-mix(in oklab, var(--color-paper) 92%, transparent); border-bottom: var(--rule-hair) solid var(--color-rule); }
+.nav .container { display: flex; align-items: center; gap: var(--space-lg); min-height: 68px; }
+.wordmark { white-space: nowrap; display: inline-flex; align-items: center; gap: var(--space-xs); font: 500 var(--text-lg)/1 var(--font-display); letter-spacing: -0.02em; text-decoration: none; margin-right: auto; }
+.wordmark svg { width: 26px; height: 26px; }
+.nav .links { display: flex; gap: var(--space-lg); font-size: var(--text-sm); }
+.nav .links a { text-decoration: none; color: var(--color-ink-2); }
+.nav .links a:hover { color: var(--color-accent-hi); }
 
-  .steps { counter-reset:s; display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(min(190px,100%),1fr)); }
-  .steps .card::before { counter-increment:s; content:counter(s); display:inline-grid; place-items:center; width:28px; height:28px; border-radius:50%; background:var(--a); color:var(--on-a); font-weight:900; margin-bottom:8px; }
+/* Hero (Stage): head left, the inbox playing on water light right */
+.hero { position: relative; }
+.hero .container { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--gap-columns); align-items: center; min-height: clamp(560px, calc(100svh - 100px), 860px); padding-block: var(--space-xl); }
+.hero-copy { display: grid; gap: var(--space-lg); align-content: center; position: relative; z-index: var(--z-raised); }
+.hero-copy .actions { display: flex; flex-wrap: wrap; gap: var(--space-sm); margin-top: var(--space-xs); }
+.hero-copy .note { font-size: var(--text-sm); color: var(--color-muted); }
+.stage { position: relative; min-height: clamp(560px, calc(100svh - 180px), 760px); display: grid; place-items: center; }
+.light { position: absolute; inset: 0 calc(-1 * var(--gutter)) 0 0; border-radius: var(--radius-card) 0 0 var(--radius-card); overflow: hidden; background: var(--color-shade); }
+.light canvas { width: 100%; height: 100%; display: block; }
+.inbox { position: relative; z-index: var(--z-raised); width: min(100%, 470px); margin: 0; background: var(--color-clear); border-radius: var(--radius-card); box-shadow: var(--edge-light), var(--shadow-cast); padding: var(--space-lg); display: grid; gap: var(--space-md); }
+.inbox-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-sm); }
+.inbox-title { font: 400 var(--text-lg)/1.2 var(--font-display); letter-spacing: -0.015em; }
+.toggle { display: inline-grid; place-items: center; width: 44px; height: 44px; border: 0; border-radius: var(--radius-pill); background: var(--color-paper-2); color: var(--color-ink-2); cursor: pointer; box-shadow: inset 0 0 0 1px var(--color-rule); transition: background-color var(--dur-short) var(--ease-out); }
+.toggle:hover { background: var(--color-paper-3); }
+.toggle:active { transform: translateY(1px); }
+.toggle svg { width: 16px; height: 16px; }
+.agents { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-xs); }
+.agent { display: grid; justify-items: center; gap: var(--space-2xs); padding: var(--space-xs) var(--space-2xs); border-radius: var(--radius-inner); font-size: var(--text-xs); color: var(--color-muted); transition: background-color var(--dur-long) var(--ease-out), color var(--dur-long) var(--ease-out); }
+.agent .av { width: 36px; height: 36px; }
+.agent.on { background: var(--color-accent-soft); color: var(--color-ink); }
+.av { display: inline-grid; place-items: center; flex: none; width: 32px; height: 32px; border-radius: var(--radius-pill); background: var(--color-paper-3); color: var(--color-ink-2); font: 500 var(--text-xs)/1 var(--font-body); box-shadow: inset 0 0 0 1px var(--color-rule); }
+.agent.on .av { background: var(--color-accent); color: var(--color-accent-ink); box-shadow: none; }
+.av--you { background: var(--color-ink); color: var(--color-paper); box-shadow: none; }
+.doing { min-height: 1.6em; font-size: var(--text-sm); color: var(--color-ink-2); }
+.post { background: var(--color-light); border-radius: var(--radius-inner); box-shadow: inset 0 0 0 1px var(--color-rule); padding: var(--space-md); display: grid; gap: var(--space-sm); }
+.post-by { display: flex; align-items: center; gap: var(--space-xs); font-size: var(--text-sm); }
+.post-by b { font-weight: 500; }
+.post-by .where { margin-left: auto; color: var(--color-muted); font-size: var(--text-xs); }
+.post-text { min-height: 7.2em; font-size: var(--text-md); line-height: 1.5; }
+.post-text .caret { display: inline-block; width: 2px; height: 1.05em; margin-left: 1px; vertical-align: -0.15em; background: var(--color-accent); animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.post-foot { display: flex; align-items: center; justify-content: space-between; gap: var(--space-sm); flex-wrap: wrap; }
+.state { display: inline-flex; align-items: center; min-height: 28px; padding: 0 var(--space-sm); border-radius: var(--radius-pill); font-size: var(--text-xs); font-weight: 500; background: var(--color-paper-2); color: var(--color-ink-2); }
+.state.wait { background: var(--color-accent-soft); color: var(--color-accent-hi); }
+.state.ok { background: var(--color-ok-soft); color: var(--color-ok); }
+.approve-fake { min-height: 36px; padding: 0 var(--space-md); border-radius: var(--radius-pill); background: var(--color-accent); color: var(--color-accent-ink); font-size: var(--text-sm); font-weight: 500; display: inline-flex; align-items: center; transition: transform var(--dur-short) var(--ease-out), opacity var(--dur-short) var(--ease-out); }
+.approve-fake.press { transform: scale(0.94); }
+.replies { display: grid; gap: var(--space-xs); }
+.reply { display: flex; gap: var(--space-xs); align-items: flex-start; font-size: var(--text-sm); line-height: 1.45; transition: opacity var(--dur-long) var(--ease-out), transform var(--dur-long) var(--ease-out); }
+.reply .av { width: 26px; height: 26px; font-size: 0.6875rem; }
+.reply.from-team .av { background: var(--color-accent); color: var(--color-accent-ink); box-shadow: none; }
+.js .reply.pending { opacity: 0; transform: translateY(6px); }
+.caption { font-size: var(--text-xs); color: var(--color-muted); }
 
-  .repo { font-family:ui-monospace,Menlo,monospace; font-size:.86rem; background:var(--field); border:1px solid var(--line); color:#d7dce6; border-radius:12px; padding:14px 16px; white-space:pre; overflow-x:auto; line-height:1.55; }
-  .repo i { color:#8b95a7; font-style:normal; }
-  .idea { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px; }
-  .idea .n { display:inline-grid; place-items:center; width:26px; height:26px; border-radius:50%; background:var(--soft); color:var(--a); font-weight:900; margin-right:6px; }
+/* Sections */
+.section { padding-block: var(--section-gap-s); }
+.section--paper2 { background: var(--color-paper-2); }
+.head { display: grid; gap: var(--space-md); margin-bottom: var(--space-2xl); max-width: 60ch; }
+.head p { color: var(--color-ink-2); font-size: var(--text-lead); line-height: 1.45; max-width: 52ch; }
 
-  .price { max-width:460px; margin:0 auto; text-align:center; border:2px solid var(--a); }
-  .price .amt { font-size:3.4rem; font-weight:900; letter-spacing:-.04em; line-height:1; margin:8px 0; }
-  .price .amt small { font-size:1rem; color:var(--mute); font-weight:600; letter-spacing:0; }
-  .price ul { list-style:none; padding:0; margin:16px 0; text-align:left; }
-  .price li { padding:7px 0 7px 28px; border-top:1px solid var(--line); position:relative; }
-  .price li::before { content:"✓"; position:absolute; left:4px; color:var(--g); font-weight:900; }
-  .soon { font-size:.88rem; color:var(--mute); background:var(--bg); border-radius:10px; padding:8px 12px; }
+/* How a post is made: one lane of five steps */
+.lane { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: var(--rule-hair) solid var(--color-ink); }
+.lane li { position: relative; padding: var(--space-lg) var(--space-lg) 0 0; display: grid; gap: var(--space-xs); align-content: start; }
+.lane .n { font: 300 var(--text-3xl)/1 var(--font-display); color: var(--color-shade-2); font-variant-numeric: tabular-nums; }
+.lane li.you .n { color: var(--color-accent); }
+.lane p { color: var(--color-ink-2); font-size: var(--text-md); }
+.lane-note { margin-top: var(--space-xl); color: var(--color-muted); font-size: var(--text-sm); }
 
-  details { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 16px; margin-bottom:8px; }
-  summary { font-weight:700; cursor:pointer; }
-  details p { color:var(--mute); margin:.6em 0 0; }
+/* The team as a schedule */
+.team { border-top: var(--rule-hair) solid var(--color-rule); }
+.team li { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 6fr) minmax(0, 3fr); gap: var(--gap-columns); align-items: center; padding-block: var(--space-lg); border-bottom: var(--rule-hair) solid var(--color-rule); }
+.team .who { display: flex; align-items: center; gap: var(--space-sm); }
+.team .who::before { content: attr(data-initial); display: inline-grid; place-items: center; flex: none; width: 44px; height: 44px; border-radius: var(--radius-pill); background: var(--color-light); color: var(--color-ink-2); font: 500 var(--text-sm)/1 var(--font-body); letter-spacing: 0; box-shadow: inset 0 0 0 1px var(--color-rule); }
+.team p { color: var(--color-ink-2); }
+.team .when { color: var(--color-muted); font-size: var(--text-sm); text-align: right; }
 
-  form { display:grid; gap:12px; max-width:520px; }
-  label { font-weight:600; font-size:.92rem; display:block; }
-  input[type=text], input[type=email] { width:100%; font:inherit; padding:10px 12px; border:1px solid var(--line); border-radius:10px; margin-top:4px; background:var(--field); color:var(--ink); }
-  input[aria-invalid="true"] { border-color:#d2776d; }
-  .err { color:#d2776d; font-size:.82rem; min-height:1em; }
-  .hp { position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
-  .privacy { font-size:.82rem; color:var(--mute); margin:0; }
-  .chk { display:flex; gap:14px; flex-wrap:wrap; font-weight:400; margin-top:4px; }
-  .chk label { font-weight:400; display:flex; gap:6px; align-items:center; }
-  .thanks { background:rgba(120,181,140,.12); border:1px solid var(--g); border-radius:14px; padding:18px; max-width:520px; }
-  .cta-band { background:linear-gradient(180deg,#191d20,#101214); }
-  .alpha ul { margin:.4em 0 0; padding-left:20px; color:var(--mute); }
-  .alpha li { margin:.35em 0; }
-  .alpha li b { color:var(--ink); }
-  footer { padding:28px 0 60px; color:var(--mute); font-size:.85rem; }
+/* A week: tap a day */
+.week { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--gap-columns); align-items: start; }
+.days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: var(--space-2xs); padding: var(--space-2xs); border-radius: var(--radius-pill); background: var(--color-paper-3); margin-bottom: var(--space-lg); }
+.day { min-height: 44px; border: 0; border-radius: var(--radius-pill); background: transparent; color: var(--color-ink-2); font-size: var(--text-sm); font-weight: 500; cursor: pointer; transition: background-color var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out); }
+.day:hover { background: var(--color-paper-2); }
+.day:active { transform: translateY(1px); }
+.day[aria-selected="true"] { background: var(--color-light); color: var(--color-ink); box-shadow: var(--edge-light), var(--shadow-card); }
+.log { display: grid; gap: 0; border-top: var(--rule-hair) solid var(--color-rule); min-height: 300px; }
+.ev { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--space-sm); padding-block: var(--space-md); border-bottom: var(--rule-hair) solid var(--color-rule); }
+.ev .t { font-size: var(--text-xs); color: var(--color-muted); }
+.ev p { color: var(--color-ink-2); }
+.sample { background: var(--color-light); border-radius: var(--radius-card); box-shadow: var(--edge-light), var(--shadow-card); padding: var(--space-lg); display: grid; gap: var(--space-md); }
+.sample .diagram { border-radius: var(--radius-inner); background: var(--color-accent-soft); padding: var(--space-lg); font: 400 var(--text-xl)/1.15 var(--font-display); letter-spacing: -0.02em; color: var(--color-ink); }
+.sample .acts { display: flex; flex-wrap: wrap; gap: var(--space-xs); align-items: center; }
+.sample textarea { width: 100%; min-height: 84px; margin-top: var(--space-sm); padding: var(--space-sm); border: var(--rule-hair) solid var(--color-muted); border-radius: var(--radius-inner); background: var(--color-light); resize: vertical; }
+.sample textarea:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 1px; }
+
+/* What you get: figures */
+.figures { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--gap-columns); border-top: var(--rule-hair) solid var(--color-ink); }
+.figures li { padding-top: var(--space-lg); display: grid; gap: var(--space-xs); align-content: start; }
+.figures .fig { font: 300 var(--text-figure)/0.95 var(--font-display); letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+.figures .fig svg { width: 0.8em; height: 0.8em; color: var(--color-accent); }
+.figures h3 { font-size: var(--text-lg); }
+.figures p { color: var(--color-ink-2); font-size: var(--text-md); }
+.own { margin-top: var(--space-3xl); display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--gap-columns); align-items: start; }
+.own p { color: var(--color-ink-2); font-size: var(--text-lead); line-height: 1.5; max-width: 54ch; }
+
+/* Alpha and pricing */
+.alpha { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--space-2xl); align-items: start; }
+.alpha-list { border-top: var(--rule-hair) solid var(--color-rule); margin-top: var(--space-xl); }
+.alpha-list li { padding-block: var(--space-md); border-bottom: var(--rule-hair) solid var(--color-rule); color: var(--color-ink-2); }
+.alpha-list b { color: var(--color-ink); font-weight: 500; }
+.paths { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--gap-columns); margin-top: var(--space-xl); }
+.paths h3 { font-size: var(--text-lg); margin-bottom: var(--space-xs); }
+.paths p { color: var(--color-ink-2); }
+.price { position: sticky; top: 96px; background: var(--color-light); border-radius: var(--radius-card); box-shadow: var(--edge-light), var(--shadow-cast); padding: var(--space-xl); display: grid; gap: var(--space-md); }
+.price .amt { font: 300 var(--text-figure)/1 var(--font-display); letter-spacing: -0.04em; }
+.price .amt small { font: 400 var(--text-lg)/1 var(--font-body); letter-spacing: 0; color: var(--color-muted); }
+.price ul { display: grid; gap: var(--space-xs); color: var(--color-ink-2); font-size: var(--text-md); }
+.price li { display: flex; gap: var(--space-xs); }
+.price li svg { flex: none; width: 18px; height: 18px; margin-top: 0.2em; color: var(--color-accent); }
+.price .btn { width: 100%; }
+
+/* FAQ */
+.faq { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--gap-columns); align-items: start; }
+.faq details { border-bottom: var(--rule-hair) solid var(--color-rule); }
+.faq details:first-child { border-top: var(--rule-hair) solid var(--color-rule); }
+.faq summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; gap: var(--space-md); padding-block: var(--space-md); font: 400 var(--text-lg)/1.3 var(--font-display); }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+.faq summary svg { flex: none; width: 18px; height: 18px; color: var(--color-muted); transition: transform var(--dur-short) var(--ease-out); }
+.faq details[open] summary svg { transform: rotate(45deg); }
+.faq details p { padding-bottom: var(--space-md); color: var(--color-ink-2); max-width: 62ch; }
+
+/* Join: the light again, the form on a clear panel */
+.join { position: relative; overflow: hidden; padding-block: var(--section-gap); }
+.join .light { inset: 0; border-radius: 0; }
+.join .container { position: relative; z-index: var(--z-raised); display: grid; place-items: center; }
+.join-card { width: min(100%, 640px); background: var(--color-clear); border-radius: var(--radius-card); box-shadow: var(--edge-light), var(--shadow-cast); padding: var(--space-2xl) var(--space-xl); display: grid; gap: var(--space-md); }
+.join-card > p { color: var(--color-ink-2); }
+.join form { display: grid; gap: var(--space-sm); margin-top: var(--space-xs); }
+.join .row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--space-xs); }
+.join label { font-size: var(--text-sm); font-weight: 500; }
+.join input[type=email] { min-height: 48px; width: 100%; padding: 0 var(--space-md); border: var(--rule-hair) solid var(--color-muted); border-radius: var(--radius-pill); background: var(--color-light); }
+.join input[type=email]:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+.join input[aria-invalid="true"] { border-color: var(--color-error); }
+.err { min-height: 1.4em; font-size: var(--text-sm); color: var(--color-error); }
+.privacy { font-size: var(--text-xs); color: var(--color-muted); }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.thanks { display: grid; gap: var(--space-xs); }
+
+/* Footer: colophon block */
+.foot { padding-block: var(--section-gap-s) var(--space-2xl); border-top: var(--rule-hair) solid var(--color-rule); }
+.foot .container { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--gap-columns); font-size: var(--text-sm); color: var(--color-muted); }
+.foot .brand { display: grid; gap: var(--space-xs); }
+.foot .brand b { font: 500 var(--text-lg)/1 var(--font-display); color: var(--color-ink); letter-spacing: -0.02em; }
+.foot nav { display: flex; gap: var(--space-md); flex-wrap: wrap; }
+.foot p { max-width: 62ch; }
+
+@media (max-width: 68rem) {
+  .nav .links { display: none; }
+  .hero .container { grid-template-columns: minmax(0, 1fr); min-height: 0; gap: var(--space-xl); padding-block: var(--space-xl) var(--space-2xl); }
+  .stage { min-height: 0; padding: var(--space-xl) var(--space-md); }
+  .light { inset: 0 calc(-1 * var(--gutter)); border-radius: 0; }
+  .lane { grid-template-columns: minmax(0, 1fr); border-top: 0; }
+  .lane li { grid-template-columns: 56px minmax(0, 1fr); padding: var(--space-md) 0; border-top: var(--rule-hair) solid var(--color-rule); }
+  .lane li h3, .lane li p { grid-column: 2; }
+  .lane li .n { grid-row: span 2; font-size: var(--text-2xl); }
+  .team li { grid-template-columns: minmax(0, 1fr); gap: var(--space-xs); }
+  .team .when { text-align: left; }
+  .week, .alpha, .faq, .own, .foot .container { grid-template-columns: minmax(0, 1fr); }
+  .figures { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: var(--space-xl); }
+  .price { position: static; }
+}
+@media (max-width: 60rem) { :root { --gutter: 24px; --section-gap-s: 88px; --section-gap: 104px; } }
+@media (max-width: 40rem) {
+  :root { --gutter: 16px; --section-gap-s: 72px; --section-gap: 88px; --gap-columns: 16px; }
+  .head { margin-bottom: var(--space-xl); }
+  .paths { grid-template-columns: minmax(0, 1fr); }
+  .join-card { padding: var(--space-xl) var(--space-lg); }
+  .join .row { grid-template-columns: minmax(0, 1fr); }
+  .inbox { padding: var(--space-md); }
+  .days { border-radius: var(--radius-inner); }
+  .day { border-radius: var(--radius-inner); }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  .post-text .caret { display: none; }
+}
 </style>
 </head>
 <body>
 
 <!-- E43-S2 (EPIC-43): the brand family's shared header line, as on epicspine.dev, team.alpha9.io and social.alpha9.io -->
-<div class="family" aria-label="The Epic family"><div class="wrap"><a href="https://epicspine.dev/">EpicSpine</a> · Epic Team · <b>Epic Social</b></div></div>
-<nav><div class="wrap">
-  <a class="logo" href="#top"><i>ES</i>Epic Social</a>
-  <div class="links">
-    <a class="hide-s" href="#flow">How a post is made</a>
-    <a class="hide-s" href="#team">Team</a>
-    <a class="hide-s" href="#week">A week</a>
-    <a class="hide-s" href="#alpha">Alpha</a>
-    <a class="hide-s" href="#pricing">Pricing</a>
-    <a class="hide-s" href="#faq">FAQ</a>
-    <a class="btn sm" href="#join">Join the waitlist</a>
-  </div>
-</div></nav>
+<div class="family" aria-label="The Epic family"><div class="container"><a href="https://epicspine.dev/">EpicSpine</a><span>Epic Team</span><b>Epic Social</b></div></div>
 
-<header class="hero" id="top"><div class="wrap row">
-  <div>
-    <div class="k" style="color:var(--a)">Alpha release · for founders, small businesses and creators</div>
-    <h1>Your social media team. <span>You approve every post.</span></h1>
-    <p class="sub">Epic Social is four AI personas on your brand. You, or our Idea persona, come up with the ideas; the team researches each one, writes the post with a diagram and puts it in your inbox. You approve it, or approve it with feedback. Everything they learn is kept in files you own.</p>
-    <div class="cta-row">
-      <a class="btn" href="#join">Join the waitlist</a>
-      <a class="btn ghost" href="#alpha">What alpha means</a>
-    </div>
-  </div>
-  <div class="stack" aria-label="What your team did this week (example)">
-    <div class="mini"><span class="av s">I</span>Added 2 ideas to your list, picked this week's 3<span class="t">Mon 08:00</span></div>
-    <div class="mini"><span class="av sc">Re</span>Researched Wednesday's idea: 3 sources, 1 question<span class="t">Tue 11:00</span></div>
-    <div class="mini"><span class="av c">W</span>Drafted Wednesday's post + diagram, waiting for you<span class="t">Tue 15:00</span></div>
-    <div class="mini"><span class="av r">R</span>Answered 6 replies on your posts<span class="t">Tue 20:00</span></div>
-  </div>
+<header class="nav"><div class="container">
+  <a class="wordmark" href="#top" aria-label="Epic Social, back to top"><svg viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="12" fill="var(--color-accent)"/><path d="M8 14.5c2.2 2.6 7.8 2.6 10 0M9.5 10h.01M16.5 10h.01" stroke="var(--color-accent-ink)" stroke-width="2.2" stroke-linecap="round" fill="none"/></svg>Epic Social</a>
+  <nav class="links" aria-label="Sections">
+    <a href="#flow">How a post is made</a>
+    <a href="#team">The team</a>
+    <a href="#week">A week</a>
+    <a href="#alpha">Alpha</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#faq">FAQ</a>
+  </nav>
+  <a class="btn btn--sm" href="#join">Join the waitlist</a>
 </div></header>
 
-<section id="flow"><div class="wrap">
-  <div class="k">How a post is made</div>
-  <h2>Idea, research, draft, your OK.</h2>
-  <p class="sub">No random posts. Every post starts from an idea on your list and is researched before anyone writes a word.</p>
-  <div class="steps" style="margin-top:18px">
-    <div class="card"><h3>An idea</h3><p>Yours (a topic list, a voice note, a line in chat) or the Idea persona's, from what is trending in your space. Your list is kept sorted, strongest first.</p></div>
-    <div class="card"><h3>Research</h3><p>The Researcher digs into the idea: what has been said, sources, numbers, and the question your post will open with.</p></div>
-    <div class="card"><h3>A draft</h3><p>The Writer turns the research into a post in your voice: first person, a question first, one diagram.</p></div>
-    <div class="card"><h3>Your inbox</h3><p>Approve it, or approve it with feedback: the Writer applies your feedback and schedules it. Nothing goes out without your OK in the first two weeks.</p></div>
-    <div class="card"><h3>Posted</h3><p>It goes out on Reddit and X. The Responder answers the replies, and what worked feeds the next ideas.</p></div>
+<main>
+<section class="hero" id="top"><div class="container">
+  <div class="hero-copy">
+    <h1>AI agents that build your reputation.</h1>
+    <p class="lead">They find ideas, write posts and answer replies. You approve every post.</p>
+    <div class="actions">
+      <a class="btn" href="#join">Join the waitlist</a>
+      <a class="btn btn--clear" href="#alpha">What alpha means</a>
+    </div>
+    <p class="note">Alpha release, for founders, small businesses and creators. The waitlist is free.</p>
   </div>
-  <p class="note" style="margin-top:14px">This is how our own team posts today: we run it for Zenod and for Epic Social itself.</p>
-</div></section>
 
-<section id="team"><div class="wrap">
-  <div class="k">Meet the team</div>
-  <h2>Four specialists, one brand: yours.</h2>
-  <p class="sub">Each one wakes on a schedule, does its job, and hands the work to the next through your repo.</p>
-  <div class="grid">
-    <div class="card persona"><div class="top"><span class="av s">I</span><b>Idea persona</b></div><p>Keeps your idea list: adds your topics, suggests its own from trends and a handful of competitors you choose, and picks the week's three.</p><span class="when">1st of the month + every Monday</span></div>
-    <div class="card persona"><div class="top"><span class="av sc">Re</span><b>Researcher</b></div><p>Researches each idea before it is written, and sends a weekly report with numbers: what worked, what competitors did.</p><span class="when">Before each post + weekly</span></div>
-    <div class="card persona"><div class="top"><span class="av c">W</span><b>Writer</b></div><p>Writes every post, text and diagram, in your brand voice, puts it in your inbox, and applies your feedback.</p><span class="when">3 times a week</span></div>
-    <div class="card persona"><div class="top"><span class="av r">R</span><b>Responder</b></div><p>Answers replies and mentions on your posts. Anything sensitive comes to you instead of getting an answer.</p><span class="when">Every 12 hours</span></div>
-  </div>
-</div></section>
-
-<section id="get"><div class="wrap">
-  <div class="k">What you get every week</div>
-  <h2>Steady presence, without the hours.</h2>
-  <div class="grid" style="margin-top:18px">
-    <div class="card"><div class="stat">3</div><h3>posts a week</h3><p>Each from a researched idea, written with a diagram, on Reddit and X.</p></div>
-    <div class="card"><div class="stat">12 h</div><h3>reply time</h3><p>Everyone who comments on or mentions your posts hears back within 12 hours.</p></div>
-    <div class="card"><div class="stat">1</div><h3>weekly report</h3><p>What worked, what didn't, what competitors did, with numbers.</p></div>
-    <div class="card"><div class="stat">✓</div><h3>approval inbox</h3><p>See every draft. Approve, or approve with feedback, in one tap. Nothing goes out in the first two weeks without your OK.</p></div>
-  </div>
-</div></section>
-
-<section id="week"><div class="wrap">
-  <div class="k">Try it · a week with your team</div>
-  <h2>Tap a day.</h2>
-  <p class="sub">An example week for a made-up bakery, "Forno Lume", so you can see who does what: idea, research, draft, your OK. Wednesday's post is waiting for you.</p>
-  <div class="days" role="tablist" id="days"></div>
-  <div class="demo">
-    <div class="card" id="log" aria-live="polite"></div>
-    <div>
-      <div class="post" id="post">
-        <div class="bar"><span class="av c" style="width:26px;height:26px;font-size:.7rem">W</span><b>Writer</b> · for Wed 10:00 · Reddit + X<span style="margin-left:auto" class="pill wait" id="pstate">Waiting for you</span></div>
-        <div class="body">
-          <div class="visual">Sourdough: 36 hours, 30 minutes of work.</div>
-          <div id="ptext">How long do you think good bread takes? Ours takes 36 hours, and we touch it for about 30 minutes. The rest is the dough working on its own: slow fermentation builds flavour no shortcut can. Fresh loaves from 7:00, Tuesday to Saturday. 🍞</div>
-        </div>
-        <div class="actions" id="pact">
-          <button class="btn ok sm" id="approve">Approve</button>
-          <button class="btn ghost sm" id="editb">Approve with feedback</button>
-        </div>
+  <div class="stage">
+    <div class="light" aria-hidden="true"><canvas data-light width="224" height="176"></canvas></div>
+    <figure class="inbox" id="inbox" aria-label="Example: your team at work on one post">
+      <div class="inbox-head">
+        <p class="inbox-title">Your team, this week</p>
+        <button class="toggle" type="button" id="playpause" aria-label="Pause the example" aria-pressed="false" hidden><svg viewBox="0 0 16 16" aria-hidden="true"><path id="pp-icon" d="M4 2h3v12H4zM9 2h3v12H9z" fill="currentColor"/></svg></button>
       </div>
-      <p class="note">In the real console this is your approval inbox. Your feedback teaches the Writer: it is saved to your brand voice file.</p>
+      <div class="agents" role="list">
+        <div class="agent" role="listitem" data-agent="I"><span class="av">I</span>Ideas</div>
+        <div class="agent" role="listitem" data-agent="Re"><span class="av">Re</span>Researcher</div>
+        <div class="agent on" role="listitem" data-agent="W"><span class="av">W</span>Writer</div>
+        <div class="agent" role="listitem" data-agent="R"><span class="av">R</span>Responder</div>
+      </div>
+      <p class="doing" id="doing" aria-live="polite">The Writer drafted Wednesday’s post. It is waiting for you.</p>
+      <div class="post">
+        <div class="post-by"><span class="av av--you">FL</span><b>Forno Lume</b><span class="where">Reddit and X</span></div>
+        <p class="post-text" id="post-text">How long does good bread take? Ours takes 36 hours, and we touch it for about 30 minutes. The rest is slow fermentation, building flavour no shortcut can.</p>
+        <div class="post-foot"><span class="state wait" id="post-state">Waiting for you</span><span class="approve-fake" id="approve-fake" aria-hidden="true">Approve</span></div>
+      </div>
+      <div class="replies" id="replies">
+        <div class="reply"><span class="av">MA</span><span>Do you have a gluten-free loaf?</span></div>
+        <div class="reply from-team"><span class="av">R</span><span>Yes, every Saturday from 7:00. We keep a few aside if you message us.</span></div>
+      </div>
+      <figcaption class="caption">Example: Forno Lume, a made-up bakery.</figcaption>
+    </figure>
+  </div>
+</div></section>
+
+<section class="section" id="flow"><div class="container">
+  <div class="head">
+    <h2>Every post starts with an idea and ends with your OK.</h2>
+    <p>Nothing random. Each idea is researched before anyone writes a word.</p>
+  </div>
+  <ol class="lane">
+    <li><span class="n">1</span><h3>An idea</h3><p>Yours, from a topic list, a voice note or a line in chat. Or one the Ideas agent spots in your space.</p></li>
+    <li><span class="n">2</span><h3>Research</h3><p>The Researcher finds what has been said, sources, numbers and the question to open with.</p></li>
+    <li><span class="n">3</span><h3>A draft</h3><p>The Writer turns it into a post in your voice, with one diagram.</p></li>
+    <li class="you"><span class="n">4</span><h3>Your OK</h3><p>Approve it, or approve it with feedback. The Writer learns from every note.</p></li>
+    <li><span class="n">5</span><h3>Posted</h3><p>On Reddit and X. The Responder answers the replies, and what worked feeds the next ideas.</p></li>
+  </ol>
+  <p class="lane-note">This is how our own team posts today, for Zenod and for Epic Social itself.</p>
+</div></section>
+
+<section class="section section--paper2" id="team"><div class="container">
+  <div class="head">
+    <h2>Four AI agents, one brand: yours.</h2>
+    <p>Each one works on a schedule, does its job and hands the work to the next.</p>
+  </div>
+  <ul class="team">
+    <li><h3 class="who" data-initial="I">Ideas agent</h3><p>Keeps your idea list, adds its own from trends and a few competitors you choose, and picks the week’s three.</p><span class="when">Every Monday</span></li>
+    <li><h3 class="who" data-initial="Re">Researcher</h3><p>Researches each idea before it is written, and sends a weekly report: what worked, what competitors did.</p><span class="when">Before each post, and weekly</span></li>
+    <li><h3 class="who" data-initial="W">Writer</h3><p>Writes every post, text and diagram, in your voice, puts it in your inbox and applies your feedback.</p><span class="when">3 times a week</span></li>
+    <li><h3 class="who" data-initial="R">Responder</h3><p>Answers replies and mentions on your posts. Anything sensitive comes to you instead.</p><span class="when">Every 12 hours</span></li>
+  </ul>
+</div></section>
+
+<section class="section" id="week"><div class="container">
+  <div class="head">
+    <h2>Tap a day.</h2>
+    <p>A week for Forno Lume, a made-up bakery. Wednesday’s post is waiting for you.</p>
+  </div>
+  <div class="week">
+    <div>
+      <div class="days" role="tablist" id="days" aria-label="Days of the week"></div>
+      <div class="log" id="log" role="tabpanel" aria-live="polite"></div>
+    </div>
+    <div class="sample" id="post">
+      <div class="post-by"><span class="av">W</span><b>Writer</b><span class="where">for Wed 10:00, Reddit and X</span></div>
+      <div class="diagram">Sourdough: 36 hours, 30 minutes of work.</div>
+      <div id="ptext">How long do you think good bread takes? Ours takes 36 hours, and we touch it for about 30 minutes. The rest is the dough working on its own: slow fermentation builds flavour no shortcut can. Fresh loaves from 7:00, Tuesday to Saturday.</div>
+      <div class="acts" id="pact">
+        <button class="btn btn--sm" type="button" id="approve">Approve</button>
+        <button class="btn btn--clear btn--sm" type="button" id="editb">Approve with feedback</button>
+      </div>
+      <span class="state wait" id="pstate">Waiting for you</span>
+      <p class="caption">In the real app this is your approval inbox. Your feedback is saved to your brand voice, so the Writer learns it.</p>
     </div>
   </div>
 </div></section>
 
-<section id="how"><div class="wrap">
-  <div class="k">How it works</div>
-  <h2>Five steps, then it runs.</h2>
-  <div class="steps" style="margin-top:18px">
-    <div class="card"><h3>Sign up</h3><p>Pick the plan, pay, and land in your console.</p></div>
-    <div class="card"><h3>Connect GitHub</h3><p>We create your team's repo in your own GitHub account. No GitHub yet? We walk you through a free one.</p></div>
-    <div class="card"><h3>Connect your accounts</h3><p>A guided step for each channel. You sign in on the platform's own page; we never see your password.</p></div>
-    <div class="card"><h3>Approve week one</h3><p>Give us your topics; the Idea persona adds its own. The first posts are researched and drafted; you approve them in your inbox.</p></div>
-    <div class="card"><h3>The team runs</h3><p>Posts, replies and reports on schedule. Watch it all in the console.</p></div>
+<section class="section section--paper2" id="get"><div class="container">
+  <div class="head">
+    <h2>Steady presence, without the hours.</h2>
+  </div>
+  <ul class="figures">
+    <li><span class="fig">3</span><h3>posts a week</h3><p>Each from a researched idea, with a diagram, on Reddit and X.</p></li>
+    <li><span class="fig">12 h</span><h3>reply time</h3><p>Everyone who comments on or mentions your posts hears back within 12 hours.</p></li>
+    <li><span class="fig">1</span><h3>weekly report</h3><p>What worked, what didn’t and what competitors did, with numbers.</p></li>
+    <li><span class="fig"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h3>approval inbox</h3><p>See every draft. Approve, or approve with feedback, in one tap.</p></li>
+  </ul>
+  <div class="own">
+    <h3 style="font-size: var(--text-2xl)">Everything your team learns stays yours.</h3>
+    <p>Your brand voice, your idea list, every post, every reply and every lesson are kept in files you own. Cancel any time and they stay with you. The engine behind the team is open source, and posts go out from your own accounts through each platform’s official tools.</p>
   </div>
 </div></section>
 
-<section id="own"><div class="wrap">
-  <div class="k">You own it</div>
-  <h2>Your brand's memory lives with you, not with us.</h2>
-  <p class="sub">The team works in a repo in your GitHub. Your brand voice, calendar, every post, every reply and every lesson learned are plain files you keep. Cancel any time and the repo stays yours.</p>
-  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr))">
-    <div class="repo">forno-lume-social/      <i>← your repo</i>
-├─ brand-voice.md       <i>how you sound, do's and don'ts</i>
-├─ ideas.md             <i>your idea list, strongest first</i>
-├─ research/            <i>the research behind each post</i>
-├─ calendar.md          <i>this week: what, when, where</i>
-├─ posts-ledger.md      <i>every post, link and result</i>
-├─ replies-log.md       <i>every reply the team sent</i>
-├─ reports/             <i>weekly reports</i>
-└─ learnings.md         <i>your corrections, kept for good</i></div>
-    <div class="stack">
-      <div class="card"><h3>Open source</h3><p>The engine behind the team is open source. If you'd rather run it yourself, on your own computer or server with your own AI key, you can, for free. We host it for people who'd rather not.</p></div>
-      <div class="card"><h3>Your accounts stay yours</h3><p>Posts go out from your own accounts through each platform's official tools, and every post says an AI helped write it where the platform asks for it.</p></div>
+<section class="section" id="alpha"><div class="container alpha">
+  <div>
+    <div class="head" style="margin-bottom: 0">
+      <h2>This is an alpha. We’re looking for testers.</h2>
+      <p>Epic Social works: our own team posts with it every day for Zenod. But it is early, and we want a few people to use it on their own accounts before we open it to everyone.</p>
     </div>
-  </div>
-  <h3 style="margin-top:30px">Under the hood: two ideas</h3>
-  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr))">
-    <div class="idea"><span class="n">1</span><b>Talk, and it becomes a plan.</b><p style="color:var(--mute);margin:.5em 0 0">Say what you want in plain words ("more about our weekend bakes"). It turns into a goal with clear steps that the team tracks and delivers. Nothing you say gets lost in a chat.</p></div>
-    <div class="idea"><span class="n">2</span><b>The memory is your repo.</b><p style="color:var(--mute);margin:.5em 0 0">Goals, progress, decisions and the reasons behind them are files in your repo, not rows in our database. Any new team member, human or AI, starts with the whole story.</p></div>
-  </div>
-</div></section>
-
-<section id="alpha" class="alpha"><div class="wrap" style="max-width:820px">
-  <div class="k">Alpha release</div>
-  <h2>This is an alpha. We're looking for testers.</h2>
-  <p class="sub">Epic Social works: our own team posts with it every day for Zenod. But it is early, and we want a few people to use it on their own accounts before we open it to everyone.</p>
-  <div class="card">
-    <h3>What alpha means</h3>
-    <ul>
+    <ul class="alpha-list" aria-label="What alpha means">
       <li><b>It is rough.</b> Some things will break or change from week to week. We fix them fast, and we tell you what changed.</li>
-      <li><b>We set it up with you.</b> Your brief, your channels and your first posts, together, by hand, while sign-up is not self-serve yet.</li>
+      <li><b>We set it up with you.</b> Your brief, your channels and your first posts, together, by hand.</li>
       <li><b>Your feedback decides what comes next.</b> A few lines a week, or a short call.</li>
       <li><b>Nothing goes out without your OK.</b> Every post is a draft until you approve it.</li>
     </ul>
+    <div class="paths">
+      <div><h3>Want to test it now?</h3><p>Testers run it on their own Reddit and X during the alpha, at about $10 a month. Read what we ask and apply at <a href="https://epicspine.dev/testers/">epicspine.dev/testers</a>.</p></div>
+      <div><h3>Rather wait?</h3><p>Join the waitlist. We’ll write to you when Epic Social opens to more people. Nothing to pay, no commitment. <a href="#join">Join the waitlist</a></p></div>
+    </div>
   </div>
-  <div class="grid" style="margin-top:14px">
-    <div class="card"><h3>Want to test it now?</h3><p>Testers run it on their own Reddit and X during the alpha, at about $10 a month. Read what we ask and apply: <a href="https://epicspine.dev/testers/">epicspine.dev/testers</a>.</p></div>
-    <div class="card"><h3>Rather wait?</h3><p>Join the waitlist. We'll write to you when Epic Social opens to more people. Nothing to pay, no commitment. <a href="#join">Join the waitlist</a></p></div>
-  </div>
-</div></section>
-
-<section id="pricing"><div class="wrap">
-  <div class="k" style="text-align:center">Pricing</div>
-  <h2 style="text-align:center">One plan, after the alpha.</h2>
-  <p class="sub" style="text-align:center;margin:0 auto">The price we plan once Epic Social opens. During the alpha, testers pay about $10 a month, and the waitlist costs nothing.</p>
-  <div class="card price" style="margin-top:18px">
-    <b>Epic Social</b>
+  <div class="price" id="pricing">
+    <h2 style="font-size: var(--text-2xl)">One plan, after the alpha.</h2>
     <div class="amt">€99 <small>/ month, planned</small></div>
+    <p class="muted small">The price we plan once Epic Social opens. During the alpha, testers pay about $10 a month, and the waitlist costs nothing.</p>
     <ul>
-      <li>4 personas: Idea persona, Researcher, Writer, Responder</li>
-      <li>3 posts a week, each from a researched idea, with a diagram</li>
-      <li>Replies to comments and mentions every 12 hours</li>
-      <li>Weekly report with numbers</li>
-      <li>Approval inbox: approve, or approve with feedback</li>
-      <li>2 channels: Reddit and X</li>
-      <li>AI usage included, nothing else to pay us</li>
-      <li>Your repo, yours to keep</li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>4 AI agents: Ideas, Researcher, Writer, Responder</li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>3 posts a week, each researched, with a diagram</li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Replies to comments and mentions every 12 hours</li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Weekly report and an approval inbox</li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Reddit and X, AI usage included</li>
     </ul>
-    <a class="btn" href="#join" style="width:100%">Join the waitlist</a>
-    <p class="soon" style="margin-top:12px">Coming later: more posts a week, faster replies, more channels.</p>
+    <a class="btn" href="#join">Join the waitlist</a>
+    <p class="muted small">Coming later: more posts a week, faster replies, more channels.</p>
   </div>
 </div></section>
 
-<section id="faq"><div class="wrap" style="max-width:820px">
-  <div class="k">Questions</div>
-  <h2>FAQ</h2>
-  <details><summary>Is it AI?</summary><p>Yes. Every persona is an AI agent. We don't hide it: your profile and posts say AI helps run the account where the platform asks for it, and the Responder never pretends to be a person.</p></details>
-  <details><summary>Which networks?</summary><p>Reddit and X at launch: that is where our own team posts every day. More channels (LinkedIn, Instagram) come later; some platforms need to approve our app before we can post for you.</p></details>
-  <details><summary>Where do the ideas come from?</summary><p>From you first: a list of topics, a voice note, a line in chat. The Idea persona adds its own from what is trending in your space, and keeps the list sorted. Each idea is researched before the Writer drafts it.</p></details>
-  <details><summary>Do I have to approve everything?</summary><p>For the first two weeks, yes: nothing goes out without your OK. You approve a draft, or approve it with feedback and the Writer applies it before it goes out. After two weeks you choose: keep approving, or let the team post on its own and review after the fact.</p></details>
-  <details><summary>Will it reply to strangers or send DMs?</summary><p>No. The Responder only answers people who commented on or mentioned your posts. No cold replies, no DMs to strangers: platforms ban that, and it reads as spam.</p></details>
-  <details><summary>What happens if I cancel?</summary><p>The team stops working. Your repo, with your brand voice, calendar, every post and every lesson, stays in your GitHub. You can even run the open-source team on it yourself.</p></details>
-  <details><summary>Can I run it myself instead?</summary><p>Yes. The engine is open source. Bring your own server and your own AI key and run it for free. The hosted plan is for people who'd rather we handle the servers, the setup and the AI costs.</p></details>
-  <details><summary>What does "alpha" mean here?</summary><p>It works and we use it every day, but it is early: things change from week to week, and we set each team up by hand with you. We are looking for testers to use it on their own accounts and tell us what is broken.</p></details>
-  <details><summary>Can I test it now?</summary><p>Yes. Testers start during the alpha, at about $10 a month, with nothing to pay until your own team runs: <a href="https://epicspine.dev/testers/">epicspine.dev/testers</a>.</p></details>
-  <details><summary>What happens when I join the waitlist?</summary><p>Nothing yet: we keep your email and write to you when Epic Social opens to more people. No payment, no newsletter.</p></details>
+<section class="section section--paper2" id="faq"><div class="container faq">
+  <h2>Questions</h2>
+  <div>
+    <details><summary>Is it AI?<svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></summary><p>Yes. Every member of the team is an AI agent. We don’t hide it: your profile and posts say AI helps run the account where the platform asks for it, and the Responder never pretends to be a person.</p></details>
+    <details><summary>Which networks?<svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></summary><p>Reddit and X at launch: that is where our own team posts every day. More channels (LinkedIn, Instagram) come later; some platforms need to approve our app before we can post for you.</p></details>
+    <details><summary>Where do the ideas come from?<svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></summary><p>From you first: a list of topics, a voice note, a line in chat. The Ideas agent adds its own from what is trending in your space, and keeps the list sorted. Each idea is researched before the Writer drafts it.</p></details>
+    <details><summary>Do I have to approve everything?<svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></summary><p>For the first two weeks, yes: nothing goes out without your OK. You approve a draft, or approve it with feedback and the Writer applies it before it goes out. After two weeks you choose: keep approving, or let the team post on its own and review after the fact.</p></details>
+    <details><summary>Will it reply to strangers or send DMs?<svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></summary><p>No. The Responder only answers people who commented on or mentioned your posts. No cold replies and no DMs to strangers: platforms ban that, and it reads as spam.</p></details>
+    <details><summary>What happens if I cancel?<svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></summary><p>The team stops working. Your files, with your brand voice, calendar, every post and every lesson, stay with you. You can even run the open-source team on them yourself.</p></details>
+    <details><summary>Can I run it myself instead?<svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></summary><p>Yes. The engine is open source. Bring your own server and your own AI key and run it for free. The hosted plan is for people who’d rather we handle the servers, the setup and the AI costs.</p></details>
+    <details><summary>What does “alpha” mean here?<svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></summary><p>It works and we use it every day, but it is early: things change from week to week, and we set each team up by hand with you. We are looking for testers to use it on their own accounts and tell us what is broken.</p></details>
+    <details><summary>Can I test it now?<svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></summary><p>Yes. Testers start during the alpha, at about $10 a month, with nothing to pay until your own team runs: <a href="https://epicspine.dev/testers/">epicspine.dev/testers</a>.</p></details>
+    <details><summary>What happens when I join the waitlist?<svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></summary><p>Nothing yet: we keep your email and write to you when Epic Social opens to more people. No payment, no newsletter.</p></details>
+  </div>
 </div></section>
 
-<section id="join" class="cta-band" style="border-bottom:0"><div class="wrap">
-  <div class="k">Waitlist</div>
-  <h2>Join the waitlist.</h2>
-  <p class="sub">Epic Social is in alpha. Leave your email and we'll write to you when it opens to more people. Nothing to pay, no commitment. Want to start now? <a href="https://epicspine.dev/testers/">Apply to test it</a>.</p>
-  <form id="wl" method="post" action="https://team.alpha9.io/api/public/testers">
-    <div><label for="f-email">Email</label><input type="email" id="f-email" name="email" required maxlength="254" autocomplete="email" inputmode="email" placeholder="you@example.com"><div class="err" id="e-email"></div></div>
-    <input type="hidden" name="offer" value="waitlist-alpha">
-    <input type="hidden" name="source" value="social page">
-    <input type="hidden" name="back" value="https://epicspine.dev/social/">
-    <div class="hp" aria-hidden="true"><label for="website">Leave this empty</label><input id="website" name="website" tabindex="-1" autocomplete="off"></div>
-    <div><button class="btn" type="submit">Join the waitlist</button></div>
-    <p class="privacy">We keep only your email, on our own private list, to write to you about Epic Social. No payment, no newsletter, no sharing. Ask us and we delete it.</p>
-  </form>
-  <div class="thanks" id="thanks" hidden></div>
-</div></section>
+<section class="join" id="join">
+  <div class="light" aria-hidden="true"><canvas data-light width="240" height="120"></canvas></div>
+  <div class="container"><div class="join-card">
+    <h2>Join the waitlist.</h2>
+    <p>Epic Social is in alpha. Leave your email and we’ll write to you when it opens to more people. Nothing to pay, no commitment. Want to start now? <a href="https://epicspine.dev/testers/">Apply to test it</a>.</p>
+    <form id="wl" method="post" action="https://team.alpha9.io/api/public/testers">
+      <label for="f-email">Email</label>
+      <div class="row">
+        <input type="email" id="f-email" name="email" required maxlength="254" autocomplete="email" inputmode="email" placeholder="you@example.com" aria-describedby="e-email">
+        <button class="btn" type="submit">Join the waitlist</button>
+      </div>
+      <div class="err" id="e-email" role="alert"></div>
+      <input type="hidden" name="offer" value="waitlist-alpha">
+      <input type="hidden" name="source" value="social page">
+      <input type="hidden" name="back" value="https://epicspine.dev/social/">
+      <div class="hp" aria-hidden="true"><label for="website">Leave this empty</label><input id="website" name="website" tabindex="-1" autocomplete="off"></div>
+      <p class="privacy">We keep only your email, on our own private list, to write to you about Epic Social. No payment, no newsletter, no sharing. Ask us and we delete it.</p>
+    </form>
+    <div class="thanks" id="thanks" role="status" hidden></div>
+  </div></div>
+</section>
+</main>
 
-<footer><div class="wrap">EpicSpine · Epic Team · Epic Social<br>Alpha release. Epic Social runs on Epic Team and EpicSpine, open source. Our first team, running on our own product, posts for Zenod; Epic Social opens right after the Zenod launch. No cookies, no trackers.</div></footer>
+<footer class="foot"><div class="container">
+  <div class="brand"><b>Epic Social</b><nav aria-label="The Epic family"><a href="https://epicspine.dev/">EpicSpine</a><span>Epic Team</span><span>Epic Social</span></nav></div>
+  <p>Alpha release. Epic Social runs on Epic Team and EpicSpine, both open source. Our first team, running on our own product, posts for Zenod; Epic Social opens right after the Zenod launch. No cookies, no trackers.</p>
+</div></footer>
 
 <script>
-  // ---- A week with your team (demo data, fictional bakery) ----
-  const P = { I:['s','Idea persona'], Re:['sc','Researcher'], W:['c','Writer'], R:['r','Responder'], Y:['you','You'] };
-  const WEEK = [
-    ['Mon','Ideas', [['I','08:00','Added 2 ideas to your list (autumn menu, why slow dough tastes better) and picked the week: Wed sourdough story, Fri weekend menu, Sun behind the scenes.'],['R','08:00','Answered 3 weekend comments on Sunday\'s post.'],['R','20:00','Nothing new to answer. Back at 08:00.']]],
-    ['Tue','Research', [['R','08:00','Answered a question about gluten-free options; flagged a complaint about a late order to you instead of replying.'],['Re','11:00','Researched Wednesday\'s idea: 3 sources on slow fermentation, "slow food" posts up this week, opening question: how long does good bread take?'],['W','15:00','Drafted Wednesday\'s post with a diagram from the research. It\'s in your inbox.'],['R','20:00','Answered 2 replies.']]],
-    ['Wed','Post', [['Y','09:12','You approve Wednesday\'s post, or approve it with feedback (try it on the right).'],['W','10:00','Posted to Reddit and X; added the links to the posts ledger.'],['R','20:00','Answered 4 replies on today\'s post.']]],
-    ['Thu','Draft', [['R','08:00','Answered 5 overnight replies.'],['Re','11:00','Researched Friday\'s weekend menu: what nearby bakeries posted, which dishes people ask about.'],['W','15:00','Drafted Friday\'s weekend menu post.'],['R','20:00','Answered 1 mention.']]],
-    ['Fri','Report', [['Re','09:00','Weekly report: Wednesday\'s post got 3× your usual replies. Competitors posted 9 times, mostly prices. Suggestion: more process stories.'],['W','10:00','Posted the weekend menu (approved with your feedback Thursday night: "mention the vegan loaf").'],['R','20:00','Answered 3 replies.']]],
-    ['Sat','Quiet', [['R','08:00','Answered 2 replies.'],['R','20:00','Nothing new.']]],
-    ['Sun','Post', [['W','10:00','Posted behind the scenes: shaping loaves at 5 am.'],['R','20:00','Answered 4 replies.'],['I','20:30','Read the Researcher\'s report: next week\'s ideas lean into process stories.']]]
+document.documentElement.classList.add('js');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+
+// ---- The light: water caustics on a small canvas, scaled up by CSS. Colours come from the tokens. Pauses off screen; one still frame under reduced motion.
+(function () {
+  const probe = document.createElement('canvas').getContext('2d', { willReadFrequently: true });
+  const rgb = (name) => { probe.clearRect(0, 0, 1, 1); probe.fillStyle = getComputedStyle(document.documentElement).getPropertyValue(name).trim(); probe.fillRect(0, 0, 1, 1); return Array.from(probe.getImageData(0, 0, 1, 1).data.slice(0, 3)); };
+  const shade = rgb('--color-shade'), deep = rgb('--color-shade-2'), light = rgb('--color-light'), spark = rgb('--color-accent-bright');
+  document.querySelectorAll('canvas[data-light]').forEach((cv, k) => {
+    const ctx = cv.getContext('2d'), W = cv.width, H = cv.height, img = ctx.createImageData(W, H), d = img.data;
+    let visible = false, raf = 0, last = 0;
+    function frame(t) {
+      const time = t / 1000 * 0.35 + 23 + k * 11, TAU = 6.28318;
+      for (let y = 0; y < H; y++) {
+        for (let x = 0; x < W; x++) {
+          const px = (x / W) * TAU * 1.7 - 250, py = (y / W) * TAU * 1.7 - 250;
+          let ix = px, iy = py, c = 1;
+          for (let n = 0; n < 4; n++) {
+            const tt = time * (1 - 3.5 / (n + 1));
+            const nx = px + Math.cos(tt - ix) + Math.sin(tt + iy), ny = py + Math.sin(tt - iy) + Math.cos(tt + ix);
+            ix = nx; iy = ny;
+            c += 1 / Math.hypot(px / (Math.sin(ix + tt) / 0.005), py / (Math.cos(iy + tt) / 0.005));
+          }
+          c /= 4; c = 1.17 - Math.pow(c, 1.4);
+          let n = Math.min(1, Math.pow(Math.abs(c), 8));
+          const lo = 0.5 + 0.5 * Math.sin(x / W * 2.2 - y / H * 1.6 + time * 0.3);
+          const i = (y * W + x) * 4;
+          for (let ch = 0; ch < 3; ch++) {
+            const base = deep[ch] + (shade[ch] - deep[ch]) * (0.45 + 0.55 * lo);
+            let val = base + (light[ch] - base) * n;
+            if (n > 0.92) val += (spark[ch] - val) * (n - 0.92) * 0.6;
+            d[i + ch] = val;
+          }
+          d[i + 3] = 255;
+        }
+      }
+      ctx.putImageData(img, 0, 0);
+    }
+    function loop(t) { if (!visible || reduce.matches) return; if (t - last > 40) { frame(t); last = t; } raf = requestAnimationFrame(loop); }
+    frame(4200);
+    new IntersectionObserver((es) => { visible = es[0].isIntersecting; cancelAnimationFrame(raf); if (visible && !reduce.matches) raf = requestAnimationFrame(loop); }).observe(cv);
+  });
+})();
+
+// ---- The hero example: the team drafts, you approve, it posts, the Responder answers. Loops with a pause button; still under reduced motion.
+(function () {
+  const agents = [...document.querySelectorAll('.agent')], doing = document.getElementById('doing');
+  const text = document.getElementById('post-text'), state = document.getElementById('post-state'), fake = document.getElementById('approve-fake');
+  const replies = [...document.querySelectorAll('#replies .reply')], btn = document.getElementById('playpause'), icon = document.getElementById('pp-icon');
+  const POST = text.textContent;
+  if (reduce.matches) return;
+  btn.hidden = false;
+  let paused = false, hover = false, timer = 0, step = 0, typed = 0;
+  const on = (k) => agents.forEach((a) => a.classList.toggle('on', a.dataset.agent === k));
+  const setState = (cls, label) => { state.className = 'state ' + cls; state.textContent = label; };
+  const STEPS = [
+    () => { on('I'); doing.textContent = 'The Ideas agent picks this week’s three posts.'; text.textContent = ''; typed = 0; setState('', 'Idea: why slow dough tastes better'); fake.style.opacity = 0; replies.forEach((r) => r.classList.add('pending')); return 2200; },
+    () => { on('Re'); doing.textContent = 'The Researcher reads 3 sources and finds the opening question.'; setState('', 'Researching'); return 2400; },
+    () => { on('W'); doing.textContent = 'The Writer drafts the post in your voice.'; setState('', 'Drafting'); return 400; },
+    () => { typed = Math.min(POST.length, typed + 3); text.innerHTML = ''; text.append(POST.slice(0, typed)); const c = document.createElement('span'); c.className = 'caret'; text.append(c); if (typed < POST.length) { step--; return 28; } return 500; },
+    () => { text.textContent = POST; doing.textContent = 'Your draft is ready. It is waiting for you.'; on(''); setState('wait', 'Waiting for you'); fake.style.opacity = 1; return 1800; },
+    () => { fake.classList.add('press'); return 220; },
+    () => { fake.classList.remove('press'); fake.style.opacity = 0; doing.textContent = 'You approved it. It goes out Wednesday at 10:00.'; setState('ok', 'Approved'); return 1600; },
+    () => { setState('ok', 'Posted on Reddit and X'); doing.textContent = 'Posted. Now people reply.'; return 1200; },
+    () => { replies[0].classList.remove('pending'); return 1400; },
+    () => { on('R'); doing.textContent = 'The Responder answers within 12 hours.'; replies[1].classList.remove('pending'); return 4200; },
   ];
-  const daysEl = document.getElementById('days'), logEl = document.getElementById('log');
-  function av(k){ const [c,n]=P[k]; return '<span class="av '+c+'" style="width:30px;height:30px;font-size:.72rem">'+(k==='Y'?'You':k)+'</span>'; }
-  function show(i){
-    [...daysEl.children].forEach((b,j)=>b.setAttribute('aria-selected', j===i));
-    const [d,,evs] = WEEK[i];
-    logEl.innerHTML = '<div class="k">'+d+'</div>' + evs.map(([k,t,txt])=>'<div class="ev">'+av(k)+'<div><span class="t">'+P[k][1]+' · '+t+'</span><p>'+txt+'</p></div></div>').join('');
-  }
-  WEEK.forEach(([d,tag,evs],i)=>{
-    const b = document.createElement('button'); b.className='day'; b.setAttribute('role','tab');
-    const who = [...new Set(evs.map(e=>e[0]))].filter(k=>k!=='Y');
-    b.innerHTML = '<b>'+d+'</b><small>'+tag+'</small><span class="dots">'+who.map(k=>'<i class="'+P[k][0]+'"></i>').join('')+'</span>';
-    b.onclick = ()=>show(i); daysEl.appendChild(b);
-  });
-  show(2);
+  function tick() { if (paused || hover) return; const wait = STEPS[step](); step = (step + 1) % STEPS.length; timer = setTimeout(tick, wait); }
+  function stop() { clearTimeout(timer); }
+  btn.addEventListener('click', () => { paused = !paused; btn.setAttribute('aria-pressed', paused); btn.setAttribute('aria-label', paused ? 'Play the example' : 'Pause the example'); icon.setAttribute('d', paused ? 'M4 2l10 6-10 6z' : 'M4 2h3v12H4zM9 2h3v12H9z'); stop(); if (!paused) tick(); });
+  const fig = document.getElementById('inbox');
+  fig.addEventListener('mouseenter', () => { hover = true; stop(); });
+  fig.addEventListener('mouseleave', () => { hover = false; stop(); tick(); });
+  fig.addEventListener('focusin', () => { hover = true; stop(); });
+  fig.addEventListener('focusout', () => { hover = false; stop(); tick(); });
+  tick();
+})();
 
-  // ---- Approve / Edit on the sample post ----
-  const st = document.getElementById('pstate'), txt = document.getElementById('ptext'), act = document.getElementById('pact');
-  function setState(cls, label){ st.className = 'pill '+cls; st.textContent = label; }
-  function bindActions(){
-    document.getElementById('approve').onclick = ()=>{ setState('done','Approved · goes out Wed 10:00'); act.innerHTML = '<button class="btn ghost sm" id="undo">Undo</button>'; document.getElementById('undo').onclick = reset; };
-    document.getElementById('editb').onclick = ()=>{
-      const cur = txt.textContent; setState('edit','Your feedback');
-      txt.innerHTML = cur.replace(/[<>&]/g,'') + '<textarea id="ta" aria-label="Your feedback" placeholder="e.g. mention the vegan loaf" style="margin-top:10px;min-height:70px"></textarea>';
-      act.innerHTML = '<button class="btn ok sm" id="save">Approve with feedback</button><button class="btn ghost sm" id="cancel">Cancel</button>';
-      document.getElementById('save').onclick = ()=>{ const f = document.getElementById('ta').value.trim(); txt.textContent = cur; setState('done', f ? 'Approved with feedback' : 'Approved · goes out Wed 10:00'); act.innerHTML = '<span class="note">'+(f ? 'The Writer applies your feedback, then it goes out.' : 'Approved.')+'</span> <button class="btn ghost sm" id="undo">Undo</button>'; document.getElementById('undo').onclick = ()=>reset(cur); };
-      document.getElementById('cancel').onclick = ()=>reset(cur);
-    };
-  }
-  function reset(keep){ if (typeof keep === 'string') txt.textContent = keep; setState('wait','Waiting for you'); act.innerHTML = '<button class="btn ok sm" id="approve">Approve</button><button class="btn ghost sm" id="editb">Approve with feedback</button>'; bindActions(); }
-  bindActions();
-
-  // ---- Waitlist (E10-S6, EPIC-10-A2): a plain form post to the console's sign-up list (offer waitlist-alpha, email only, no payment).
-  // The console answers 303 back to this page with ?signed=1 or ?error=<code>#join.
-  const form = document.getElementById('wl'), thanks = document.getElementById('thanks');
-  form.querySelector('input[name=back]').value = location.origin + location.pathname;
-  const src = new URLSearchParams(location.search).get('src');
-  if (src) form.querySelector('input[name=source]').value = 'social page?' + src.slice(0, 40);
-  form.addEventListener('submit', e=>{
-    const email = document.getElementById('f-email').value.trim(), bad = !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
-    document.getElementById('e-email').textContent = bad ? 'Please enter a valid email.' : '';
-    document.getElementById('f-email').setAttribute('aria-invalid', bad ? 'true' : 'false');
-    if (bad) e.preventDefault();
+// ---- A week with your team (demo data, fictional bakery)
+const P = { I: 'Ideas agent', Re: 'Researcher', W: 'Writer', R: 'Responder', Y: 'You' };
+const WEEK = [
+  ['Mon', [['I','08:00','Added 2 ideas to your list (autumn menu, why slow dough tastes better) and picked the week: Wed sourdough story, Fri weekend menu, Sun behind the scenes.'],['R','08:00','Answered 3 weekend comments on Sunday’s post.'],['R','20:00','Nothing new to answer. Back at 08:00.']]],
+  ['Tue', [['R','08:00','Answered a question about gluten-free options; flagged a complaint about a late order to you instead of replying.'],['Re','11:00','Researched Wednesday’s idea: 3 sources on slow fermentation, "slow food" posts up this week, opening question: how long does good bread take?'],['W','15:00','Drafted Wednesday’s post with a diagram from the research. It’s in your inbox.'],['R','20:00','Answered 2 replies.']]],
+  ['Wed', [['Y','09:12','You approve Wednesday’s post, or approve it with feedback (try it beside this list).'],['W','10:00','Posted to Reddit and X; added the links to your post history.'],['R','20:00','Answered 4 replies on today’s post.']]],
+  ['Thu', [['R','08:00','Answered 5 overnight replies.'],['Re','11:00','Researched Friday’s weekend menu: what nearby bakeries posted, which dishes people ask about.'],['W','15:00','Drafted Friday’s weekend menu post.'],['R','20:00','Answered 1 mention.']]],
+  ['Fri', [['Re','09:00','Weekly report: Wednesday’s post got 3 times your usual replies. Competitors posted 9 times, mostly prices. Suggestion: more process stories.'],['W','10:00','Posted the weekend menu (approved with your feedback Thursday night: "mention the vegan loaf").'],['R','20:00','Answered 3 replies.']]],
+  ['Sat', [['R','08:00','Answered 2 replies.'],['R','20:00','Nothing new.']]],
+  ['Sun', [['W','10:00','Posted behind the scenes: shaping loaves at 5 am.'],['R','20:00','Answered 4 replies.'],['I','20:30','Read the Researcher’s report: next week’s ideas lean into process stories.']]]
+];
+const daysEl = document.getElementById('days'), logEl = document.getElementById('log');
+function show(i, focus) {
+  [...daysEl.children].forEach((b, j) => { b.setAttribute('aria-selected', j === i); b.tabIndex = j === i ? 0 : -1; });
+  if (focus) daysEl.children[i].focus();
+  logEl.innerHTML = '';
+  WEEK[i][1].forEach(([k, t, txt]) => {
+    const ev = document.createElement('div'); ev.className = 'ev';
+    const a = document.createElement('span'); a.className = 'av' + (k === 'Y' ? ' av--you' : ''); a.textContent = k === 'Y' ? 'You' : k;
+    const body = document.createElement('div'); const meta = document.createElement('span'); meta.className = 't'; meta.textContent = P[k] + ', ' + t;
+    const p = document.createElement('p'); p.textContent = txt; body.append(meta, p); ev.append(a, body); logEl.append(ev);
   });
-  const q = new URLSearchParams(location.search);
-  if (q.get('signed') === '1') {
-    form.hidden = true; thanks.hidden = false;
-    thanks.innerHTML = '<h3>You\'re on the list.</h3><p>Thanks. We\'ll write to you when Epic Social opens to more people. Nothing to pay. Want to start sooner? <a href="https://epicspine.dev/testers/">Apply to test it</a>.</p>';
-  } else if (q.get('error')) {
-    const msg = { email: 'That email does not look right. Please check it.', too_many: 'Too many tries from here. Please try again in an hour.', full: 'The list is full for now. Please try again later.' }[q.get('error')] || 'Something went wrong. Please try again.';
-    document.getElementById('e-email').textContent = msg;
-  }
+}
+WEEK.forEach(([d], i) => {
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'day'; b.setAttribute('role', 'tab'); b.textContent = d;
+  b.addEventListener('click', () => show(i));
+  b.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); show((i + (e.key === 'ArrowRight' ? 1 : 6)) % 7, true); } });
+  daysEl.append(b);
+});
+show(2);
+
+// ---- Approve / Approve with feedback on the sample post
+const st = document.getElementById('pstate'), txt = document.getElementById('ptext'), act = document.getElementById('pact');
+function setPState(cls, label) { st.className = 'state ' + cls; st.textContent = label; }
+function mk(cls, id, label) { const b = document.createElement('button'); b.type = 'button'; b.className = cls; b.id = id; b.textContent = label; return b; }
+function reset(keep) { if (typeof keep === 'string') txt.textContent = keep; setPState('wait', 'Waiting for you'); act.replaceChildren(mk('btn btn--sm', 'approve', 'Approve'), mk('btn btn--clear btn--sm', 'editb', 'Approve with feedback')); bindActions(); }
+function bindActions() {
+  document.getElementById('approve').onclick = () => { setPState('ok', 'Approved, goes out Wed 10:00'); const u = mk('btn btn--clear btn--sm', 'undo', 'Undo'); act.replaceChildren(u); u.onclick = reset; u.focus(); };
+  document.getElementById('editb').onclick = () => {
+    const cur = txt.textContent; setPState('wait', 'Your feedback');
+    const ta = document.createElement('textarea'); ta.id = 'ta'; ta.setAttribute('aria-label', 'Your feedback'); ta.placeholder = 'e.g. mention the vegan loaf';
+    txt.append(ta); ta.focus();
+    const save = mk('btn btn--sm', 'save', 'Approve with feedback'), cancel = mk('btn btn--clear btn--sm', 'cancel', 'Cancel');
+    act.replaceChildren(save, cancel);
+    save.onclick = () => { const f = ta.value.trim(); txt.textContent = cur; setPState('ok', f ? 'Approved with feedback' : 'Approved, goes out Wed 10:00'); const n = document.createElement('span'); n.className = 'caption'; n.textContent = f ? 'The Writer applies your feedback, then it goes out.' : 'Approved.'; const u = mk('btn btn--clear btn--sm', 'undo', 'Undo'); act.replaceChildren(n, u); u.onclick = () => reset(cur); u.focus(); };
+    cancel.onclick = () => reset(cur);
+  };
+}
+bindActions();
+
+// ---- Waitlist (E10-S6, EPIC-10-A2): a plain form post to the console's sign-up list (offer waitlist-alpha, email only, no payment).
+// The console answers 303 back to this page with ?signed=1 or ?error=<code>#join.
+const form = document.getElementById('wl'), thanks = document.getElementById('thanks');
+form.querySelector('input[name=back]').value = location.origin + location.pathname;
+const src = new URLSearchParams(location.search).get('src');
+if (src) form.querySelector('input[name=source]').value = 'social page?' + src.slice(0, 40);
+form.addEventListener('submit', (e) => {
+  const email = document.getElementById('f-email').value.trim(), bad = !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
+  document.getElementById('e-email').textContent = bad ? 'Please enter a valid email.' : '';
+  document.getElementById('f-email').setAttribute('aria-invalid', bad ? 'true' : 'false');
+  if (bad) e.preventDefault();
+});
+const q = new URLSearchParams(location.search);
+if (q.get('signed') === '1') {
+  form.hidden = true; thanks.hidden = false;
+  thanks.innerHTML = '<h3>You’re on the list.</h3><p>Thanks. We’ll write to you when Epic Social opens to more people. Nothing to pay. Want to start sooner? <a href="https://epicspine.dev/testers/">Apply to test it</a>.</p>';
+} else if (q.get('error')) {
+  const msg = { email: 'That email does not look right. Please check it.', too_many: 'Too many tries from here. Please try again in an hour.', full: 'The list is full for now. Please try again later.' }[q.get('error')] || 'Something went wrong. Please try again.';
+  document.getElementById('e-email').textContent = msg;
+}
 </script>
 </body>
 </html>
