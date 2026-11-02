@@ -135,6 +135,31 @@ class SkillSyncTest(Base):
         self.assertIsNone(ss.sync_checkout(skill, self.clock))  # diverged
         self.assertEqual((skill / "VERSION").read_text(), "1\n")
 
+    def test_a_rewritten_upstream_is_never_installed_and_stays_refused(self) -> None:
+        """E59-S7 (audit H1): a force-pushed main that drops a commit main had is refused, even when this checkout is behind it."""
+        bare, clone = self.skill_repo()
+        dev = self.second_clone(bare, "dev")
+        commit(dev, "skill/epic-spine/VERSION", "2\n")
+        git(dev, "push", "-q", "origin", "main")
+        git(clone, "fetch", "-q", "origin")  # this machine saw main at "2" but has not installed it yet
+        dropped = git(dev, "rev-parse", "HEAD")
+        git(dev, "reset", "-q", "--hard", "HEAD~1")
+        commit(dev, "skill/epic-spine/VERSION", "evil\n")
+        git(dev, "push", "-q", "--force", "origin", "main")
+        skill = (clone / "skill" / "epic-spine").resolve()
+        note = ss.sync_checkout(skill, self.clock)
+        self.assertEqual(note, f"skill update refused: origin main no longer contains {dropped[:12]} (history rewrite); "
+                               "nothing installed until a person checks it")
+        self.assertEqual((skill / "VERSION").read_text(), "1\n")
+        self.assertEqual(ss.sync_checkout(skill, self.clock), note)  # the next run still refuses
+        self.assertEqual(repo_sync.sync(clone, self.clock)[0], f"EpicSpine attention: repo {clone.name} (main) needs the user: "
+                         f"origin/main was rewritten: it no longer contains {dropped[:12]}; not fast-forwarded. Tell the user exactly this; "
+                         "do not merge, rebase or push it yourself.")
+        self.assertEqual((skill / "VERSION").read_text(), "1\n")
+        commit(dev, "skill/epic-spine/VERSION", "3\n")
+        git(dev, "push", "-q", "origin", "main")
+        self.assertEqual(ss.sync_checkout(skill, self.clock), note)  # a normal push on top of the rewrite does not clear it
+
     def test_vendored_copy_and_no_origin_are_left_alone(self) -> None:
         bare, clone = self.remote_and_clone("host", {"vendor/epic-spine/VERSION": "1\n"})
         self.assertIsNone(ss.sync_checkout((clone / "vendor" / "epic-spine").resolve(), self.clock))

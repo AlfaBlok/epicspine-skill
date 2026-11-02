@@ -4,8 +4,10 @@
 Stdlib only, Python 3.10+. The installed skill directory is derived from this
 script's own location (the directory above ``scripts/``); a ``<skill-dir>.SOURCE``
 pin file sits next to it. ``status`` is cheap and never modifies the tree;
-``upgrade`` shallow-clones, verifies the clone against its ``MANIFEST.sha256``,
-and swaps atomically while keeping exactly one ``.bak`` generation.
+``upgrade`` clones (blobless), refuses a ref that no longer contains the
+installed commit (a history rewrite; ``--allow-rewrite`` after a person checked
+it), verifies the clone against its ``MANIFEST.sha256``, and swaps atomically
+while keeping exactly one ``.bak`` generation.
 
 The default source is the canonical repository only. Nothing from the
 downloaded tree is executed: only files are read and the manifest is verified.
@@ -367,7 +369,7 @@ def cmd_upgrade(args) -> int:
 
     try:
         proc = git(
-            ["clone", "--depth", "1", "--branch", args.ref, "--single-branch", args.source, str(clone)],
+            ["clone", "--filter=blob:none", "--branch", args.ref, "--single-branch", args.source, str(clone)],
             timeout=timeout,
         )
         if proc.returncode != 0:
@@ -402,6 +404,13 @@ def cmd_upgrade(args) -> int:
             sys.stderr.write(f"upgrade failed: cannot resolve clone commit: {head_proc.stderr.strip()}\n")
             return 1
         head = head_proc.stdout.strip()
+
+        installed = pin.get("commit") if pin and is_our_pin(pin) and pin.get("source") == args.source else None
+        if installed and not getattr(args, "allow_rewrite", False) \
+                and git(["merge-base", "--is-ancestor", installed, head], cwd=clone).returncode != 0:
+            sys.stderr.write(f"upgrade refused: {args.ref} no longer contains the installed commit {installed[:12]} (history rewrite); "
+                             "check the source, then pass --allow-rewrite\n")
+            return 1
 
         if backup.is_dir() and not backup.is_symlink():
             shutil.rmtree(backup)
@@ -469,6 +478,8 @@ def build_parser() -> argparse.ArgumentParser:
     upgrade = sub.add_parser("upgrade", help="install the latest source copy")
     common(upgrade)
     upgrade.add_argument("--yes", action="store_true", help="do not prompt")
+    upgrade.add_argument("--allow-rewrite", action="store_true",
+                         help="install even when the ref no longer contains the installed commit (a person checked the rewrite)")
     return parser
 
 

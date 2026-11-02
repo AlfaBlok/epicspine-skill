@@ -105,16 +105,22 @@ def sync_checkout(skill_dir: Path, clock: Clock) -> str | None:
     top_dir = Path(top)
     if (top_dir / "skill" / "epic-spine").resolve() != skill_dir:  # a vendored copy is SYNC.md's job, not ours
         return None
-    if out(git(["fetch", "--quiet", "origin"], top_dir, clock, 5)) is None or out(git(["status", "--porcelain", "--untracked-files=no"], top_dir, clock, 3)):
+    from merge_trust import rewrite_guard
+    before = out(git(["rev-parse", "--verify", "-q", "@{u}"], top_dir, clock, 3))
+    if out(git(["fetch", "--quiet", "origin"], top_dir, clock, 5)) is None:
+        return None
+    if dropped := rewrite_guard(top_dir, clock, "@{u}", before):
+        return f"skill update refused: origin main no longer contains {dropped[:12]} (history rewrite); nothing installed until a person checks it"
+    if out(git(["status", "--porcelain", "--untracked-files=no"], top_dir, clock, 3)):
         return None
     counts = out(git(["rev-list", "--left-right", "--count", "HEAD...@{u}"], top_dir, clock, 3))
     if not counts or counts.split()[0] != "0" or counts.split()[1] == "0":
         return None
-    before = read_version(skill_dir)
+    version = read_version(skill_dir)
     if out(git(["merge", "--ff-only", "--quiet", "@{u}"], top_dir, clock, 5)) is None:
         return None
     after = read_version(skill_dir)
-    return f"skill {before} -> {after}" if before != after else f"skill {before} updated ({counts.split()[1]} commits)"
+    return f"skill {version} -> {after}" if version != after else f"skill {version} updated ({counts.split()[1]} commits)"
 
 
 def sync_pinned(skill_dir: Path, clock: Clock) -> str | None:
@@ -127,12 +133,15 @@ def sync_pinned(skill_dir: Path, clock: Clock) -> str | None:
     head = out(git(["ls-remote", source, f"refs/heads/{ref}"], skill_dir.parent, clock, 5))
     if not head or (pin and pin.get("commit") == head.split()[0]):
         return None
-    before, buf = read_version(skill_dir), io.StringIO()
+    before, buf, err = read_version(skill_dir), io.StringIO(), io.StringIO()
     args = su.build_parser().parse_args(["upgrade", "--yes", "--source", source, "--ref", ref])
     args.timeout = max(1, int(clock.cap(8)))
-    with contextlib.redirect_stdout(buf), contextlib.redirect_stderr(io.StringIO()):
+    with contextlib.redirect_stdout(buf), contextlib.redirect_stderr(err):
         code = su.cmd_upgrade(args)
     after = read_version(skill_dir)
+    refused = next((ln for ln in err.getvalue().splitlines() if ln.startswith("upgrade refused:")), None)
+    if refused:
+        return "skill update refused: " + refused.removeprefix("upgrade refused: ")
     return f"skill {before} -> {after}" if code == 0 and "Upgraded" in buf.getvalue() else None
 
 

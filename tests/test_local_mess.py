@@ -302,6 +302,31 @@ class ServerReportTest(MessBase):
         self.assertEqual(mess, [f"abnb: http server pid 111 serving {wt.resolve()} for 2d — stop it when done",
                                 f"abnb: http server pid 222 serving {(wt / 'site').resolve()} for 3d — stop it when done"])
 
+    def test_a_server_on_every_interface_is_reported_for_the_machine_at_any_age(self) -> None:
+        """E59-S7 (audit H4): a page server with no bind address, 0.0.0.0 or :: publishes its directory on a public IP."""
+        _, clone = self.repo("abnb")
+        procs = [Proc(1, "/tmp/a", ["python3", "-m", "http.server", "8801"], 60),  # young, outside every repo, no --bind
+                 Proc(2, "/tmp", ["python3", "-m", "http.server", "8802", "--bind", "0.0.0.0", "--directory", "/tmp/b"], 60),
+                 Proc(3, "/tmp", ["python3", "-m", "http.server", "--bind=::", "8803"], 60),
+                 Proc(4, "/tmp", ["npx", "http-server", "-a", "0.0.0.0", "-p", "8804"], 60),
+                 Proc(5, "/tmp", ["python3", "-m", "http.server", "8805", "--bind", "100.86.141.63"], 60),  # tailnet: fine
+                 Proc(6, "/tmp", ["python3", "-m", "http.server", "-b", "127.0.0.1", "8806"], 60),  # loopback: fine
+                 Proc(7, "/tmp", ["php", "-S", "localhost:8807"], 60),  # fine
+                 Proc(8, "/", ["/usr/sbin/httpd", "-k", "start"], 60),  # its bind is in its config: not judged
+                 Proc(9, "/tmp", ["bash"], 60)]
+        self.run_bg(procs=procs)
+        machine = json.loads((self.home / bg.STATUS).read_text())["machine"]
+        helper = f"python3 {Path(bg.__file__).resolve().with_name('artifact_host.py')} --serve <dir> --port <n>"
+        self.assertEqual(machine, [
+            f"http server pid 1 listens on every interface (no bind address) serving /tmp/a — stop it and serve on the tailnet or 127.0.0.1: `{helper}`",
+            f"http server pid 2 listens on every interface (--bind 0.0.0.0) serving /tmp/b — stop it and serve on the tailnet or 127.0.0.1: `{helper}`",
+            f"http server pid 3 listens on every interface (--bind ::) serving /tmp — stop it and serve on the tailnet or 127.0.0.1: `{helper}`",
+            f"http server pid 4 listens on every interface (--bind 0.0.0.0) serving /tmp — stop it and serve on the tailnet or 127.0.0.1: `{helper}`"])
+        lines = bg.attention_lines(self.home, self.tmp)  # any session on the machine, in or out of a repo
+        self.assertEqual(lines, [f"EpicSpine attention: {m} (this machine; background sync)" for m in machine[:2]])
+        self.run_bg(procs=procs[4:])
+        self.assertEqual(json.loads((self.home / bg.STATUS).read_text())["machine"], [])
+
     def test_server_lines_are_capped_per_repo(self) -> None:
         _, clone = self.repo("abnb")
         wt = self.worktree(clone, "wt-yoga", days=0)
@@ -341,6 +366,28 @@ class ScanTest(MessBase):
         found = REAL_SCAN(1000000 + 100 + 2 * DAY, root)
         self.assertEqual([(p.pid, p.cwd, p.args) for p in found], [(10, wt, ["python3", "-m", "http.server", "8000"])])
         self.assertAlmostEqual(found[0].age, 2 * DAY, delta=1)
+
+    def test_linux_real_sockets_decide_every_interface_not_the_args(self) -> None:
+        """E59-S7: on Linux the listening sockets decide (``t3 serve`` has no --bind flag yet listens on one address)."""
+        wt = str(self.tmp)
+        root = self.fake_proc([(20, ["python3", "-m", "http.server", "8000"], wt, 100), (21, ["t3", "serve"], wt, 100),
+                               (22, ["python3", "-m", "http.server", "9000", "--bind", "127.0.0.1"], wt, 100)])
+        (root / "net").mkdir()
+        head = "  sl  local_address rem_address   st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode\n"
+        (root / "net" / "tcp").write_text(head + "   0: 00000000:1F40 00000000:0000 0A 00000000:00000000 00:00000000 00000000  1000 0 501\n"
+                                                 "   1: 0100007F:0EB5 00000000:0000 0A 00000000:00000000 00:00000000 00000000  1000 0 502\n"
+                                                 "   2: 0100007F:2328 00000000:0000 01 00000000:00000000 00:00000000 00000000  1000 0 503\n")
+        (root / "net" / "tcp6").write_text(head + "   0: " + "0" * 32 + ":2328 " + "0" * 32 + ":0000 0A 00000000:00000000 00:00000000 00000000  1000 0 504\n")
+        for pid, inodes in ((20, [501]), (21, [502]), (22, [503, 504])):
+            (root / str(pid) / "fd").mkdir()
+            for i, inode in enumerate(inodes):
+                (root / str(pid) / "fd" / str(i)).symlink_to(f"socket:[{inode}]")
+        found = {p.pid: p.listens for p in REAL_SCAN(1000000 + 100 + 2 * DAY, root)}
+        self.assertEqual(found, {20: ("0.0.0.0:8000",), 21: ("host:3765",), 22: ("[::]:9000",)})
+        procs = REAL_SCAN(1000000 + 100 + 2 * DAY, root)
+        self.assertEqual([ln.split(" serving")[0] for ln in local_servers.public_lines(procs, "H")],
+                         ["http server pid 20 listens on every interface (listening on 0.0.0.0:8000)",
+                          "http server pid 22 listens on every interface (listening on [::]:9000)"])  # its args said 127.0.0.1; :: wins
 
     def test_macos_ps_and_lsof_best_effort(self) -> None:
         calls = []
@@ -391,7 +438,7 @@ class SessionStartMessTest(MessBase):
         bare, clone = self.repo("abnb-agent")
         old = self.worktree(clone, "wt-cdmx-yoga", days=2.5)
         self.worktree(clone, "wt-queretaro-shortlist", days=4)
-        procs = [Proc(900, str(old), ["python3", "-m", "http.server", "8765"], 2.5 * DAY)]
+        procs = [Proc(900, str(old), ["python3", "-m", "http.server", "8765", "--bind", "127.0.0.1"], 2.5 * DAY)]
         entry = self.run_bg(procs=procs)[str(clone.resolve())]
         self.assertEqual(entry["branches_pushed"], 2)
         self.assertEqual({"wt/wt-cdmx-yoga", "wt/wt-queretaro-shortlist"} <= self.remote_heads(bare), True)
