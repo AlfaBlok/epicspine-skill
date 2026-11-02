@@ -10,6 +10,9 @@ hostname and its IPv4. ``EPICSPINE_ARTIFACT_BIND`` overrides the bind. The bind
 must be loopback, tailnet (100.64.0.0/10) or RFC1918; anything else, or a failed
 explicit lookup, falls back to 127.0.0.1 (reason on stderr).
 Stdlib only, Python 3.10+. ``--port N`` adds ``port`` and ``base`` with it.
+``--serve DIR --port N`` prints that line, then runs ``python3 -m http.server N --bind <bind> --directory DIR`` in its
+place: the page server for agents, never on every interface (agent_team E59-S7, audit H4). A bare
+``python3 -m http.server`` (no ``--bind``) listens on every interface; the background sync reports any that does.
 """
 
 from __future__ import annotations
@@ -71,11 +74,19 @@ def resolve(env=os.environ) -> dict:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--port", type=int)
+    parser.add_argument("--serve", metavar="DIR", help="serve DIR on the resolved bind (needs --port)")
     args = parser.parse_args(argv)
+    if args.serve and not args.port:
+        parser.error("--serve needs --port")
     info = resolve()
     if args.port:
         info |= {"port": args.port, "base": f"http://{info['host']}:{args.port}"}
-    print(json.dumps(info))
+    print(json.dumps(info), flush=True)
+    if args.serve:
+        if not allowed(info["bind"]):  # resolve() never returns one; a second lock on the door
+            return 2
+        os.execv(sys.executable, [sys.executable, "-m", "http.server", str(args.port), "--bind", info["bind"],
+                                  "--directory", os.path.abspath(args.serve)])
     return 0
 
 

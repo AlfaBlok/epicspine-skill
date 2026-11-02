@@ -3,6 +3,7 @@ from __future__ import annotations
 import contextlib
 import importlib.util
 import io
+import json
 import os
 import subprocess
 import sys
@@ -120,6 +121,40 @@ class ArtifactHostTest(unittest.TestCase):
         self.assertEqual(
             out.strip(),
             '{"host": "127.0.0.1", "bind": "127.0.0.1", "port": 8091, "base": "http://127.0.0.1:8091"}')
+
+
+    def test_serve_runs_a_page_server_on_the_resolved_bind_never_every_interface(self) -> None:
+        """E59-S7 (audit H4): the helper's server binds what resolve() chose (here loopback), so a page is never public."""
+        import socket
+        import tempfile
+        import time
+        import urllib.request
+        with socket.socket() as probe:
+            probe.bind(("127.0.0.1", 0))
+            port = probe.getsockname()[1]
+        with tempfile.TemporaryDirectory() as site:
+            Path(site, "index.html").write_text("hello\n")
+            proc = subprocess.Popen([sys.executable, "-B", str(SCRIPT), "--serve", site, "--port", str(port)], text=True,
+                                    stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, env={"PATH": "", "DISPLAY": ":0"})
+            self.addCleanup(proc.stdout.close)
+            self.addCleanup(proc.wait, 10)
+            self.addCleanup(proc.kill)
+            self.assertEqual(json.loads(proc.stdout.readline())["bind"], "127.0.0.1")
+            for _ in range(50):
+                try:
+                    body = urllib.request.urlopen(f"http://127.0.0.1:{port}/index.html", timeout=2).read()
+                    break
+                except OSError:
+                    time.sleep(0.1)
+            self.assertEqual(body, b"hello\n")
+            if Path(f"/proc/{proc.pid}/cmdline").exists():
+                args = Path(f"/proc/{proc.pid}/cmdline").read_bytes().split(b"\0")
+                self.assertEqual(args[args.index(b"--bind") + 1], b"127.0.0.1")
+
+    def test_serve_needs_a_port(self) -> None:
+        proc = subprocess.run([sys.executable, "-B", str(SCRIPT), "--serve", "."], text=True, capture_output=True, timeout=30)
+        self.assertEqual(proc.returncode, 2)
+        self.assertIn("--serve needs --port", proc.stderr)
 
 
 if __name__ == "__main__":

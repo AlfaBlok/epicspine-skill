@@ -29,7 +29,7 @@ ALWAYS_MAX = 12
 # grandfathered (already over the 200-line new-file cap) and pinned exactly: they
 # may only shrink. The other scripts are pre-existing and pinned to rounded sizes.
 EXISTING_BUDGETS = {
-    "scripts/session_sync.py": 205,  # SIGTERM before SIGKILL on a git timeout (agent_team E6-S51)
+    "scripts/session_sync.py": 215,  # raised +10: history-rewrite refusal for the skill checkout and the pinned upgrade (guard lives in merge_trust.py; agent_team E59-S7, audit H1), 2026-11-02; earlier: SIGTERM before SIGKILL on a git timeout (agent_team E6-S51)
     "references/book-companion.md": 155,
     "references/compact-state.md": 60,
     "references/execution-rollups.md": 70,
@@ -47,13 +47,13 @@ EXISTING_BUDGETS = {
     "assets/epic-spine-template.md": 292,  # raised +1: Current State Status line (machine-read contract), 2026-10-16
     "assets/github-issue-template.md": 85,
     "assets/sweep-brief.md": 25,
-    "scripts/auto_return.py": 209,  # raised +9 over the 200 new-file cap: archive/* tags hidden from reports +3 (2026-10-24); Deploy gate / PR-CI policy blocks (logic lives in deploy_gate.py), 2026-10-16
+    "scripts/auto_return.py": 220,  # raised +11: raw-mode diff for risky added files, first-seen cool-down (logic lives in merge_trust.py; agent_team E59-S7, audit H2), 2026-11-02; earlier +9 over the 200 new-file cap: archive/* tags hidden from reports +3 (2026-10-24); Deploy gate / PR-CI policy blocks (logic lives in deploy_gate.py), 2026-10-16
     "scripts/global_install.py": 380,  # raised +15: install_guard hooks (worktree-safe pointer/hook/link paths, outside-HOME skip, settings.json never deleted; logic lives in install_guard.py), 2026-10-21; earlier +10: background-sync schedule step in run() + ensure_gate() split out of heal_repo for background_sync.py, 2026-10-16; earlier: Codex hooks + stop_push Stop hook registration, spine-less opt-out in heal_repo, 2026-10-16; earlier: SessionStart self-sync hook + local profile override, 2026-10-16; SessionStart self-installs the pre-commit gate in EpicSpine repos (heal_repo), 2026-10-16; machine-profile warning in SessionStart hook, 2026-10-16; --artifact-host settings env, 2026-10-14; live-block pointer, 2026-10-14; atomic upsert + SessionStart self-heal, 2026-10-14
     "scripts/agents_block.py": 255,  # raised: `Root spine: none` (spine-less repos) render/check, 2026-10-16; earlier: profile --set writes the local override + install-global syncs the canonical profile, 2026-10-16; pre-commit hook install/uninstall/check, 2026-10-16 (after install-global --profile + missing-profile notice, 2026-10-16)
     "scripts/migrate_spine.py": 170,
     "scripts/rollup_spine.py": 398,
     "scripts/url_gate.py": 220,  # raised from the 200 new-file cap: only files touched this turn trigger (turn_activity), 2026-10-16
-    "scripts/skill_update.py": 485,  # raised: tree-based freshness + symlink resolution, 2026-10-10
+    "scripts/skill_update.py": 500,  # raised +15: upgrade refuses a history rewrite (installed commit not in the new ref) + --allow-rewrite (agent_team E59-S7, audit H1), 2026-11-02; earlier: tree-based freshness + symlink resolution, 2026-10-10
     "scripts/validate_spine.py": 1201,  # raised +2: run_state hook (import + one `warnings.extend`; logic lives in run_state.py), E7-S1, 2026-10-24; earlier +4: standing-spine hooks (import, `ongoing` + errors line, no Definition Of Done section demand, trackable skips Outcome/criteria; logic lives in standing.py), E5-S2, 2026-10-24; earlier +2: status_true hook (import + one `warnings.extend`; logic lives in status_true.py) and "status-true" in classify_diagnostic so --strict promotes it, E6-S1, 2026-10-24; earlier +5: E5-S4 `placeholder_issue` + `STEP` (a step code such as E5-S1 is the ticket in row-as-ticket spines; shared by read_tickets and the ledger check), 2026-10-24; earlier +8: persona-file and `## Team` hooks (logic lives in personas.py), E5-S1, 2026-10-24; earlier +10: `row_is_ticket` (compact/Doctrine 2 ledger row is the ticket, so Issue `draft` passes --strict; shared by read_tickets and the ledger check), EPIC-4 step 19, 2026-10-22; earlier +9: Doctrine 2 (Spine Type optional and inferred by lineage(), `## Goal`/`## Done means` count as Mission/Definition Of Done), offset by trims in operating-model.md, EPIC-4 step 3, 2026-10-22; earlier +2: `advisory` human-ask issues in trackable() + --trackable output (logic lives in epic_log.py), 2026-10-21; +35 earlier: ## Outcome parser (outcome(), shared by spines.py --json) + closed-spine Outcome trackable rule, 2026-10-20; +1 earlier: header-Status acceptance for --fix-moved Status (hint rewrite is line-neutral), 2026-10-16; +43 earlier: criterion-ID rule, criteria()/doc_kind helpers and --fix wiring (logic lives in spine_fix.py), 2026-10-16; +45 earlier: --trackable machine-read contract check, 2026-10-16 (+2 earlier: DoD-checkbox warning)
 }
 

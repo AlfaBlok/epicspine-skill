@@ -26,6 +26,7 @@ from pathlib import Path
 import deploy_gate
 import vendored_skill
 from fetch_guard import fetch
+from merge_trust import rewrite_guard
 from session_sync import SKILL_DIR, Clock, git, out
 
 LEARNINGS = ("## Operating Learnings\n\n**Always** (every task; read in full at bind):\n\n- (none yet)\n\n"
@@ -138,9 +139,14 @@ def sync(top: Path, clock: Clock, fetch_seconds: float = 5.0, push_seconds: floa
     branch = run("symbolic-ref", "--short", "-q", "HEAD")
     if not branch or run("remote", "get-url", "origin") is None:
         return []
+    before = run("rev-parse", "--verify", "-q", f"refs/remotes/origin/{branch}")
     fetched, notes = fetch(top, clock, fetch_seconds)
     if not fetched:
         return notes
+    if run("rev-parse", "--verify", "-q", f"refs/remotes/origin/{branch}") and \
+            (dropped := rewrite_guard(top, clock, f"refs/remotes/origin/{branch}", before)):
+        return [f"EpicSpine attention: repo {top.name} ({branch}) needs the user: origin/{branch} was rewritten: it no longer contains "
+                f"{dropped[:12]}; not fast-forwarded. Tell the user exactly this; do not merge, rebase or push it yourself."]
     if any((top / (run("rev-parse", "--git-path", name) or "-")).exists() for name in BUSY):
         return []
     counts = (run("rev-list", "--left-right", "--count", f"HEAD...origin/{branch}") or "").split()

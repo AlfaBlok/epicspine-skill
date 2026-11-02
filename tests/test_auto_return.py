@@ -38,6 +38,25 @@ class ReturnBase(Base):
         gh.write_text(GH)
         gh.chmod(gh.stat().st_mode | stat.S_IEXEC)
 
+    seen_at_commit_time = True  # older tests: the job saw each tip when it was committed (new tests below turn this off)
+
+    def entry(self, clone: Path) -> dict:
+        if self.seen_at_commit_time:
+            self.backdate(clone)
+        return super().entry(clone)
+
+    def backdate(self, clone: Path, hours: float | None = None) -> None:
+        """Record in the seen file that this machine first saw every branch tip ``hours`` ago (default: at its commit time)."""
+        git(clone, "fetch", "-q", "origin")  # origin-only branches too
+        path = Path(git(clone, "rev-parse", "--path-format=absolute", "--git-common-dir")) / auto_return.SEEN
+        seen = json.loads(path.read_text()) if path.is_file() else {}
+        refs = git(clone, "for-each-ref", "--format=%(refname)|%(objectname)|%(committerdate:unix)", "refs/heads", "refs/remotes/origin")
+        for ref, sha, ts in (ln.split("|") for ln in refs.splitlines()):
+            name = ref.removeprefix("refs/heads/").removeprefix("refs/remotes/origin/")
+            if name not in seen or seen[name][0] != sha or hours is not None:
+                seen[name] = [sha, time.time() - hours * 3600 if hours is not None else float(ts)]
+        path.write_text(json.dumps(seen))
+
     def gh_open(self, *names: str) -> None:
         (self.bin / "state").mkdir(exist_ok=True)
         (self.bin / "state" / "gh-open").write_text("\n".join(names) + "\n")
@@ -111,8 +130,8 @@ class AutoMergeTest(ReturnBase):
     def test_blocked_branches_stay_untouched_and_are_reported_with_the_reason(self) -> None:
         cases = {"feat/edit": ({"code.py": "print(2)\n"}, True, 5, "it changes or deletes existing files (not purely additive)"),
                  "feat/delete": ({"old.txt": None}, True, 5, "it changes or deletes existing files (not purely additive)"),
-                 "feat/fresh": (None, True, 0.5, "last commit under 2 h old"),
-                 "feat/workflow": ({".github/workflows/x.yml": "on: push\n"}, True, 5, "it changes or deletes existing files (not purely additive)"),
+                 "feat/fresh": (None, True, 0.5, "first seen by this machine under 2 h ago"),
+                 "feat/workflow": ({".github/workflows/x.yml": "on: push\n"}, True, 5, "it adds .github/workflows/x.yml (a dotfile or dot-directory), which can run code or steer agents"),
                  "feat/conflict": ({"same.md": "branch\n"}, True, 5, "it does not merge cleanly")}
         for i, (name, (files, ready, hours, reason)) in enumerate(cases.items()):
             with self.subTest(name):
@@ -393,3 +412,84 @@ class StateAndTableTest(ReturnBase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TrustTest(ReturnBase):
+    """E59-S7 (agent_team security audit H2): an added file can run code, and the committer date is the committer's to set."""
+
+    RISKY = {"scripts/json.py": ("import os\n", "a script"),  # shadows the stdlib json module next to the skill scripts
+             "tools/hook.js": ("x\n", "a script"), "bin/run.sh": ("echo\n", "a script"), "lib/x.mjs": ("x\n", "a script"),
+             "tests/conftest.py": ("x\n", "a script"), "sitecustomize.py": ("x\n", "a script"), "x.pth": ("import os\n", "a script"),
+             ".claude/settings.json": ("{}\n", "a dotfile or dot-directory"), ".agents/hooks/start.md": ("x\n", "a dotfile or dot-directory"),
+             ".github/workflows/ci.yml": ("on: push\n", "a dotfile or dot-directory"), ".mcp.json": ("{}\n", "a dotfile or dot-directory"),
+             ".envrc": ("x\n", "a dotfile or dot-directory"), ".vscode/tasks.json": ("{}\n", "a dotfile or dot-directory"),
+             "sub/AGENTS.md": ("do x\n", "agent instructions"), "CLAUDE.md": ("do x\n", "agent instructions"),
+             "GEMINI.md": ("do x\n", "agent instructions"),
+             "ops/crontab": ("* * * * * x\n", "a crontab, launchd or systemd file"),
+             "etc/cron.d/epicspine": ("* * * * * x\n", "a crontab, launchd or systemd file"),
+             "Library/LaunchAgents/io.x.plist": ("<plist/>\n", "a crontab, launchd or systemd file"),
+             "deploy/x.service": ("[Service]\n", "a crontab, launchd or systemd file"),
+             "Makefile": ("all:\n", "a build or package file"), "package.json": ("{}\n", "a build or package file")}
+
+    def test_code_carrying_additions_are_never_auto_merged(self) -> None:
+        for i, (path, (text, kind)) in enumerate(self.RISKY.items()):
+            with self.subTest(path):
+                bare, clone = self.repo(f"r{i}", POLICY)
+                self.branch(clone, "feat/add", {path: text, "docs/note.md": "fine\n"}, push=True)
+                main_tip = git(bare, "rev-parse", "main")
+                mess = self.entry(clone)["mess"]
+                self.assertEqual(git(bare, "rev-parse", "main"), main_tip)
+                self.assertIn(f"feat/add (it adds {path} ({kind}), which can run code or steer agents)", mess[0])
+
+    def test_an_added_executable_symlink_or_submodule_is_never_auto_merged(self) -> None:
+        for i, (kind, how) in enumerate((("an executable", "exec"), ("a symlink", "link"), ("a submodule", "sub"))):
+            with self.subTest(kind):
+                bare, clone = self.repo(f"x{i}", POLICY)
+                git(clone, "checkout", "-q", "-b", "feat/odd", "main")
+                if how == "exec":
+                    (clone / "tool").write_text("#!/bin/sh\necho hi\n")
+                    (clone / "tool").chmod(0o755)
+                    git(clone, "add", "tool")
+                elif how == "link":
+                    (clone / "tool").symlink_to("/etc/passwd")
+                    git(clone, "add", "tool")
+                else:
+                    git(clone, "update-index", "--add", "--cacheinfo", f"160000,{git(clone, 'rev-parse', 'HEAD')},tool")
+                git(clone, "commit", "-qm", "odd\n\nReady: yes", env={"GIT_COMMITTER_DATE": iso(1)})
+                git(clone, "checkout", "-q", "-f", "main")
+                main_tip = git(bare, "rev-parse", "main")
+                self.assertIn(f"feat/odd (it adds tool ({kind}), which can run code or steer agents)", self.entry(clone)["mess"][0])
+                self.assertEqual(git(bare, "rev-parse", "main"), main_tip)
+
+    def test_plain_docs_and_data_still_merge(self) -> None:
+        bare, clone = self.repo("a", POLICY)
+        self.branch(clone, "research/q", {"docs/q.md": "q\n", "docs/img/q.png": "png\n", "notes/data.csv": "a,b\n"}, push=True)
+        self.assertIn("a: merged research/q into main (--no-ff, pushed)", self.entry(clone)["auto"])
+
+    def test_cool_down_counts_from_when_this_machine_first_saw_the_tip(self) -> None:
+        self.seen_at_commit_time = False
+        bare, clone = self.repo("a", POLICY)
+        self.branch(clone, "feat/old-date", hours=100, push=True)  # committer date set 100 h back: does not count
+        main_tip = git(bare, "rev-parse", "main")
+        mess = self.entry(clone)["mess"]
+        self.assertIn("feat/old-date (first seen by this machine under 2 h ago)", mess[0])
+        self.assertEqual(git(bare, "rev-parse", "main"), main_tip)
+        self.assertIn("feat/old-date (first seen by this machine under 2 h ago)", self.entry(clone)["mess"][0])  # a rerun keeps the first time
+        self.backdate(clone, hours=3)
+        self.assertIn("a: merged feat/old-date into main (--no-ff, pushed)", self.entry(clone)["auto"])
+
+    def test_a_new_tip_restarts_the_cool_down(self) -> None:
+        self.seen_at_commit_time = False
+        bare, clone = self.repo("a", POLICY)
+        self.branch(clone, "feat/moving", push=True)
+        self.entry(clone)
+        self.backdate(clone, hours=3)
+        git(clone, "checkout", "-q", "feat/moving")
+        self.work(clone, {"docs/more.md": "m\n"}, hours=100)
+        git(clone, "push", "-q", "origin", "feat/moving")
+        git(clone, "checkout", "-q", "main")
+        self.assertIn("feat/moving (first seen by this machine under 2 h ago)", self.entry(clone)["mess"][0])
+
+    def test_the_skill_repo_itself_never_auto_merges(self) -> None:
+        text = (Path(__file__).resolve().parents[1] / "AGENTS.md").read_text()
+        self.assertEqual((auto_return.repo_sync.field(text, "Auto-merge") or "").lower(), "off")

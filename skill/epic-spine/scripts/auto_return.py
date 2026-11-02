@@ -3,10 +3,14 @@
 
 1. Auto-merge, only in repos declaring ``Integration policy: main-direct`` and not opted out (``EPICSPINE_AUTOMERGE=off`` or
    ``Auto-merge: off`` in AGENTS.md): a local or origin branch is merged when ALL hold: its tip commit carries the trailer
-   ``Ready: yes``; its diff against the merge-base only ADDS files (no M/D/R/T; none under ``.github/`` or named ``.git*``) and
-   touches no ``Deploy gate:`` entry; the repo's gate value is only paths/globs and its Integration policy text mentions no PR
+   ``Ready: yes``; its diff against the merge-base only ADDS files (no M/D/R/T) and none of them can run code or steer agents
+   (``risky``: an executable, symlink or submodule; a script such as ``*.py`` (which can shadow a stdlib module), ``*.js``,
+   ``*.sh``; any dotfile or dot-directory (``.claude/``, ``.agents/``, ``.github/``, ``.mcp.json``, ...); an ``AGENTS.md``,
+   ``CLAUDE.md`` or ``GEMINI.md``; a crontab, launchd or systemd file; a build or package file) and it touches no
+   ``Deploy gate:`` entry; the repo's gate value is only paths/globs and its Integration policy text mentions no PR
    or CI (else the whole repo is blocked, see ``deploy_gate.py``); ``git merge-tree --write-tree origin/<integration> <tip>``
-   is clean; ``gh pr list --head <branch> --state open`` runs and is empty; the tip is >= 2 h old; its worktree, if any, is clean
+   is clean; ``gh pr list --head <branch> --state open`` runs and is empty; this machine first saw the tip >= 2 h ago (kept in
+   ``<git common dir>/epicspine-seen.json``, never the committer date, which the committer sets); its worktree, if any, is clean
    with no process inside. Then: ``--no-ff`` merge in a temporary detached worktree, ``git push`` ff-only (rejected: stop and
    report), then the worktree, local and origin branch are removed (<= 3 merges per run).
 2. Already in main: a branch merged into ``origin/<integration>`` with no worktree is deleted locally; on origin only when named
@@ -20,7 +24,6 @@ from __future__ import annotations
 
 import json
 import os
-import re
 import shutil
 import subprocess
 import tempfile
@@ -28,11 +31,11 @@ from pathlib import Path
 
 import deploy_gate
 import repo_sync
+from merge_trust import SEEN, first_seen, risky  # noqa: F401 (SEEN: tests)
 from session_sync import Clock, git, out
 
 READY_AFTER, MAX_MERGES, PR_SECONDS, IDLE, ASK, SHOWN = 2 * 3600, 3, 10.0, 3 * 86400, 14 * 86400, 3
 PARK = "park it now, no question (push and verify tag archive/<name>, delete the branch and worktree; references/hygiene.md)"
-DENY = re.compile(r"^\.github/|(^|/)\.git[a-z]*$")
 FORMAT = "%(refname)|%(objectname)|%(committerdate:unix)|%(trailers:key=Ready,valueonly,separator=%x2C)"
 
 
@@ -78,20 +81,25 @@ def listing(top: Path, clock: Clock, base: str, integration: str) -> dict[str, d
     return found
 
 
-def why_not(top: Path, clock: Clock, base: str, name: str, info: dict, now: float, wt: Path | None, gate: list[str]) -> str | None:
-    """None when ``name`` may be merged automatically, else the reason it may not."""
+def why_not(top: Path, clock: Clock, base: str, name: str, info: dict, now: float, wt: Path | None, gate: list[str],
+            seen: float | None = None) -> str | None:
+    """None when ``name`` may be merged automatically, else the reason it may not (``seen``: when this machine first saw the tip)."""
     tip = info.get("local") or info.get("remote")
     if info.get("local") and info.get("remote") and info["local"] != info["remote"]:
         return "local and origin tips differ"
-    if now - info["ts"] < READY_AFTER:
-        return "last commit under 2 h old"
+    if seen is None or now - seen < READY_AFTER:
+        return "first seen by this machine under 2 h ago"
     mb = out(git(["merge-base", base, tip], top, clock, 4))
-    diff = git(["diff", "--name-status", "-M", mb or base, tip], top, clock, 5)
-    lines = diff.stdout.splitlines() if diff is not None and diff.returncode == 0 and mb else []
-    if hit := deploy_gate.touched(gate, [p for ln in lines for p in ln.split("\t")[1:]]):
+    diff = git(["diff", "--raw", "--no-abbrev", "-M", mb or base, tip], top, clock, 5)
+    rows = [(ln.split("\t")[0].split(), ln.split("\t")[1:]) for ln in diff.stdout.splitlines() if ln.startswith(":")] \
+        if diff is not None and diff.returncode == 0 and mb else []
+    if hit := deploy_gate.touched(gate, [p for _, paths in rows for p in paths]):
         return f"touches Deploy gate {hit}"
-    if not lines or any(not ln.startswith("A\t") or DENY.search(ln[2:]) for ln in lines):
+    if not rows or any(len(meta) < 5 or meta[4] != "A" for meta, _ in rows):
         return "it changes or deletes existing files (not purely additive)"
+    for meta, paths in rows:
+        if kind := risky(paths[0], meta[1]):
+            return f"it adds {paths[0]} ({kind}), which can run code or steer agents"
     tree = git(["merge-tree", "--write-tree", base, tip], top, clock, 8)
     if tree is None or tree.returncode != 0:
         return "it does not merge cleanly"
@@ -171,6 +179,7 @@ def run(top: Path, clock: Clock, env: dict, text: str, integration: str, trees: 
     head, base_tip = (out(git(args, top, clock, 3)) for args in (["symbolic-ref", "--short", "-q", "HEAD"], ["rev-parse", base]))
     by_branch, found = {b: p for p, b in trees}, listing(top, clock, base, integration)
     safe, blocked, idle, merges = [], [], [], 0
+    seen = first_seen(top, clock, {n: i for n, i in found.items() if i["ready"] and not i["merged"]}, now) if on else {}
     for name, info in sorted(found.items()):
         if info["merged"]:
             if name in by_branch or name == head or base_tip in (info.get("local"), info.get("remote")):
@@ -181,7 +190,7 @@ def run(top: Path, clock: Clock, env: dict, text: str, integration: str, trees: 
                 safe.append(name)
         elif info["ready"] and policy != "pr-approval":
             reason = "auto-merge is off or the Integration policy is not main-direct" if not on else f"auto-merge is blocked for this repo: {stop}" if stop else "it is checked out" if name == head \
-                else "no merge slot left this run" if merges >= MAX_MERGES else why_not(top, clock, base, name, info, now, by_branch.get(name), gate)
+                else "no merge slot left this run" if merges >= MAX_MERGES else why_not(top, clock, base, name, info, now, by_branch.get(name), gate, seen.get(name))
             if reason:
                 blocked.append(f"{name} ({reason})")
                 continue

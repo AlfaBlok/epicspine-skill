@@ -322,6 +322,20 @@ class SkillUpdateTest(unittest.TestCase):
             (backup / "SKILL.md").read_text(encoding="utf-8"), "# Skill one\n"
         )
 
+    def test_upgrade_refuses_a_history_rewrite(self) -> None:
+        """E59-S7 (audit H1): the installed commit must still be in the new main, else nothing is swapped."""
+        source = self.make_source()
+        installed = self.bump_source(source, "2026.02.02", "two")
+        skills = self.install(source, commit=installed, checked="2000-01-01")
+        run_git(["reset", "--hard", "HEAD~1"], source)
+        self.bump_source(source, "2026.03.03", "evil")
+        proc = self.run_update(self.script_in(skills), "upgrade", "--yes", "--source", str(source), expect_rc=1)
+        self.assertIn(f"upgrade refused: main no longer contains the installed commit {installed[:12]} (history rewrite)", proc.stderr)
+        self.assertEqual((skills / "epic-spine" / "SKILL.md").read_text(encoding="utf-8"), "# Skill two\n")
+        self.assertEqual(skill_update.read_pin(skills / "epic-spine.SOURCE")["commit"], installed)
+        self.run_update(self.script_in(skills), "upgrade", "--yes", "--allow-rewrite", "--source", str(source))
+        self.assertEqual((skills / "epic-spine" / "SKILL.md").read_text(encoding="utf-8"), "# Skill evil\n")
+
     def pin_of(self, skills: Path) -> dict:
         return skill_update.read_pin(skills / "epic-spine.SOURCE")
 

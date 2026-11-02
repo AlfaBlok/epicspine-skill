@@ -6,6 +6,7 @@ Public EpicSpine skill source: `skill/epic-spine/` is canonical and deployed con
 
 Integration policy: main-direct
 Skill updates: auto
+Auto-merge: off (this repo's code runs on every machine: a person merges every branch; agent_team E59-S7, audit H2)
 
 Validate: `python3 -B skill/epic-spine/scripts/validate_spine.py --strict <spine>` (add `--graph` for the family); test: `python3 -B -m unittest discover -s tests`; after skill changes: `tools/epicspine-manifest.sh skill/epic-spine > MANIFEST.sha256`
 

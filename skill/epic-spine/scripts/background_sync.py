@@ -7,7 +7,7 @@ Roots: ``EPICSPINE_REPO_ROOTS`` (os.pathsep list) else ``~/github``, ``~/Documen
 ``repo_sync.sync`` (fetch, ff-only when clean and behind, push committed integration-branch work per Integration policy;
 never force/commit, dirty files untouched), the pre-commit gate (``global_install.ensure_gate``), the vendored-copy check and
 local_mess.py (backup-push local-only branches; auto_return.py merges ``Ready: yes`` additive branches and deletes merged ones;
-report idle/merged worktrees, old uncommitted changes, stale servers; repo_state.py counts). No AGENTS.md blocks are installed
+report idle/merged worktrees, old uncommitted changes, stale servers; repo_state.py counts). Status key ``machine``: servers on every interface. No AGENTS.md blocks are installed
 (they would be uncommitted files). 20 s per repo (+40 s local_mess), 5 min total, least recently synced first, no prompts, flock.
 Writes ``~/.agents/epicspine-sync-status.json``; SessionStart prints only the current repo's mess/stale lines from it (never another repo's state: L-18).
 ``EPICSPINE_SYNC=off`` disables. Silent (cron mail) unless ``-v``. Stdlib only; never raises."""
@@ -114,11 +114,12 @@ def load(home: Path) -> dict:
         return {}
 
 
-def save(home: Path, repos: dict, skill_dir: Path) -> None:
+def save(home: Path, repos: dict, skill_dir: Path, machine: list[str] | None = None) -> None:
     path = home / STATUS
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_name(path.name + ".tmp")
-    tmp.write_text(json.dumps({"version": 1, "updated": now_iso(), "skill": read_version(skill_dir), "repos": repos}, indent=2) + "\n", encoding="utf-8")
+    tmp.write_text(json.dumps({"version": 1, "updated": now_iso(), "skill": read_version(skill_dir), "repos": repos,
+                               "machine": machine or []}, indent=2) + "\n", encoding="utf-8")
     os.replace(tmp, path)
 
 
@@ -150,8 +151,9 @@ def run(env: dict, home: Path, skill_dir: Path = SKILL_DIR, verbose: bool = Fals
             repos[str(top)] = sync_repo(top, home, skill_dir, total, env, procs, previous.get(str(top)))
         except Exception as exc:  # one bad repo never stops the rest
             repos[str(top)] = {"name": top.name, "last_run": now_iso(), "attention": [f"{top.name}: background sync failed ({exc})"]}
+    machine = local_servers.public_lines(procs, f"python3 {Path(__file__).resolve().with_name('artifact_host.py')}")
     with contextlib.suppress(OSError):
-        save(home, repos, skill_dir)
+        save(home, repos, skill_dir, machine)
     if verbose:
         for top, info in repos.items():
             print(f"{top}: {info.get('branch')} ahead {info.get('ahead')} behind {info.get('behind')} pulled {info.get('pulled')} "
@@ -176,6 +178,7 @@ def attention_lines(home: Path, cwd: Path | None = None, now: float | None = Non
     if age > STALE_SECONDS:
         lines.append(f"EpicSpine attention: background sync has not run since {data.get('updated')}; run `python3 "
                      f"{Path(__file__).resolve().with_name('agents_block.py')} check-global` and re-run install-global if its schedule is missing")
+    lines += [f"EpicSpine attention: {m} (this machine; background sync)" for m in data.get("machine", [])[:2]]
     here = (cwd or Path.cwd()).resolve()
     for top, info in sorted(data.get("repos", {}).items()):
         if here == Path(top) or Path(top) in here.parents:

@@ -6,12 +6,14 @@ Serve every HTML or visual artifact from a local static server and report a clic
 
 Run `python3 scripts/artifact_host.py` (path from the skill dir): it prints `{"host", "bind"}`. Nothing needs configuring: a headless machine (not macOS/Windows, and no `DISPLAY`, `WAYLAND_DISPLAY` or x11/wayland `XDG_SESSION_TYPE`) with a working Tailscale gets the MagicDNS name and the tailnet IP (so a Mac or phone can open it); a desktop, or a headless machine without Tailscale, gets `127.0.0.1` for both, silently. Env `EPICSPINE_ARTIFACT_HOST` only overrides: `local` (or `127.0.0.1`) forces loopback, `tailscale` forces the tailnet (warns on stderr and falls back to loopback if it fails), any other value is a hostname and its IPv4. `EPICSPINE_ARTIFACT_BIND` overrides the bind. The bind is never `0.0.0.0` or a public address: only loopback, tailnet, or private ranges, else it falls back to `127.0.0.1`.
 
-Run in the background, one server per task:
+Run in the background, one server per task, with the helper: it resolves the bind as above, prints the JSON line (with `port` and `base`) and then runs `http.server` on that bind in its place, so its pid is the server's:
 
 ```sh
 PORT=$(python3 -c 'import socket;s=socket.socket();s.bind(("127.0.0.1",0));print(s.getsockname()[1]);s.close()')
-python3 -m http.server "$PORT" --bind <bind> --directory <artifact-dir> &
+python3 scripts/artifact_host.py --serve <artifact-dir> --port "$PORT" &
 ```
+
+Never start a bare `python3 -m http.server` (or `http-server`, `serve`) without a bind address: it listens on every interface, and on a host with a public IP that publishes the directory to the internet. The background sync reports any server-like process with no bind address, `0.0.0.0` or `::` as an `EpicSpine attention:` line in every session on that machine (at any age, in any directory); stop it and restart it with the helper. By hand, always pass `--bind <bind>` from `artifact_host.py`.
 
 Record `url`, `port`, `pid`, and `directory`. Reuse a running server for the same directory instead of starting another.
 
