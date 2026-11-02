@@ -28,12 +28,12 @@ An AI agent running in a visitor's Chrome can ask epicspine.dev for the EpicSpin
 
 Owner: Delivery manager
 Status: active
-Last attempted: 2026-11-02 DM wake run_5c04f1f7: E10-S2 re-pointed to E10-A3 (Unblocker answered E10-A2 with research); E10-S1 merged (a5888fb) and live
+Last attempted: 2026-11-02 DM wake run_a6ee11d2: E10-S2 re-pointed to E10-A4 (Unblocker answered E10-A3: use jordi@alpha9.io, clickable link)
 Result: tools registered behind feature detection, verified with a stubbed modelContext and headless Chrome 154 (no console errors); not yet tried in a WebMCP-enabled Chrome
 Evidence: EPIC-0-OPERATING-SYSTEM.md
-Waiting on: Jordi: E10-A3 (the trial token from his own Chrome)
+Waiting on: Jordi: E10-A4 (register the WebMCP trial as jordi@alpha9.io, paste the token)
 Approved work: readied by Jordi 2026-11-02 ("do epicspine and zenod dev")
-Next action: E10-S2 once Jordi pastes the token (E10-A3): add the meta tag to index.html, verify the tools in Chrome without the flag
+Next action: E10-S2 once Jordi pastes the token (E10-A4): add the meta tag to index.html, verify the tools in Chrome without the flag
 Source revision: uncommitted scaffold
 Verified at: 2026-11-02
 
@@ -55,7 +55,7 @@ Steps: each is independently testable and closes only with evidence.
 | Issue | Role | Owner / Assignment | Title | Status | Depends On | PR/Branch | Base | Latest Evidence | Last Verified | Next Action |
 |---|---|---|---|---|---|---|---|---|---|---|
 | E10-S1 | Ticket worker | seat7 (T3 delegate) | E10-1..2: Register read-only WebMCP tools in index.html, feature-detected, with a test | done | none | merged a5888fb (wt/e10-s1-webmcp, deleted) | main | full suite 840 OK; tests/test_webmcp.py runs the script in node vm with stubbed modelContext; live on epicspine.dev 2026-11-02 | 2026-11-02 | none
-| E10-S2 | Ticket worker | Delivery manager | E10-3: Add the origin-trial token meta tag for epicspine.dev | blocked | E10-A3 | main (meta tag in index.html) | main | none | 2026-11-02 | after E10-A3 (Jordi pastes the token from his own Chrome), add the token meta tag to index.html, try the tools in Chrome |
+| E10-S2 | Ticket worker | Delivery manager | E10-3: Add the origin-trial token meta tag for epicspine.dev | blocked | E10-A4 | main (meta tag in index.html) | main | none | 2026-11-02 | after E10-A4 (Jordi registers epicspine.dev as jordi@alpha9.io and pastes the token), add the token meta tag to index.html, try the tools in Chrome |
 
 ## Decisions
 
