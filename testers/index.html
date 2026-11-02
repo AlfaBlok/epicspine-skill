@@ -31,6 +31,8 @@
   textarea { min-height: 96px; resize: vertical; }
   button { margin-top: 18px; background: var(--gold); color:#16120a; border:0; border-radius: 8px; padding: 12px 20px; font-weight: 700; font-size: 16px; cursor:pointer; }
   .hp { position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
+  .msg ol { margin: 8px 0; padding-left: 22px; }
+  .msg p, .msg li { color: var(--ink); font-size: 16px; }
   .msg { display:none; border-radius: 10px; padding: 14px 16px; margin-top: 14px; font-size: 16px; }
   .ok { background: rgba(120,181,140,.12); border:1px solid var(--green); color: var(--ink); }
   .err { background: rgba(210,119,109,.12); border:1px solid var(--red); color: var(--ink); }
@@ -88,7 +90,16 @@
   <p>During the launch I'd like to show one or two real teams at work: what went in, what went out, what worked. You read and OK every line before anything is published, and it's fine to say no; it doesn't change whether you're picked.</p>
 
   <h2 id="signup">Apply (two minutes)</h2>
-  <div id="ok" class="msg ok">Thanks, your application is in. I read every one myself and email you either way.</div>
+  <div id="ok" class="msg ok" role="status" tabindex="-1">
+    <strong>Your application is in. Thank you.</strong>
+    <p>What happens next:</p>
+    <ol>
+      <li>Your answers are saved and I get a note about them straight away.</li>
+      <li>I read every application myself and email you either way, to the address you gave.</li>
+      <li>If you're picked, I set up your team and send your login. The $10/month payment link comes only when your team is ready to run. Nothing to pay now.</li>
+    </ol>
+    <p class="small">Typo in your email, or changed an answer? Send the form again with the same email: the newest answers replace the old ones.</p>
+  </div>
   <div id="err" class="msg err">That didn't go through. Check the email address and try again.</div>
   <div id="err-answers" class="msg err">Please answer yes or no to every question, then send it again.</div>
   <form method="post" action="https://team.alpha9.io/api/public/testers">
@@ -127,7 +138,14 @@
 <script>
   (function () {
     var q = new URLSearchParams(location.search);
-    if (q.get("signed")) document.getElementById("ok").style.display = "block";
+    if (q.get("signed")) {
+      // E46-S4 r2: the confirmation replaces the form, so nobody wonders whether pressing send did anything.
+      var ok = document.getElementById("ok");
+      ok.style.display = "block";
+      document.querySelector("form").style.display = "none";
+      ok.scrollIntoView({ block: "center" });
+      ok.focus({ preventScroll: true });
+    }
     else if (q.get("error") === "answers") document.getElementById("err-answers").style.display = "block";
     else if (q.get("error")) document.getElementById("err").style.display = "block";
     var src = q.get("utm_source") || q.get("src");
