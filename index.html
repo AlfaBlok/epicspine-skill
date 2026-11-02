@@ -533,5 +533,57 @@ p { margin: 0; text-wrap: pretty; }
   });
 })();
 </script>
+<script>
+// WebMCP (EPIC-10): read-only tools for an agent in the visitor's browser. Everything is read
+// from this page's DOM, so the tools never drift from what it shows; nothing is sent anywhere.
+(function () {
+  try {
+    var mc = document.modelContext || navigator.modelContext;
+    if (!mc || typeof mc.registerTool !== "function") { return; }
+    var what = "EpicSpine (epicspine.dev) is an agent skill that turns chat into a goal tree kept as plain files in git, so every AI agent starts where the last one stopped. ";
+    var ro = { readOnlyHint: true };
+    function clean(s) { return (s || "").replace(/\s+/g, " ").trim(); }
+    var sections = Array.prototype.slice.call(document.querySelectorAll("main section[id]"));
+    var ids = sections.map(function (s) { return s.id; });
+    function info(s) {
+      var h = s.querySelector("h1, h2"), p = s.querySelector("p");
+      return { id: s.id, heading: clean(h && h.textContent), firstParagraph: clean(p && p.textContent) };
+    }
+    var tools = [{
+      name: "get_install_command",
+      description: what + "Returns the exact shell lines this page gives to install EpicSpine once per machine, and what they do.",
+      inputSchema: { type: "object", properties: {} },
+      execute: async function () {
+        var pre = document.getElementById("install-cmd");
+        var command = pre.textContent.split("\n").map(function (l) { return l.replace(/^\$ /, ""); }).join("\n").trim();
+        return { command: command, does: "Clones the EpicSpine repo, copies the skill to ~/.agents/skills/epic-spine and installs its always-on block for every agent on this machine (Python 3.10+, no packages)." };
+      },
+      annotations: ro
+    }, {
+      name: "list_sections",
+      description: what + "Lists the sections of the epicspine.dev home page: id, heading and first paragraph of each.",
+      inputSchema: { type: "object", properties: {} },
+      execute: async function () { return { sections: sections.map(info) }; },
+      annotations: ro
+    }, {
+      name: "go_to_section",
+      description: what + "Scrolls the epicspine.dev home page to one section and returns its text.",
+      inputSchema: { type: "object", properties: { id: { type: "string", enum: ids, description: "Section id, from list_sections" } }, required: ["id"] },
+      execute: async function (args) {
+        var s = document.getElementById(args && args.id);
+        if (!s || ids.indexOf(s.id) < 0) { throw new Error("Unknown section id; one of: " + ids.join(", ")); }
+        s.scrollIntoView({ behavior: "smooth", block: "start" });
+        var r = info(s);
+        r.text = clean(s.textContent);
+        return r;
+      },
+      annotations: ro
+    }];
+    tools.forEach(function (t) {
+      Promise.resolve().then(function () { return mc.registerTool(t); }).catch(function () {});
+    });
+  } catch (e) { /* no WebMCP here: the page works as before */ }
+})();
+</script>
 </body>
 </html>
