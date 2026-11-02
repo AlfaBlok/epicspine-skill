@@ -51,7 +51,7 @@ Steps: each is independently testable and closes only with evidence.
 
 | Issue | Role | Owner / Assignment | Title | Status | Depends On | PR/Branch | Base | Latest Evidence | Last Verified | Next Action |
 |---|---|---|---|---|---|---|---|---|---|---|
-| E10-S1 | Ticket worker | worker | Register read-only WebMCP tools in index.html, feature-detected, with a test | ready | none | wt/e10-s1-webmcp | main | none | 2026-11-02 | build on branch, push, report |
+| E10-S1 | Ticket worker | seat7 (T3 delegate) | Register read-only WebMCP tools in index.html, feature-detected, with a test | active | none | wt/e10-s1-webmcp | main | none | 2026-11-02 | build on branch, push, report |
 | E10-S2 | Ticket worker | Delivery manager | Add the origin-trial token meta tag for epicspine.dev | blocked | E10-S1, E10-A1 | main (meta tag in index.html) | main | none | 2026-11-02 | add the token once Jordi provides it |
 
 ## Decisions
