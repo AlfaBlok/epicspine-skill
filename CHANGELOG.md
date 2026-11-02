@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026.11.02.7 — Social pack: Undo of a pull puts the post back where it was, with its slot
+
+- **Changed: restore (the console's Undo / Put it back) returns a pulled post that never went out to the status it had before the pull**: `pulled → scheduled` (its slot still ahead) and `pulled → draft` join `pulled → held`, all by Jordi. A scheduled post whose slot passed while it was pulled comes back `held`, for Jordi to post now or give a new slot (Jordi may now write `Slot`).
+- **Added: transition flag `alone`**: an undo is only ever the whole change of a commit, never a step of a longer path (`pack_validate.route`), so the new moves open no back door (draft → pulled → scheduled past the Writer's checks, held → pulled → scheduled past `approved`).
+- Why: agent_team E34-S25 (2026-11-02: Jordi's Pull then Undo on P-0048 and P-0054 left them `held`, and both missed their slots). Tests: `tests/test_pack_validate.py` `test_restore_brings_a_pulled_post_back_to_the_status_it_had`, `test_an_undo_is_never_a_step_of_a_longer_path`. Skill 2026.11.02.7.
+
 ## 2026.11.02.6 — Asks: a snooze may end at a time of day
 
 - **Changed: ` — snoozed until:` takes a UTC minute as well as a day**, `<YYYY-MM-DD>THH:MMZ` (e.g. `2026-11-02T18:30Z`), so a 3 hour snooze (agent_team console: Snooze 3 hours / 3 days / 1 week / 1 month) ends after 3 hours. A date-only value works as before (hidden until that day). `spines.py --json` `snoozed_until` carries the value as written. Doc: `docs/doctrine/human-asks.md` (Snoozed). Test: `tests/test_human_asks.py` `test_snoozed_until_may_carry_a_utc_time`. agent_team EPIC-48 E48-S21. Skill 2026.11.02.6.

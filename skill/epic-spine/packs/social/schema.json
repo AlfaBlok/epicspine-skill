@@ -137,7 +137,7 @@
           "platform": {"column": "Platform", "type": "text"},
           "campaign": {"column": "Campaign", "type": "text", "optional": true, "writers": ["Writer", "Responder", "Engager", "Jordi"], "doc": "the campaign this row counts toward: its epic code (e.g. EPIC-7), a child epic of the repo with a ## Campaign plan; empty = the repo itself (no campaign); a ledger without the column reads as all empty"},
           "community": {"column": "Community", "type": "text"},
-          "slot": {"column": "Slot", "type": "datetime"},
+          "slot": {"column": "Slot", "type": "datetime", "writers": ["Writer", "Responder", "Engager", "Jordi"]},
           "title": {"column": "Title", "type": "text"},
           "text": {"column": "Text", "type": "text", "writers": ["Writer", "Responder", "Engager", "Jordi"]},
           "format": {"column": "Format", "type": "text"},
@@ -218,7 +218,9 @@
         {"from": "scheduled", "to": "pulled", "by": ["Jordi"], "effect": "unschedule"},
         {"from": "posted", "to": "pulled", "by": ["Jordi"], "effect": "delete_live"},
         {"from": "measured", "to": "pulled", "by": ["Jordi"], "effect": "delete_live"},
-        {"from": "pulled", "to": "held", "by": ["Jordi"], "when": "Jordi restores a post he pulled before it ever went out (no Link): it waits for his review again (the console's Undo / restore)"}
+        {"from": "pulled", "to": "held", "by": ["Jordi"], "alone": true, "when": "Jordi restores a post he pulled before it ever went out (no Link) that was held before the pull, or was scheduled and its slot has passed since: it waits for him again (the console's Undo / restore)"},
+        {"from": "pulled", "to": "scheduled", "by": ["Jordi"], "alone": true, "when": "Jordi restores a post he pulled from scheduled before it ever went out (no Link) and its slot is still ahead: back on schedule with that slot (the console's Undo / restore, agent_team E34-S25)"},
+        {"from": "pulled", "to": "draft", "by": ["Jordi"], "alone": true, "when": "Jordi restores a draft he pulled (the console's Undo / restore): a draft again, the Writer carries on with it"}
       ]
     },
     "idea": {
