@@ -58,7 +58,11 @@ def git(args: list[str], cwd: Path, clock: Clock, seconds: float = 4.0, info: di
             stdout, stderr = proc.communicate(timeout=clock.cap(seconds))
         except subprocess.TimeoutExpired:
             info is None or info.update(timeout=True)
-            os.killpg(proc.pid, signal.SIGKILL)
+            os.killpg(proc.pid, signal.SIGTERM)  # git drops its locks on SIGTERM, never on SIGKILL (agent_team E6-S51)
+            with contextlib.suppress(subprocess.TimeoutExpired):
+                proc.wait(timeout=2.0)
+            with contextlib.suppress(ProcessLookupError):
+                os.killpg(proc.pid, signal.SIGKILL)  # what outlived the grace (a stuck index-pack)
             proc.communicate(timeout=5)
             return None
         return subprocess.CompletedProcess(proc.args, proc.returncode, stdout, stderr)
