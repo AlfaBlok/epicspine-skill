@@ -201,6 +201,31 @@ class Validate(unittest.TestCase):
         self.assertIn("illegal status change pulled -> held by Writer", self.after("Writer", {**revise, "status": "held"}))
         self.assertEqual("", self.after("Jordi", {**revise, "status": "held"}))
 
+    def test_restore_brings_a_pulled_post_back_to_the_status_it_had(self) -> None:
+        # agent_team E34-S25: Undo after a pull of a scheduled post puts it back on schedule with its slot (pulled ->
+        # scheduled by Jordi); a pulled draft is a draft again; only Jordi restores; Jordi may give a held post a new slot.
+        sched = {"status": "scheduled", "slot": "2026-10-30 09:00"}
+        self.assertEqual("", self.after("Writer", sched))
+        self.repo.commit()
+        self.assertEqual("", self.after("Jordi", {**sched, "status": "pulled"}))
+        self.repo.commit()
+        self.assertIn("illegal status change pulled -> scheduled by Writer", self.after("Writer", sched))
+        self.assertIn("illegal status change pulled -> scheduled by Publisher", self.after("Publisher", sched))
+        self.assertEqual("", self.after("Jordi", sched))
+        self.assertEqual("", self.after("Jordi", {**sched, "status": "draft"}))
+        self.assertEqual("", self.after("Jordi", {**sched, "status": "held"}))
+        self.repo.commit()
+        self.assertEqual("", self.after("Jordi", {"status": "scheduled", "slot": "2026-10-31 09:00", "feedback": "Approved 2026-10-31 08:00 UTC"}))
+
+    def test_an_undo_is_never_a_step_of_a_longer_path(self) -> None:
+        # E34-S25: pulled -> scheduled / draft / held are `alone`: no draft -> pulled -> scheduled past the Writer's checks,
+        # no held -> pulled -> scheduled past the approved check, no scheduled -> pulled -> draft for an unnamed writer.
+        self.assertIn("P-0001: illegal status change draft -> scheduled by Jordi", self.after("Jordi", {"status": "scheduled"}))
+        self.assertIn("P-0002: illegal status change scheduled -> held by Jordi", self.after("Jordi", {}, {"id": "P-0002", "status": "held"}))
+        self.assertEqual("", self.after("Writer", {"status": "held"}))
+        self.repo.commit()
+        self.assertIn("P-0001: approved: no approval from Jordi", self.after("Jordi", {"status": "scheduled"}))
+
     def test_hold_rule_kind_post_holds_every_post_and_held_drafts_pass_the_text_checks(self) -> None:
         from pack_checks import holds
         self.assertTrue(holds("Kind: post", {"kind": "post", "title": "", "text": ""}))

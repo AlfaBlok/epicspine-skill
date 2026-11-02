@@ -32,7 +32,8 @@ def role_of(schema: dict, by: str | None = None, message: str | None = None) -> 
 
 
 def route(lc: dict, prev: str | None, to: str, kind: str | None, role: str | None) -> list[tuple[str, str]] | None:
-    """Steps of the shortest legal path prev -> to (a new row starts at `initial` or one of its first steps); None if none."""
+    """Steps of the shortest legal path prev -> to (a new row starts at `initial` or one of its first steps); None if none.
+    A transition marked `alone` (an undo, e.g. pulled -> scheduled) is only ever the whole change, never one step of a path."""
     ok = [t for t in lc["transitions"] if (not t.get("kinds") or kind in t["kinds"]) and (role is None or role in t["by"])]
     starts = [prev] if prev else [lc["initial"]] + [t["to"] for t in lc["transitions"] if t["from"] == lc["initial"]]
     for start in starts:
@@ -46,6 +47,8 @@ def route(lc: dict, prev: str | None, to: str, kind: str | None, role: str | Non
                     cur = back[cur]
                 return steps[::-1]
             for t in ok:
+                if t.get("alone") and not (prev and cur == prev and t["to"] == to):
+                    continue
                 if t["from"] == cur and t["to"] not in back:
                     back[t["to"]] = cur
                     todo.append(t["to"])
