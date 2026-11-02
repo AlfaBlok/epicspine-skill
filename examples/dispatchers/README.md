@@ -5,7 +5,7 @@ A machine dispatcher is the command in env `EPICSPINE_DISPATCHER`. Core EpicSpin
 Each subcommand prints one JSON object and exits 0:
 
 - `status` -> `{"name": "seat pool", "capacity": 2, "available": 1}`
-- `pick [--task TEXT]` -> `{"id": "seat1", "via": "t3_delegate_task", "providerInstanceId": "claudeAgent_seat1"}`, or `{"id": null, "reason": "..."}` when all busy
+- `pick [--task TEXT]` -> `{"id": "seat1", "via": "t3_delegate_task", "providerInstanceId": "claudeAgent_seat1"}`, or `{"id": null, "reason": "..."}` when all busy (optional `retryable`, `retry_after_s`, `fallback: "console"`: see `references/machine-dispatcher.md`)
 - `done <id> [--fail] [--signal TEXT]` -> `{"ok": true}`
 
 `via`: only `t3_delegate_task` (`providerInstanceId`, optional `model`).

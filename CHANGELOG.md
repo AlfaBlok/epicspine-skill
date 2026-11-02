@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.11.02.9 — A refused `pick` is retried in the same turn, never left to the next wake
+
+- **Changed: `id: null` from the machine dispatcher** (`references/machine-dispatcher.md`, SKILL.md): the answer may carry `retryable`, `retry_after_s` and `fallback: "console"`. With `fallback: "console"` the manager hands the worker to the console that woke it (agent_team `POST /api/runs/<run id>/workers`, launched on another host). A retryable (or unmarked) refusal is picked again in the same turn after `retry_after_s`, doubling, about 15 min in total, waiting with a Monitor or until-loop. Still refused, or not retryable: the rows are queued with the reason and the run ends with `retryAt` about now + 10 min; never "the next scheduled wake dispatches it".
+- Why: agent_team E6-S54 (2026-11-02 05:39Z: the Zenod Delivery manager's in-turn pick for E9-2h was refused `high load on vps3`, it wrote "queued, the next wake dispatches it" and nothing retried for 2 h while vps1 had room). Test: `tests/test_default_behaviors.py` `test_machine_dispatcher_null_pick_retries_in_turn`. Skill 2026.11.02.9.
+
 ## 2026.11.02.8 — Review holds only finished outcomes; a step that feeds an ask closes done
 
 - **Changed: which rows end in `review`** (always-on block rule 6, `operating-model.md` and `role-protocols.md` status gates): a row waits in `review` for the user's verdict only with a finished outcome, what they asked for, delivered and live. A step whose output only prepares an ask or the next build (proposal, mockup, guide, checklist page, prepared script) never goes to `review`: once its ask is posted the agent closes it `done (fed <ask code>)`, and the ask is the user's one card.
