@@ -1,0 +1,35 @@
+[
+ {
+  "mode": "redesign",
+  "depth": "full",
+  "scope": "page",
+  "shape": "Slides",
+  "theme": "terminal",
+  "axes": "dark/mono/chromatic-green",
+  "hero": "Split",
+  "nav": "edge-aligned numbered stops + family line",
+  "footer": "reference list",
+  "imagery": "the product",
+  "photos": [],
+  "entry": "index.html",
+  "fingerprint": "slides-snap-session-diff-rows-table",
+  "sections": [
+   "hero session",
+   "why diff",
+   "plan pair",
+   "memory tree+log",
+   "loop rows",
+   "roles table",
+   "install well",
+   "read links"
+  ],
+  "signature": "a cold agent binding in one command",
+  "waived": [
+   "47b",
+   "77",
+   "79"
+  ],
+  "prompt": "agent skill landing for developers: chat becomes a goal tree in git",
+  "date": "2026-11-02"
+ }
+]

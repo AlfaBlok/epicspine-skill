@@ -51,11 +51,7 @@ python3 -B -m unittest discover -s tests -v
 
 Expect `OK` for the example and a passing suite. The example is fully populated but its sample delivery remains unaccepted; validation proves document structure, not that a product shipped. For actual work in this repository, start at the [root spine](docs/EPIC-0-OPERATING-SYSTEM.md) and run `python3 skill/epic-spine/scripts/spines.py --active` for the open epics.
 
-Open the deck: [index.html](index.html)
-
-The deck is published with GitHub Pages at:
-
-https://epicspine.dev/ (the old https://alfablok.github.io/epicspine-skill/ redirects there)
+The site is published with GitHub Pages at https://epicspine.dev/ (the old https://alfablok.github.io/epicspine-skill/ redirects there): a short landing page ([index.html](index.html)) and the full Book deck at https://epicspine.dev/book/ ([book/index.html](book/index.html)). Old deep links such as `epicspine.dev/#9` forward to the same Book slide.
 
 ## Upgrading
 

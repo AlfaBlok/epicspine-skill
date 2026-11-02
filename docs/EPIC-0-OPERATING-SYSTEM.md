@@ -98,7 +98,7 @@ Done tickets (39 rows, Next Action done/none, moved verbatim): [done ledger](roo
 ## EpicSpine Book Companion
 
 Status: active
-Book root: index.html
+Book root: book/index.html
 Book steward: /root delivery manager
 
 Binding rule, validation command and the remaining fields: [book-companion](root/book-companion.md).
