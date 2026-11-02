@@ -232,6 +232,9 @@ p { margin: 0; text-wrap: pretty; }
 
   #memory .well pre, #install .well pre, #plan .well pre, #plan .said, .roles, .rows dd { font-size: var(--text-sm); }
   #plan .well pre { font-size: var(--text-xs); }
+  .said time { display: none; }
+  .said { gap: var(--space-2xs); padding: var(--space-md); }
+  #plan .pair { gap: var(--space-sm); }
   .roles th, .roles td { padding-right: var(--space-sm); font-size: var(--text-sm); }
   .hide-s { display: none; }
 }
@@ -314,7 +317,7 @@ p { margin: 0; text-wrap: pretty; }
     <div class="container stack">
       <div class="slide-head">
         <h2 id="h-plan">Say it loosely. Get a goal tree.</h2>
-        <p class="lead">Each goal has done means, steps with an owner, and a state you can read.</p>
+        <p class="lead hide-s">Each goal has done means, steps with an owner, and a state you can read.</p>
       </div>
       <div class="slide-body pair">
         <figure class="well" style="margin:0">
