@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.11.02.12 — Review rows carry their follow-ups; a step with nothing to confirm closes itself
+
+- **Changed: worker brief (`references/dispatch-prompts.md` Review handoff) and the `review` status (`references/role-protocols.md`)**: a row set to `review` names its follow-ups in Next Action (`followups: started <code> (<covers>); start <title> — <why>; park <title> — <why>; confirm: yes — <why>`, or `followups: none`; `completes: <Done-means id> | goal | ask`), so the user's close starts or parks each suggestion and none is dropped. Findings work lists every finding. A step the user need not confirm closes `done (no confirm: <why>)` and never reaches `review`.
+- Why: agent_team E48-S24 (E48-8 mockup v2, Jordi 2026-11-02: "if we approve, it will get lost"; Q1: a step waits for him only when he must confirm it). The agent_team console reads this cell (console/server/src/review/followups.ts). Skill 2026.11.02.12.
+
 ## 2026.11.02.11 — Social pack: Jordi can undo his request for a DM draft
 
 - **Added: chat `open → left` and `open → hidden` by Jordi (`alone`)**: the Undo of Draft a reply for me / Accept and draft a reply on the agent_team console's Messages page puts the chat back where it was. The Responder's own `open → left` (the DM rule says leave it) is unchanged.

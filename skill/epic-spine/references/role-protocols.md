@@ -52,7 +52,7 @@ Default rule: **stay in `main`; isolate execution, integrate frequently.** See `
 
 Use these gates:
 
-- `review`: implementation is complete, the local branch is handed off, and required automated checks pass; only a finished outcome (what the user asked for, delivered and live) waits there for the user's verdict.
+- `review`: implementation is complete, the local branch is handed off, and required automated checks pass; only a finished outcome (what the user asked for, delivered and live) waits there for the user's verdict. A row in `review` carries its follow-ups in Next Action (`followups: started …; start <title> — <why>; park <title> — <why>; confirm: yes — <why>`), so the user's close starts or parks each one and none is dropped; a step the user need not confirm (internal plumbing, a fix another card covers) closes `done (no confirm: <why>)` instead.
 - `testing`: the exact commit is available in the named test surface and acceptance validation is in progress.
 - `done`: acceptance has passed, evidence is linked, and the spine reflects the durable result. A step that only prepares an ask or the next build (proposal, mockup, guide, checklist page, prepared script) closes `done (fed <ask code>)` once its ask is posted, never `review`.
 
