@@ -84,6 +84,7 @@ Risk: the fresh-agent bind was measured once (n=1) on Claude; the thin repo-bloc
 | Issue | Role | Owner / Assignment | Title | Status | Depends On | PR/Branch | Base | Latest Evidence | Last Verified | Next Action |
 |---|---|---|---|---|---|---|---|---|---|---|
 | draft | Ticket worker | worker (Opus 5.5, T3 thread) | Enforce manager-never-implements and push-on-close with hooks: PreToolUse `manager_guard.py` (allowlist-first Bash/Edit policy, subagents via `agent_id`) + Stop `push_gate.py` | deferred | none | PR #28 (feat/manager-guards) | 6ccb101 | PARKED 2026-10-13 by user (D18); archived 2026-10-24 as tags `archive/feat/manager-guards`, `archive/feat/dispatcher-guard` (branches deleted, PR #28 closed). Do not merge, install, or build on it | 2026-10-24 | none (parked: not raised again) |
+| E0-S42 | Ticket worker | worker run_187fe12f (Sonnet 5.5, seat5) | duplicate-ask-code advisory fires when a Decisions row cites an open ask (EPIC-10 E10-A2, bb7434b): only a code reused by another ask line is a duplicate | active | none | e0-s42 | main | epic_log.py:180 | 2026-11-02 | DM verifies and merges |
 
 Done tickets (39 rows, Next Action done/none, moved verbatim): [done ledger](root/steps.md#done-ledger).
 
