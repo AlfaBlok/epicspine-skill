@@ -325,7 +325,9 @@
         {"from": "done", "to": "open", "by": ["Jordi"], "alone": true, "when": "Undo of Done"},
         {"from": "done", "to": "waiting", "by": ["Jordi"], "alone": true, "when": "Undo of Done"},
         {"from": "done", "to": "left", "by": ["Jordi"], "alone": true, "when": "Undo of Done"},
-        {"from": "done", "to": "hidden", "by": ["Jordi"], "alone": true, "when": "Undo of Done"}
+        {"from": "done", "to": "hidden", "by": ["Jordi"], "alone": true, "when": "Undo of Done"},
+        {"from": "open", "to": "left", "by": ["Jordi"], "alone": true, "when": "Undo of Draft a reply for me"},
+        {"from": "open", "to": "hidden", "by": ["Jordi"], "alone": true, "when": "Undo of Accept and draft a reply"}
       ]
     },
     "idea": {
