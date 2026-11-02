@@ -170,6 +170,21 @@ class Validate(unittest.TestCase):
         self.assertIn("never_say: says never-say phrase", self.after("Writer", {**approved, "status": "scheduled", "text": GOOD + "<br>revolutionary"}))
         self.assertIn("illegal status change held -> scheduled by Publisher", self.after("Publisher", {**approved, "status": "scheduled"}))
 
+    def test_revise_keeps_it_held_and_restore_brings_a_pulled_post_back_to_held(self) -> None:
+        # agent_team E34-S22: Change it (revise) is a note, never an approval; Don't post's Undo is pulled -> held by Jordi.
+        held = {"status": "held", "slot": "2026-10-30 09:00"}
+        self.assertEqual("", self.after("Writer", held))
+        self.repo.commit()
+        revise = {**held, "feedback": "Revise requested 2026-11-02 10:00 UTC: say it shorter"}
+        self.assertEqual("", self.after("Jordi", revise))
+        self.repo.commit()
+        self.assertEqual("", self.after("Writer", {**revise, "text": GOOD + "<br>Shorter.", "checks": "Revised 2026-11-02 10:20 UTC; pass"}))
+        self.assertIn("P-0001: approved: no approval from Jordi", self.after("Writer", {**revise, "status": "scheduled"}))
+        self.assertEqual("", self.after("Jordi", {**revise, "status": "pulled"}))
+        self.repo.commit()
+        self.assertIn("illegal status change pulled -> held by Writer", self.after("Writer", {**revise, "status": "held"}))
+        self.assertEqual("", self.after("Jordi", {**revise, "status": "held"}))
+
     def test_hold_rule_kind_post_holds_every_post_and_held_drafts_pass_the_text_checks(self) -> None:
         from pack_checks import holds
         self.assertTrue(holds("Kind: post", {"kind": "post", "title": "", "text": ""}))

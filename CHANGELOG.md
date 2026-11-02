@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.11.02.1 — Social pack: ask for a new version of a held post, restore a pulled one
+
+- **Added: `revise_requested` rule (Writer).** Jordi's `Revise requested <when>: …` note in a held post's Feedback (the console's "Change it") asks for a new version for his review: the Writer redrafts it (text, title, a new diagram when asked), keeps it `held` (never schedules it; the `approved` check still needs his `Approved` note) and starts the row's Checks with `Revised <YYYY-MM-DD HH:MM> UTC`, so the console shows it ready for his review again. The rule is in the Writer's wake text (`pack.py social --wake-text --role Writer`).
+- **Added: `pulled → held` by Jordi** (the console's restore / Undo of "Don't post"): a post he pulled that never went out waits for his review again. `pulled` is no longer a dead end. Doc: `packs/social/README.md`. Tests: `tests/test_pack_validate.py` `test_revise_keeps_it_held_and_restore_brings_a_pulled_post_back_to_held`, `tests/test_packs.py`. agent_team EPIC-34 E34-S22. Skill 2026.11.02.1.
+
 ## 2026.11.01.6 — Personas: a persona file may declare its team skills
 
 - **Added: optional `skills:` frontmatter in persona files** (`personas/<name>.md`): the team skills that are the persona's key tools, named in its wake brief, as an inline list `skills: [diagram-design]` or a block list. Not a list, or a name that is not a slug (lowercase, hyphens), is an error; when the repo has a `skills/team-skills.json` manifest (entries with `name`), a declared skill missing from it is a warning (`personas.py` prints `warning:` and still exits 0; `validate_spine.py` reports it as a warning); no manifest, no check. `spines.py --json` `personas` carries `skills` for every persona (`[]` when none). Doc: `references/personas.md`. Tests: `tests/test_personas.py` (`test_skills_optional_inline_or_block_list`, `test_skills_must_be_a_list_of_slugs`, `test_skills_checked_against_the_team_manifest_when_present`, `test_roster_carries_skills`). agent_team EPIC-53 E53-S2. Skill 2026.11.01.6.

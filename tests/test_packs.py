@@ -52,7 +52,7 @@ class SocialPack(unittest.TestCase):
             with self.subTest(lifecycle=name):
                 self.assertEqual(set(lc["states"]), pack.reachable(lc))
                 ends = set(lc["states"]) - {t["from"] for t in lc["transitions"]}
-                self.assertEqual({"post": {"pulled", "expired"}, "idea": {"posted", "epic"}}[name], ends)
+                self.assertEqual({"post": {"expired"}, "idea": {"posted", "epic"}}[name], ends)  # pulled -> held: restore (agent_team E34-S22)
 
     def test_pull_deletes_a_live_post_and_only_jordi_pulls_or_releases(self) -> None:
         lc = SOCIAL["lifecycles"]["post"]
