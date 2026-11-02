@@ -1,6 +1,6 @@
-"""Book drift guard: index.html must reflect the skill and stay self-contained.
+"""Book drift guard: book/index.html must reflect the skill and stay self-contained.
 
-The Book deck (``index.html``) is the human surface of this repository, which is
+The Book deck (``book/index.html``) is the human surface of this repository, which is
 at once the skill source, its own root spine and its own Book. When the skill
 gains a reference, script or asset, the deck must name it or the three surfaces
 have diverged. This test fails loudly so the next agent knows to update the deck.
@@ -22,7 +22,7 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).parents[1]
-BOOK = ROOT / "index.html"
+BOOK = ROOT / "book" / "index.html"
 SKILL_DIR = ROOT / "skill" / "epic-spine"
 
 # Files intentionally not named in the deck. Each entry needs a reason.
@@ -72,7 +72,7 @@ class BookDriftTests(unittest.TestCase):
             [],
             missing,
             "skill files absent from the Book deck: "
-            f"{missing}. Fix: add the file to the Book deck (index.html) or "
+            f"{missing}. Fix: add the file to the Book deck (book/index.html) or "
             "allowlist it with a reason in tests/test_book_drift.py.",
         )
 
@@ -91,7 +91,7 @@ class BookDriftTests(unittest.TestCase):
     def test_every_hash_link_targets_a_slide(self) -> None:
         text = book_text()
         slides = len(SLIDE_RE.findall(text))
-        self.assertGreater(slides, 0, "no slides found in index.html")
+        self.assertGreater(slides, 0, "no slides found in book/index.html")
         targets = [int(n) for n in HASH_RE.findall(text)]
         bad = sorted({n for n in targets if n < 1 or n > slides})
         self.assertEqual(
@@ -115,7 +115,7 @@ class BookDriftTests(unittest.TestCase):
             sorted(set(missing)),
             "path-like tokens in <code> do not exist on disk: "
             f"{sorted(set(missing))}. Fix: correct the path or remove it from "
-            "the Book deck (index.html).",
+            "the Book deck (book/index.html).",
         )
         self.assertGreater(checked, 0, "no path-like <code> tokens were checked")
 
@@ -128,7 +128,7 @@ class BookDriftTests(unittest.TestCase):
             slides,
             int(match.group(1)),
             "the initial slide counter total must equal the number of slides. "
-            "Fix: update the counter in index.html.",
+            "Fix: update the counter in book/index.html.",
         )
 
     def test_every_diagram_is_an_accessible_figure(self) -> None:
