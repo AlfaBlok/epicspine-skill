@@ -3,7 +3,8 @@
 link_rule (max links, none on line n), disclosure (a phrase in the first lines), never_say (the brief's list),
 hold_rules (a quoted phrase, or `field: value`, from the brief's hold table: matched means held, not scheduled), caps
 (per platform: posts a day, posts per community a week, replies a day, counting rows in the live states), link_present,
-approved (a phrase in a field only the owner writes: a held post goes out with Jordi's `Approved` note in its Feedback)."""
+approved (a phrase in a field only the owner writes: a held post goes out with Jordi's `Approved` note in its Feedback; a DM
+reply with it in the message's Feedback), filled (a field is not empty: a sent DM reply records its send in Result)."""
 from __future__ import annotations
 
 import datetime as dt
@@ -38,7 +39,8 @@ def holds(rule: str, rec: dict) -> bool:
 
 
 def run_check(key: str, c: dict, rec: dict, ctx: dict) -> list[str]:
-    p, text = c.get("params", {}), lines(rec)
+    """A check's issues for one row; `fn` names the check it runs when its key is its own (send_approved runs approved)."""
+    p, text, key = c.get("params", {}), lines(rec), c.get("fn", key)
     if key == "link_rule":
         out, links = [], URL.findall(rec.get("text", ""))
         if len(links) > p.get("max_links", len(links)):
@@ -58,7 +60,9 @@ def run_check(key: str, c: dict, rec: dict, ctx: dict) -> list[str]:
     if key == "approved":
         field, phrase = p.get("field", "feedback"), p.get("phrase", "approved")
         return [] if phrase.lower() in (rec.get(field) or "").lower() else [
-            f"no approval from Jordi in {field} (his console Approve writes {phrase.capitalize()!r} there): it stays held"]
+            f"no approval from Jordi in {field} (his console Approve writes {phrase.capitalize()!r} there): it stays {p.get('stays', 'held')}"]
+    if key == "filled":
+        return [] if (rec.get(p.get("field", "result")) or "").strip() else [f"no {p.get('field', 'result')} (record it in the same commit)"]
     if key == "link_present":
         return [] if URL.match(rec.get(p.get("field", "link"), "")) else ["posted without its link (add it in the same commit)"]
     if key == "caps":

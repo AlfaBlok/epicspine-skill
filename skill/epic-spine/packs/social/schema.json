@@ -10,10 +10,11 @@
     "Scout": "scans the channels each morning; writes topics, adds ideas",
     "Writer": "turns ideas and topics into posts; schedules a draft when its checks pass",
     "Publisher": "posts scheduled posts in their slot, expires stale ones, deletes pulled live posts",
-    "Responder": "answers replies to our posts (reply rows)",
+    "Responder": "answers replies to our posts (reply rows) and private chats (DMs and chat requests, in the messages ledger: every reply of ours waits for Jordi's Send)",
     "Engager": "disclosed replies in other people's threads (outreach rows)",
     "Reporter": "measures posts after 48 h and writes the 3-day report",
-    "Video Maker": "renders demo clips and registers each one in the assets library (row + data/assets/<id>/)"
+    "Video Maker": "renders demo clips and registers each one in the assets library (row + data/assets/<id>/)",
+    "Delivery manager": "moves rows between pack files (a migration, e.g. old DM rows from the posts ledger to the messages ledger); marks the old rows moved, never deletes them"
   },
   "files": {
     "brief": {
@@ -126,10 +127,10 @@
       }
     },
     "posts": {
-      "doc": "One row per post, reply or outreach, from draft to its numbers; Jordi's feedback in its row.",
+      "doc": "One row per post, reply in a thread, or outreach, from draft to its numbers; Jordi's feedback in its row. DMs are not posts: they live in the messages ledger.",
       "path": "data/posts-ledger.md",
       "sections": {
-        "rows": {"heading": null, "shape": "table", "add_rows": ["Writer", "Responder", "Engager"], "writers": ["Writer", "Responder", "Engager"], "fields": {
+        "rows": {"heading": null, "shape": "table", "add_rows": ["Writer", "Responder", "Engager"], "writers": ["Writer", "Responder", "Engager"], "refuse_new": [{"field": "community", "pattern": "^\\s*DMs?\\b", "why": "a DM is not a post: write it to data/messages-ledger.md (a Chats row per conversation, a Messages row per message), never as a posts-ledger row"}], "fields": {
           "id": {"column": "Id", "type": "id", "pattern": "^P-[0-9]{4}$"},
           "date": {"column": "Date", "type": "date"},
           "persona": {"column": "Persona", "type": "role"},
@@ -150,9 +151,43 @@
           "link": {"column": "Link", "type": "url", "writers": ["Publisher", "Responder", "Engager"]},
           "replies": {"column": "Replies", "type": "number", "writers": ["Responder", "Reporter"]},
           "metrics": {"column": "Metrics", "type": "text", "writers": ["Reporter", "Responder", "Engager"]},
-          "result": {"column": "Result", "type": "text", "writers": ["Reporter", "Responder", "Engager", "Publisher"]},
+          "result": {"column": "Result", "type": "text", "writers": ["Reporter", "Responder", "Engager", "Publisher", "Delivery manager"]},
           "feedback": {"column": "Feedback", "type": "text", "writers": ["Jordi"]},
           "status": {"column": "Status", "type": "enum", "lifecycle": "post"}
+        }}
+      }
+    },
+    "messages": {
+      "doc": "Private chats (DMs, chat requests): one Chats row per conversation, one Messages row per message in or out. Every reply of ours waits for Jordi's Send (draft -> scheduled is his alone); the Responder sends only scheduled replies, exactly as written.",
+      "path": "data/messages-ledger.md",
+      "optional": true,
+      "sections": {
+        "chats": {"heading": "Chats", "shape": "table", "add_rows": ["Responder", "Delivery manager"], "writers": ["Responder", "Delivery manager"], "fields": {
+          "id": {"column": "Id", "type": "id", "pattern": "^C-[0-9]{4}$"},
+          "platform": {"column": "Platform", "type": "text"},
+          "account": {"column": "Account", "type": "text", "doc": "ours: u/jordimr, @ZenodAgent"},
+          "who": {"column": "Who", "type": "text", "doc": "the other person: u/name, @name"},
+          "kind": {"column": "Kind", "type": "enum", "values": ["dm", "chat request", "pm"]},
+          "link": {"column": "Link", "type": "text", "doc": "the room URL, the request, or the platform's chat id"},
+          "campaign": {"column": "Campaign", "type": "text", "optional": true, "writers": ["Responder", "Delivery manager", "Jordi"], "doc": "as in posts: a campaign's epic code; empty = the repo"},
+          "started": {"column": "Started", "type": "date", "doc": "the date of their first message (empty when the platform hides it)"},
+          "state": {"column": "State", "type": "enum", "lifecycle": "chat"},
+          "reason": {"column": "Reason", "type": "text", "doc": "why left or hidden, one line in plain words"},
+          "feedback": {"column": "Feedback", "type": "text", "writers": ["Jordi"], "doc": "Jordi's notes: Draft requested <when>, Accept requested <when>, Done <when>, Reopened <when>"},
+          "messages": {"column": "Messages", "type": "refs", "computed": {"from": "messages.messages.chat"}}
+        }},
+        "messages": {"heading": "Messages", "shape": "table", "add_rows": ["Responder", "Delivery manager"], "writers": ["Responder", "Delivery manager"], "fields": {
+          "id": {"column": "Id", "type": "id", "pattern": "^M-[0-9]{4}$"},
+          "chat": {"column": "Chat", "type": "ref", "ref": ["messages.chats"]},
+          "at": {"column": "At", "type": "datetime", "doc": "UTC; theirs: sent; ours: sent, or written while a draft"},
+          "from": {"column": "From", "type": "enum", "values": ["them", "us"]},
+          "persona": {"column": "Persona", "type": "role"},
+          "text": {"column": "Text", "type": "text", "writers": ["Responder", "Delivery manager", "Jordi"], "frozen_in": ["scheduled", "posted"], "doc": "ours: the full text; theirs: the text when it is one short line, else `summary: …` (at most 200 characters)"},
+          "answers": {"column": "Answers", "type": "ref", "ref": ["messages.messages"]},
+          "checks": {"column": "Checks", "type": "text", "doc": "the DM rule check (about Zenod, they wrote last, caps); `Revised <when>` first after a new version"},
+          "feedback": {"column": "Feedback", "type": "text", "writers": ["Jordi"], "doc": "Approved <when>, Revise requested <when>: …, Don't send <when>"},
+          "result": {"column": "Result", "type": "text", "doc": "the send: time, tool, dry run, egress, answer time vs the 3 h target"},
+          "status": {"column": "Status", "type": "enum", "lifecycle": "message"}
         }}
       }
     },
@@ -200,8 +235,10 @@
         "measured": "48 h numbers in",
         "held": "matched one of Jordi's hold rules (only those hold a post)",
         "pulled": "pulled by Jordi: unscheduled, or deleted if live; link kept",
-        "expired": "best-before passed before its slot"
+        "expired": "best-before passed before its slot",
+        "moved": "moved to another pack file by the Delivery manager (Result names where, e.g. a DM row to the messages ledger); the export skips it"
       },
+      "export_skip": ["moved"],
       "transitions": [
         {"from": "idea", "to": "draft", "by": ["Writer"], "kinds": ["post"], "when": "the Writer takes the idea"},
         {"from": "draft", "to": "scheduled", "by": ["Writer"], "kinds": ["post"], "when": "every check passes and no hold rule matches"},
@@ -220,7 +257,75 @@
         {"from": "measured", "to": "pulled", "by": ["Jordi"], "effect": "delete_live"},
         {"from": "pulled", "to": "held", "by": ["Jordi"], "alone": true, "when": "Jordi restores a post he pulled before it ever went out (no Link) that was held before the pull, or was scheduled and its slot has passed since: it waits for him again (the console's Undo / restore)"},
         {"from": "pulled", "to": "scheduled", "by": ["Jordi"], "alone": true, "when": "Jordi restores a post he pulled from scheduled before it ever went out (no Link) and its slot is still ahead: back on schedule with that slot (the console's Undo / restore, agent_team E34-S25)"},
-        {"from": "pulled", "to": "draft", "by": ["Jordi"], "alone": true, "when": "Jordi restores a draft he pulled (the console's Undo / restore): a draft again, the Writer carries on with it"}
+        {"from": "pulled", "to": "draft", "by": ["Jordi"], "alone": true, "when": "Jordi restores a draft he pulled (the console's Undo / restore): a draft again, the Writer carries on with it"},
+        {"from": "draft", "to": "moved", "by": ["Delivery manager"], "alone": true, "when": "the row moved to another pack file (Result: `moved to <file> <id>`); never deleted"},
+        {"from": "scheduled", "to": "moved", "by": ["Delivery manager"], "alone": true, "when": "the row moved to another pack file (Result: `moved to <file> <id>`); never deleted"},
+        {"from": "posted", "to": "moved", "by": ["Delivery manager"], "alone": true, "when": "the row moved to another pack file (Result: `moved to <file> <id>`); never deleted"},
+        {"from": "measured", "to": "moved", "by": ["Delivery manager"], "alone": true, "when": "the row moved to another pack file (Result: `moved to <file> <id>`); never deleted"},
+        {"from": "held", "to": "moved", "by": ["Delivery manager"], "alone": true, "when": "the row moved to another pack file (Result: `moved to <file> <id>`); never deleted"},
+        {"from": "pulled", "to": "moved", "by": ["Delivery manager"], "alone": true, "when": "the row moved to another pack file (Result: `moved to <file> <id>`); never deleted"},
+        {"from": "expired", "to": "moved", "by": ["Delivery manager"], "alone": true, "when": "the row moved to another pack file (Result: `moved to <file> <id>`); never deleted"}
+      ]
+    },
+    "message": {
+      "field": "messages.messages.status",
+      "initial": "new",
+      "approval_gate": true,
+      "path": ["new", "draft", "scheduled", "posted"],
+      "states": {
+        "new": "not a row status: a message row is written at received (theirs) or draft (ours)",
+        "received": "their message, recorded as it came",
+        "draft": "our reply, waiting for Jordi's Send",
+        "scheduled": "Jordi pressed Send on this exact text: the Responder sends it on its next wake (Send starts that wake)",
+        "posted": "sent; the send time is in Result",
+        "pulled": "Jordi pressed Don't send: it is never sent",
+        "expired": "the chat moved on before it was sent; a newer draft answers the newest message"
+      },
+      "transitions": [
+        {"from": "new", "to": "received", "by": ["Responder", "Delivery manager"], "when": "their message: the text when it is one short line, else `summary: …`"},
+        {"from": "new", "to": "draft", "by": ["Responder"], "when": "your reply, for Jordi's Send (Answers = their message it answers)"},
+        {"from": "new", "to": "posted", "by": ["Delivery manager"], "when": "a reply sent before the approval rule (2026-11-02), moved from the posts ledger with its send in Result"},
+        {"from": "draft", "to": "scheduled", "by": ["Jordi"], "when": "Send: Jordi approves this exact text (his `Approved` note in Feedback)"},
+        {"from": "draft", "to": "pulled", "by": ["Jordi"], "effect": "unschedule", "when": "Don't send"},
+        {"from": "pulled", "to": "draft", "by": ["Jordi"], "alone": true, "when": "Undo of Don't send"},
+        {"from": "scheduled", "to": "draft", "by": ["Jordi"], "alone": true, "when": "Undo of Send before it went out"},
+        {"from": "scheduled", "to": "posted", "by": ["Responder"], "when": "send it exactly as written, dry run first, then for real; the send in Result in the same commit"},
+        {"from": "draft", "to": "expired", "by": ["Responder"], "when": "they wrote again before Jordi sent it: a new draft answers the newest message"}
+      ]
+    },
+    "chat": {
+      "field": "messages.chats.state",
+      "initial": "new",
+      "path": ["new", "open", "waiting"],
+      "states": {
+        "new": "not a row state: a chat row is written open, waiting, left or hidden",
+        "open": "they wrote last: the Responder drafts a reply for Jordi's Send",
+        "waiting": "we wrote last: waiting for them",
+        "left": "left alone by rule (Reason says why, Link opens it); Jordi may ask for a draft or mark it done",
+        "hidden": "a chat request whose text the platform hides until it is accepted; accepting shows them we saw it, so only Jordi asks for it",
+        "done": "nothing to answer, or Jordi marked it done"
+      },
+      "transitions": [
+        {"from": "new", "to": "open", "by": ["Responder", "Delivery manager"]},
+        {"from": "new", "to": "waiting", "by": ["Responder", "Delivery manager"]},
+        {"from": "new", "to": "left", "by": ["Responder", "Delivery manager"], "when": "the DM rule says leave it: Reason in plain words, Link to the chat; one row per chat, never a bundle"},
+        {"from": "new", "to": "hidden", "by": ["Responder", "Delivery manager"], "when": "the platform hides the request text until it is accepted; never accept it yourself"},
+        {"from": "new", "to": "done", "by": ["Delivery manager"], "when": "moved from the posts ledger with our message last and nothing to answer"},
+        {"from": "open", "to": "waiting", "by": ["Responder"], "when": "our reply was sent"},
+        {"from": "waiting", "to": "open", "by": ["Responder"], "when": "they wrote again"},
+        {"from": "done", "to": "open", "by": ["Responder"], "when": "they wrote again"},
+        {"from": "open", "to": "left", "by": ["Responder"], "when": "the DM rule says leave it (Reason)"},
+        {"from": "hidden", "to": "left", "by": ["Responder"], "when": "the text became readable and the rule says leave it"},
+        {"from": "left", "to": "open", "by": ["Jordi"], "when": "Draft a reply for me (his `Draft requested` note in Feedback): draft one even though the rule said leave it"},
+        {"from": "hidden", "to": "open", "by": ["Jordi"], "when": "Accept and draft a reply (his `Accept requested` note in Feedback): accept the request, read it, draft a reply"},
+        {"from": "open", "to": "done", "by": ["Jordi"], "when": "Done, no reply needed"},
+        {"from": "waiting", "to": "done", "by": ["Jordi"], "when": "Done, no reply needed"},
+        {"from": "left", "to": "done", "by": ["Jordi"], "when": "Done, no reply needed"},
+        {"from": "hidden", "to": "done", "by": ["Jordi"], "when": "Done, no reply needed"},
+        {"from": "done", "to": "open", "by": ["Jordi"], "alone": true, "when": "Undo of Done"},
+        {"from": "done", "to": "waiting", "by": ["Jordi"], "alone": true, "when": "Undo of Done"},
+        {"from": "done", "to": "left", "by": ["Jordi"], "alone": true, "when": "Undo of Done"},
+        {"from": "done", "to": "hidden", "by": ["Jordi"], "alone": true, "when": "Undo of Done"}
       ]
     },
     "idea": {
@@ -254,17 +359,20 @@
   "rules": {
     "style_rule_from_feedback": {"doc": "the same feedback twice becomes a Style rule, with undo (C6)", "from": "posts.rows.feedback", "repeats": 2, "to": "brief.style_rules", "by": "Writer", "log": "brief.feedback_log", "undo": "revert that commit; the rule line names the feedback it came from"},
     "campaign_tag": {"doc": "When your wake is bound to a campaign (a child epic of this repo whose spine has a `## Campaign plan` section; the wake prompt names it), every post, reply or outreach row you add for it carries that epic's code (e.g. `EPIC-7`) in Campaign, and you follow its plan: platform, period, key messages, voice, posting and reply style, targets. A row for another platform or outside its period is not the campaign's (Campaign empty). Bound to the repo's root spine, leave Campaign empty", "to": "posts.rows.campaign", "by": ["Writer", "Responder", "Engager"], "undo": "empty the cell (the row then counts toward the repo, no campaign)"},
-    "revise_requested": {"doc": "Jordi's `Revise requested <when>: …` note in a held post's Feedback asks for a NEW VERSION for his review: redraft it (Text and Title, and its diagram when the note asks, as a new asset row), keep it `held` (never schedule it: only his `Approved` note lets it out) and start the row's Checks with `Revised <YYYY-MM-DD HH:MM> UTC` (the time of your redraft) so his console shows it ready for review again", "from": "posts.rows.feedback", "to": "posts.rows.checks", "by": "Writer", "undo": "revert that commit (the earlier version is in git)"}
+    "revise_requested": {"doc": "Jordi's `Revise requested <when>: …` note in a held post's Feedback asks for a NEW VERSION for his review: redraft it (Text and Title, and its diagram when the note asks, as a new asset row), keep it `held` (never schedule it: only his `Approved` note lets it out) and start the row's Checks with `Revised <YYYY-MM-DD HH:MM> UTC` (the time of your redraft) so his console shows it ready for review again", "from": "posts.rows.feedback", "to": "posts.rows.checks", "by": "Writer", "undo": "revert that commit (the earlier version is in git)"},
+    "dm_messages": {"doc": "DMs and chat requests are not posts: they live in data/messages-ledger.md, never as posts-ledger rows. One Chats row per conversation (platform, our account, who, kind, link, started); each of their messages a `received` row (the text when it is one short line, else `summary: …`, at most 200 characters); your answer a `draft` row with its full text and Answers = their message. NEVER send a draft: Jordi's Send moves it `draft → scheduled` (his `Approved` note). On each wake send every `scheduled` reply exactly as written, dry run first, then for real, within the caps (10 DMs a day, 20 min between Reddit writes, 3 an hour); record the send in Result, move it `scheduled → posted` and the chat to `waiting` in one commit; a `pulled` one is never sent. A chat you leave alone by rule is its own Chats row in `left` with its Reason in plain words and its Link (a request whose text the platform hides until accepted: `hidden`, never accept it yourself); never bundle several chats in one row. Jordi's `Revise requested <when>: …` on a draft: write a new version (Text), keep it `draft`, start Checks with `Revised <YYYY-MM-DD HH:MM> UTC`. His `Draft requested` (or `Accept requested`: accept the request first) on a chat: draft a reply for his Send", "to": "messages.messages", "by": ["Responder"], "undo": "revert that commit (the earlier version is in git)"}
   },
   "checks": {
-    "transitions": {"doc": "a status change must be a listed transition, made by one of its roles", "on": ["post", "idea"]},
-    "link_rule": {"doc": "Reddit: no link in line 1, at most one link", "at": ["draft>scheduled", "draft>held", "held>scheduled", "draft>posted"], "platforms": ["Reddit"], "params": {"max_links": 1, "no_link_on_line": 1}},
-    "disclosure": {"doc": "Reddit: say you built it in the first two lines (posts and outreach; a reply in our own thread needs none)", "at": ["draft>scheduled", "draft>held", "held>scheduled", "draft>posted"], "platforms": ["Reddit"], "kinds": ["post", "outreach"], "params": {"within_lines": 2, "phrases": ["I built", "I build", "I'm the developer"]}},
-    "never_say": {"doc": "no phrase from the brief's Never say", "at": ["draft>scheduled", "draft>held", "held>scheduled", "draft>posted"], "source": "brief.never_say"},
-    "caps": {"doc": "posting caps", "at": ["draft>scheduled", "draft>posted"], "params": {"threads_per_day": 1, "per_community_per_week": 1, "replies_per_day": 20}},
-    "approved": {"doc": "a held post goes out only with Jordi's approval: his `Approved` note in the row's Feedback (only Jordi writes Feedback)", "at": ["held>scheduled"], "params": {"field": "feedback", "phrase": "approved"}},
-    "hold_rules": {"doc": "a match sends the draft to held instead of scheduled", "at": ["draft>scheduled"], "source": "brief.hold_rules"},
-    "link_present": {"doc": "a post goes live with its link in the same commit", "at": ["scheduled>posted", "draft>posted"], "params": {"field": "link"}}
+    "transitions": {"doc": "a status change must be a listed transition, made by one of its roles", "on": ["post", "idea", "message", "chat"]},
+    "link_rule": {"doc": "Reddit: no link in line 1, at most one link", "at": ["draft>scheduled", "draft>held", "held>scheduled", "draft>posted"], "platforms": ["Reddit"], "params": {"max_links": 1, "no_link_on_line": 1}, "lifecycles": ["post"]},
+    "disclosure": {"doc": "Reddit: say you built it in the first two lines (posts and outreach; a reply in our own thread needs none)", "at": ["draft>scheduled", "draft>held", "held>scheduled", "draft>posted"], "platforms": ["Reddit"], "kinds": ["post", "outreach"], "params": {"within_lines": 2, "phrases": ["I built", "I build", "I'm the developer"]}, "lifecycles": ["post"]},
+    "never_say": {"doc": "no phrase from the brief's Never say", "at": ["draft>scheduled", "draft>held", "held>scheduled", "draft>posted"], "source": "brief.never_say", "lifecycles": ["post", "message"]},
+    "caps": {"doc": "posting caps", "at": ["draft>scheduled", "draft>posted"], "params": {"threads_per_day": 1, "per_community_per_week": 1, "replies_per_day": 20}, "lifecycles": ["post"]},
+    "approved": {"doc": "a held post goes out only with Jordi's approval: his `Approved` note in the row's Feedback (only Jordi writes Feedback)", "at": ["held>scheduled"], "params": {"field": "feedback", "phrase": "approved"}, "lifecycles": ["post"]},
+    "send_approved": {"doc": "a DM reply goes out only with Jordi's Send: his `Approved` note in the message's Feedback (only Jordi writes Feedback)", "fn": "approved", "lifecycles": ["message"], "at": ["draft>scheduled"], "params": {"field": "feedback", "phrase": "approved", "stays": "draft"}},
+    "hold_rules": {"doc": "a match sends the draft to held instead of scheduled", "at": ["draft>scheduled"], "source": "brief.hold_rules", "lifecycles": ["post"]},
+    "link_present": {"doc": "a post goes live with its link in the same commit", "at": ["scheduled>posted", "draft>posted"], "params": {"field": "link"}, "lifecycles": ["post"]},
+    "sent": {"doc": "a sent reply records its send in Result (time, tool, dry run) in the same commit", "fn": "filled", "lifecycles": ["message"], "at": ["scheduled>posted", "new>posted"], "params": {"field": "result"}}
   },
   "intake": {
     "doc": "Desk chat intake: every line Jordi says to the desk is one of these kinds. The desk sorts it into one kind, writes it where the kind says through the console's write API (commits as Jordi, EPICSPINE_PERSONA=Jordi), and replies with where it landed.",

@@ -19,7 +19,7 @@ GOLDEN = Path(__file__).parent / "fixtures" / "pack_social.golden.json"
 ZENOD = Path("/home/t3agent/github/zenod-social")
 NOW = datetime(2026, 10, 27, 12, 0, tzinfo=timezone.utc)
 TOP = ["schemaVersion", "pack", "packVersion", "repo", "generatedAt", "warnings",
-       "brief", "directions", "topics", "ideas", "posts", "assets", "reports", "sources"]
+       "brief", "directions", "topics", "ideas", "posts", "messages", "assets", "reports", "sources"]
 
 
 def fixture() -> dict:
@@ -119,6 +119,31 @@ class Missing(unittest.TestCase):
             d = pack_export.export("social", Path(tmp), NOW)
         self.assertIsNone(d["posts"][0]["campaign"])
         self.assertFalse([w for w in d["warnings"] if "Campaign" in w["message"]])
+
+    def test_messages_ledger_exports_and_moved_posts_are_skipped(self) -> None:
+        # agent_team E34-S27: DMs in data/messages-ledger.md (Chats + Messages, each chat with its message ids); a posts
+        # row `moved` there is not exported; a repo without the messages file warns nothing (the file is optional).
+        with tempfile.TemporaryDirectory() as tmp:
+            (Path(tmp) / "data").mkdir()
+            (Path(tmp) / "data" / "posts-ledger.md").write_text(
+                "# P\n\n| Id | Date | Status | Result |\n|---|---|---|---|\n| P-0001 | 2026-11-02 | draft | |\n| P-0002 | 2026-10-25 | moved | moved to data/messages-ledger.md C-0001 |\n")
+            d = pack_export.export("social", Path(tmp), NOW)
+            self.assertEqual(["P-0001"], [p["id"] for p in d["posts"]])
+            self.assertEqual({"chats": [], "messages": []}, d["messages"])
+            self.assertFalse([w for w in d["warnings"] if w["file"] == "data/messages-ledger.md"])
+            (Path(tmp) / "data" / "messages-ledger.md").write_text(
+                "# Messages ledger\n\n## Chats\n\n| Id | Platform | Account | Who | Kind | Link | Started | State | Reason | Feedback |\n|---|---|---|---|---|---|---|---|---|---|\n"
+                "| C-0001 | Reddit | u/jordimr | u/someone | dm | https://www.reddit.com/chat/room/x | 2026-11-01 | open | | |\n\n"
+                "## Messages\n\n| Id | Chat | At | From | Persona | Text | Answers | Checks | Feedback | Result | Status |\n|---|---|---|---|---|---|---|---|---|---|---|\n"
+                "| M-0001 | C-0001 | 2026-11-01 10:00 | them | | hi, does it work with Codex? | | | | | received |\n"
+                "| M-0002 | C-0001 | 2026-11-01 10:20 | us | Responder | Yes, it does. | M-0001 | pass | | | draft |\n")
+            d = pack_export.export("social", Path(tmp), NOW)
+        c = d["messages"]["chats"][0]
+        self.assertEqual(("C-0001", "dm", "open", ["M-0001", "M-0002"]), (c["id"], c["kind"], c["state"], c["messages"]))
+        m = d["messages"]["messages"][1]
+        self.assertEqual(("C-0001", "us", "M-0001", "draft"), (m["chat"], m["from"], m["answers"], m["status"]))
+        self.assertEqual("data/messages-ledger.md", d["sources"]["messages.chats"]["path"])
+        self.assertFalse([w for w in d["warnings"] if w["file"] == "data/messages-ledger.md"], d["warnings"])
 
 
 class Cli(unittest.TestCase):

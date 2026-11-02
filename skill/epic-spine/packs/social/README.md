@@ -10,7 +10,8 @@ A social campaign desk: personas scan, write, post, reply and measure; the owner
 | directions (`data/directions.md`) | a week highlight, a do/don't, the month's priority | `## Week` H1… (highlight, why, until, served by), `## This week only` (do / don't, rule, until), `## Voice note`, `## Month` M1… (priority, why, month, served by) | Jordi |
 | topics (`data/topics.md`) | a finding from today's scan, table replaced daily | rank, T-MMDD-n, topic, where, evidence link, heat, date, reply target, used by | Scout |
 | ideas (`data/ideas.md`) | an idea for a post | I-n, date, idea, format, platform, from (role), link or asset, state, why, became | Jordi and Scout add; the Writer moves state, Jordi may drop (park) one |
-| posts (`data/posts-ledger.md`) | one post, reply or outreach | P-nnnn, date, persona, kind (post / reply / outreach), platform, campaign (optional), community, slot, title, text, format, assets, topic, highlight, messages, idea, checks, link, replies, metrics, result, feedback, status | Writer, Responder, Engager write rows; Publisher the link; Reporter numbers; Jordi feedback (and text before its slot) |
+| posts (`data/posts-ledger.md`) | one post, reply in a thread, or outreach (never a DM) | P-nnnn, date, persona, kind (post / reply / outreach), platform, campaign (optional), community, slot, title, text, format, assets, topic, highlight, messages, idea, checks, link, replies, metrics, result, feedback, status | Writer, Responder, Engager write rows; Publisher the link; Reporter numbers; Jordi feedback (and text before its slot) |
+| messages (`data/messages-ledger.md`, optional) | `## Chats`: one conversation (DM, chat request); `## Messages`: one message in or out | Chats: C-nnnn, platform, account (ours), who, kind (dm / chat request / pm), link, campaign (optional), started, state, reason, feedback, messages (computed). Messages: M-nnnn, chat, at, from (them / us), persona, text (ours in full; theirs one short line verbatim, else `summary: …`), answers, checks, feedback, result, status | Responder (Delivery manager for a migration); Jordi: feedback, text of a draft, Send / Don't send / Undo, a chat's Draft requested / Accept requested / Done |
 | assets (`data/assets.md` + `data/assets/`) | a diagram, screenshot, clip, video or logo | A-n, kind, file, made by, source, cuts per channel, used by | Jordi; the Writer adds the diagram of its own post (made with the `diagram` skill); the Video Maker adds the clips it renders |
 | reports (`data/reports/<date>.md`) | one 3-day report | Numbers, Best and worst, Learned, Highlights covered, Feedback themes, Cost | Reporter |
 
@@ -41,6 +42,22 @@ A failed check keeps the draft a draft, with the reason in `checks`. Ideas: `new
 
 **Approve before posting (opt-in per campaign, agent_team E46-S2).** The pack keeps no global gate; a campaign that wants Jordi to approve every post adds the hold rule `Kind: post` to its brief's Hold for me table (the console's "Approve every post" switch writes it). Every new post then goes `draft → held`; Jordi approves (→ `scheduled`), asks for a change (`Revise requested <date>: …` in Feedback: the Writer makes a new version, keeps it `held` and starts Checks with `Revised <date>`, so it comes back to him for review; it is never scheduled without his `Approved` note), approves with feedback (stays `held` until the Writer applies it and schedules it) or does not post it (→ `pulled`; restore puts a never-posted pulled post back to the status it had before the pull: `held`, or `scheduled` with its slot while that slot is ahead, else `held`). The `approved` check makes `held → scheduled` need Jordi's `Approved` note in Feedback, a column only Jordi writes.
 
+## Messages: DMs wait for Jordi's Send (agent_team E34-S27)
+
+DMs are not posts: they never go to the posts ledger (the hook refuses a new posts row whose Community is `DM …` or `DMs`). Each conversation is a Chats row; each message a Messages row.
+
+| Message status | To | Who | When |
+|---|---|---|---|
+| (new) | received | Responder | their message, as it came |
+| (new) | draft | Responder | our reply, for Jordi's Send |
+| draft | scheduled | **Jordi only** | Send: his `Approved <date>` note in Feedback (`send_approved`) |
+| draft | pulled | Jordi | Don't send; Undo: pulled → draft |
+| scheduled | draft | Jordi | Undo of Send before it went out |
+| scheduled | posted | Responder | sends it exactly as written, dry run first; the send in Result (`sent`); Text is frozen once scheduled |
+| draft | expired | Responder | they wrote again first; a new draft answers them |
+
+The message lifecycle declares its own `approval_gate: true`, so the pack's "no global gate" stays true for posts. Chat states: `open` (they wrote last), `waiting` (we did), `left` (by rule: Reason + Link, one row per chat, never a bundle), `hidden` (the request text is hidden until accepted; the Responder never accepts on its own), `done`. Jordi's buttons: Draft a reply for me (left → open, `Draft requested`), Accept and draft a reply (hidden → open, `Accept requested`), Done, no reply needed (→ done, Undo back). Moving old DM rows out of the posts ledger: the Delivery manager adds them here and sets the old rows to `moved` (Result `moved to data/messages-ledger.md C-…`), never deletes them; the export skips `moved` rows.
+
 ## Who writes what
 
 | Role | Writes | May not |
@@ -49,13 +66,14 @@ A failed check keeps the draft a draft, with the reason in `checks`. Ideas: `new
 | Scout | topics; adds ideas | posts |
 | Writer | post rows as draft; draft → scheduled / held; held → scheduled once Jordi approved it with feedback and the feedback is applied; a new version of a held post on Jordi's `Revise requested` note (stays held, Checks starts `Revised <date>`); idea state; style rule from 2× feedback (C6, undo = revert); asset rows for its posts' diagrams | schedule a failing draft, release a held post Jordi did not approve, post |
 | Publisher | scheduled → posted (link) / expired; deletes pulled live posts | post a draft or held post, change text |
-| Responder · Engager | reply / outreach rows: draft → posted → measured; replies, metrics | top-level posts |
+| Responder · Engager | reply / outreach rows: draft → posted → measured; replies, metrics. Responder: the messages ledger (chats, their messages, DM drafts; sends only replies Jordi scheduled) | top-level posts; a DM in the posts ledger; send a DM draft |
+| Delivery manager | moves rows between pack files (old DM rows → messages ledger; the posts row → `moved`) | any other edit |
 | Reporter | posted → measured, metrics, result, reports | any other status |
 | Video Maker | renders clips and registers each in `data/assets.md` (row, made by Video Maker) + `data/assets/<id>/` | posts, ideas, topics, any status |
 
 ## Checks (validator, E34-S2)
 
-At `draft → scheduled` / `draft → posted` (the text checks also at `draft → held` and `held → scheduled`): Reddit no link on line 1 and at most one link; disclosure ("I built…") in the first two lines on Reddit for posts and outreach (a reply in our own thread needs none); no Never say phrase; caps (1 thread a day, 1 per community a week, 20 replies a day); hold rules (→ held). At `held → scheduled`: Jordi's `Approved` note in Feedback (`approved`). At `scheduled → posted` / `draft → posted`: the link is in the row. Every status change must be a listed transition by one of its roles (the role is checked when the commit names its writer, `EPICSPINE_PERSONA`). How to run it: [references/packs.md](../../references/packs.md) Validate.
+At `draft → scheduled` / `draft → posted` (the text checks also at `draft → held` and `held → scheduled`): Reddit no link on line 1 and at most one link; disclosure ("I built…") in the first two lines on Reddit for posts and outreach (a reply in our own thread needs none); no Never say phrase; caps (1 thread a day, 1 per community a week, 20 replies a day); hold rules (→ held). At `held → scheduled`: Jordi's `Approved` note in Feedback (`approved`). At `scheduled → posted` / `draft → posted`: the link is in the row. Messages: `send_approved` at `draft → scheduled` (Jordi's `Approved`), `sent` at `→ posted` (Result filled), never-say at Send; checks name the lifecycles they apply to (`lifecycles`). Every status change must be a listed transition by one of its roles (the role is checked when the commit names its writer, `EPICSPINE_PERSONA`). How to run it: [references/packs.md](../../references/packs.md) Validate.
 
 ## Desk intake (6 kinds)
 

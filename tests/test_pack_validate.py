@@ -48,6 +48,15 @@ class Repo:
         lines += ["| " + " | ".join({**BASE, **r}.get(k, "") for k, _ in COLS) + " |" for r in rows]
         (self.root / "data/posts-ledger.md").write_text("\n".join(lines) + "\n")
 
+    def messages(self, chats: list[dict], msgs: list[dict]) -> None:
+        sec = SOCIAL["files"]["messages"]["sections"]
+        out = ["# Messages ledger", ""]
+        for key, rows in (("chats", chats), ("messages", msgs)):
+            cols = [(k, f["column"]) for k, f in sec[key]["fields"].items() if "computed" not in f]
+            out += [f"## {sec[key]['heading']}", "", "| " + " | ".join(c for _, c in cols) + " |", "|" + "---|" * len(cols)]
+            out += ["| " + " | ".join(r.get(k, "") for k, _ in cols) + " |" for r in rows] + [""]
+        (self.root / "data/messages-ledger.md").write_text("\n".join(out))
+
     def commit(self) -> None:
         self.git("add", "-A")
         self.git("commit", "-qm", "base", "--no-verify")
@@ -232,6 +241,66 @@ class Validate(unittest.TestCase):
         self.assertFalse(holds("Kind: post", {"kind": "reply", "title": "", "text": ""}))
         self.assertIn("P-0001: disclosure", self.after("Writer", {"status": "held", "text": "Plan your week.<br>Free."}))
 
+    # agent_team E34-S27 (EPIC-34 L-6): DMs leave the posts ledger; every DM reply waits for Jordi's Send.
+    CHAT = {"id": "C-0001", "platform": "Reddit", "account": "u/jordimr", "who": "u/someone", "kind": "dm", "link": "https://www.reddit.com/chat/room/x", "started": "2026-11-01", "state": "open"}
+    THEIRS = {"id": "M-0001", "chat": "C-0001", "at": "2026-11-01 10:00", "from": "them", "text": "does it work with Codex?", "status": "received"}
+    OURS = {"id": "M-0002", "chat": "C-0001", "at": "2026-11-01 10:20", "from": "us", "persona": "Responder", "text": "Yes, it does.", "answers": "M-0001", "checks": "pass", "status": "draft"}
+
+    def dm(self, by: str | None, chats: list[dict], msgs: list[dict]) -> str:
+        self.repo.messages(chats, msgs)
+        return "\n".join(self.repo.issues(by))
+
+    def test_the_responder_writes_chats_and_drafts_but_never_sends_a_draft(self) -> None:
+        self.assertEqual("", self.dm("Responder", [self.CHAT], [self.THEIRS, self.OURS]))
+        self.repo.commit()
+        sent = {**self.OURS, "result": "sent 2026-11-01 10:30 UTC"}
+        self.assertIn("M-0002: illegal status change draft -> scheduled by Responder", self.dm("Responder", [self.CHAT], [self.THEIRS, {**self.OURS, "status": "scheduled"}]))
+        self.assertIn("M-0002: illegal status change draft -> posted by Responder", self.dm("Responder", [self.CHAT], [self.THEIRS, {**sent, "status": "posted"}]))
+        self.assertIn("M-0002: Responder may not write Feedback", self.dm("Responder", [self.CHAT], [self.THEIRS, {**self.OURS, "feedback": "Approved 2026-11-01"}]))
+        self.assertIn("M-0002: send_approved: no approval from Jordi in feedback", self.dm("Jordi", [self.CHAT], [self.THEIRS, {**self.OURS, "status": "scheduled"}]))
+        self.assertIn("stays draft", self.dm("Jordi", [self.CHAT], [self.THEIRS, {**self.OURS, "status": "scheduled"}]))
+        approved = {**self.OURS, "status": "scheduled", "feedback": "Approved 2026-11-01 10:25 UTC"}
+        self.assertEqual("", self.dm("Jordi", [self.CHAT], [self.THEIRS, approved]))
+        self.repo.commit()
+        self.assertIn("M-0002: Text may not change once scheduled", self.dm("Responder", [self.CHAT], [self.THEIRS, {**approved, "text": "Something else."}]))
+        self.assertIn("M-0002: sent: no result", self.dm("Responder", [self.CHAT], [self.THEIRS, {**approved, "status": "posted"}]))
+        self.assertEqual("", self.dm("Responder", [{**self.CHAT, "state": "waiting"}], [self.THEIRS, {**approved, "status": "posted", "result": "sent 2026-11-01 10:31 UTC, dry run first"}]))
+        self.assertEqual("", self.dm("Jordi", [self.CHAT], [self.THEIRS, {**approved, "status": "draft"}]))  # Undo of Send before it went out
+
+    def test_jordi_dont_send_undo_and_rewrite(self) -> None:
+        self.dm("Responder", [self.CHAT], [self.THEIRS, self.OURS])
+        self.repo.commit()
+        self.assertEqual("", self.dm("Jordi", [self.CHAT], [self.THEIRS, {**self.OURS, "text": "My own words."}]))
+        self.assertEqual("", self.dm("Jordi", [self.CHAT], [self.THEIRS, {**self.OURS, "status": "pulled"}]))
+        self.repo.commit()
+        self.assertIn("illegal status change pulled -> draft by Responder", self.dm("Responder", [self.CHAT], [self.THEIRS, self.OURS]))
+        self.assertIn("illegal status change pulled -> scheduled by Jordi", self.dm("Jordi", [self.CHAT], [self.THEIRS, {**self.OURS, "status": "scheduled", "feedback": "Approved x"}]))
+        self.assertEqual("", self.dm("Jordi", [self.CHAT], [self.THEIRS, self.OURS]))
+
+    def test_a_chat_left_by_rule_is_its_own_row_and_only_jordi_reopens_or_closes_it(self) -> None:
+        left = {**self.CHAT, "state": "left", "reason": "tax question, not about Zenod"}
+        self.assertEqual("", self.dm("Responder", [left], [self.THEIRS]))
+        self.repo.commit()
+        self.assertIn("C-0001: illegal state change left -> done by Responder", self.dm("Responder", [{**left, "state": "done"}], [self.THEIRS]))
+        self.assertIn("C-0001: illegal state change left -> open by Responder", self.dm("Responder", [{**left, "state": "open"}], [self.THEIRS]))
+        self.assertEqual("", self.dm("Jordi", [{**left, "state": "open", "feedback": "Draft requested 2026-11-02 21:14 UTC"}], [self.THEIRS]))
+        self.assertEqual("", self.dm("Jordi", [{**left, "state": "done", "feedback": "Done 2026-11-02 21:15 UTC"}], [self.THEIRS]))
+        self.repo.commit()
+        self.assertEqual("", self.dm("Jordi", [left], [self.THEIRS]))  # Undo of Done
+        self.assertIn("C-0001: chat", "C-0001: chat")  # (ids are per table)
+        self.assertIn("removed", self.dm("Responder", [], [self.THEIRS]))
+
+    def test_a_dm_is_never_a_new_posts_row_and_old_ones_move(self) -> None:
+        self.assertIn("P-0003: Community 'DM u/someone': a DM is not a post", self.after("Responder", {}, {"id": "P-0003", "kind": "reply", "status": "draft", "community": "DM u/someone", "text": "Hi"}))
+        self.assertIn("P-0003: Community 'DMs': a DM is not a post", self.after(None, {}, {"id": "P-0003", "kind": "reply", "status": "draft", "community": "DMs", "text": "Hi"}))
+        self.assertEqual("", self.after("Responder", {}, {"id": "P-0003", "kind": "reply", "status": "draft", "community": "r/other", "text": "Hi"}))
+        moved = {"status": "moved", "result": "moved to data/messages-ledger.md C-0001"}
+        self.assertEqual("", self.after("Delivery manager", moved))
+        self.assertIn("P-0001: illegal status change draft -> moved by Writer", self.after("Writer", moved))
+        self.assertIn("P-0001: Delivery manager may not write Text", self.after("Delivery manager", {**moved, "text": "x"}))
+        self.repo.commit()
+        self.assertIn("illegal status change moved -> draft", self.after(None, {"status": "draft"}))
+
     def test_a_removed_row(self) -> None:
         self.repo.ledger({})
         self.assertIn("P-0002: row removed", "\n".join(self.repo.issues()))
@@ -304,6 +373,30 @@ class InitAndHook(unittest.TestCase):
         (self.root / "data/posts-ledger.md").unlink()
         pack_init.init(self.root, "social")
         good = self.hook()
+        self.assertEqual(0, good.returncode, good.stderr)
+
+    def test_commit_hook_refuses_a_responder_commit_that_sends_its_own_dm_draft(self) -> None:
+        # agent_team E34-S27: the approval rule by mechanism (root L-12): a Responder commit moving its DM draft to
+        # scheduled (or straight to posted) is refused; Jordi's Send with his Approved note passes.
+        git = ["git", "-c", "user.name=t", "-c", "user.email=t@t"]
+        subprocess.run(["git", "init", "-q"], cwd=self.root, env=safe_env())
+        pack_init.init(self.root, "social")
+        repo = Repo.__new__(Repo)
+        repo.root = self.root
+        chat = Validate.CHAT
+        repo.messages([chat], [Validate.THEIRS, Validate.OURS])
+        subprocess.run([*git, "add", "-A"], cwd=self.root, env=safe_env())
+        subprocess.run([*git, "commit", "-qm", "base", "--no-verify"], cwd=self.root, env=safe_env())
+        hook = lambda by: subprocess.run([sys.executable, "-B", str(SCRIPTS / "pre_commit.py")], cwd=self.root, capture_output=True, text=True, env=safe_env(EPICSPINE_PERSONA=by))  # noqa: E731
+        for status in ("scheduled", "posted"):
+            repo.messages([chat], [Validate.THEIRS, {**Validate.OURS, "status": status, "result": "sent", "feedback": ""}])
+            subprocess.run([*git, "add", "-A"], cwd=self.root, env=safe_env())
+            bad = hook("Responder")
+            self.assertEqual(1, bad.returncode, status)
+            self.assertIn(f"M-0002: illegal status change draft -> {status} by Responder", bad.stderr)
+        repo.messages([chat], [Validate.THEIRS, {**Validate.OURS, "status": "scheduled", "feedback": "Approved 2026-11-02 21:30 UTC"}])
+        subprocess.run([*git, "add", "-A"], cwd=self.root, env=safe_env())
+        good = hook("Jordi")
         self.assertEqual(0, good.returncode, good.stderr)
 
     def test_cli(self) -> None:
