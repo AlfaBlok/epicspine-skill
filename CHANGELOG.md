@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.11.02.5 — Fix: a Decisions row citing an open ask is no duplicate-code advisory
+
+- **Fixed: `epic_log` duplicate-ask-code advisory** no longer fires when a `## Decisions` row cites an open ask (e.g. "revisit when Jordi answers E10-A2"). A duplicate is a code carried by two ask lines under `## Waiting on` (open, `[answered …]` or `[superseded …]`); the message says so and names the code once.
+- Why: EPIC-0 E0-S42 (false positive on every commit of EPIC-10 since bb7434b). Tests: `tests/test_human_asks.py` `test_open_ask_cited_by_a_decisions_row_is_not_a_duplicate`, `test_duplicate_code_across_ask_states`. Skill 2026.11.02.5.
+
 ## 2026.11.02.4 — Tree library: `spines.py --active` ranks by heat; steward-persona page
 
 - **Added: `scripts/spine_tree.py`, a small shared tree library** (stdlib only): heat with a 14-day half-life over dated events (`heat`, 120-day horizon, half-up rounding as JavaScript does), stable node ids across re-derivations (`match_ids`: Jaccard ≥ 0.5, one-to-one, greedy best-first; unmatched sets get a deterministic `n-<sha1[:8]>`), and a "Recent changes" rollup (`recent_changes`: added, retired, renamed, moved, regrouped; `rollup_recent` keeps 20 bullets, a NOOP run changes nothing). The contract is `references/tree-library.md`; `assets/tree-library-parity.json` holds inputs and expected outputs for ports. Zenod's TypeScript memory tree (EPIC-9) ports it and never imports the skill.
