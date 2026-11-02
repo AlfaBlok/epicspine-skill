@@ -108,7 +108,7 @@ Integration gates:
 
 | Status | Required Meaning |
 |---|---|
-| `review` | Implementation complete, local branch handed off, and required automated checks passing |
+| `review` | Implementation complete, local branch handed off, and required automated checks passing; a finished outcome the user asked for, live where they use it, waiting for their verdict |
 | `testing` | Exact commit available in the named test surface; acceptance validation in progress |
 | `done` | Acceptance passed, evidence linked, residual risk recorded, spine reconciled |
 
@@ -218,9 +218,9 @@ Use these statuses unless a repository already has its own vocabulary:
 - `ready`: scoped and ready for the owning role.
 - `active`: currently being worked.
 - `blocked`: cannot progress without named input or dependency.
-- `review`: implementation is complete, the local branch is handed off, and required automated checks pass.
+- `review`: implementation is complete, the local branch is handed off, and required automated checks pass. Only a finished outcome (what the user asked for, delivered and live) waits in `review` for the user's verdict.
 - `testing`: the exact commit is available in a named test surface and acceptance validation is in progress.
-- `done`: accepted against criteria, evidence is linked, and durable state is reflected in the spine.
+- `done`: accepted against criteria, evidence is linked, and durable state is reflected in the spine. A step whose output only prepares an ask or the next build (proposal, mockup, guide, checklist page, prepared script) never goes to `review`: once its ask is posted the agent closes it `done (fed <ask code>)`; the ask is the user's one card (a console review list follows the row and drops it).
 - `superseded`: an assignment was replaced; preserve its history and point to the takeover.
 - `deferred`: intentionally postponed.
 

@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.11.02.8 — Review holds only finished outcomes; a step that feeds an ask closes done
+
+- **Changed: which rows end in `review`** (always-on block rule 6, `operating-model.md` and `role-protocols.md` status gates): a row waits in `review` for the user's verdict only with a finished outcome, what they asked for, delivered and live. A step whose output only prepares an ask or the next build (proposal, mockup, guide, checklist page, prepared script) never goes to `review`: once its ask is posted the agent closes it `done (fed <ask code>)`, and the ask is the user's one card.
+- Why: agent_team root L-43 / E48-S22 (Jordi, 2026-11-02: his "Done, waiting for your review" list held a proposal, a key guide, a prepared root script and a checklist page while voice notes and security were far from done, so Approve meant nothing). The agent_team console's review list follows the row (a row closed `done`/`superseded` drops its card). Skill 2026.11.02.8.
+
 ## 2026.11.02.7 — Social pack: Undo of a pull puts the post back where it was, with its slot
 
 - **Changed: restore (the console's Undo / Put it back) returns a pulled post that never went out to the status it had before the pull**: `pulled → scheduled` (its slot still ahead) and `pulled → draft` join `pulled → held`, all by Jordi. A scheduled post whose slot passed while it was pulled comes back `held`, for Jordi to post now or give a new slot (Jordi may now write `Slot`).
