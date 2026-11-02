@@ -76,7 +76,7 @@ So an `ask` line is open, an `answered` line is answered but not yet cleaned up,
 
 **Superseded:** an ask replaced by another before it was answered becomes `- [superseded <code> <YYYY-MM-DD> by [<repo>/]<code>] <question> …`. It is closed like `done`; the new ask carries the wait.
 
-**Snoozed:** the human may snooze an open ask (e.g. the console's Snooze: 3 days / 1 week / 1 month). The line stays an open `[ask …]` and gets one field at its end, ` — snoozed until: <YYYY-MM-DD>`; Unsnooze removes it. Until that day the inbox hides the ask and leaves it out of every count; it is still open (it still blocks its row and counts toward the 3-ask limit), and from that day it shows again with no edit. Agents do not snooze asks for the human.
+**Snoozed:** the human may snooze an open ask (e.g. the console's Snooze: 3 days / 1 week / 1 month). The line stays an open `[ask …]` and gets one field at its end, ` — snoozed until: <YYYY-MM-DD>` or, for a snooze of hours, a UTC minute ` — snoozed until: <YYYY-MM-DD>THH:MMZ` (e.g. `2026-11-02T18:30Z`); Unsnooze removes it. Until that day (or that minute) the inbox hides the ask and leaves it out of every count; it is still open (it still blocks its row and counts toward the 3-ask limit), and from that day it shows again with no edit. Agents do not snooze asks for the human.
 
 ## Consumed answers
 After acting on an `[answered ...]` line, the owner appends ` · done <YYYY-MM-DD> <sha>` to it (the commit that acted on the answer; a short note may follow, and the marker may also sit inside the tag after `@<who>`, with ` superseded by <code>`):

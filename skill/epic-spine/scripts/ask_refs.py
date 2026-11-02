@@ -16,6 +16,7 @@ WAIT = re.compile(r"-\s+\[waits on\s+(?:" + REPO + "/)?" + ASK_CODE + r"(?:\s+ro
 MENTION = re.compile(r"(?<![\w./-])(?:" + REPO + "/)?" + ASK_CODE + r"(?![\w-])")
 NO_HUMAN = re.compile(r"(?i)(?:none|nobody|nothing|n/a|-)(?![\w-])")
 DATE = r"\d{4}-\d\d-\d\d"
+SNOOZE_UNTIL = DATE + r"(?:T\d\d:\d\dZ)?"  # `snoozed until:` a day, or a UTC minute (`2026-11-02T18:30Z`, a 3 hour snooze)
 KINDS = ("decide", "approve", "provide", "do")
 TAG = re.compile(r"[-*]\s+\[([^\]]*)\]\s*(.*)")
 OPEN_TAG = re.compile(r"ask(?:\s+" + ASK_CODE + r")?:\s*(\w+)\s+@(\S+)\s+since\s+(" + DATE + r")(?:\s+row\s+(\S+))?")
@@ -130,7 +131,7 @@ def asks(text: str, path: Path, repo: Path, problems: list[str] | None = None) -
                     "risk": fields.get("risk") or None, "why": fields.get("why") or None, "since": since, "row": row,
                     "state": "open" if opened else "superseded" if superseded else "done" if done else "answered",
                     "answer": fields.get("answer") or None, "superseded_by": by,
-                    **({"snoozed_until": d.group(0)} if (d := re.match(DATE, fields.get("snoozed", ""))) else {})})
+                    **({"snoozed_until": d.group(0)} if (d := re.match(SNOOZE_UNTIL, fields.get("snoozed", ""))) else {})})
     return out
 
 

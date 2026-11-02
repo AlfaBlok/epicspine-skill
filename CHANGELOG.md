@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.11.02.6 — Asks: a snooze may end at a time of day
+
+- **Changed: ` — snoozed until:` takes a UTC minute as well as a day**, `<YYYY-MM-DD>THH:MMZ` (e.g. `2026-11-02T18:30Z`), so a 3 hour snooze (agent_team console: Snooze 3 hours / 3 days / 1 week / 1 month) ends after 3 hours. A date-only value works as before (hidden until that day). `spines.py --json` `snoozed_until` carries the value as written. Doc: `docs/doctrine/human-asks.md` (Snoozed). Test: `tests/test_human_asks.py` `test_snoozed_until_may_carry_a_utc_time`. agent_team EPIC-48 E48-S21. Skill 2026.11.02.6.
+
 ## 2026.11.02.5 — Fix: a Decisions row citing an open ask is no duplicate-code advisory
 
 - **Fixed: `epic_log` duplicate-ask-code advisory** no longer fires when a `## Decisions` row cites an open ask (e.g. "revisit when Jordi answers E10-A2"). A duplicate is a code carried by two ask lines under `## Waiting on` (open, `[answered …]` or `[superseded …]`); the message says so and names the code once.
