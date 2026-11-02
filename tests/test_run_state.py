@@ -70,8 +70,9 @@ class RunStateTests(EpicLogCase):
     def test_active_text_carries_the_run_state(self) -> None:
         self.new()
         lines = self.run_script("spines.py", "--active").stdout.splitlines()
-        self.assertIn("— running, has children", lines[0])
-        self.assertTrue(lines[1].endswith("— planning (not runnable)"), lines[1])  # a scaffold is draft, never auto-queued
+        root, child = (next(line for line in lines if f"— {p} —" in line) for p in ("docs/root.md", "docs/E4-one-logger.md"))  # hottest first since E9-5f
+        self.assertIn("— running, has children", root)
+        self.assertIn("— planning (not runnable) — heat ", child)  # a scaffold is draft, never auto-queued
 
 
 class RunStateAdvisoryTests(unittest.TestCase):

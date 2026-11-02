@@ -41,7 +41,7 @@ Fall back to read-only orientation when the role, spine, or issue is unclear. Bi
 
 | Read when the task involves… | Load |
 |---|---|
-| Creating a spine, any plan/proposal/epic/goal doc, or listing the repo's goals | `references/spine-creation.md`, `scripts/spine_new.py`, `scripts/spines.py`, `scripts/bind.py`, `scripts/doctrine.py`, `scripts/epic_log.py`, `scripts/ask_refs.py`, `scripts/grants.py`, `assets/epic-spine-template.md`, `assets/compact-spine-template.md` |
+| Creating a spine, any plan/proposal/epic/goal doc, or listing the repo's goals | `references/spine-creation.md`, `scripts/spine_new.py`, `scripts/spines.py`, `scripts/bind.py`, `scripts/doctrine.py`, `scripts/epic_log.py`, `scripts/ask_refs.py`, `scripts/grants.py`, `scripts/spine_tree.py` (`--active` ranks by heat: `references/tree-library.md`, `assets/tree-library-parity.json`), `assets/epic-spine-template.md`, `assets/compact-spine-template.md` |
 | What every epic says, hierarchy, authority, write scope, profiles | `references/spine-model.md` |
 | Persona tasks: assignees, queues, hand-offs, signed commits, asks as tasks (trial) | `references/persona-tasks.md` |
 | Compact profile, state API, migration, rollups, projections | `references/compact-state.md`, `scripts/migrate_spine.py`, `references/execution-rollups.md`, `scripts/rollup_spine.py` |
@@ -50,7 +50,7 @@ Fall back to read-only orientation when the role, spine, or issue is unclear. Bi
 | Ticket backend and issues | `references/ticket-backends.md`, `assets/github-issue-template.md` |
 | Structural validation and diagnostics | `references/structural-validation.md`, `scripts/validate_spine.py`, `scripts/spine_fix.py`, `scripts/status_true.py`, `scripts/run_state.py` |
 | Cleaning a stale epic tree: closed epics with open rows, non-standard Status words, stale/undecided epics | `references/tree-cleanse.md`, `scripts/tree_audit.py`, `scripts/close_rows.py` |
-| Personas, `## Team` tables, ledger assignees | `references/personas.md`, `scripts/personas.py` |
+| Personas, `## Team` tables, ledger assignees; a steward persona that wakes to keep a tree tidy (budgets, NOOP default, pins win, one revertable change set) | `references/personas.md`, `scripts/personas.py`, `references/steward-persona.md` |
 | Packs: a vertical's typed `data/` files a repo opts into (`Pack: social` in AGENTS.md); `packs/<name>/schema.json` + its README; `pack init`, the commit hook validates them, `pack.py <name> --json` exports them, `pack.py <name> --wake-text [--role R]` prints the desk intake rule or one role's duties | `references/packs.md`, `scripts/pack.py`, `scripts/pack_init.py`, `scripts/pack_validate.py`, `scripts/pack_checks.py`, `scripts/pack_md.py`, `scripts/pack_export.py` (`pack.py <name> --json`), `scripts/pack_intake.py` (`--wake-text`), `scripts/pack_role.py` (`--role`) |
 | Standing spines: ongoing work with targets and a scoreboard, never closed | `references/standing-spines.md`, `scripts/standing.py` |
 | Operating learnings | `references/learnings.md` |
