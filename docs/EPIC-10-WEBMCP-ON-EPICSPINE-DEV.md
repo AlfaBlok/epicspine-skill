@@ -31,7 +31,7 @@ Status: active
 Last attempted: 2026-11-02 E10-S1 dispatched to seat7 (WebMCP tools in index.html on wt/e10-s1-webmcp)
 Result: worker running
 Evidence: EPIC-0-OPERATING-SYSTEM.md
-Waiting on: Jordi: E10-A1 (S1 does not wait on it)
+Waiting on: Jordi: E10-A2 (S1 does not wait on it)
 Approved work: readied by Jordi 2026-11-02 ("do epicspine and zenod dev")
 Next action: worker builds and tests the tools on a branch; Delivery manager verifies and integrates
 Source revision: uncommitted scaffold
@@ -53,7 +53,7 @@ Steps: each is independently testable and closes only with evidence.
 | Issue | Role | Owner / Assignment | Title | Status | Depends On | PR/Branch | Base | Latest Evidence | Last Verified | Next Action |
 |---|---|---|---|---|---|---|---|---|---|---|
 | E10-S1 | Ticket worker | seat7 (T3 delegate) | Register read-only WebMCP tools in index.html, feature-detected, with a test | active | none | wt/e10-s1-webmcp | main | none | 2026-11-02 | build on branch, push, report |
-| E10-S2 | Ticket worker | Delivery manager | Add the origin-trial token meta tag for epicspine.dev | blocked | E10-S1, E10-A1 | main (meta tag in index.html) | main | none | 2026-11-02 | add the token once Jordi provides it |
+| E10-S2 | Ticket worker | Delivery manager | Add the origin-trial token meta tag for epicspine.dev | blocked | E10-S1, E10-A2 | main (meta tag in index.html) | main | none | 2026-11-02 | after E10-A2, register https://epicspine.dev in the T3 shared browser, add the token meta tag |
 
 ## Decisions
 
@@ -62,7 +62,7 @@ One line per decision; detail goes to a linked page.
 | Date | Outcome | Decision / Attempt | Durable Summary | Evidence | Revisit When |
 |---|---|---|---|---|---|
 | 2026-11-02 | accepted | Created as a goal under epicspine-operating-system | one node in the epic log | EPIC-0-OPERATING-SYSTEM.md | never |
-| 2026-11-02 | accepted | decided by Unblocker: E10-A1 split on Jordi's "Why can't you do it yourself?": an agent registers the WebMCP trial and ships the token; only the Google sign-in stays with Jordi (E10-A2) — why: the agent browser and Team Browser hold no Google session and Google logins cannot be copied in; everything after the sign-in is agent work — rollback: delete E10-A2 and restore E10-A1's steps | E10-A1 research note; origintrials "Please sign in" seen 2026-11-02 | when Jordi answers E10-A2 |
+| 2026-11-02 | accepted | decided by Unblocker: E10-A1 split on Jordi's "Why can't you do it yourself?": an agent registers the WebMCP trial and ships the token; only the Google sign-in stays with Jordi (E10-A2) — why: the agent browser and Team Browser hold no Google session and Google logins cannot be copied in; everything after the sign-in is agent work — rollback: delete E10-A2 and restore E10-A1's steps | only the Google sign-in is Jordi's (E10-A2); trial registration and token are agent work | E10-A1 research note; origintrials "Please sign in" seen 2026-11-02 | when Jordi answers E10-A2 |
 
 ## Operating Learnings
 
