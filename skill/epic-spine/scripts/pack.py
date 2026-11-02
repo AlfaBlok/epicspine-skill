@@ -152,7 +152,7 @@ def check(schema: dict) -> list[str]:
             steps = [t for t in lc["transitions"] if (t["from"], t["to"]) == (a, b)]
             if not steps:
                 errs.append(f"lifecycle {name}: path step {a} -> {b} is not a transition")
-            elif schema.get("approval_gate") is False and all(set(t["by"]) <= {schema.get("owner")} for t in steps):
+            elif lc.get("approval_gate", schema.get("approval_gate")) is False and all(set(t["by"]) <= {schema.get("owner")} for t in steps):
                 errs.append(f"lifecycle {name}: path step {a} -> {b} waits on {schema.get('owner')} (approval_gate is false)")
     for rkey, rule in schema.get("rules", {}).items():
         for k in ("from", "to", "log"):
@@ -162,9 +162,9 @@ def check(schema: dict) -> list[str]:
         to, bys = rule.get("to"), rule.get("by") if isinstance(rule.get("by"), list) else [rule.get("by")]
         errs += [f"rule {rkey}: {b} may not write {to}" for b in bys if b not in (secs[to].get("writers", []) if to in secs else field_writers(schema, to) if to in flds else [b])]
     for ckey, c in schema.get("checks", {}).items():
-        errs.extend([f"check {ckey}: unknown lifecycle {n}" for n in c.get("on", []) if n not in lcs] + [f"check {ckey}: unknown kind {k}" for k in c.get("kinds", []) if not any(k in flds.get(lc.get("kind_field"), {}).get("values", []) for lc in lcs.values())])
+        errs.extend([f"check {ckey}: unknown lifecycle {n}" for n in c.get("on", []) + c.get("lifecycles", []) if n not in lcs] + [f"check {ckey}: unknown kind {k}" for k in c.get("kinds", []) if not any(k in flds.get(lc.get("kind_field"), {}).get("values", []) for lc in lcs.values())])
         for at in c.get("at", []):
-            if tuple(at.split(">")) not in {(t["from"], t["to"]) for lc in lcs.values() for t in lc["transitions"]}:
+            if tuple(at.split(">")) not in {(t["from"], t["to"]) for n, lc in lcs.items() for t in lc["transitions"] if n in c.get("lifecycles", lcs)}:
                 errs.append(f"check {ckey}: at {at} is not a transition")
         if c.get("source") and c["source"] not in secs:
             errs.append(f"check {ckey}: source {c['source']} unknown")

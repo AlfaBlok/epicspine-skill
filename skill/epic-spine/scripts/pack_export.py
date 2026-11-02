@@ -72,8 +72,8 @@ def coerce(fld: dict, raw: str, states: list[str]):
     return v, None
 
 
-def table(sec: dict, start: int, body: list[str], rel: str, warn, states: dict) -> list[dict]:
-    """Rows of the first table in `body`, keyed by field name, plus `_line` (1-based)."""
+def table(sec: dict, start: int, body: list[str], rel: str, warn, states: dict, skip: dict | None = None) -> list[dict]:
+    """Rows of the first table in `body`, keyed by field name, plus `_line` (1-based); `export_skip` states (moved) left out."""
     i = next((k for k in range(len(body) - 1) if body[k].lstrip().startswith("|") and SEP.match(body[k + 1])), None)
     if i is None:
         warn(rel, start or None, "no table")
@@ -101,7 +101,8 @@ def table(sec: dict, start: int, body: list[str], rel: str, warn, states: dict) 
             if problem:
                 warn(rel, line, f"{key}: {problem}")
         row["_line"] = line
-        rows.append(row)
+        if not any(f.get("lifecycle") in (skip or {}) and (row.get(k) or "") in skip[f["lifecycle"]] for k, f in fields.items()):
+            rows.append(row)
     return rows
 
 
@@ -116,14 +117,14 @@ def items(body: list[str]) -> list[str]:
     return out
 
 
-def section(repo: Path, rel: str, addr: str, sec: dict, warn, states: dict, cache: dict, sources: dict):
+def section(repo: Path, rel: str, addr: str, sec: dict, warn, states: dict, cache: dict, sources: dict, optional: bool = False, skip: dict | None = None):
     shape = sec["shape"]
     empty = None if shape == "text" else []
     sources[addr] = {"path": rel, "heading": sec.get("heading"), "exists": False}
     if rel not in cache:
         p = repo / rel
         cache[rel] = p.read_text(encoding="utf-8", errors="replace").splitlines() if p.is_file() else None
-        if cache[rel] is None:
+        if cache[rel] is None and not optional:
             warn(rel, None, "file missing")
     if cache[rel] is None:
         return empty
@@ -133,7 +134,7 @@ def section(repo: Path, rel: str, addr: str, sec: dict, warn, states: dict, cach
         return empty
     sources[addr]["exists"] = True
     start, body = found
-    return table(sec, start, body, rel, warn, states) if shape == "table" else items(body) if shape == "list" else "\n".join(body).strip() or None
+    return table(sec, start, body, rel, warn, states, skip) if shape == "table" else items(body) if shape == "list" else "\n".join(body).strip() or None
 
 
 def back_links(schema: dict, out: dict, warn) -> None:
@@ -170,7 +171,7 @@ def export(name: str, repo: Path, now: datetime | None = None) -> dict:
     warn = lambda rel, line, message: warnings.append({"file": rel, "line": line, "message": message})  # noqa: E731
     if name not in pack.enabled(repo):
         warn("AGENTS.md", None, f"no 'Pack: {name}' line: the repo has not turned this pack on")
-    states = {k: list(lc["states"]) for k, lc in schema.get("lifecycles", {}).items()}
+    states, skip = {k: list(lc["states"]) for k, lc in schema.get("lifecycles", {}).items()}, {k: set(lc.get("export_skip", [])) for k, lc in schema.get("lifecycles", {}).items()}
     cache, sources, out = {}, {}, {}
     for fkey, f in schema["files"].items():
         if f.get("many"):
@@ -181,7 +182,7 @@ def export(name: str, repo: Path, now: datetime | None = None) -> dict:
                 sk: section(repo, p.relative_to(repo).as_posix(), f"{fkey}.{sk}", s, warn, states, cache, {})
                 for sk, s in f["sections"].items()}} for p in found]
             continue
-        vals = {sk: section(repo, s.get("path", f["path"]), f"{fkey}.{sk}", s, warn, states, cache, sources) for sk, s in f["sections"].items()}
+        vals = {sk: section(repo, s.get("path", f["path"]), f"{fkey}.{sk}", s, warn, states, cache, sources, bool(f.get("optional")), skip) for sk, s in f["sections"].items()}
         out[fkey] = vals["rows"] if list(vals) == ["rows"] else vals
     back_links(schema, out, warn)
     stamp = (now or datetime.now(timezone.utc)).strftime("%Y-%m-%dT%H:%M:%SZ")

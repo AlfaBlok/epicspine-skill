@@ -13,7 +13,7 @@
     {
       "file": "data/posts-ledger.md",
       "line": 7,
-      "message": "status: 'approved' not one of ['idea', 'draft', 'scheduled', 'posted', 'measured', 'held', 'pulled', 'expired']"
+      "message": "status: 'approved' not one of ['idea', 'draft', 'scheduled', 'posted', 'measured', 'held', 'pulled', 'expired', 'moved']"
     },
     {
       "file": "data/posts-ledger.md",
@@ -323,6 +323,89 @@
       "_line": 7
     }
   ],
+  "messages": {
+    "chats": [
+      {
+        "id": "C-0001",
+        "platform": "Reddit",
+        "account": "u/acme",
+        "who": "u/reader",
+        "kind": "dm",
+        "link": "https://www.reddit.com/chat/room/abc",
+        "campaign": null,
+        "started": "2026-10-26",
+        "state": "open",
+        "reason": null,
+        "feedback": null,
+        "messages": [
+          "M-0001",
+          "M-0002"
+        ],
+        "_line": 7
+      },
+      {
+        "id": "C-0002",
+        "platform": "Reddit",
+        "account": "u/acme",
+        "who": "u/pitcher",
+        "kind": "chat request",
+        "link": "https://www.reddit.com/chat",
+        "campaign": null,
+        "started": "2026-10-20",
+        "state": "left",
+        "reason": "a cold pitch for their own tool, not about Acme",
+        "feedback": null,
+        "messages": [
+          "M-0003"
+        ],
+        "_line": 8
+      }
+    ],
+    "messages": [
+      {
+        "id": "M-0001",
+        "chat": "C-0001",
+        "at": "2026-10-26 08:00",
+        "from": "them",
+        "persona": null,
+        "text": "Does it sync with Obsidian?",
+        "answers": null,
+        "checks": null,
+        "feedback": null,
+        "result": null,
+        "status": "received",
+        "_line": 14
+      },
+      {
+        "id": "M-0002",
+        "chat": "C-0001",
+        "at": "2026-10-26 08:40",
+        "from": "us",
+        "persona": "Responder",
+        "text": "It reads the same Markdown folder, so yes.",
+        "answers": "M-0001",
+        "checks": "about Acme, they wrote last",
+        "feedback": null,
+        "result": null,
+        "status": "draft",
+        "_line": 15
+      },
+      {
+        "id": "M-0003",
+        "chat": "C-0002",
+        "at": "2026-10-20 12:00",
+        "from": "them",
+        "persona": null,
+        "text": "summary: pitches their agent-trigger platform",
+        "answers": null,
+        "checks": null,
+        "feedback": null,
+        "result": null,
+        "status": "received",
+        "_line": 16
+      }
+    ]
+  },
   "assets": [
     {
       "id": "A-1",
@@ -454,6 +537,16 @@
     "posts.rows": {
       "path": "data/posts-ledger.md",
       "heading": null,
+      "exists": true
+    },
+    "messages.chats": {
+      "path": "data/messages-ledger.md",
+      "heading": "Chats",
+      "exists": true
+    },
+    "messages.messages": {
+      "path": "data/messages-ledger.md",
+      "heading": "Messages",
       "exists": true
     },
     "assets.rows": {

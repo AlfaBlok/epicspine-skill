@@ -51,7 +51,7 @@ def role_text(schema: dict, role: str) -> str:
     for name, lc in schema["lifecycles"].items():
         plain: list[str] = []
         for t in (t for t in lc["transitions"] if role in t["by"]):
-            ck = [k for k, c in schema["checks"].items() if f"{t['from']}>{t['to']}" in c.get("at", [])]
+            ck = [k for k, c in schema["checks"].items() if f"{t['from']}>{t['to']}" in c.get("at", []) and name in c.get("lifecycles", [name])]
             used.update({k: schema["checks"][k] for k in ck})
             names = [k + (f" ({'/'.join(schema['checks'][k]['platforms'])})" if schema["checks"][k].get("platforms") else "") for k in ck]
             step = f"`{t['from']} → {t['to']}`"
@@ -64,6 +64,9 @@ def role_text(schema: dict, role: str) -> str:
         if "held" in lc["states"] and any(role in t["by"] and t["to"] == "held" for t in lc["transitions"]):
             src = used["hold_rules"]["source"].split(".") if "hold_rules" in used else None
             bind.append("- A draft matching a hold rule" + (f" ({_where(schema['files'][src[0]], schema['files'][src[0]]['sections'][src[1]])})" if src else "") + " goes to `held`, never `scheduled`; " + "; ".join(f"`{t['from']} → {t['to']}` is {'/'.join(t['by'])}'s alone" for t in lc["transitions"] if t["from"] == "held" and role not in t["by"] and t["to"] != "pulled") + ".")
+        if lc.get("approval_gate") and role != owner and any(role in t["by"] for t in lc["transitions"]):
+            gate = [f"`{t['from']} → {t['to']}`" for t in lc["transitions"] if t["by"] == [owner] and not t.get("alone") and t.get("effect") is None]
+            bind.append(f"- Nothing in a {name} goes out without {owner}'s approval: " + ", ".join(gate) + f" is {owner}'s alone; never make it yourself.")
         if "pulled" in lc["states"] and owner and role != owner and any(role in t["by"] for t in lc["transitions"]):
             bind.append(f"- {owner} may pull a {name} (`pulled`): never act on a pulled one.")
     by = lambda r: r.get("by") if isinstance(r.get("by"), list) else [r.get("by")]  # noqa: E731

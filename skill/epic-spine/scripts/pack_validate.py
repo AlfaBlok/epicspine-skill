@@ -99,6 +99,11 @@ def check_section(schema: dict, s: dict, at: str, new: str, old: str | None, rol
         prev = by_id.get(rec[idk])
         if role and prev is None and role not in s.get("add_rows", []):
             say(f"{role} may not add rows")
+        for x in s.get("refuse_new", []) if prev is None and not convert else []:  # e.g. a DM as a posts row
+            if re.search(x["pattern"], rec.get(x["field"], ""), re.I):
+                say(f"{flds[x['field']]['column']} {rec[x['field']]!r}: {x['why']}")
+        for k in [k for k, f in flds.items() if prev and lk and prev[lk].lower() in f.get("frozen_in", []) and rec[k] != prev[k]]:
+            say(f"{flds[k]['column']} may not change once {prev[lk].lower()} (Jordi approved this exact text; a new text is a new draft)")
         if role and prev:
             for k in flds:
                 if k != lk and rec[k] != prev[k] and role not in pack.field_writers(schema, f"{at_key(schema, s)}.{k}"):
@@ -123,7 +128,7 @@ def check_section(schema: dict, s: dict, at: str, new: str, old: str | None, rol
         for key, c in schema.get("checks", {}).items():
             plats = [x.lower() for x in c.get("platforms", [])]
             kinds = [x.lower() for x in c.get("kinds", [])]
-            if passed & set(c.get("at", [])) and (not plats or rec.get("platform", "").lower() in plats) and (not kinds or kind in kinds):
+            if flds[lk]["lifecycle"] in c.get("lifecycles", [flds[lk]["lifecycle"]]) and passed & set(c.get("at", [])) and (not plats or rec.get("platform", "").lower() in plats) and (not kinds or kind in kinds):
                 for m in run_check(key, c, rec, ctx):
                     say(f"{key}: {m}")
     if lc and s.get("rows") != "replace":

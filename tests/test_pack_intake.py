@@ -86,7 +86,10 @@ ROLE_TARGETS = {  # role -> (writable targets, status moves) the text must name
     "Writer": (["`data/message-house.md` › Style rules", "`data/message-house.md` › Feedback log", "`data/ideas.md`: edit only Why", "`data/posts-ledger.md`", "every column but Link, Replies, Metrics, Result, Feedback"],
                ["`idea → draft`", "`draft → scheduled`", "`draft → held`", "`new → picked up`", "`parked → picked up`", "hold_rules", "`held → scheduled` is Jordi's alone"]),
     "Publisher": (["`data/posts-ledger.md`: edit only Link, Result"], ["`scheduled → posted`", "`scheduled → expired`", "link_present", "delete_live"]),
-    "Responder": (["`data/posts-ledger.md`", "add rows", "every column but Feedback"], ["`draft → posted`", "`posted → measured`", "reply, outreach rows"]),
+    "Responder": (["`data/posts-ledger.md`", "add rows", "every column but Feedback", "`data/messages-ledger.md` › Chats, Messages"],
+                  ["`draft → posted`", "`posted → measured`", "reply, outreach rows", "message `new → draft`", "message `scheduled → posted`", "`draft → scheduled` is Jordi's alone",
+                   "chat `new → left`", "never bundle several chats in one row", "`sent`"]),
+    "Delivery manager": (["`data/posts-ledger.md`: edit only Result", "`data/messages-ledger.md` › Chats, Messages"], ["post `draft → moved`", "message `new → posted`", "chat `new → done`"]),
     "Engager": (["`data/posts-ledger.md`", "add rows", "every column but Replies, Feedback"], ["`draft → posted`", "`posted → measured`", "disclosure (Reddit)"]),
     "Reporter": (["edit only Replies, Metrics, Result", "`data/reports/<date>.md` › Numbers", "Cost"], ["`posted → measured`"]),
     "Video Maker": (["`data/assets.md`: add rows"], []),
@@ -110,6 +113,8 @@ class RoleText(unittest.TestCase):
         self.assertNotIn("`draft → scheduled`", pack_intake.role_text(SOCIAL, "Publisher"))
         self.assertNotIn("data/posts-ledger.md", pack_intake.role_text(SOCIAL, "Scout"))
         self.assertNotIn("`pulled`", pack_intake.role_text(SOCIAL, "Scout"))  # the Scout makes no post move
+        self.assertNotIn("data/messages-ledger.md", pack_intake.role_text(SOCIAL, "Writer"))
+        self.assertNotIn("`send_approved`", pack_intake.role_text(SOCIAL, "Responder"))  # Jordi's Send, not a Responder move
 
     def test_generated_from_the_schema_alone(self) -> None:
         s = copy.deepcopy(SOCIAL)

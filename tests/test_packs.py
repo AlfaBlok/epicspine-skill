@@ -25,7 +25,7 @@ class SocialPack(unittest.TestCase):
         paths = {k: f["path"] for k, f in SOCIAL["files"].items()}
         self.assertEqual({
             "brief": "data/brief.md", "directions": "data/directions.md", "topics": "data/topics.md",
-            "ideas": "data/ideas.md", "posts": "data/posts-ledger.md", "assets": "data/assets.md",
+            "ideas": "data/ideas.md", "posts": "data/posts-ledger.md", "messages": "data/messages-ledger.md", "assets": "data/assets.md",
             "reports": "data/reports/{date}.md",
         }, paths)
         brief = SOCIAL["files"]["brief"]["sections"]
@@ -39,7 +39,7 @@ class SocialPack(unittest.TestCase):
 
     def test_post_statuses_and_no_approval_gate(self) -> None:
         lc = SOCIAL["lifecycles"]["post"]
-        self.assertEqual({"idea", "draft", "scheduled", "posted", "measured", "held", "pulled", "expired"}, set(lc["states"]))
+        self.assertEqual({"idea", "draft", "scheduled", "posted", "measured", "held", "pulled", "expired", "moved"}, set(lc["states"]))
         self.assertEqual(["idea", "draft", "scheduled", "posted", "measured"], lc["path"])
         self.assertIs(False, SOCIAL["approval_gate"])
         self.assertFalse({"approved", "approval", "review"} & set(lc["states"]))
@@ -52,7 +52,7 @@ class SocialPack(unittest.TestCase):
             with self.subTest(lifecycle=name):
                 self.assertEqual(set(lc["states"]), pack.reachable(lc))
                 ends = set(lc["states"]) - {t["from"] for t in lc["transitions"]}
-                self.assertEqual({"post": {"expired"}, "idea": {"posted", "epic"}}[name], ends)  # pulled -> held: restore (agent_team E34-S22)
+                self.assertEqual({"post": {"moved"}, "idea": {"posted", "epic"}, "message": {"received", "posted", "expired"}, "chat": set()}[name], ends)  # pulled -> held: restore (agent_team E34-S22)
 
     def test_pull_deletes_a_live_post_and_only_jordi_pulls_or_releases(self) -> None:
         lc = SOCIAL["lifecycles"]["post"]
@@ -67,7 +67,7 @@ class SocialPack(unittest.TestCase):
         self.assertEqual(["Jordi"], SOCIAL["files"]["posts"]["sections"]["rows"]["fields"]["feedback"].get("writers"))
 
     def test_every_file_and_field_has_a_writer_from_the_role_list(self) -> None:
-        roles = {"Jordi", "Scout", "Writer", "Publisher", "Responder", "Engager", "Reporter", "Video Maker"}
+        roles = {"Jordi", "Scout", "Writer", "Publisher", "Responder", "Engager", "Reporter", "Video Maker", "Delivery manager"}
         self.assertEqual(roles, set(SOCIAL["roles"]))
         for fkey, who in pack.writers(SOCIAL).items():
             with self.subTest(file=fkey):
@@ -79,6 +79,29 @@ class SocialPack(unittest.TestCase):
         self.assertEqual({"Jordi"}, pack.field_writers(SOCIAL, "posts.rows.feedback"))
         self.assertEqual({"Publisher", "Responder", "Engager"}, pack.field_writers(SOCIAL, "posts.rows.link"))
         self.assertEqual({"Writer", "Jordi"}, pack.field_writers(SOCIAL, "ideas.rows.state"))
+
+    def test_dm_replies_wait_for_jordis_send(self) -> None:
+        # agent_team E34-S27 (EPIC-34 L-6): DMs live in the messages ledger; draft -> scheduled (Send) is Jordi's alone,
+        # the Responder sends only scheduled replies; the message lifecycle carries its own approval gate.
+        lc = SOCIAL["lifecycles"]["message"]
+        self.assertIs(True, lc["approval_gate"])
+        by = lambda a, b: {r for t in lc["transitions"] if (t["from"], t["to"]) == (a, b) for r in t["by"]}  # noqa: E731
+        self.assertEqual({"Jordi"}, by("draft", "scheduled"))
+        self.assertEqual({"Responder"}, by("scheduled", "posted"))
+        self.assertEqual(set(), by("draft", "posted"))
+        self.assertEqual({"Jordi"}, pack.field_writers(SOCIAL, "messages.messages.feedback"))
+        self.assertEqual({"Jordi"}, pack.field_writers(SOCIAL, "messages.chats.feedback"))
+        self.assertEqual(["draft>scheduled"], SOCIAL["checks"]["send_approved"]["at"])
+        self.assertEqual({"Delivery manager"}, {r for t in SOCIAL["lifecycles"]["post"]["transitions"] if t["to"] == "moved" for r in t["by"]})
+        self.assertEqual(["moved"], SOCIAL["lifecycles"]["post"]["export_skip"])
+
+    def test_a_lifecycle_gate_must_be_declared_on_it(self) -> None:
+        s = copy.deepcopy(SOCIAL)
+        del s["lifecycles"]["message"]["approval_gate"]
+        self.assertIn("lifecycle message: path step draft -> scheduled waits on Jordi (approval_gate is false)", pack.check(s))
+        s = copy.deepcopy(SOCIAL)
+        s["checks"]["sent"]["lifecycles"] = ["post"]
+        self.assertIn("check sent: at new>posted is not a transition", pack.check(s))
 
     def test_jordi_may_drop_an_idea_and_nothing_else(self) -> None:
         mine = {(t["from"], t["to"]) for t in SOCIAL["lifecycles"]["idea"]["transitions"] if "Jordi" in t["by"]}
