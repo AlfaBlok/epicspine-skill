@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import subprocess
 import sys
 import time
@@ -134,7 +135,13 @@ class StaleTests(LivingCase):
         log = self.log()
         self.assertEqual([{"path": "docs/a.md", "title": "EPIC-1: alpha", "days": 30}], log["stale"])  # root fresh, b only ready
         lines = self.run_script("spines.py", "--active").stdout.splitlines()
-        self.assertEqual(["EPIC-0: Root — active — docs/root.md — running, has children", "EPIC-1: alpha — active — docs/a.md — running — STALE 30d", "EPIC-2: beta — ready — docs/b.md — ready", "next: EPIC-3"], lines)
+        # Lines keep their fields; since E9-5f they end with `— heat <h>` and come hottest first (spine_tree.py), `ranked` in --json.
+        self.assertEqual("next: EPIC-3", lines[-1])
+        self.assertEqual(sorted(["EPIC-0: Root — active — docs/root.md — running, has children", "EPIC-1: alpha — active — docs/a.md — running — STALE 30d", "EPIC-2: beta — ready — docs/b.md — ready"]),
+                         sorted(re.sub(r" — heat [\d.]+$", "", line) for line in lines[:-1]))
+        self.assertEqual(log["ranked"], [line.split(" — ")[2] for line in lines[:-1]])
+        heats = [float(line.rsplit(" — heat ", 1)[1]) for line in lines[:-1]]
+        self.assertEqual(sorted(heats, reverse=True), heats)
 
     def test_background_sync_reports_stale_goals_for_the_current_repo_once(self) -> None:
         line = f"{self.repo.name}: 1 goals active but untouched 14+ days (spines.py --active)"

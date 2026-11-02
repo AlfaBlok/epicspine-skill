@@ -84,6 +84,7 @@ Wording: the root spine is the trunk; a goal (epic) is a node; the **epic log** 
  "orphans": [{"path", "title", "reason"}],      # epics outside the tree
  "orphan_pages": ["<path>"], "looks_like_epic": ["<path>"],   # pages no epic links; pages with Goal / Done means / checkboxes / Next action / Status
  "mismatches": [{"path", "parent", "problem"}],  # header/map disagreement, missing map target
+ "ranked": ["<path>"],                           # open goals, hottest first; nodes also carry "heat" and "last_activity" (references/tree-library.md)
  "next_code": <int>}                              # the code `spine_new.py` gives a new spine; `--active` prints it as `next: EPIC-<n>`
 ```
 

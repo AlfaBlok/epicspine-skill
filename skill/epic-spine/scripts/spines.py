@@ -20,11 +20,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import doctrine as D  # noqa: E402
 import personas as P  # noqa: E402
 import run_state as R  # noqa: E402
+import spine_tree as T  # noqa: E402
 import standing as S  # noqa: E402
 import validate_spine as v  # noqa: E402
 from ask_refs import resolve, waits  # noqa: E402
 from grants import grants, uses  # noqa: E402
-from epic_log import active, asks, next_of, link_problems, render, rollup, stale  # noqa: E402
+from epic_log import OPEN, active, asks, next_of, link_problems, render, rollup, stale  # noqa: E402
 
 ID_LINE = D.ID_LINE
 ROOT_LINE = re.compile(r"Root spine: \[?`?([^`\]\s)]+)")
@@ -158,6 +159,9 @@ def _scan(repo: Path, refs: bool) -> dict:
     epics = set(docs) | {repo / p for p in nodes} | set(queue)
     for n in nodes.values():
         n["pages"] = D.pages(repo, repo / n["path"], epics)
+    heat = T.spine_activity(repo, {p: meta(repo / p, cache)["sections"] for p in nodes})  # spine_tree.py: half-life heat from real activity
+    for n in nodes.values():
+        n.update(heat[n["path"]])
     used = uses([meta(repo / p, cache)["text"] for p in nodes])
     for g in (g for n in nodes.values() for g in n["grants"]):
         g["uses"] = used.get(g["code"], 0)
@@ -167,6 +171,7 @@ def _scan(repo: Path, refs: bool) -> dict:
     orphans = [{"path": rel(d), "title": title(meta(d, cache), d.stem), "reason": "not reachable from the root" if meta(d, cache)["id"] else "no Spine ID header"} for d in queue]
     return {"root": rel(root) if root else None, "nodes": list(nodes.values()), "orphans": orphans, "mismatches": mismatches,
             "orphan_pages": orphan_pages, "looks_like_epic": like_epic, "stale": stale(repo, list(nodes.values())),
+            "ranked": T.rank([p for p, n in nodes.items() if n["status"] in OPEN], {p: n["heat"] for p, n in nodes.items()}),
             "personas": P.roster(repo, list(nodes.values()), {n["path"]: v.table_rows(meta(repo / n["path"], cache)["sections"].get("Issue Ledger", "")) for n in nodes.values()})}
 
 
@@ -174,7 +179,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--repo", default=".")
     parser.add_argument("--json", action="store_true")
-    parser.add_argument("--active", action="store_true", help="list open goals, one line each (stale marked)")
+    parser.add_argument("--active", action="store_true", help="list open goals, one line each, hottest first (heat, stale marked)")
     parser.add_argument("--bind", nargs="?", const="", metavar="EPIC", help="print the bind view of EPIC (default: root) and its ancestors")
     args = parser.parse_args()
     if args.bind is not None:
