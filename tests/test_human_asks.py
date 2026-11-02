@@ -98,6 +98,10 @@ class ParserTests(unittest.TestCase):
         self.assertEqual(("open", "2026-11-08", "T4", "Ship E4 with one logger or two?"), (ask["state"], ask["snoozed_until"], ask["unblocks"], ask["question"]))
         self.assertNotIn("snoozed_until", self.parse(DECIDE)[0])
 
+    def test_snoozed_until_may_carry_a_utc_time(self) -> None:
+        ask = self.parse("- [ask E4-A3: decide @Jordi since 2026-10-21 row T4] Ship E4? — options: one | two — snoozed until: 2026-11-02T18:30Z")[0]
+        self.assertEqual(("open", "2026-11-02T18:30Z", "two"), (ask["state"], ask["snoozed_until"], ask["options"][-1]))
+
     def test_dash_inside_a_field_and_noise_lines(self) -> None:
         ask = self.parse("intro text", "- not an ask", "- [ask: provide @Jordi since 2026-10-21] Need the key? — context: [k](k.md) — recommend: use prod — the shared one")[0]
         self.assertEqual("use prod — the shared one", ask["recommend"])
