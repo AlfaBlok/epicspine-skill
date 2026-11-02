@@ -159,8 +159,8 @@ def check(schema: dict) -> list[str]:
             ref = rule.get(k)
             if ref and ref not in flds and ref not in secs:
                 errs.append(f"rule {rkey}: {k} {ref} unknown")
-        if rule.get("to") in secs and rule.get("by") not in secs[rule["to"]].get("writers", []):
-            errs.append(f"rule {rkey}: {rule.get('by')} may not write {rule['to']}")
+        to, bys = rule.get("to"), rule.get("by") if isinstance(rule.get("by"), list) else [rule.get("by")]
+        errs += [f"rule {rkey}: {b} may not write {to}" for b in bys if b not in (secs[to].get("writers", []) if to in secs else field_writers(schema, to) if to in flds else [b])]
     for ckey, c in schema.get("checks", {}).items():
         errs.extend([f"check {ckey}: unknown lifecycle {n}" for n in c.get("on", []) if n not in lcs] + [f"check {ckey}: unknown kind {k}" for k in c.get("kinds", []) if not any(k in flds.get(lc.get("kind_field"), {}).get("values", []) for lc in lcs.values())])
         for at in c.get("at", []):

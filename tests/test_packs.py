@@ -84,6 +84,14 @@ class SocialPack(unittest.TestCase):
         mine = {(t["from"], t["to"]) for t in SOCIAL["lifecycles"]["idea"]["transitions"] if "Jordi" in t["by"]}
         self.assertEqual({("new", "parked"), ("picked up", "parked")}, mine)
 
+    def test_campaign_tag_rule_reaches_the_row_writers_only(self) -> None:
+        # agent_team E60-S1: Writer, Responder and Engager tag the rows they add for a campaign; the Publisher does not.
+        import pack_role
+        self.assertEqual([], pack.check(SOCIAL))
+        for role in ("Writer", "Responder", "Engager"):
+            self.assertIn("Campaign", pack_role.role_text(SOCIAL, role).split("Campaign plan")[-1])
+        self.assertNotIn("Campaign plan", pack_role.role_text(SOCIAL, "Publisher"))
+
     def test_repeat_feedback_becomes_a_style_rule_with_undo(self) -> None:
         rule = SOCIAL["rules"]["style_rule_from_feedback"]  # C6
         self.assertEqual((2, "brief.style_rules"), (rule["repeats"], rule["to"]))

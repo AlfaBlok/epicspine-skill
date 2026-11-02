@@ -135,6 +135,7 @@
           "persona": {"column": "Persona", "type": "role"},
           "kind": {"column": "Kind", "type": "enum", "values": ["post", "reply", "outreach"]},
           "platform": {"column": "Platform", "type": "text"},
+          "campaign": {"column": "Campaign", "type": "text", "optional": true, "writers": ["Writer", "Responder", "Engager", "Jordi"], "doc": "the campaign this row counts toward: its epic code (e.g. EPIC-7), a child epic of the repo with a ## Campaign plan; empty = the repo itself (no campaign); a ledger without the column reads as all empty"},
           "community": {"column": "Community", "type": "text"},
           "slot": {"column": "Slot", "type": "datetime"},
           "title": {"column": "Title", "type": "text"},
@@ -250,6 +251,7 @@
   },
   "rules": {
     "style_rule_from_feedback": {"doc": "the same feedback twice becomes a Style rule, with undo (C6)", "from": "posts.rows.feedback", "repeats": 2, "to": "brief.style_rules", "by": "Writer", "log": "brief.feedback_log", "undo": "revert that commit; the rule line names the feedback it came from"},
+    "campaign_tag": {"doc": "When your wake is bound to a campaign (a child epic of this repo whose spine has a `## Campaign plan` section; the wake prompt names it), every post, reply or outreach row you add for it carries that epic's code (e.g. `EPIC-7`) in Campaign, and you follow its plan: platform, period, key messages, voice, posting and reply style, targets. A row for another platform or outside its period is not the campaign's (Campaign empty). Bound to the repo's root spine, leave Campaign empty", "to": "posts.rows.campaign", "by": ["Writer", "Responder", "Engager"], "undo": "empty the cell (the row then counts toward the repo, no campaign)"},
     "revise_requested": {"doc": "Jordi's `Revise requested <when>: …` note in a held post's Feedback asks for a NEW VERSION for his review: redraft it (Text and Title, and its diagram when the note asks, as a new asset row), keep it `held` (never schedule it: only his `Approved` note lets it out) and start the row's Checks with `Revised <YYYY-MM-DD HH:MM> UTC` (the time of your redraft) so his console shows it ready for review again", "from": "posts.rows.feedback", "to": "posts.rows.checks", "by": "Writer", "undo": "revert that commit (the earlier version is in git)"}
   },
   "checks": {
