@@ -223,12 +223,15 @@ class AdvisoryTests(unittest.TestCase):
         self.assertEqual(1, len([i for i in found if "duplicate ask code E4-A3" in i]), found)
         self.assertEqual([], [i for i in self.issues(asks=DO + "\n" + DO.replace("E4-A3", "E4-A30")) if "duplicate" in i])
 
-    def test_open_ask_whose_code_is_in_a_decisions_row(self) -> None:
-        with_row = spine_with(asks=DO).replace("| accepted | c |", "| accepted | E4-A3 patch |")
-        self.assertTrue([i for i in epic_log.ask_issues(with_row, TODAY) if "duplicate ask code E4-A3" in i])
-        self.assertEqual([], [i for i in epic_log.ask_issues(with_row.replace("E4-A3 patch", "E4-A31 patch"), TODAY) if "duplicate" in i])
-        answered_only = with_row.replace(DO, ANSWERED_V2)
-        self.assertEqual([], [i for i in epic_log.ask_issues(answered_only, TODAY) if "duplicate" in i])  # an answered line may sit beside its Decisions row
+    def test_open_ask_cited_by_a_decisions_row_is_not_a_duplicate(self) -> None:
+        with_row = spine_with(asks=DO).replace("| accepted | c |", "| accepted | revisit when Ana answers E4-A3 |")
+        self.assertIn("E4-A3", with_row.split("## Decisions")[1])
+        self.assertEqual([], [i for i in epic_log.ask_issues(with_row, TODAY) if "duplicate" in i])
+        self.assertEqual([], [i for i in epic_log.ask_issues(with_row.replace(DO, ANSWERED_V2), TODAY) if "duplicate" in i])
+
+    def test_duplicate_code_across_ask_states(self) -> None:
+        found = self.issues(asks=DO + "\n" + ANSWERED_V2)
+        self.assertEqual(1, len([i for i in found if "duplicate ask code E4-A3" in i]), found)
 
     def test_next_row_naming_a_human_needs_an_ask(self) -> None:
         def spine(status: str, needs: str = "", owner: str = "me", asks: str = "") -> str:

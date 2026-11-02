@@ -167,18 +167,17 @@ def ask_issues(text: str, today: datetime.date | None = None, repo: Path | None 
         issues.append(f"Status is {status.split()[0]} but no open ask is under ## Waiting on")
     if len(found) > MAX_OPEN_ASKS:
         issues.append(f"{len(found)} open asks (aim for at most {MAX_OPEN_ASKS}): merge asks one human action resolves, close what no longer blocks")
-    decided = sections.get("Decisions", "")
     for r in unknown(refs, repo, text):
         issues.append(f"{'waits on' if r['via'] == 'waits_on' else 'Waiting on:'} {r['ref']}: no ask with that code exists in this repo (check the code, or qualify it `<repo>/<code>`)")
-    seen: set[str] = set()
+    carried, flagged = [a["code"] for a in every if a["code"]], set()
     for a in found:
         label = f"ask {a['code']}" if a["code"] else f"ask '{a['question'][:40]}'"
         required = (("code", a["code"]), ("steps", a["ask"] != "do" or a["steps"]), ("options", a["ask"] != "decide" or a["options"]),
                     ("recommend", a["ask"] == "provide" or a["recommend"]), ("unblocks", a["unblocks"]), ("context", a["context"]))
         issues += [f"{label} is missing {n}" if n != "code" else f"{label} has no code (`[ask <epic code>-A<n>: ...]`)" for n, ok in required if not ok]
-        if a["code"] and (a["code"] in seen or re.search(rf"(?<![\w-]){re.escape(a['code'])}(?!\w)", decided)):
-            issues.append(f"duplicate ask code {a['code']} (an open ask repeats it, or a Decisions row already cites it): codes are never reused")
-        seen.add(a["code"] or "")
+        if a["code"] and carried.count(a["code"]) > 1 and a["code"] not in flagged:
+            flagged.add(a["code"])
+            issues.append(f"duplicate ask code {a['code']} (two ask lines under ## Waiting on carry it, open, answered or superseded): codes are never reused")
         issues += writing_issues(a, label)
         if (today - datetime.date.fromisoformat(a["since"])).days > STALE_ASK_DAYS:
             issues.append(f"stale ask: {label} to @{a['who']} open since {a['since']}")
