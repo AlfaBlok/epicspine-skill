@@ -45,7 +45,7 @@ Fall back to read-only orientation when the role, spine, or issue is unclear. Bi
 | What every epic says, hierarchy, authority, write scope, profiles | `references/spine-model.md` |
 | Persona tasks: assignees, queues, hand-offs, signed commits, asks as tasks (trial) | `references/persona-tasks.md` |
 | Compact profile, state API, migration, rollups, projections | `references/compact-state.md`, `scripts/migrate_spine.py`, `references/execution-rollups.md`, `scripts/rollup_spine.py` |
-| Role binding, dispatch profile, role protocols, gates, bootstrapping | `references/roles-and-dispatch.md`, `references/role-protocols.md`, `references/dispatch-prompts.md` |
+| Role binding, dispatch profile, role protocols, gates, bootstrapping; claiming a row before work (`spines.py --claim`) | `references/roles-and-dispatch.md`, `references/role-protocols.md`, `references/dispatch-prompts.md`, `scripts/claim.py` |
 | Sprint dialect v2 / SHIP-HARDEN | `references/sprint-dialect-v2.md` |
 | Ticket backend and issues | `references/ticket-backends.md`, `assets/github-issue-template.md` |
 | Structural validation and diagnostics | `references/structural-validation.md`, `scripts/validate_spine.py`, `scripts/spine_fix.py`, `scripts/status_true.py`, `scripts/run_state.py` |

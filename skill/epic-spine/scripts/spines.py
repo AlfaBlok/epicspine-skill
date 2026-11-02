@@ -181,7 +181,12 @@ def main() -> int:
     parser.add_argument("--json", action="store_true")
     parser.add_argument("--active", action="store_true", help="list open goals, one line each, hottest first (heat, stale marked)")
     parser.add_argument("--bind", nargs="?", const="", metavar="EPIC", help="print the bind view of EPIC (default: root) and its ancestors")
+    parser.add_argument("--claim", metavar="ROW", help="claim ledger row ROW before work (claim.py; needs --by)")
+    import claim as C  # noqa: E402
+    C.add_args(parser)
     args = parser.parse_args()
+    if args.claim:
+        return C.claim(args) if args.by and not setattr(args, "row", args.claim) else parser.error("--claim needs --by")
     if args.bind is not None:
         from bind import bind  # noqa: E402  (bind.py imports this module)
         print(bind(Path(args.repo).resolve(), args.bind or None))
