@@ -24,9 +24,9 @@ Result: all three Done means met; awaiting Jordi's verification of the Outcome
 Evidence: 259ed38, 89554d8, a61f07b, 85a86fd; [evidence page](root/dod-evidence-2026-10-24.md)
 Waiting on: none
 Approved work: none open beyond this root's DOD
-Next action: Jordi marks the verdict on EPIC-6, EPIC-7 (review) and EPIC-0's Outcome; EPIC-5 E5-6 waits on infra-vps E15-R6, E5-5 on the infra-vps trial; EPIC-9 E9-S4 in flight (run_4ce95ec6), E9-4 after agent_team E34-S5 deploy
+Next action: Jordi marks the verdict on EPIC-6, EPIC-7, EPIC-9 (review) and EPIC-0's Outcome; EPIC-5 E5-6 waits on infra-vps E15-S2 and zenod-social E0-S10 (their threads), E5-5 on infra-vps's trial review (~2026-11-07); EPIC-10 E10-S1 in flight (seat7), E10-S2 on E10-A2
 Source revision: main
-Verified at: 2026-10-28
+Verified at: 2026-11-02
 
 ## Mission
 
@@ -115,5 +115,5 @@ Binding rule, validation command and the remaining fields: [book-companion](root
 | status-true-spines-the-checker-catches-what-makes-the-console-status-lie | child | [EPIC-6: Status-true spines: the checker catches what makes the console status lie](EPIC-6-STATUS-TRUE-SPINES.md) | contributes the checks the agent_team console status model (agent_team EPIC-13) depends on: free-text asks, done with open Done means, contradictory Waiting on | review | none | Outcome 2026-10-24, merge 44ab11e | 2026-10-24 | Jordi verifies Outcome |
 | runnable-epics-run-state-contract | child | [EPIC-7: Runnable epics: run_state contract](EPIC-7-RUNNABLE-EPICS.md) | Defines which epics a wake may run (run_state/runnable/has_children from the Status they already carry), so a Delivery Manager never works finished or planning epics. | review | none | Outcome 2026-10-25; merge d37094b; rollout 0c6c0f9 | 2026-10-25 | Jordi marks the verdict |
 | closed-epics-close-their-rows-tree-audit | child | [EPIC-8: Closed epics close their rows; tree audit](EPIC-8-CLOSED-EPICS-CLOSE-ROWS.md) | A finished epic shows no open work, and any repo's stale tree can be audited and swept from the skill. | done | none | Outcome 2026-10-24; merge 6e1abf7 | 2026-10-25 | Reference only; reopen if scope resumes |
-| vertical-packs-add-ons-that-give-a-repo-typed-sections-for-its-function-social-first | child | [EPIC-9: Vertical packs: add-ons that give a repo typed sections for its function (social first)](EPIC-9-VERTICAL-PACKS.md) | a repo's function (social campaign, later others) gets typed files, a lifecycle, a validator and an export without forking the base doctrine | active | none | E9-1..E9-3 met (releases 2026.10.27.1-.7) | 2026-10-28 | merge E9-S4; E9-4 after agent_team E34-S5 deploy |
+| vertical-packs-add-ons-that-give-a-repo-typed-sections-for-its-function-social-first | child | [EPIC-9: Vertical packs: add-ons that give a repo typed sections for its function (social first)](EPIC-9-VERTICAL-PACKS.md) | a repo's function (social campaign, later others) gets typed files, a lifecycle, a validator and an export without forking the base doctrine | review | none | Outcome 2026-11-02; agent_team 3240e53 | 2026-11-02 | Jordi marks the verdict |
 | webmcp-on-epicspine-dev-agents-in-chrome-can-fetch-the-install-command | child | [EPIC-10: WebMCP on epicspine.dev: agents in Chrome can fetch the install command](EPIC-10-WEBMCP-ON-EPICSPINE-DEV.md) | lets browser agents install EpicSpine for a user straight from the site | draft | none | none | 2026-11-02 | fill Goal, Serves and Done means |

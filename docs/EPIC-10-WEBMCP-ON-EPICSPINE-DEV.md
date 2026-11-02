@@ -52,8 +52,8 @@ Steps: each is independently testable and closes only with evidence.
 
 | Issue | Role | Owner / Assignment | Title | Status | Depends On | PR/Branch | Base | Latest Evidence | Last Verified | Next Action |
 |---|---|---|---|---|---|---|---|---|---|---|
-| E10-S1 | Ticket worker | seat7 (T3 delegate) | Register read-only WebMCP tools in index.html, feature-detected, with a test | active | none | wt/e10-s1-webmcp | main | none | 2026-11-02 | build on branch, push, report |
-| E10-S2 | Ticket worker | Delivery manager | Add the origin-trial token meta tag for epicspine.dev | blocked | E10-S1, E10-A2 | main (meta tag in index.html) | main | none | 2026-11-02 | after E10-A2, register https://epicspine.dev in the T3 shared browser, add the token meta tag |
+| E10-S1 | Ticket worker | seat7 (T3 delegate) | E10-1..2: Register read-only WebMCP tools in index.html, feature-detected, with a test | active | none | wt/e10-s1-webmcp | main | none | 2026-11-02 | build on branch, push, report |
+| E10-S2 | Ticket worker | Delivery manager | E10-3: Add the origin-trial token meta tag for epicspine.dev | blocked | E10-S1, E10-A2 | main (meta tag in index.html) | main | none | 2026-11-02 | after E10-A2, register https://epicspine.dev in the T3 shared browser, add the token meta tag |
 
 ## Decisions
 

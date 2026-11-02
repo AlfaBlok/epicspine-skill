@@ -35,11 +35,11 @@ Last attempted: 2026-10-27 Jordi approved nj_958bad5c: DM committed persona file
 Result: E5-1..E5-4 met; E5-6: persona files valid in both repos, zenod-social root spine passes, infra-vps EPIC-15 fails only on its own row E15-R6 (empty PR/Branch); E5-5 waits on the infra-vps trial
 Evidence: infra-vps 9409eb5, a465c42; zenod-social 4c72143, 19f0de9; merges 1d4e9fc, 44ab11e, 1acbdde, 085cf62
 Waiting on: nobody
-Monitoring: infra-vps E15-R6 PR/Branch filled (EPIC-15 strict-clean) since 2026-10-26 · next check 2026-10-27T20:00Z · then tick E5-6 ; E5-5 asks-as-tasks trial in infra-vps EPIC-15 · next check 2026-10-27T20:00Z · then adopt or drop by a Decisions row
+Monitoring: infra-vps EPIC-15 and zenod-social root strict-clean since 2026-10-26 · 2026-11-02: persona files all OK; spines fail on infra-vps E15-S2 (assignee) and zenod-social E0-S10 (PR/Branch), both owners' rows · next check 2026-11-03T08:00Z · then tick E5-6 ; E5-5 infra-vps trial review due ~2026-11-07 (its Decisions row 'after 2 weeks of runs') · then adopt or drop by a Decisions row and tick E5-5
 Approved work: none
 Next action: merge E5-S6; tick E5-6 once infra-vps E15-R6 has PR/Branch filled (its owner, L-14); E5-5 waits on infra-vps running the asks-as-tasks trial
 Source revision: main
-Verified at: 2026-10-27
+Verified at: 2026-11-02
 
 ## Waiting on
 
@@ -61,6 +61,7 @@ Steps: each is independently testable and closes only with evidence.
 | E5-S4 | Ticket worker | worker run_98fc838e (with E6-S1) | validator accepts step codes (E5-S1) as Issue in row-as-ticket spines: spine_new.py scaffolds fail --strict | done | none | merged (branch deleted) | main | c804f48, merge 44ab11e; graph --strict 0 errors | 2026-10-24 | none |
 | E5-S5 | Ticket worker | worker run_83cd4392 | Jordi on a Team table needs no persona file | done | none | merged (branch deleted) | main | 89a1521, merge 085cf62; 730 tests OK | 2026-10-26 | none |
 | E5-S6 | Ticket worker | worker run_c14d5ebb (Sonnet 5.5, seat2) | persona files are not orphan pages (pre-commit flagged all 8 in infra-vps a465c42, zenod-social 19f0de9) | done | none | merged (branch deleted) | main | 4a19298, merge 8461a2c (release 2026.10.27.4; version renumbered from .3, collided with the pack release); 775 tests OK | 2026-10-27 | none |
+| E5-S7 | Delivery manager | Delivery Manager | E5-5..6: asks-as-tasks trial adopted or dropped; infra-vps EPIC-15 and zenod-social spines + persona files strict-clean | blocked | infra-vps EPIC-15 row E15-S2 (assignee not a persona), zenod-social root row E0-S10 (empty PR/Branch); infra-vps trial review ~2026-11-07 (L-14) | main | main | persona files: infra-vps 3, zenod-social 8, all --strict OK (2026-11-02); E15-R6 now fixed | 2026-11-02 | re-check infra-vps EPIC-15 each wake; tick E5-6, then E5-5 on its trial Decisions row |
 
 ## Decisions
 
