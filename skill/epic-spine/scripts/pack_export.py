@@ -81,7 +81,7 @@ def table(sec: dict, start: int, body: list[str], rel: str, warn, states: dict) 
     head = cells(body[i])
     fields = sec["fields"]
     col = {k: head.index(f["column"]) for k, f in fields.items() if f["column"] in head}
-    missing = [f["column"] for k, f in fields.items() if k not in col and "computed" not in f]
+    missing = [f["column"] for k, f in fields.items() if k not in col and "computed" not in f and not f.get("optional")]
     extra = [h for h in head if h not in {f["column"] for f in fields.values()}]
     for what, cols in (("missing", missing), ("unknown, ignored", extra)):
         if cols:

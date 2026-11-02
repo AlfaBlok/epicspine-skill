@@ -105,6 +105,22 @@ class Missing(unittest.TestCase):
         self.assertIn("no 'Month' section (directions.month)", msgs)
 
 
+    def test_campaign_column_exports_and_its_absence_warns_nothing(self) -> None:
+        # agent_team E60-S1: the optional Campaign column; a ledger without it reads campaign None, no warning.
+        cols = [f["column"] for f in pack.load("social")["files"]["posts"]["sections"]["rows"]["fields"].values()]
+        self.assertIn("Campaign", cols)
+        with tempfile.TemporaryDirectory() as tmp:
+            (Path(tmp) / "data").mkdir()
+            led = Path(tmp) / "data" / "posts-ledger.md"
+            led.write_text("# P\n\n| Id | Date | Campaign | Status |\n|---|---|---|---|\n| P-0001 | 2026-11-02 | EPIC-7 | draft |\n")
+            d = pack_export.export("social", Path(tmp), NOW)
+            self.assertEqual("EPIC-7", d["posts"][0]["campaign"])
+            led.write_text("# P\n\n| Id | Date | Status |\n|---|---|---|\n| P-0001 | 2026-11-02 | draft |\n")
+            d = pack_export.export("social", Path(tmp), NOW)
+        self.assertIsNone(d["posts"][0]["campaign"])
+        self.assertFalse([w for w in d["warnings"] if "Campaign" in w["message"]])
+
+
 class Cli(unittest.TestCase):
     def test_pack_py_social_json(self) -> None:
         with redirect_stdout(io.StringIO()) as out:

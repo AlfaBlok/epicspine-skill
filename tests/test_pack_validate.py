@@ -78,6 +78,22 @@ class Validate(unittest.TestCase):
         path.write_text(path.read_text().replace("| Status |", "| State |"))
         self.assertEqual(["pack social: data/posts-ledger.md: missing column(s) Status"], self.repo.issues())
 
+    def test_campaign_column_is_optional_and_writable_by_row_writers_and_jordi(self) -> None:
+        # agent_team E60-S1: a ledger without Campaign stays valid; with it, the row's writers and Jordi tag a row.
+        self.assertNotIn("missing column", "\n".join(self.repo.issues()))
+        self.assertIn("Campaign", " ".join(c for _, c in COLS))
+        self.assertEqual("", self.after("Writer", {"campaign": "EPIC-7"}))
+        self.repo.commit()
+        self.assertEqual("", self.after("Jordi", {"campaign": "EPIC-8"}))
+        self.assertIn("Publisher may not write Campaign", self.after("Publisher", {"campaign": ""}))
+
+    def test_a_ledger_without_the_campaign_column_is_valid(self) -> None:
+        cols = [(k, c) for k, c in COLS if c != "Campaign"]
+        lines = ["# Posts ledger", "", "| " + " | ".join(c for _, c in cols) + " |", "|" + "---|" * len(cols)]
+        lines += ["| " + " | ".join(BASE.get(k, "") for k, _ in cols) + " |"]
+        (self.repo.root / "data/posts-ledger.md").write_text("\n".join(lines) + "\n")
+        self.assertNotIn("missing column", "\n".join(self.repo.issues()))
+
     def test_bad_enum_and_id(self) -> None:
         out = self.after(None, {"id": "P-1", "kind": "story"})
         self.assertIn("P-1: Id 'P-1' does not match", out)

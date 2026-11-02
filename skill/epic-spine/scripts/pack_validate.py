@@ -65,7 +65,7 @@ def check_section(schema: dict, s: dict, at: str, new: str, old: str | None, rol
     if not tbl:
         return [f"{tag}: no table (pack.py init writes its header)"]
     head, raw = tbl
-    gone = [f["column"] for f in flds.values() if "computed" not in f and f["column"] not in head]
+    gone = [f["column"] for f in flds.values() if "computed" not in f and not f.get("optional") and f["column"] not in head]
     if gone:
         return [f"{tag}: missing column(s) {', '.join(gone)}"]
     recs = [{k: r.get(f["column"], "") for k, f in flds.items()} for r in raw]

@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026.11.02.3 — Social pack: campaigns inside a repo (optional Campaign column)
+
+- **Added: optional `Campaign` column in the posts ledger** (`posts.rows.campaign`, after Platform). A campaign is a child epic of the social repo with a `## Campaign plan` section; a row counts toward it when Campaign holds the epic's code (e.g. `EPIC-7`), which never changes on a rename. Empty, or no column at all, means the repo itself, so existing ledgers stay valid unchanged (fields marked `"optional": true` are not required by `pack_validate` and draw no "missing column" warning in the export). Writer, Responder, Engager and Jordi may write it.
+- **Added: `campaign_tag` rule** in the Writer, Responder and Engager wake text: a wake bound to a campaign tags the rows it adds with the campaign's code and follows its plan. Rules may now name several roles (`"by": [...]`); `pack.py` checks each may write the rule's target field.
+- Why: Jordi's campaign-chat ask (agent_team EPIC-60 E60-S1): named campaigns, each with its own plan, personas and results. Tests: `tests/test_pack_validate.py` `test_campaign_column_is_optional_*`, `test_a_ledger_without_the_campaign_column_is_valid`; `tests/test_pack_export.py` `test_campaign_column_exports_*`; `tests/test_packs.py` `test_campaign_tag_rule_reaches_the_row_writers_only`. Skill 2026.11.02.3.
+
 ## 2026.11.02.2 — Security: auto-merge never lands code, no history rewrite is installed, page servers stay private
 
 - **Changed: auto-merge never merges a branch that adds a file able to run code or steer agents** (`merge_trust.risky`): an executable, symlink or submodule; a script (`*.py`, including a file that shadows a stdlib module such as `scripts/json.py`, `*.js`, `*.sh`, `conftest.py`, `sitecustomize.py`, `*.pth`, ...); any dotfile or dot-directory (`.claude/`, `.agents/`, `.github/`, `.mcp.json`, `.envrc`, `.vscode/`); `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`; a crontab, launchd or systemd file; a build or package file (`Makefile`, `package.json`, ...). Reported `it adds <path> (<kind>), which can run code or steer agents`. Changed, deleted and renamed files were already refused.

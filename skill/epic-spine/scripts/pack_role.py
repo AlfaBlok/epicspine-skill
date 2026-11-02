@@ -66,7 +66,8 @@ def role_text(schema: dict, role: str) -> str:
             bind.append("- A draft matching a hold rule" + (f" ({_where(schema['files'][src[0]], schema['files'][src[0]]['sections'][src[1]])})" if src else "") + " goes to `held`, never `scheduled`; " + "; ".join(f"`{t['from']} → {t['to']}` is {'/'.join(t['by'])}'s alone" for t in lc["transitions"] if t["from"] == "held" and role not in t["by"] and t["to"] != "pulled") + ".")
         if "pulled" in lc["states"] and owner and role != owner and any(role in t["by"] for t in lc["transitions"]):
             bind.append(f"- {owner} may pull a {name} (`pulled`): never act on a pulled one.")
-    bind += [f"- {r['doc']} (by {r['by']}; undo: {r['undo']})" for r in schema.get("rules", {}).values() if r.get("by") == role]
+    by = lambda r: r.get("by") if isinstance(r.get("by"), list) else [r.get("by")]  # noqa: E731
+    bind += [f"- {r['doc']} (by {'/'.join(by(r))}; undo: {r['undo']})" for r in schema.get("rules", {}).values() if role in by(r)]
     bind += [f"- Effect `{k}`: {v}" for k, v in schema.get("effects", {}).items() if role in v]
     if schema.get("approval_gate"):
         bind.append(f"- Nothing goes out without {owner}'s approval.")
