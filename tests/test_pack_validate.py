@@ -284,6 +284,11 @@ class Validate(unittest.TestCase):
         self.assertIn("C-0001: illegal state change left -> done by Responder", self.dm("Responder", [{**left, "state": "done"}], [self.THEIRS]))
         self.assertIn("C-0001: illegal state change left -> open by Responder", self.dm("Responder", [{**left, "state": "open"}], [self.THEIRS]))
         self.assertEqual("", self.dm("Jordi", [{**left, "state": "open", "feedback": "Draft requested 2026-11-02 21:14 UTC"}], [self.THEIRS]))
+        self.repo.commit()
+        asked = {**left, "feedback": "Draft requested 2026-11-02 21:14 UTC"}
+        self.assertEqual("", self.dm("Jordi", [{**asked, "feedback": asked["feedback"] + "; Draft request undone 2026-11-02 21:15 UTC"}], [self.THEIRS]))  # Undo of Draft a reply for me
+        self.assertIn("illegal state change open -> waiting by Jordi", self.dm("Jordi", [{**asked, "state": "waiting"}], [self.THEIRS]))
+        self.assertIn("illegal state change open -> hidden by Responder", self.dm("Responder", [{**asked, "state": "hidden"}], [self.THEIRS]))
         self.assertEqual("", self.dm("Jordi", [{**left, "state": "done", "feedback": "Done 2026-11-02 21:15 UTC"}], [self.THEIRS]))
         self.repo.commit()
         self.assertEqual("", self.dm("Jordi", [left], [self.THEIRS]))  # Undo of Done

@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.11.02.11 — Social pack: Jordi can undo his request for a DM draft
+
+- **Added: chat `open → left` and `open → hidden` by Jordi (`alone`)**: the Undo of Draft a reply for me / Accept and draft a reply on the agent_team console's Messages page puts the chat back where it was. The Responder's own `open → left` (the DM rule says leave it) is unchanged.
+- Why: agent_team E34-S27 (the approved Messages mockup shows Undo after Draft a reply for me). Test: `tests/test_pack_validate.py` `test_a_chat_left_by_rule_is_its_own_row_and_only_jordi_reopens_or_closes_it`. Skill 2026.11.02.11.
+
 ## 2026.11.02.10 — Social pack: DMs get their own messages ledger; every DM reply waits for Jordi's Send
 
 - **Added: `messages` file (`data/messages-ledger.md`, optional)**: `## Chats` (C-nnnn: platform, our account, who, kind dm / chat request / pm, link, campaign, started, state, reason, Jordi's feedback; computed `messages`) and `## Messages` (M-nnnn: chat, at, from them / us, persona, text, answers, checks, Jordi's feedback, result, status). Lifecycles `message` (`received`; ours `draft → scheduled → posted`, `pulled`, `expired`) and `chat` (`open`, `waiting`, `left`, `hidden`, `done`). `draft → scheduled` (Send) is Jordi's alone (`send_approved`: his `Approved` note), so a Responder commit approving or sending its own draft is refused by the hook; `scheduled → posted` needs the send in Result (`sent`); Text is frozen once scheduled (field flag `frozen_in`). The message lifecycle declares `approval_gate: true` (lifecycle-level override; posts keep no gate).
