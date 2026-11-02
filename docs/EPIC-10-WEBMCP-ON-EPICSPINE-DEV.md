@@ -27,9 +27,9 @@ An AI agent running in a visitor's Chrome can ask epicspine.dev for the EpicSpin
 ## Current State
 
 Owner: Delivery manager
-Status: ready
-Last attempted: scaffolded with spine_new.py on 2026-11-02
-Result: created, not started
+Status: active
+Last attempted: 2026-11-02 E10-S1 dispatched to seat7 (WebMCP tools in index.html on wt/e10-s1-webmcp)
+Result: worker running
 Evidence: EPIC-0-OPERATING-SYSTEM.md
 Waiting on: Jordi: E10-A1 (S1 does not wait on it)
 Approved work: readied by Jordi 2026-11-02 ("do epicspine and zenod dev")
@@ -52,7 +52,7 @@ Steps: each is independently testable and closes only with evidence.
 | Issue | Role | Owner / Assignment | Title | Status | Depends On | PR/Branch | Base | Latest Evidence | Last Verified | Next Action |
 |---|---|---|---|---|---|---|---|---|---|---|
 | E10-S1 | Ticket worker | worker | Register read-only WebMCP tools in index.html, feature-detected, with a test | ready | none | wt/e10-s1-webmcp | main | none | 2026-11-02 | build on branch, push, report |
-| E10-S2 | Ticket worker | Delivery manager | Add the origin-trial token meta tag for epicspine.dev | blocked | E10-S1, E10-A1 | none | main | none | 2026-11-02 | add the token once Jordi provides it |
+| E10-S2 | Ticket worker | Delivery manager | Add the origin-trial token meta tag for epicspine.dev | blocked | E10-S1, E10-A1 | main (meta tag in index.html) | main | none | 2026-11-02 | add the token once Jordi provides it |
 
 ## Decisions
 
