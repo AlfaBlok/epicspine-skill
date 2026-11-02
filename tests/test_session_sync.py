@@ -719,5 +719,24 @@ class HookIntegrationTest(Base):
         json.loads(proc.stdout)
 
 
+
+class GitTimeoutSignalTest(unittest.TestCase):
+    """agent_team E6-S51: a timed-out git gets SIGTERM (it removes its index.lock) before any SIGKILL."""
+
+    def test_timeout_sends_sigterm_first(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            bin_dir, mark = Path(tmp) / "bin", Path(tmp) / "mark"
+            bin_dir.mkdir()
+            fake = bin_dir / "git"
+            fake.write_text(f"#!/bin/sh\ntrap 'echo term > {mark}; exit 143' TERM\nsleep 30 & wait\n")
+            fake.chmod(0o755)
+            with mock.patch.dict(os.environ, {"PATH": f"{bin_dir}:{os.environ['PATH']}"}):
+                info: dict = {}
+                t0 = time.monotonic()
+                self.assertIsNone(ss.git(["merge", "--ff-only"], Path(tmp), ss.Clock(5), 0.5, info))
+            self.assertTrue(info.get("timeout"))
+            self.assertEqual(mark.read_text().strip(), "term")
+            self.assertLess(time.monotonic() - t0, 2.5)
+
 if __name__ == "__main__":
     unittest.main()

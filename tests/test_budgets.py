@@ -29,6 +29,7 @@ ALWAYS_MAX = 12
 # grandfathered (already over the 200-line new-file cap) and pinned exactly: they
 # may only shrink. The other scripts are pre-existing and pinned to rounded sizes.
 EXISTING_BUDGETS = {
+    "scripts/session_sync.py": 205,  # SIGTERM before SIGKILL on a git timeout (agent_team E6-S51)
     "references/book-companion.md": 155,
     "references/compact-state.md": 60,
     "references/execution-rollups.md": 70,
