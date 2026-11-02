@@ -31,11 +31,15 @@ Status: ready
 Last attempted: scaffolded with spine_new.py on 2026-11-02
 Result: created, not started
 Evidence: EPIC-0-OPERATING-SYSTEM.md
-Waiting on: E10-A1 Jordi: register epicspine.dev for the Chrome WebMCP origin trial (developer.chrome.com/origintrials, needs a Google sign-in) and paste the token; the code ships without it and works behind the flag
+Waiting on: Jordi: E10-A1 (S1 does not wait on it)
 Approved work: readied by Jordi 2026-11-02 ("do epicspine and zenod dev")
 Next action: worker builds and tests the tools on a branch; Delivery manager verifies and integrates
 Source revision: uncommitted scaffold
 Verified at: 2026-11-02
+
+## Waiting on
+
+- [ask E10-A1: do @Jordi since 2026-11-02 row E10-S2] Register epicspine.dev for Chrome's WebMCP origin trial and give us the token — context: Chrome only shows WebMCP tools to ordinary visitors on sites that carry a trial token; without it the tools work only with a testing flag — impact: unblocks E10-S2, the tools reach real visitors' Chrome (trial runs Chrome 149-156) — risk: none; a wrong or expired token only hides the tools — recommend: do it, because it is the only step between the shipped tools and visitors — why Jordi: it needs a Google account sign-in on the origin-trial page — steps: open https://developer.chrome.com/origintrials, pick WebMCP, Register, origin https://epicspine.dev, then paste the token via the T3 secret card or in chat (it is public, it ships in the page) — unblocks: E10-S2 — effort: ~5 min
 
 ## Non-Goals
 
@@ -48,6 +52,7 @@ Steps: each is independently testable and closes only with evidence.
 | Issue | Role | Owner / Assignment | Title | Status | Depends On | PR/Branch | Base | Latest Evidence | Last Verified | Next Action |
 |---|---|---|---|---|---|---|---|---|---|---|
 | E10-S1 | Ticket worker | worker | Register read-only WebMCP tools in index.html, feature-detected, with a test | ready | none | wt/e10-s1-webmcp | main | none | 2026-11-02 | build on branch, push, report |
+| E10-S2 | Ticket worker | Delivery manager | Add the origin-trial token meta tag for epicspine.dev | blocked | E10-S1, E10-A1 | none | main | none | 2026-11-02 | add the token once Jordi provides it |
 
 ## Decisions
 
