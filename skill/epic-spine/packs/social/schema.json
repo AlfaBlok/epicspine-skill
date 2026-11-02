@@ -216,7 +216,8 @@
         {"from": "held", "to": "pulled", "by": ["Jordi"], "effect": "unschedule"},
         {"from": "scheduled", "to": "pulled", "by": ["Jordi"], "effect": "unschedule"},
         {"from": "posted", "to": "pulled", "by": ["Jordi"], "effect": "delete_live"},
-        {"from": "measured", "to": "pulled", "by": ["Jordi"], "effect": "delete_live"}
+        {"from": "measured", "to": "pulled", "by": ["Jordi"], "effect": "delete_live"},
+        {"from": "pulled", "to": "held", "by": ["Jordi"], "when": "Jordi restores a post he pulled before it ever went out (no Link): it waits for his review again (the console's Undo / restore)"}
       ]
     },
     "idea": {
@@ -248,7 +249,8 @@
     "delete_live": "the Publisher deletes the live post at once (C5); the row keeps its link"
   },
   "rules": {
-    "style_rule_from_feedback": {"doc": "the same feedback twice becomes a Style rule, with undo (C6)", "from": "posts.rows.feedback", "repeats": 2, "to": "brief.style_rules", "by": "Writer", "log": "brief.feedback_log", "undo": "revert that commit; the rule line names the feedback it came from"}
+    "style_rule_from_feedback": {"doc": "the same feedback twice becomes a Style rule, with undo (C6)", "from": "posts.rows.feedback", "repeats": 2, "to": "brief.style_rules", "by": "Writer", "log": "brief.feedback_log", "undo": "revert that commit; the rule line names the feedback it came from"},
+    "revise_requested": {"doc": "Jordi's `Revise requested <when>: …` note in a held post's Feedback asks for a NEW VERSION for his review: redraft it (Text and Title, and its diagram when the note asks, as a new asset row), keep it `held` (never schedule it: only his `Approved` note lets it out) and start the row's Checks with `Revised <YYYY-MM-DD HH:MM> UTC` (the time of your redraft) so his console shows it ready for review again", "from": "posts.rows.feedback", "to": "posts.rows.checks", "by": "Writer", "undo": "revert that commit (the earlier version is in git)"}
   },
   "checks": {
     "transitions": {"doc": "a status change must be a listed transition, made by one of its roles", "on": ["post", "idea"]},

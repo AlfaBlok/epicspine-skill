@@ -33,18 +33,19 @@ A social campaign desk: personas scan, write, post, reply and measure; the owner
 | posted | measured | Reporter (any); Responder, Engager (their rows) | 48 h after posting |
 | draft, held, scheduled | pulled | Jordi | unscheduled, never goes out |
 | posted, measured | pulled | Jordi | the Publisher deletes the live post at once, link kept (C5) |
+| pulled | held | Jordi | restores a post he pulled that never went out (no Link): it waits for his review again |
 
 A failed check keeps the draft a draft, with the reason in `checks`. Ideas: `new → picked up → drafted → posted`, or `parked` (why; back to picked up) or `epic` (too big for one post), all moved by the Writer; Jordi may drop an idea (`new` or `picked up` → `parked`, the console's drop).
 
-**Approve before posting (opt-in per campaign, agent_team E46-S2).** The pack keeps no global gate; a campaign that wants Jordi to approve every post adds the hold rule `Kind: post` to its brief's Hold for me table (the console's "Approve every post" switch writes it). Every new post then goes `draft → held`; Jordi approves (→ `scheduled`), approves with feedback (stays `held` until the Writer applies it and schedules it) or drops it (→ `pulled`). The `approved` check makes `held → scheduled` need Jordi's `Approved` note in Feedback, a column only Jordi writes.
+**Approve before posting (opt-in per campaign, agent_team E46-S2).** The pack keeps no global gate; a campaign that wants Jordi to approve every post adds the hold rule `Kind: post` to its brief's Hold for me table (the console's "Approve every post" switch writes it). Every new post then goes `draft → held`; Jordi approves (→ `scheduled`), asks for a change (`Revise requested <date>: …` in Feedback: the Writer makes a new version, keeps it `held` and starts Checks with `Revised <date>`, so it comes back to him for review; it is never scheduled without his `Approved` note), approves with feedback (stays `held` until the Writer applies it and schedules it) or does not post it (→ `pulled`; restore puts a never-posted pulled post back to `held`). The `approved` check makes `held → scheduled` need Jordi's `Approved` note in Feedback, a column only Jordi writes.
 
 ## Who writes what
 
 | Role | Writes | May not |
 |---|---|---|
-| Jordi (console, digest, desk chat) | brief, directions, ideas (from: Jordi), assets, post feedback, approve held (with or without feedback), pull any | (nothing waits for him unless a hold rule holds it) |
+| Jordi (console, digest, desk chat) | brief, directions, ideas (from: Jordi), assets, post feedback, approve held (with or without feedback), ask for a new version of a held post (revise), pull any, restore a pulled post that never went out | (nothing waits for him unless a hold rule holds it) |
 | Scout | topics; adds ideas | posts |
-| Writer | post rows as draft; draft → scheduled / held; held → scheduled once Jordi approved it with feedback and the feedback is applied; idea state; style rule from 2× feedback (C6, undo = revert); asset rows for its posts' diagrams | schedule a failing draft, release a held post Jordi did not approve, post |
+| Writer | post rows as draft; draft → scheduled / held; held → scheduled once Jordi approved it with feedback and the feedback is applied; a new version of a held post on Jordi's `Revise requested` note (stays held, Checks starts `Revised <date>`); idea state; style rule from 2× feedback (C6, undo = revert); asset rows for its posts' diagrams | schedule a failing draft, release a held post Jordi did not approve, post |
 | Publisher | scheduled → posted (link) / expired; deletes pulled live posts | post a draft or held post, change text |
 | Responder · Engager | reply / outreach rows: draft → posted → measured; replies, metrics | top-level posts |
 | Reporter | posted → measured, metrics, result, reports | any other status |
