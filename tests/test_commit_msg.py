@@ -3,6 +3,7 @@ agent_team console's own writes are exempt; agents_block.install_hook installs i
 from __future__ import annotations
 
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -76,6 +77,53 @@ class HookTest(unittest.TestCase):
         hook.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
         self.install()
         self.assertEqual(hook.read_text(), "#!/bin/sh\nexit 0\n")
+
+    def chainer_dir(self, body: str = "") -> Path:
+        """A core.hooksPath dir like infra-vps leak-watch's: each hook runs the common-dir hook (E63-S10)."""
+        hooks = Path(self._tmp.name + "-hooks")
+        hooks.mkdir()
+        self.addCleanup(shutil.rmtree, hooks, True)
+        for name in ("pre-commit", "commit-msg"):
+            (hooks / name).write_text(body or ("#!/bin/sh\n# leak-watch:hook (test)\nhd=\"$(git rev-parse --git-common-dir)/hooks\"\n"
+                                               f'[ -x "$hd/{name}" ] && exec "$hd/{name}" "$@"\nexit 0\n'), encoding="utf-8")
+            (hooks / name).chmod(0o755)
+        subprocess.run(["git", "-C", str(self.repo), "config", "core.hooksPath", str(hooks)], check=True, env=ENV)
+        return hooks
+
+    def test_plain_repo_hooks_land_in_git_hooks(self) -> None:
+        self.assertEqual(commit_msg.hook_file(self.repo, "commit-msg").resolve(), (self.repo / ".git/hooks/commit-msg").resolve())
+        with tempfile.TemporaryDirectory() as bare:
+            self.assertIsNone(commit_msg.hook_file(Path(bare), "commit-msg"))
+
+    def test_leak_watch_hooks_path_installs_beside_the_chainer(self) -> None:
+        hooks = self.chainer_dir()
+        before = (hooks / "commit-msg").read_text()
+        agents_block.install_hook(self.repo)
+        self.assertEqual((hooks / "commit-msg").read_text(), before)
+        self.assertIn(commit_msg.MARK, (self.repo / ".git/hooks/commit-msg").read_text())
+        self.assertIn(agents_block.HOOK_MARK, (self.repo / ".git/hooks/pre-commit").read_text())
+        r = self.commit("tweak the thing")
+        self.assertEqual(r.returncode, 0)
+        self.assertIn("names no ticket", r.stderr)
+        self.assertNotIn("names no ticket", self.commit("E63-S10 test").stderr)
+
+    def test_foreign_hooks_path_hook_is_kept(self) -> None:
+        hooks = self.chainer_dir("#!/bin/sh\nexit 0\n")
+        agents_block.install_hook(self.repo)
+        self.assertEqual((hooks / "commit-msg").read_text(), "#!/bin/sh\nexit 0\n")
+        self.assertEqual((hooks / "pre-commit").read_text(), "#!/bin/sh\nexit 0\n")
+        self.assertFalse((self.repo / ".git/hooks/commit-msg").exists())
+
+    def test_worktree_installs_into_the_common_dir(self) -> None:
+        self.commit("E63-S10 base")
+        wt = Path(self._tmp.name + "-wt")
+        subprocess.run(["git", "-C", str(self.repo), "worktree", "add", "-q", "-b", "side", str(wt)], check=True, env=ENV)
+        self.addCleanup(shutil.rmtree, wt, True)
+        self.chainer_dir()
+        agents_block.install_hook(wt)
+        self.assertIn(commit_msg.MARK, (self.repo / ".git/hooks/commit-msg").read_text())
+        self.assertIn(agents_block.HOOK_MARK, (self.repo / ".git/hooks/pre-commit").read_text())
+        self.assertEqual(list((self.repo / ".git/worktrees").glob("*/hooks")), [])
 
     def test_check_flag(self) -> None:
         out = subprocess.run([sys.executable, str(SCRIPTS / "commit_msg.py"), "--check", "tweak"], capture_output=True, text=True).stdout

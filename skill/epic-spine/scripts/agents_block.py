@@ -16,7 +16,6 @@ from __future__ import annotations
 import argparse
 import os
 import re
-import subprocess
 import sys
 from pathlib import Path
 
@@ -61,9 +60,8 @@ def pointer() -> str:
 
 
 def hook_path(repo: Path) -> Path | None:
-    """The repo's pre-commit hook path (honors core.hooksPath); None outside a git repo."""
-    done = subprocess.run(["git", "-C", str(repo), "rev-parse", "--git-path", "hooks/pre-commit"], capture_output=True, text=True)
-    return repo / done.stdout.strip() if done.returncode == 0 and done.stdout.strip() else None
+    """The repo's pre-commit hook path (honors core.hooksPath and leak-watch chainers); None outside a git repo."""
+    return commit_msg.hook_file(repo, "pre-commit")
 
 
 def hook_skills() -> str:
