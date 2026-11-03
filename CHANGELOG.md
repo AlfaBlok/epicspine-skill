@@ -1,10 +1,24 @@
 # Changelog
 
-## 2026.11.03.4 — Workers write a review card before a row goes to review
+## 2026.11.03.4 — Batch: review cards before review; " · " counts as a paragraph break; a Publisher sends only its own campaign's posts
+
+One release for three agent_team rows (E48-S28, E61-S7, E60-S4), merged together on wt/skill-batch-1103 (agent_team E48-A3, root L-41: one topic, one ask). Merging it covers wt/e48-s28, wt/e61-s7 and wt/e60-s4.
+
+### Workers write a review card before a row goes to review
 
 - **Changed: the worker brief (`references/dispatch-prompts.md` Card line, `assets/dispatch-prompt-preamble.md`), worker handoff (`references/roles-and-dispatch.md`), the `review` status (`references/role-protocols.md`, `references/operating-model.md`) and the always-on block's review sentence**: before a row goes to `review` its worker writes the row's review card, a repo-local file `docs/cards/<row code>.md` whose front matter holds `row`, `title`, `goal`, `delivered`, `evidence` (never a code-host page or a dry run), `screenshot` and the optional `name`, `after`, `next`, `completes`; `confirm: yes` sits in the row or the card; the root spine names `Project name:` and the epic `Goal sentence:`; every field is plain words. A row with nothing for the user to judge writes no card and closes `done (no confirm: <why>)`.
 - **Added: `references/role-protocols.md` "Review cards"**: the generic card format and gate (closes itself / needs evidence / card needs rewriting); a repo's own card format page wins where it differs.
 - Why: agent_team E48-S28 (the card rule E48-S26 shipped in agent_team's console; until now only that repo's own prompts told workers to write the card). Skill 2026.11.03.4.
+
+### Social pack: the link rule reads " · " as a paragraph break
+
+- **Fixed: `pack_checks.lines()`** splits a ledger Text on the paragraph mark ` · ` too (besides `<br>`, a literal `\n` and a newline). The posts ledger joins paragraphs with ` · ` (the console shows them as paragraphs, the Publisher's `post_text.py` sends them as blank lines), but the checks read the whole post as line 1, so `link_rule` refused any Reddit post with a link ("a link on line 1") and `disclosure` looked at the whole text instead of the first two paragraphs.
+- Why: agent_team E61-S7 (Jordi could not schedule P-0062: the console's Schedule was refused twice). Test: `tests/test_pack_validate.py` `test_link_rule_reads_the_paragraph_mark_as_a_line`. Skill 2026.11.03.4.
+
+### Social pack: a Publisher sends only its own campaign's posts
+
+- **Added: rule `own_campaign_posts` (Publisher).** A row belongs to the campaign whose epic code is in its Campaign cell; an empty cell is the repo level's (the root spine). A Publisher bound to a campaign acts only on that campaign's rows; one bound to the root spine acts on rows with no Campaign plus the rows of a live campaign with no Publisher of its own. Nobody sends a retired campaign's posts: they wait until Jordi restores the campaign or tags the row for a live one. A Campaign naming no campaign of the repo is nobody's.
+- Why: agent_team E60-S4, a defect found by E60-S1 iteration 3. epic-campaign's new Get testers Publisher would also have sent the retired Epic campaign's approved P-0001..P-0003, because a Publisher treated every due post of its repo as its own. The agent_team console enforces the same split in its wake gate and its Publisher brief. Test: `tests/test_packs.py` `test_publisher_sends_only_its_own_campaigns_posts`. Skill 2026.11.03.4.
 
 ## 2026.11.03.3 — Social pack: the Publisher's late-post move names "the owner"
 
