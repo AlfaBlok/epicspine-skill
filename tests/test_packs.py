@@ -107,7 +107,7 @@ class SocialPack(unittest.TestCase):
 
     def test_jordi_may_drop_an_idea_and_nothing_else(self) -> None:
         mine = {(t["from"], t["to"]) for t in SOCIAL["lifecycles"]["idea"]["transitions"] if "Jordi" in t["by"]}
-        self.assertEqual({("new", "parked"), ("picked up", "parked"), ("open", "parked")}, mine)
+        self.assertEqual({("new", "parked"), ("picked up", "parked"), ("open", "parked"), ("drafted", "parked"), ("posted", "parked")}, mine)
 
     def test_campaign_tag_rule_reaches_the_row_writers_only(self) -> None:
         # agent_team E60-S1: Writer, Responder and Engager tag the rows they add for a campaign; the Publisher does not.

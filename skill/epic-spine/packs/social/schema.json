@@ -109,7 +109,7 @@
       }
     },
     "ideas": {
-      "doc": "Ideas for posts: Jordi's drain (from: Jordi) and the Scout's; the Writer moves an idea; Jordi may drop one (new, open or picked up -> parked); nobody deletes one. Ideas never expire: an idea stays open after a post, so one idea becomes posts on several platforms (Reddit, X, LinkedIn), each written fresh; it closes only when Jordi parks it or the Writer marks it spent with a why (agent_team E64-S4).",
+      "doc": "Ideas for posts: Jordi's drain (from: Jordi) and the Scout's; the Writer moves an idea; Jordi may drop an open one (new, open, or legacy picked up / drafted / posted -> parked); nobody deletes one. Ideas never expire: an idea stays open after a post, so one idea becomes posts on several platforms (Reddit, X, LinkedIn), each written fresh; it closes only when Jordi parks it or the Writer marks it spent with a why (agent_team E64-S4).",
       "path": "data/ideas.md",
       "sections": {
         "rows": {"heading": null, "shape": "table", "add_rows": ["Jordi", "Scout"], "writers": ["Jordi", "Scout"], "fields": {
@@ -461,6 +461,8 @@
         {"from": "picked up", "to": "open", "by": ["Writer"], "when": "legacy state moved to open"},
         {"from": "drafted", "to": "open", "by": ["Writer"], "when": "legacy state moved to open"},
         {"from": "posted", "to": "open", "by": ["Writer"], "when": "legacy state moved to open"},
+        {"from": "drafted", "to": "parked", "by": ["Writer", "Jordi"], "when": "a legacy state is open: Jordi's drop (park) works on it"},
+        {"from": "posted", "to": "parked", "by": ["Writer", "Jordi"], "when": "a legacy state is open: Jordi's drop (park) works on it"},
         {"from": "new", "to": "picked up", "by": ["Writer"]},
         {"from": "picked up", "to": "drafted", "by": ["Writer"]},
         {"from": "drafted", "to": "posted", "by": ["Writer"]},

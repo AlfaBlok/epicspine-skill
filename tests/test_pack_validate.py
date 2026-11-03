@@ -147,11 +147,11 @@ class Validate(unittest.TestCase):
                                             for n, s in enumerate(states, 1)))
             return "\n".join(self.repo.issues("Jordi"))
 
-        rows("new", "picked up", "drafted")
+        rows("new", "picked up", "epic")
         self.repo.commit()
-        self.assertEqual("", rows("parked", "parked", "drafted"))
-        self.assertIn("I-3: illegal state change drafted -> parked by Jordi", rows("new", "picked up", "parked"))
-        self.assertIn("I-1: illegal state change new -> picked up by Jordi", rows("picked up", "picked up", "drafted"))
+        self.assertEqual("", rows("parked", "parked", "epic"))
+        self.assertIn("I-3: illegal state change epic -> parked by Jordi", rows("new", "picked up", "parked"))
+        self.assertIn("I-1: illegal state change new -> picked up by Jordi", rows("picked up", "picked up", "epic"))
 
     def test_link_present_when_posted(self) -> None:
         self.assertIn("P-0002: link_present: posted without its link", self.after("Publisher", {}, {"id": "P-0002", "status": "posted"}))
