@@ -198,7 +198,7 @@
       }
     },
     "insights": {
-      "doc": "What is working, from post performance we can read: the Reporter's weekly pass (and each campaign's last day) writes it, the Writer reads the top active lines in its wake brief, the campaign's History tab shows them (What's working). A line the numbers no longer support is retired, never deleted. The pass also proposes My calls lines for a campaign's one-pager from Jordi's repeated notes; only Jordi accepts one (agent_team E64-S5, E64-S3).",
+      "doc": "RETIRED (agent_team E64-S14, 2026-11-03): lessons are Operating Learnings lines of the epic and brief proposals end a learning line with `proposed for the brief (<part>): \"<line>\"`; a repo may keep this file read-only as evidence. Was: what is working, from post performance we can read: the Reporter's weekly pass (and each campaign's last day) writes it, the Writer reads the top active lines in its wake brief, the campaign's History tab shows them (What's working). A line the numbers no longer support is retired, never deleted. The pass also proposes My calls lines for a campaign's one-pager from Jordi's repeated notes; only Jordi accepts one (agent_team E64-S5, E64-S3).",
       "path": "data/insights.md",
       "optional": true,
       "sections": {
