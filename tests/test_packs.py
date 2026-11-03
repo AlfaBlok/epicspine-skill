@@ -117,6 +117,16 @@ class SocialPack(unittest.TestCase):
             self.assertIn("Campaign", pack_role.role_text(SOCIAL, role).split("Campaign plan")[-1])
         self.assertNotIn("Campaign plan", pack_role.role_text(SOCIAL, "Publisher"))
 
+    def test_publisher_sends_only_its_own_campaigns_posts(self) -> None:
+        # agent_team E60-S4: a Publisher acts only on its campaign's rows (empty Campaign = the repo level), never a retired campaign's.
+        import pack_role
+        rule = SOCIAL["rules"]["own_campaign_posts"]
+        self.assertEqual(("Publisher", "posts.rows.campaign", "posts.rows.status"), (rule["by"], rule["from"], rule["to"]))
+        self.assertIn("never a retired campaign's posts", rule["doc"])
+        self.assertTrue(rule["undo"])
+        self.assertIn("own campaign's posts", pack_role.role_text(SOCIAL, "Publisher"))
+        self.assertNotIn("own campaign's posts", pack_role.role_text(SOCIAL, "Writer"))
+
     def test_repeat_feedback_becomes_a_style_rule_with_undo(self) -> None:
         rule = SOCIAL["rules"]["style_rule_from_feedback"]  # C6
         self.assertEqual((2, "brief.style_rules"), (rule["repeats"], rule["to"]))

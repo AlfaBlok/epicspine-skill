@@ -18,7 +18,7 @@ Read this when launching an agent or harness, choosing how to dispatch work, or 
 - Authority: edit only the files and sections inside the assigned scope, and only inside its own worktree.
 - Must: when the task edits existing code or config, create its local worktree branch `wt/<task>` first and commit there (purely additive, no-risk work, e.g. new docs or research files, commits and pushes straight to `main`: `references/git-doctrine.md`); mark a finished branch with the commit trailer `Ready: yes`; implement and run the assigned checks; return a structured handoff of branch, commits, and evidence.
 - Must not: widen scope; take another task; edit the shared clone; push, open a PR, or merge unless told; dispatch other workers.
-- Handoff: bound task, worktree path, branch, commits, commands and results, blocker, next action.
+- Handoff: bound task, worktree path, branch, commits, commands and results, blocker, next action. A row handed to `review` first gets its review card, the repo-local `docs/cards/<row code>.md` (`role-protocols.md` "Review cards"); a row with nothing for the user to judge closes `done (no confirm: <why>)` instead.
 
 ## Mapping To Existing Identities
 
@@ -101,5 +101,5 @@ Bound epic / issue: <epic file path> / <issue URL>; list its and its ancestors' 
 Scope: <exactly one task>
 Worktree: <absolute path>; create with git worktree add ../wt-<task> -b wt/<task> main (local branch; no push or PR by default)
 Verification: <commands and acceptance the worker must run and report>
-Handoff: task, worktree, branch, commits, commands and results, blocker, next action
+Handoff: task, worktree, branch, commits, commands and results, blocker, next action; a row going to review first writes its card docs/cards/<row code>.md (role-protocols.md "Review cards"), else closes done (no confirm: <why>)
 ```

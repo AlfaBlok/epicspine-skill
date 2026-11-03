@@ -11,7 +11,9 @@ import datetime as dt
 import re
 
 URL = re.compile(r"https?://\S+")
-BREAK = re.compile(r"<br\s*/?>|\\n|\n", re.I)
+# A line break in a ledger cell: `<br>`, a literal `\n`, a newline, or the paragraph mark " · " the posts ledger joins
+# paragraphs with (agent_team E61-S7: without it a whole post was line 1, so link_rule refused any link in it).
+BREAK = re.compile(r"<br\s*/?>|\\n|\n|\s+·\s+", re.I)
 
 
 def lines(rec: dict) -> list[str]:
