@@ -82,16 +82,19 @@ class IntakeCheck(unittest.TestCase):
 
 
 ROLE_TARGETS = {  # role -> (writable targets, status moves) the text must name
-    "Scout": (["`data/topics.md`", "replace the table each run", "`data/ideas.md`", "every column but Why"], []),
+    "Scout": (["`data/topics.md`", "replace the table each run", "`data/ideas.md`", "every column but Why", "`data/threads.md`", "every column but Reply"],
+              ["thread `new → watch`", "`watch → cooled`"]),
     "Writer": (["`data/message-house.md` › Style rules", "`data/message-house.md` › Feedback log", "`data/ideas.md`: edit only Why", "`data/posts-ledger.md`", "every column but Link, Replies, Metrics, Result, Feedback"],
-               ["`idea → draft`", "`draft → scheduled`", "`draft → held`", "`new → picked up`", "`parked → picked up`", "hold_rules", "`held → scheduled` is Jordi's alone"]),
+               ["`idea → draft`", "`draft → scheduled`", "`draft → held`", "`new → open`", "`open → spent`", "`parked → open`", "hold_rules", "`held → scheduled` is Jordi's alone"]),
     "Publisher": (["`data/posts-ledger.md`: edit only Link, Result"], ["`scheduled → posted`", "`scheduled → expired`", "link_present", "delete_live"]),
     "Responder": (["`data/posts-ledger.md`", "add rows", "every column but Feedback", "`data/messages-ledger.md` › Chats, Messages"],
                   ["`draft → posted`", "`posted → measured`", "reply, outreach rows", "message `new → draft`", "message `scheduled → posted`", "`draft → scheduled` is Jordi's alone",
                    "chat `new → left`", "never bundle several chats in one row", "`sent`"]),
     "Delivery manager": (["`data/posts-ledger.md`: edit only Result", "`data/messages-ledger.md` › Chats, Messages"], ["post `draft → moved`", "message `new → posted`", "chat `new → done`"]),
-    "Engager": (["`data/posts-ledger.md`", "add rows", "every column but Replies, Feedback"], ["`draft → posted`", "`posted → measured`", "disclosure (Reddit)"]),
-    "Reporter": (["edit only Replies, Metrics, Result", "`data/reports/<date>.md` › Numbers", "Cost"], ["`posted → measured`"]),
+    "Engager": (["`data/posts-ledger.md`", "add rows", "every column but Replies, Feedback"], ["`draft → posted`", "`posted → measured`", "disclosure (Reddit)", "`draft → held`", "`scheduled → expired`",
+                                                                                                       "thread `watch → drafted`", "`drafted → sent`", "hold_rules_outreach"]),
+    "Reporter": (["edit only Replies, Metrics, Result", "`data/reports/<date>.md` › Numbers", "Cost", "`data/insights.md` › Insights, Proposed calls"],
+                 ["`posted → measured`", "insight `new → active`", "`active → retired`", "call `new → proposed`"]),
     "Video Maker": (["`data/assets.md`: add rows"], []),
 }
 

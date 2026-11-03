@@ -318,6 +318,82 @@ class Validate(unittest.TestCase):
         self.assertIn("P-0003: disclosure", self.after("Engager", {}, outreach))
         self.assertEqual("", self.after("Engager", {}, {**outreach, "platform": "X"}))
 
+    # agent_team E64-S4: ideas never expire; one idea becomes a post per platform; it closes only parked or spent.
+    def test_an_idea_stays_open_across_platforms_and_closes_only_spent_or_parked(self) -> None:
+        ideas = self.repo.root / "data/ideas.md"
+        head = ideas.read_text()
+
+        def rows(by: str, *states: str) -> str:
+            ideas.write_text(head + "".join(f"| I-{n} | 2026-10-27 | idea {n} | text | Reddit, X | Scout | | {s} | |\n" for n, s in enumerate(states, 1)))
+            return "\n".join(self.repo.issues(by))
+
+        rows("Scout", "new", "new", "drafted", "posted")
+        self.repo.commit()
+        self.assertEqual("", rows("Writer", "open", "spent", "open", "open"))  # legacy drafted/posted read as open
+        self.repo.commit()
+        self.assertEqual("", rows("Jordi", "parked", "spent", "open", "open"))
+        self.assertIn("I-2: illegal state change spent -> open by Writer", rows("Writer", "open", "open", "open", "open"))
+        self.assertIn("I-1: illegal state change open -> spent by Jordi", rows("Jordi", "spent", "spent", "open", "open"))
+        # the same idea on two platforms: two post rows, both valid
+        self.assertEqual("", self.after("Writer", {"idea": "I-1"}, {"id": "P-0003", "platform": "X", "idea": "I-1", "community": ""}))
+
+    # agent_team E64-S6: a reply in someone else's thread waits for Jordi when the brief holds outreach (R4 `Kind: outreach`).
+    def test_outreach_held_by_a_hold_rule_goes_out_only_after_jordis_approve(self) -> None:
+        brief = self.repo.root / "data/brief.md"
+        brief.write_text(brief.read_text() + "| R4 | Kind: outreach | Jordi approves every thread reply |\n")
+        self.repo.commit()
+        out = {"id": "P-0003", "kind": "outreach", "persona": "Engager", "platform": "X", "community": "@someone", "text": "I build Zenod, so biased: we check the evidence link."}
+        self.assertIn("P-0003: hold_rules_outreach: matches hold rule R4", self.after("Engager", {}, {**out, "status": "posted", "link": "https://x.com/a/1"}))
+        self.assertEqual("", self.after("Engager", {}, {**out, "status": "held"}))
+        self.repo.commit()
+        self.assertIn("P-0003: approved", self.after("Jordi", {}, {**out, "status": "scheduled"}))
+        self.assertEqual("", self.after("Jordi", {}, {**out, "status": "scheduled", "feedback": "Approved 2026-11-03"}))
+        self.repo.commit()
+        self.assertEqual("", self.after("Engager", {}, {**out, "status": "posted", "feedback": "Approved 2026-11-03", "link": "https://x.com/a/1"}))
+        self.assertEqual("", self.after("Engager", {}, {**out, "status": "expired", "feedback": "Approved 2026-11-03"}))  # cooled
+        self.assertIn("P-0003: illegal status change scheduled -> posted by Writer", self.after("Writer", {}, {**out, "status": "posted", "feedback": "Approved 2026-11-03", "link": "https://x.com/a/1"}))
+
+    def table(self, rel: str, sec: dict, rows: list[dict], heading: str | None = None) -> None:
+        cols = [(k, f["column"]) for k, f in sec["fields"].items() if "computed" not in f]
+        p = self.repo.root / rel
+        lines = [f"# {Path(rel).stem}", ""] if heading is None or not p.is_file() else []
+        lines += ([f"## {heading}", ""] if heading else []) + ["| " + " | ".join(c for _, c in cols) + " |", "|" + "---|" * len(cols)]
+        lines += ["| " + " | ".join(r.get(k, "") for k, _ in cols) + " |" for r in rows]
+        return "\n".join(lines) + "\n"
+
+    # agent_team E64-S5: the Reporter writes insights and proposes My calls; only Jordi accepts a call; nothing is deleted.
+    def test_the_reporter_writes_insights_and_only_jordi_accepts_a_call(self) -> None:
+        secs = SOCIAL["files"]["insights"]["sections"]
+        line = {"id": "IN-1", "insight": "Questions draw comments", "use": "End on a question", "evidence": "P-0019", "confidence": "medium · 4 posts", "since": "2026-11-03", "state": "active"}
+        call = {"id": "MC-1", "call": "Shorter, end on the question", "evidence": "P-0053 2026-11-01, P-0060 2026-11-02", "since": "2026-11-03", "state": "proposed"}
+
+        def write(by: str, lines: list[dict], calls: list[dict]) -> str:
+            (self.repo.root / "data/insights.md").write_text("# Insights\n\n" + self.table("x", secs["lines"], lines, "Insights") + "\n" + self.table("x", secs["calls"], calls, "Proposed calls"))
+            return "\n".join(self.repo.issues(by))
+
+        self.assertIn("IN-1: Writer may not add rows", write("Writer", [line], [call]))
+        self.assertEqual("", write("Reporter", [line], [call]))
+        self.repo.commit()
+        self.assertIn("MC-1: illegal state change proposed -> accepted by Reporter", write("Reporter", [line], [{**call, "state": "accepted"}]))
+        self.assertEqual("", write("Jordi", [line], [{**call, "state": "accepted"}]))
+        self.assertEqual("", write("Reporter", [{**line, "state": "retired"}], [call]))
+        self.assertIn("IN-1: row removed", write("Reporter", [], [call]))
+
+    def test_threads_are_kept_the_scout_watches_and_the_engager_answers(self) -> None:
+        sec = SOCIAL["files"]["threads"]["sections"]["rows"]
+        th = {"id": "TH-1103-1", "found": "2026-11-03T08:00Z", "platform": "Reddit", "community": "r/ClaudeCode", "title": "t", "link": "https://www.reddit.com/r/ClaudeCode/comments/x/", "why": "message 1", "numbers": "31 comments", "visibility": "8.2", "state": "watch"}
+
+        def write(by: str, *rows: dict) -> str:
+            (self.repo.root / "data/threads.md").write_text(self.table("data/threads.md", sec, list(rows)))
+            return "\n".join(self.repo.issues(by))
+
+        self.assertIn("TH-1103-1: Engager may not add rows", write("Engager", th))
+        self.assertEqual("", write("Scout", th))
+        self.repo.commit()
+        self.assertEqual("", write("Engager", {**th, "state": "drafted", "reply": "P-0002"}))
+        self.assertIn("TH-1103-1: illegal state change watch -> drafted by Scout", write("Scout", {**th, "state": "drafted"}))
+        self.assertIn("TH-1103-1: row removed", write("Scout"))
+
     def test_converting_an_old_ledger_compares_no_rows(self) -> None:
         old = self.repo.root / "data/posts-ledger.md"
         old.write_text("# Posts ledger\n\n| Date | Persona | Platform | Link | Title | Status | Replies | Result |\n"

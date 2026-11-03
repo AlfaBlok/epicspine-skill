@@ -26,6 +26,7 @@ class SocialPack(unittest.TestCase):
         self.assertEqual({
             "brief": "data/brief.md", "directions": "data/directions.md", "topics": "data/topics.md",
             "ideas": "data/ideas.md", "posts": "data/posts-ledger.md", "messages": "data/messages-ledger.md", "assets": "data/assets.md",
+            "insights": "data/insights.md", "threads": "data/threads.md",
             "reports": "data/reports/{date}.md",
         }, paths)
         brief = SOCIAL["files"]["brief"]["sections"]
@@ -52,7 +53,8 @@ class SocialPack(unittest.TestCase):
             with self.subTest(lifecycle=name):
                 self.assertEqual(set(lc["states"]), pack.reachable(lc))
                 ends = set(lc["states"]) - {t["from"] for t in lc["transitions"]}
-                self.assertEqual({"post": {"moved"}, "idea": {"posted", "epic"}, "message": {"received", "posted", "expired"}, "chat": set()}[name], ends)  # pulled -> held: restore (agent_team E34-S22)
+                self.assertEqual({"post": {"moved"}, "idea": {"spent", "epic"}, "message": {"received", "posted", "expired"}, "chat": set(),
+                                  "insight": set(), "call": set(), "thread": {"sent", "skipped", "cooled"}}[name], ends)  # pulled -> held: restore (agent_team E34-S22)
 
     def test_pull_deletes_a_live_post_and_only_jordi_pulls_or_releases(self) -> None:
         lc = SOCIAL["lifecycles"]["post"]
@@ -62,7 +64,7 @@ class SocialPack(unittest.TestCase):
         mine = [t for t in lc["transitions"] if t["to"] == "pulled" or t["from"] == "held" and t["to"] == "scheduled"]
         # E46-S2: the Writer's held -> scheduled is Jordi's approval too: the `approved` check demands his note in Feedback,
         # a field only Jordi writes.
-        self.assertTrue(all(t["by"] == ["Jordi"] or t["by"] == ["Writer"] and t["from"] == "held" for t in mine))
+        self.assertTrue(all(t["by"] == ["Jordi"] or t["by"] in (["Writer"], ["Engager"]) and t["from"] == "held" for t in mine))
         self.assertEqual(["held>scheduled"], SOCIAL["checks"]["approved"]["at"])
         self.assertEqual(["Jordi"], SOCIAL["files"]["posts"]["sections"]["rows"]["fields"]["feedback"].get("writers"))
 
@@ -105,7 +107,7 @@ class SocialPack(unittest.TestCase):
 
     def test_jordi_may_drop_an_idea_and_nothing_else(self) -> None:
         mine = {(t["from"], t["to"]) for t in SOCIAL["lifecycles"]["idea"]["transitions"] if "Jordi" in t["by"]}
-        self.assertEqual({("new", "parked"), ("picked up", "parked")}, mine)
+        self.assertEqual({("new", "parked"), ("picked up", "parked"), ("open", "parked")}, mine)
 
     def test_campaign_tag_rule_reaches_the_row_writers_only(self) -> None:
         # agent_team E60-S1: Writer, Responder and Engager tag the rows they add for a campaign; the Publisher does not.

@@ -62,8 +62,11 @@ def role_text(schema: dict, role: str) -> str:
         if plain:
             moves.append(f"- {name} " + ", ".join(plain))
         if "held" in lc["states"] and any(role in t["by"] and t["to"] == "held" for t in lc["transitions"]):
-            src = used["hold_rules"]["source"].split(".") if "hold_rules" in used else None
-            bind.append("- A draft matching a hold rule" + (f" ({_where(schema['files'][src[0]], schema['files'][src[0]]['sections'][src[1]])})" if src else "") + " goes to `held`, never `scheduled`; " + "; ".join(f"`{t['from']} → {t['to']}` is {'/'.join(t['by'])}'s alone" for t in lc["transitions"] if t["from"] == "held" and role not in t["by"] and t["to"] != "pulled") + ".")
+            hr = next((used[k] for k in used if used[k].get("fn", k) == "hold_rules"), None)
+            src = hr["source"].split(".") if hr else None
+            mine = {k.lower() for t in lc["transitions"] if role in t["by"] for k in t.get("kinds", [])}  # another role's move for other kinds is not news to this one
+            bind.append("- A draft matching a hold rule" + (f" ({_where(schema['files'][src[0]], schema['files'][src[0]]['sections'][src[1]])})" if src else "") + " goes to `held`, never `scheduled`; " + "; ".join(f"`{t['from']} → {t['to']}` is {'/'.join(t['by'])}'s alone" for t in lc["transitions"] if t["from"] == "held" and role not in t["by"] and t["to"] != "pulled"
+                                         and not (mine and t.get("kinds") and not mine & {k.lower() for k in t["kinds"]})) + ".")
         if lc.get("approval_gate") and role != owner and any(role in t["by"] for t in lc["transitions"]):
             gate = [f"`{t['from']} → {t['to']}`" for t in lc["transitions"] if t["by"] == [owner] and not t.get("alone") and t.get("effect") is None]
             bind.append(f"- Nothing in a {name} goes out without {owner}'s approval: " + ", ".join(gate) + f" is {owner}'s alone; never make it yourself.")

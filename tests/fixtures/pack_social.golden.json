@@ -215,6 +215,11 @@
       "became": [
         "P-0001"
       ],
+      "used_on": {
+        "X": [
+          "P-0001"
+        ]
+      },
       "_line": 5
     },
     {
@@ -228,6 +233,7 @@
       "state": "parked",
       "why": "after the launch",
       "became": [],
+      "used_on": {},
       "_line": 6
     }
   ],
@@ -406,6 +412,60 @@
       }
     ]
   },
+  "insights": {
+    "lines": [
+      {
+        "id": "IN-1",
+        "insight": "A question from our own work draws replies; a statement does not",
+        "use": "End on one honest question from a case of ours",
+        "evidence": "P-0001 1 reply",
+        "confidence": "low · 1 post",
+        "campaign": null,
+        "since": "2026-10-26",
+        "state": "active",
+        "_line": 9
+      },
+      {
+        "id": "IN-2",
+        "insight": "Diagrams on X get no reach",
+        "use": "Post diagrams only with a question",
+        "evidence": "P-0001",
+        "confidence": "low · 1 post",
+        "campaign": null,
+        "since": "2026-10-26",
+        "state": "retired",
+        "_line": 10
+      }
+    ],
+    "calls": [
+      {
+        "id": "MC-1",
+        "call": "Shorter, and end on the question",
+        "evidence": "P-0001 feedback 2026-10-25, 2026-10-26",
+        "campaign": null,
+        "since": "2026-10-26",
+        "state": "proposed",
+        "_line": 16
+      }
+    ]
+  },
+  "threads": [
+    {
+      "id": "TH-1026-1",
+      "found": "2026-10-26T09:00Z",
+      "platform": "Reddit",
+      "community": "r/ClaudeCode",
+      "title": "Do you still read agent output?",
+      "link": "https://www.reddit.com/r/ClaudeCode/comments/abc/x/",
+      "why": "message 1",
+      "numbers": "31 comments, 4 h old",
+      "visibility": 8.2,
+      "campaign": null,
+      "reply": null,
+      "state": "watch",
+      "_line": 7
+    }
+  ],
   "assets": [
     {
       "id": "A-1",
@@ -547,6 +607,21 @@
     "messages.messages": {
       "path": "data/messages-ledger.md",
       "heading": "Messages",
+      "exists": true
+    },
+    "insights.lines": {
+      "path": "data/insights.md",
+      "heading": "Insights",
+      "exists": true
+    },
+    "insights.calls": {
+      "path": "data/insights.md",
+      "heading": "Proposed calls",
+      "exists": true
+    },
+    "threads.rows": {
+      "path": "data/threads.md",
+      "heading": null,
       "exists": true
     },
     "assets.rows": {

@@ -19,7 +19,7 @@ GOLDEN = Path(__file__).parent / "fixtures" / "pack_social.golden.json"
 ZENOD = Path("/home/t3agent/github/zenod-social")
 NOW = datetime(2026, 10, 27, 12, 0, tzinfo=timezone.utc)
 TOP = ["schemaVersion", "pack", "packVersion", "repo", "generatedAt", "warnings",
-       "brief", "directions", "topics", "ideas", "posts", "messages", "assets", "reports", "sources"]
+       "brief", "directions", "topics", "ideas", "posts", "messages", "insights", "threads", "assets", "reports", "sources"]
 
 
 def fixture() -> dict:

@@ -1,16 +1,12 @@
 #!/usr/bin/env python3
 """Pack export, `pack.py <name> --json [--repo PATH]`: one JSON document of a repo's pack data (references/packs.md).
 
-Reads every file and section the pack's schema names (a section may live in another file, e.g.
-the root spine), tables by column header, computes back-links (`computed: {from: ...}`) and never
-crashes on bad data: anything it cannot read is a `warnings` entry and an empty value.
-"""
+Reads every file and section the pack's schema names (a section may live in another file, e.g. the root spine), tables by
+column header, computes back-links (`computed: {from: ..., group: ...}`) and never crashes on bad data: anything it
+cannot read is a `warnings` entry and an empty value."""
 from __future__ import annotations
 
-import argparse
-import json
-import re
-import sys
+import argparse, json, re, sys  # noqa: E401
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -147,10 +143,12 @@ def back_links(schema: dict, out: dict, warn) -> None:
             continue
         target, key = faddr.rsplit(".", 1)
         src, skey = fld["computed"]["from"].rsplit(".", 1)
+        group = fld["computed"].get("group")  # e.g. ideas' Used on: the same back-links, by the source row's platform
         for row in rows_at(target):
-            rid = row.get("id")
-            row[key] = [r["id"] for r in rows_at(src) if rid is not None and r.get("id")
-                        and rid in (r[skey] if isinstance(r[skey], list) else [r[skey]])]
+            rid, row[key] = row.get("id"), {} if group else []
+            for r in rows_at(src):
+                if rid is not None and r.get("id") and rid in (r[skey] if isinstance(r[skey], list) else [r[skey]]):
+                    (row[key].setdefault(str(r.get(group) or "").strip() or "-", []) if group else row[key]).append(r["id"])
     sec = lambda a: schema["files"][a.split(".")[0]]["sections"][a.split(".")[1]]  # noqa: E731
     for faddr, fld in pack.fields(schema).items():
         # dangling refs warn, except into tables replaced each run (yesterday's topic ids are gone by design)
