@@ -1,10 +1,10 @@
 # Changelog
 
-## Unreleased (proposal, not for release until agent_team E64-A4 is answered) — Shared totems
+## Unreleased (proposal, not for release until agent_team E64-A5 is answered) — Shared totems, round 2
 
-- **New reference `references/totems.md`: the four places every team reads at wake and leaves traces in** (Brief, Observations, History, Work), seven rules (read at wake, one History line per wake, the owner's words filed and never left in a chat, only the owner moves the brief, observations retired never deleted, digests are views, no new channel), the lifecycle of an owner's note, and the checks to build. A spine already is the four totems for a build goal (Goal/Done means, Operating Learnings, Current State/Decisions/git log, Issue Ledger).
-- **`packs/social/README.md` § Shared totems: how the social pack's files fold into the four** (world brief + campaign `## Brief` slides, `data/observations.md`, `data/history.md`, the ledgers unchanged), the desk intake pointed at the totems with campaign scope, and one totem pack in every role's wake text.
-- Why: Jordi's voice note 2026-11-03 18:16Z (agent_team EPIC-64, E64-S11; deck http://vps3.taild81fbb.ts.net:8971/). Docs only: no script or schema changes yet; the schema, intake text and checks follow in a build after his yes. The version is bumped by whoever merges it.
+- **New reference `references/totems.md`: the four parts of every epic a team reads at wake and leaves traces in** (Brief = Goal, Done means or Targets, plan; Observations = Operating Learnings; History = Decisions, `## Weeks` and log pages; Work = Issue Ledger task rows). Round 2 after the owner's answer to E64-A4 ("are we not using epics? … we also need tasks"): no parallel pages; a campaign is a child epic (ongoing ones `Spine kind: standing`); any one-off job is a task row with an owner, a status and an outcome; seven rules, the lifecycle of an owner's note, the console's five fixed tabs.
+- **`packs/social/README.md` § Shared totems: each social file folds into the root or a campaign epic's sections**, task owners per role (a ticket worker when none fits), desk intake pointed at the epic, one pack in every role's wake text.
+- Why: agent_team EPIC-64 E64-S11 (deck http://vps3.taild81fbb.ts.net:8971/). Docs only: no script or schema changes yet; `## Weeks` validation, the intake text and the checks follow in a build after the owner's yes. The version is bumped by whoever merges it.
 
 ## 2026.11.03.5 — Hooks install beside a leak-watch core.hooksPath
 
