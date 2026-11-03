@@ -188,3 +188,31 @@ class AdvisoryTests(TreeCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+FEEDBACK = "- [feedback E65-A1 2026-11-03 @Jordi] Approve the two mockups? — context: notes.md — feedback: another iteration, simpler"
+
+
+class FeedbackTests(unittest.TestCase):
+    """agent_team E67-S1: `[feedback …]` is changes wanted, never an approval; `outcome` tells the three apart."""
+
+    def one(self, line: str) -> dict:
+        problems: list[str] = []
+        got = epic_log.asks("## Waiting on\n\n" + line + "\n", Path("-"), Path("-"), problems)
+        self.assertEqual([], problems)
+        return got[0]
+
+    def test_feedback_line_reads_as_feedback_with_his_words(self) -> None:
+        got = self.one(FEEDBACK)
+        self.assertEqual(("E65-A1", "Jordi", "feedback", "feedback", "another iteration, simpler"), (got["code"], got["who"], got["state"], got["outcome"], got["answer"]))
+        self.assertEqual("Approve the two mockups?", got["question"])
+
+    def test_consumed_feedback_is_done(self) -> None:
+        got = self.one(FEEDBACK + " · done 2026-11-04 abc1234 round 2 E65-A2")
+        self.assertEqual(("done", "feedback", "another iteration, simpler"), (got["state"], got["outcome"], got["answer"]))
+
+    def test_outcome_of_answered_lines(self) -> None:
+        self.assertEqual("approved", self.one("- [answered E4-A1 2026-10-21 @Jordi] Approve? — answer: APPROVED")["outcome"])
+        self.assertEqual("denied", self.one("- [answered E4-A1 2026-10-21 @Jordi] Approve? — answer: DENIED — not now")["outcome"])
+        self.assertEqual("answered", self.one("- [answered E4-A1 2026-10-21 @Jordi] Which? — answer: two")["outcome"])
+        self.assertIsNone(self.one(APPROVE2)["outcome"])

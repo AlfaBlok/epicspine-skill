@@ -28,7 +28,7 @@ def bind(repo: Path, epic: str | None = None) -> str:
         cache["seen"].add(path)
         out.append(f"== {os.path.relpath(path, cache[None])}: " + next((l for l in m["text"].splitlines() if l.startswith("# ")), m["id"]))
         for name in ("Current State", "Operating Learnings", "Waiting on"):
-            lines = [l for l in m["sections"].get(name, "").splitlines() if l.strip() and not (name == "Waiting on" and re.search(r"\[(answered|superseded)\b|^none\b", l.lstrip("- ")))]
+            lines = [l for l in m["sections"].get(name, "").splitlines() if l.strip() and not (name == "Waiting on" and re.search(r"\[(answered|feedback|superseded)\b|^none\b", l.lstrip("- ")))]
             out += [f"## {name}", *lines] if lines else []
         path = parent_file(path, cache)
     return "\n".join(out) or "no spine found: bind from the README's first screen"

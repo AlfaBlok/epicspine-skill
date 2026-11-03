@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026.11.03.10 — Feedback is never approval: `[feedback …]` asks
+
+- **Added: the `[feedback <code> <date> @<who>] … — feedback: <words>` ask line** (agent_team EPIC-67, E67-S1). Every ask has three outcomes, approve, feedback, deny; feedback is changes wanted, never an approval: the row the ask names goes back to `active (feedback <code> by <who> <date>, round <n>: <words>)`, the builder is woken, and the next round comes back as a new ask or card; then the line gets ` · done <date> <sha> round <n> <new code>`. Free text on an `approve` ask is feedback.
+- **`spines.py --json` `waiting_on[]`: `state: "feedback"`** (no longer waiting on the human; `done` once consumed) and a new **`outcome`**: `approved` / `denied` (the answer starts `APPROVED` / `DENIED`), `feedback`, `answered`, else null. `bind.py` leaves feedback lines out of Waiting on, like answered ones.
+- Docs: `docs/doctrine/human-asks.md` ("Three outcomes"), `references/spine-model.md` (Machine-Read Contract).
+- Why: Jordi's E65-A1 answer ("another iteration … simple, elegant, minimalistic") was stored as `[answered]`, its rows stayed `done (fed E65-A1)` and nothing happened for about 3 hours. Tests: `tests/test_ask_refs.py` (feedback state, outcome, done, bind).
+
 ## 2026.11.03.9 — Social pack: a rejected pile for dropped ideas
 
 - **Added: idea state `rejected`** ("dropped for good; Why keeps the lesson and who dropped it"), so a dropped idea is no longer mislabelled `parked` ("not now"). Moves: `new`, `open` or `parked` → `rejected` by Jordi or the Writer (the Writer records Jordi's drop); the only way out is Jordi's undo `rejected` → `open`. Nothing removed: existing rows stay valid.
