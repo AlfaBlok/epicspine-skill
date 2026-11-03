@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026.11.03.8 — Feedback is never approval: `[feedback …]` asks
+
+- **Added: the `[feedback <code> <date> @<who>] … — feedback: <words>` ask line** (agent_team EPIC-67, E67-S1). Every ask has three outcomes, approve, feedback, deny; feedback is changes wanted, never an approval: the row the ask names goes back to `active (feedback <code> by <who> <date>, round <n>: <words>)`, the builder is woken, and the next round comes back as a new ask or card; then the line gets ` · done <date> <sha> round <n> <new code>`. Free text on an `approve` ask is feedback.
+- **`spines.py --json` `waiting_on[]`: `state: "feedback"`** (no longer waiting on the human; `done` once consumed) and a new **`outcome`**: `approved` / `denied` (the answer starts `APPROVED` / `DENIED`), `feedback`, `answered`, else null. `bind.py` leaves feedback lines out of Waiting on, like answered ones.
+- Docs: `docs/doctrine/human-asks.md` ("Three outcomes"), `references/spine-model.md` (Machine-Read Contract).
+- Why: Jordi's E65-A1 answer ("another iteration … simple, elegant, minimalistic") was stored as `[answered]`, its rows stayed `done (fed E65-A1)` and nothing happened for about 3 hours. Tests: `tests/test_ask_refs.py` (feedback state, outcome, done, bind).
+
 ## 2026.11.03.7 — Social pack: one root brief file
 
 - **Changed: the social pack's message house and directions are folded into `data/brief.md`.** `packs/social/schema.json` now places every `brief.*` section (Points to emphasize, Voice, Style rules, Never say, Topic weights, Feedback log) and every `directions.*` section (Week, This week only, Voice note, Month) in `data/brief.md`, headings unchanged, so the root epic's Brief is one file (shared totems, `references/totems.md`). `pack.py init` writes them all into one `data/brief.md` and never creates `data/message-house.md` or `data/directions.md`.

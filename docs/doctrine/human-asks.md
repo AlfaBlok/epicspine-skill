@@ -74,6 +74,14 @@ On every wake and at every session end, the delivery manager rewrites `## Waitin
 
 So an `ask` line is open, an `answered` line is answered but not yet cleaned up, and no line means nothing is pending.
 
+**Three outcomes: approve, feedback, deny.** Every ask (and review card) closes one of three ways. An approval is `[answered …] … — answer: APPROVED[ — note]`, a refusal `[answered …] … — answer: DENIED[ — reason]`; other answers (an option picked, a key provided, `done`) stay `[answered …]`. **Feedback is never an approval:** when the human wants changes, the line becomes
+
+```
+- [feedback E65-A1 2026-11-03 @Jordi] Approve the two mockups and pick a logo each? — … — feedback: another iteration, simple, elegant, minimalistic
+```
+
+and, in the same commit, the row the ask names goes back to `active (feedback <code> by <who> <date>, round <n>: <his words>)`. The owner (whoever builds it, never an answering persona such as the Unblocker) is woken with "<who> gave feedback on <code>", makes the next round and brings it back as a **new** ask (a new code) or review card, never as done. Then it marks the feedback line ` · done <YYYY-MM-DD> <sha> round <n> <new code>`. Free text on an `approve` ask is feedback, never read as approval. Tools read a `[feedback …]` line as no longer waiting on the human (`state: "feedback"`, `outcome: "feedback"`; with ` · done` it is `done`).
+
 **Superseded:** an ask replaced by another before it was answered becomes `- [superseded <code> <YYYY-MM-DD> by [<repo>/]<code>] <question> …`. It is closed like `done`; the new ask carries the wait.
 
 **Snoozed:** the human may snooze an open ask (e.g. the console's Snooze: 3 days / 1 week / 1 month). The line stays an open `[ask …]` and gets one field at its end, ` — snoozed until: <YYYY-MM-DD>` or, for a snooze of hours, a UTC minute ` — snoozed until: <YYYY-MM-DD>THH:MMZ` (e.g. `2026-11-02T18:30Z`); Unsnooze removes it. Until that day (or that minute) the inbox hides the ask and leaves it out of every count; it is still open (it still blocks its row and counts toward the 3-ask limit), and from that day it shows again with no edit. Agents do not snooze asks for the human.
@@ -111,7 +119,7 @@ Before raising an ask, check, in this order: the open asks in this repo's tree (
   "context": "the cutover found ticks missing since Monday; ...", "impact": "the cutover (S2, S3) proceeds; ...",
   "risk": "~2 min gap in ticks while it restarts; rollback: start the old unit", "why": "only you hold root on vps1", "since": "2026-10-24", "row": "S3", "state": "open", "answer": null}]
 ```
-Unknown or missing fields are null. `context` is repo-relative when it is a local link or path, else kept as written; `why` is the `why <who>:` text. On an `answered` or `superseded` line, `code` is kept, and `ask`, `since` and `row` may be null (`who` too when superseded). `state` is `open`, `answered`, `done` (`· done` consumed answer; `answer` excludes the suffix) or `superseded`. `superseded_by` is the code after `by` (`[superseded …]`, or `superseded by` in an answered tag), else null. An ask type outside the four is kept as written (and warned). `snoozed_until` (`YYYY-MM-DD`) is present only on a line carrying ` — snoozed until: <date>`. `waiting_on` never holds reference lines.
+Unknown or missing fields are null. `context` is repo-relative when it is a local link or path, else kept as written; `why` is the `why <who>:` text. On an `answered` or `superseded` line, `code` is kept, and `ask`, `since` and `row` may be null (`who` too when superseded). `state` is `open`, `answered`, `feedback` (a `[feedback …]` line: changes wanted, work reopened; `answer` holds the words after ` — feedback:`), `done` (`· done` consumed answer or feedback; `answer` excludes the suffix) or `superseded`. `outcome` is `approved` (the answer starts `APPROVED`), `denied` (`DENIED`), `feedback` or `answered` (any other answer) on an answered, feedback or done line, else null. `superseded_by` is the code after `by` (`[superseded …]`, or `superseded by` in an answered tag), else null. An ask type outside the four is kept as written (and warned). `snoozed_until` (`YYYY-MM-DD`) is present only on a line carrying ` — snoozed until: <date>`. `waiting_on` never holds reference lines.
 
 Reference lines are a separate per-node list, `[]` when there are none:
 ```json

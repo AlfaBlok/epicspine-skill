@@ -21,12 +21,14 @@ KINDS = ("decide", "approve", "provide", "do")
 TAG = re.compile(r"[-*]\s+\[([^\]]*)\]\s*(.*)")
 OPEN_TAG = re.compile(r"ask(?:\s+" + ASK_CODE + r")?:\s*(\w+)\s+@(\S+)\s+since\s+(" + DATE + r")(?:\s+row\s+(\S+))?")
 ANSWERED_TAG = re.compile(r"answered(?:\s+" + ASK_CODE + r")?\s+" + DATE + r"\s+@([^\s:,;·]+)[:,;]?(.*)")
+# Feedback (changes wanted, never an approval): the human answered, the work it names is reopened and owed a new round.
+FEEDBACK_TAG = re.compile(r"feedback(?:\s+" + ASK_CODE + r")?\s+" + DATE + r"\s+@([^\s:,;·]+)[:,;]?(.*)")
 SUPERSEDED_TAG = re.compile(r"superseded\s+" + ASK_CODE + r"\s+" + DATE + r"\s+by\s+((?:[\w.-]+/)?" + ASK_ID + ")")
 SUPERSEDED_BY = re.compile(r"\s*superseded by\s+((?:[\w.-]+/)?" + ASK_ID + ")")
 DONE = re.compile(r"\s*·\s*done\s+" + DATE + r"\b.*$")  # consumed answer, with an optional sha and note
-CANONICAL = ("`[ask <code>: <type> @<who> since <date> row <id>]`, `[answered <code> <date> @<who>]` (then ` · done <date> <sha>`), "
+CANONICAL = ("`[ask <code>: <type> @<who> since <date> row <id>]`, `[answered <code> <date> @<who>]` or `[feedback <code> <date> @<who>]` (then ` · done <date> <sha>`), "
              "`[superseded <code> <date> by <code>]` or `[waits on [<repo>/]<code> row <id>]`")
-ASK_FIELD = re.compile(r"(steps|options|recommend|unblocks|effort|context|impact|risk|why(?:\s+@?[\w.-]+)?|snoozed(?:\s+until)?|answer):\s*(.*)", re.S)  # `why <who>:` is `why`, `snoozed until:` is `snoozed`
+ASK_FIELD = re.compile(r"(steps|options|recommend|unblocks|effort|context|impact|risk|why(?:\s+@?[\w.-]+)?|snoozed(?:\s+until)?|answer|feedback):\s*(.*)", re.S)  # `why <who>:` is `why`, `snoozed until:` is `snoozed`
 
 
 def ref(r: str | None, c: str, row: str | None, via: str) -> dict:
@@ -95,7 +97,9 @@ def asks(text: str, path: Path, repo: Path, problems: list[str] | None = None) -
         if raw[:1] not in "-*" or not line[1:].strip() or NO_HUMAN.fullmatch(line[1:].strip().rstrip(".")) or WAIT.fullmatch(line):
             continue
         tag, rest = m.groups() if (m := TAG.fullmatch(line)) else ("", "")
-        opened, answered, superseded = OPEN_TAG.fullmatch(tag), ANSWERED_TAG.fullmatch(tag), SUPERSEDED_TAG.fullmatch(tag)
+        opened, superseded = OPEN_TAG.fullmatch(tag), SUPERSEDED_TAG.fullmatch(tag)
+        feedback = FEEDBACK_TAG.fullmatch(tag)
+        answered = ANSWERED_TAG.fullmatch(tag) or feedback
         if not (opened or answered or superseded):
             if problems is not None:
                 problems.append(f"## Waiting on line '{line[:50]}' is not a form the tools read: write {CANONICAL}")
@@ -107,7 +111,7 @@ def asks(text: str, path: Path, repo: Path, problems: list[str] | None = None) -
             by = (b := SUPERSEDED_BY.search(extra)) and b.group(1)
             left = DONE.sub("", SUPERSEDED_BY.sub("", extra)).strip()
             if left and problems is not None:
-                problems.append(f"ask {code or who}: tag carries '{left[:40]}': write `[answered <code> <date> @<who>]`, the answer after ` — answer:`, then ` · done <date> <sha>`")
+                problems.append(f"ask {code or who}: tag carries '{left[:40]}': write `[{'feedback' if feedback else 'answered'} <code> <date> @<who>]`, the {'words after ` — feedback:`' if feedback else 'answer after ` — answer:`'}, then ` · done <date> <sha>`")
         if superseded:
             code, by = superseded.groups()
         if kind and kind not in KINDS and problems is not None:
@@ -124,13 +128,18 @@ def asks(text: str, path: Path, repo: Path, problems: list[str] | None = None) -
             else:
                 question += " — " + part
         options = [o.strip() for o in fields.get("options", "").split("|") if o.strip()]
+        answer = fields.get("feedback") if feedback else fields.get("answer")
+        # outcome: what the answer was. approved / denied (`APPROVED` / `DENIED` first in the answer), feedback (changes wanted,
+        # the work reopened; never an approval), answered (any other answer); null while open or superseded.
+        outcome = ("feedback" if feedback else "approved" if re.match(r"(?i)approved\b", answer or "") else
+                   "denied" if re.match(r"(?i)denied\b", answer or "") else "answered") if answered else None
         steps = re.sub(r"\[[^\]]*\]\(([^)]+)\)", lambda k: ask_context(k.group(1), path, repo) or "", fields.get("steps", ""))
         out.append({"code": code, "who": who, "ask": kind, "question": question, "steps": steps or None, "options": options,
                     "recommend": fields.get("recommend") or None, "unblocks": fields.get("unblocks") or None, "effort": fields.get("effort") or None,
                     "context": ask_context(fields.get("context", ""), path, repo), "impact": fields.get("impact") or None,
                     "risk": fields.get("risk") or None, "why": fields.get("why") or None, "since": since, "row": row,
-                    "state": "open" if opened else "superseded" if superseded else "done" if done else "answered",
-                    "answer": fields.get("answer") or None, "superseded_by": by,
+                    "state": "open" if opened else "superseded" if superseded else "done" if done else "feedback" if feedback else "answered",
+                    "answer": answer or None, "outcome": outcome, "superseded_by": by,
                     **({"snoozed_until": d.group(0)} if (d := re.match(SNOOZE_UNTIL, fields.get("snoozed", ""))) else {})})
     return out
 
