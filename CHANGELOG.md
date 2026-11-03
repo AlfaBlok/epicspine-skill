@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.11.03.4 — Social pack: the link rule reads " · " as a paragraph break
+
+- **Fixed: `pack_checks.lines()`** splits a ledger Text on the paragraph mark ` · ` too (besides `<br>`, a literal `\n` and a newline). The posts ledger joins paragraphs with ` · ` (the console shows them as paragraphs, the Publisher's `post_text.py` sends them as blank lines), but the checks read the whole post as line 1, so `link_rule` refused any Reddit post with a link ("a link on line 1") and `disclosure` looked at the whole text instead of the first two paragraphs.
+- Why: agent_team E61-S7 (Jordi could not schedule P-0062: the console's Schedule was refused twice). Test: `tests/test_pack_validate.py` `test_link_rule_reads_the_paragraph_mark_as_a_line`. Skill 2026.11.03.4.
+
 ## 2026.11.03.3 — Social pack: the Publisher's late-post move names "the owner"
 
 - **Changed: the Publisher's `scheduled → held` condition** says "the owner" instead of Jordi, so the agent_team console's wake text no longer lists it under "Moves that wait on Jordi" (it does not wait on him: it is the Publisher's own hold of a late post). Rule `no_late_post` unchanged.

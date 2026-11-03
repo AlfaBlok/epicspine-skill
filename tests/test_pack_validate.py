@@ -165,6 +165,14 @@ class Validate(unittest.TestCase):
         self.assertIn("link_rule: 2 links in the text (max 1)", out)
         self.assertIn("link_rule: a link on line 1", out)
 
+    def test_link_rule_reads_the_paragraph_mark_as_a_line(self) -> None:
+        # agent_team E61-S7 (P-0062): the ledger joins paragraphs with " · "; a link in paragraph 2 is not on line 1
+        text = "I built Zenod, so this is my own project. · Here is the clip: https://a.b/c.mp4 It shows the fix. · What do you use?"
+        self.assertNotIn("link_rule", self.after("Writer", {"status": "scheduled", "text": text}))
+        self.assertIn("link_rule: a link on line 1", self.after("Writer", {"status": "scheduled", "text": "I built it: https://a.b · What do you use?"}))
+        self.assertIn("disclosure: no disclosure in the first 2 lines",
+                      self.after("Writer", {"status": "scheduled", "text": "Plan your week. · Free. · I built it"}))
+
     def test_never_say(self) -> None:
         out = self.after("Writer", {"status": "scheduled", "text": GOOD + "<br>A revolutionary game-changer"})
         self.assertIn("never_say: says never-say phrase 'game-changer'", out)
