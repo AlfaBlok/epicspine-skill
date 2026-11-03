@@ -24,7 +24,7 @@ class SocialPack(unittest.TestCase):
     def test_the_seven_files_and_their_paths(self) -> None:
         paths = {k: f["path"] for k, f in SOCIAL["files"].items()}
         self.assertEqual({
-            "brief": "data/brief.md", "directions": "data/directions.md", "topics": "data/topics.md",
+            "brief": "data/brief.md", "directions": "data/brief.md", "topics": "data/topics.md",
             "ideas": "data/ideas.md", "posts": "data/posts-ledger.md", "messages": "data/messages-ledger.md", "assets": "data/assets.md",
             "insights": "data/insights.md", "threads": "data/threads.md",
             "reports": "data/reports/{date}.md",
@@ -34,6 +34,12 @@ class SocialPack(unittest.TestCase):
             self.assertIn(key, brief)
         self.assertIn("weight", brief["key_messages"]["fields"])
         self.assertLessEqual({"Week", "Month"}, {s["heading"] for s in SOCIAL["files"]["directions"]["sections"].values()})
+        # agent_team E64-S13: one root brief file; the message house and directions are folded into it
+        where = [(s.get("path", f["path"]), s["heading"]) for k in ("brief", "directions") for f in [SOCIAL["files"][k]] for s in f["sections"].values()]
+        self.assertFalse({p for p, _ in where} & {"data/message-house.md", "data/directions.md"})
+        in_brief = [h for p, h in where if p == "data/brief.md"]
+        self.assertEqual(len(in_brief), len(set(in_brief)), "two sections of data/brief.md share a heading")
+        self.assertEqual({"data/message-house.md": "data/brief.md", "data/directions.md": "data/brief.md"}, SOCIAL["folded"])
         posts = SOCIAL["files"]["posts"]["sections"]["rows"]["fields"]
         for key in ("messages", "link", "feedback", "status"):
             self.assertIn(key, posts)

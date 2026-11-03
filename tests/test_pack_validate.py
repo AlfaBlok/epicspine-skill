@@ -3,6 +3,8 @@ a valid change passes, each rule has a failing fixture, init then validate passe
 commit hook blocks a pack repo's bad commit while a repo with no pack is untouched."""
 from __future__ import annotations
 
+import contextlib
+import io
 import json
 import subprocess
 import sys
@@ -35,10 +37,11 @@ class Repo:
         self.root = root
         self.git("init", "-q")
         pack_init.init(root, "social")
-        house = root / "data/message-house.md"
-        house.write_text(house.read_text().replace("## Never say\n", '## Never say\n\n- "game-changer"\n- revolutionary\n'))
         brief = root / "data/brief.md"
-        brief.write_text(brief.read_text() + '| R1 | mentions "pricing" | Jordi answers pricing himself |\n')
+        text = brief.read_text().replace("## Never say\n", '## Never say\n\n- "game-changer"\n- revolutionary\n')
+        hold = "## Hold for me\n\n| Id | Hold a post when | Why |\n|---|---|---|\n"
+        assert hold in text, "init writes the hold rules table into data/brief.md"
+        brief.write_text(text.replace(hold, hold + '| R1 | mentions "pricing" | Jordi answers pricing himself |\n'))
 
     def git(self, *args: str) -> subprocess.CompletedProcess:
         return subprocess.run(["git", "-c", "user.name=t", "-c", "user.email=t@t", *args], cwd=self.root,
@@ -365,7 +368,8 @@ class Validate(unittest.TestCase):
     # agent_team E64-S6: a reply in someone else's thread waits for Jordi when the brief holds outreach (R4 `Kind: outreach`).
     def test_outreach_held_by_a_hold_rule_goes_out_only_after_jordis_approve(self) -> None:
         brief = self.repo.root / "data/brief.md"
-        brief.write_text(brief.read_text() + "| R4 | Kind: outreach | Jordi approves every thread reply |\n")
+        r1 = '| R1 | mentions "pricing" | Jordi answers pricing himself |\n'
+        brief.write_text(brief.read_text().replace(r1, r1 + "| R4 | Kind: outreach | Jordi approves every thread reply |\n"))
         self.repo.commit()
         out = {"id": "P-0003", "kind": "outreach", "persona": "Engager", "platform": "X", "community": "@someone", "text": "I build Zenod, so biased: we check the evidence link."}
         self.assertIn("P-0003: hold_rules_outreach: matches hold rule R4", self.after("Engager", {}, {**out, "status": "posted", "link": "https://x.com/a/1"}))
@@ -438,18 +442,33 @@ class InitAndHook(unittest.TestCase):
 
     def test_init_twice_is_a_no_op_and_never_overwrites(self) -> None:
         (self.root / "data").mkdir()
-        (self.root / "data/message-house.md").write_text("# Message house\n\n## Voice\n\n- plain\n")
+        (self.root / "data/brief.md").write_text("# Brief\n\n## Voice\n\n- plain\n")
         (self.root / "AGENTS.md").write_text("# AGENTS\n\nIntegration policy: main-direct\n")
         self.assertTrue(pack_init.init(self.root, "social"))
-        house = (self.root / "data/message-house.md").read_text()
-        self.assertTrue(house.startswith("# Message house\n\n## Voice\n\n- plain\n"))
-        self.assertEqual(1, house.count("## Voice"))
-        self.assertIn("## Never say", house)
+        house = (self.root / "data/brief.md").read_text()
+        self.assertTrue(house.startswith("# Brief\n\n## Voice\n\n- plain\n"))
+        self.assertEqual(1, house.count("## Voice\n"))
+        # E64-S13: one root brief file holds the brief and the directions sections; the old files are never made
+        for heading in ("## Never say", "## Points to emphasize", "## Feedback log", "## Hold for me", "## Week", "## Month"):
+            self.assertEqual(1, house.count(heading + "\n"), heading)
+        self.assertFalse((self.root / "data/message-house.md").exists())
+        self.assertFalse((self.root / "data/directions.md").exists())
         self.assertEqual(["social"], pack.enabled(self.root))
         before = snapshot(self.root)
         self.assertEqual([], pack_init.init(self.root, "social"))
         self.assertEqual(before, snapshot(self.root))
         self.assertEqual([], pack_validate.run(self.root, False))
+
+    def test_an_old_message_house_warns_but_fails_no_commit(self) -> None:
+        # agent_team E64-S13: data/message-house.md was folded into data/brief.md; a repo still holding it is told, never blocked
+        (self.root / "AGENTS.md").write_text("# AGENTS\n\nPack: social\n")
+        pack_init.init(self.root, "social")
+        (self.root / "data/message-house.md").write_text("# Message house\n\n## Voice\n\n- plain\n")
+        self.assertEqual([], pack_validate.run(self.root, False))
+        err = io.StringIO()
+        with contextlib.redirect_stderr(err), contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(0, pack_validate.main(["--repo", str(self.root)]))
+        self.assertIn("warning: pack social: data/message-house.md: folded into data/brief.md (agent_team E64-S13); move its sections", err.getvalue())
 
     def test_init_appends_to_an_existing_root_spine_and_skips_a_missing_one(self) -> None:
         notes: list[str] = []

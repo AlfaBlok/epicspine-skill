@@ -5,6 +5,11 @@
   "opt_in": "Pack: social",
   "owner": "Jordi",
   "approval_gate": false,
+  "folded": {
+    "data/message-house.md": "data/brief.md",
+    "data/directions.md": "data/brief.md"
+  },
+  "folded_doc": "Old files whose sections now live elsewhere (agent_team E64-S13): a repo still holding one gets a warning from export and validate, never a hard failure; move its sections (headings unchanged) and delete it.",
   "roles": {
     "Jordi": "the owner: console screens, digest and desk chat (the console's write API commits as Jordi)",
     "Scout": "scans the channels each morning; writes topics, adds ideas",
@@ -18,30 +23,30 @@
   },
   "files": {
     "brief": {
-      "doc": "The standing campaign brief, one per repo; each section lives in the file it already has (objective in the root spine, voice and key messages in the message house).",
+      "doc": "The root brief, one per repo (shared totems, references/totems.md): objective and targets in the root spine, everything else (positioning, key messages, voice, style rules, never say, topic weights, feedback log, formats, hold rules, this week and the month) in data/brief.md; the message house and directions files folded in here (agent_team E64-S13).",
       "path": "data/brief.md",
       "sections": {
         "objective": {"path": "docs/spines/root.md", "heading": "Goal", "shape": "text", "writers": ["Jordi"]},
         "targets": {"path": "docs/spines/root.md", "heading": "Targets", "shape": "text", "writers": ["Jordi"]},
         "audience": {"heading": "Audience", "shape": "text", "writers": ["Jordi"]},
-        "key_messages": {"path": "data/message-house.md", "heading": "Points to emphasize", "shape": "table", "add_rows": ["Jordi"], "writers": ["Jordi"], "fields": {
+        "key_messages": {"path": "data/brief.md", "heading": "Points to emphasize", "shape": "table", "add_rows": ["Jordi"], "writers": ["Jordi"], "fields": {
           "id": {"column": "#", "type": "id", "pattern": "^[1-9][0-9]*$"},
           "message": {"column": "Message", "type": "text"},
           "weight": {"column": "Weight", "type": "enum", "values": ["over", "normal", "under", "avoid"], "default": "normal"},
           "source": {"column": "Source", "type": "text"},
           "carried_by": {"column": "Carried by", "type": "refs", "computed": {"from": "posts.rows.messages"}}
         }},
-        "voice": {"path": "data/message-house.md", "heading": "Voice", "shape": "list", "writers": ["Jordi"]},
-        "style_rules": {"path": "data/message-house.md", "heading": "Style rules", "shape": "list", "writers": ["Jordi", "Writer"]},
-        "never_say": {"path": "data/message-house.md", "heading": "Never say", "shape": "list", "writers": ["Jordi"]},
-        "topic_weights": {"path": "data/message-house.md", "heading": "Topic weights", "shape": "table", "add_rows": ["Jordi"], "writers": ["Jordi"], "fields": {
+        "voice": {"path": "data/brief.md", "heading": "Voice", "shape": "list", "writers": ["Jordi"]},
+        "style_rules": {"path": "data/brief.md", "heading": "Style rules", "shape": "list", "writers": ["Jordi", "Writer"]},
+        "never_say": {"path": "data/brief.md", "heading": "Never say", "shape": "list", "writers": ["Jordi"]},
+        "topic_weights": {"path": "data/brief.md", "heading": "Topic weights", "shape": "table", "add_rows": ["Jordi"], "writers": ["Jordi"], "fields": {
           "topic": {"column": "Topic", "type": "text"},
           "weight": {"column": "Weight (over / normal / under / avoid)", "type": "enum", "values": ["over", "normal", "under", "avoid"]},
           "why": {"column": "Why", "type": "text"},
           "source": {"column": "Source", "type": "text"},
           "since": {"column": "Since", "type": "date"}
         }},
-        "feedback_log": {"path": "data/message-house.md", "heading": "Feedback log", "shape": "table", "add_rows": ["Jordi"], "writers": ["Jordi", "Writer"], "fields": {
+        "feedback_log": {"path": "data/brief.md", "heading": "Feedback log", "shape": "table", "add_rows": ["Jordi"], "writers": ["Jordi", "Writer"], "fields": {
           "date": {"column": "Date", "type": "date"},
           "from": {"column": "From", "type": "text"},
           "feedback": {"column": "Feedback (verbatim or close)", "type": "text"},
@@ -66,8 +71,8 @@
       }
     },
     "directions": {
-      "doc": "Jordi's steering: this week's highlights and do/don't, a voice note, the month's priorities.",
-      "path": "data/directions.md",
+      "doc": "Jordi's steering, the `This week` part of data/brief.md: this week's highlights and do/don't, a voice note, the month's priorities (was data/directions.md until agent_team E64-S13).",
+      "path": "data/brief.md",
       "sections": {
         "week": {"heading": "Week", "shape": "table", "add_rows": ["Jordi"], "writers": ["Jordi"], "fields": {
           "id": {"column": "Id", "type": "id", "pattern": "^H[0-9]+$"},

@@ -10,7 +10,7 @@ import argparse, json, re, sys  # noqa: E401
 from datetime import datetime, timezone
 from pathlib import Path
 
-import pack
+import pack, pack_md as md  # noqa: E401
 
 EXPORT_VERSION = 1
 HEADING = re.compile(r"^(#{1,6})\s+(.+?)\s*#*\s*$")
@@ -170,6 +170,8 @@ def export(name: str, repo: Path, now: datetime | None = None) -> dict:
     if name not in pack.enabled(repo):
         warn("AGENTS.md", None, f"no 'Pack: {name}' line: the repo has not turned this pack on")
     states, skip = {k: list(lc["states"]) for k, lc in schema.get("lifecycles", {}).items()}, {k: set(lc.get("export_skip", [])) for k, lc in schema.get("lifecycles", {}).items()}
+    for old, message in md.folded(schema, repo):
+        warn(old, None, message)
     cache, sources, out = {}, {}, {}
     for fkey, f in schema["files"].items():
         if f.get("many"):

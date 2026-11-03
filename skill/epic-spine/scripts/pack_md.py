@@ -79,3 +79,10 @@ def table(text: str | None) -> tuple[list[str], list[dict[str, str]]] | None:
 def items(text: str | None) -> list[str]:
     """List items (`- x`, `* x`, `1. x`) of a list section."""
     return [m.group(1).strip() for line in (text or "").splitlines() if (m := ITEM.match(line))]
+
+
+def folded(schema: dict, repo: Path) -> list[tuple[str, str]]:
+    """(old path, warning) for each old file the schema folded elsewhere (`folded`, agent_team E64-S13) that the repo
+    still holds: a warning for export and validate (stderr), never an issue that fails a commit."""
+    return [(old, f"{old}: folded into {new} (agent_team E64-S13); move its sections")
+            for old, new in schema.get("folded", {}).items() if (Path(repo) / old).is_file()]

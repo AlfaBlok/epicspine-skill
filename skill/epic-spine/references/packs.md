@@ -65,12 +65,12 @@ The social pack's six kinds:
 
 | Kind | Recognise it | Lands in | Written as | Reply names |
 |---|---|---|---|---|
-| Brief change (`brief`) | changes the standing campaign (objective, targets, audience, voice, style rule, never say, topic weights, formats, examples, hold rules) | root spine `## Goal` / `## Targets`, message house sections, `data/brief.md` sections | Jordi | the section + line changed, link to the Brief |
-| Key message (`key_message`) | push / soften / drop a message across posts | message house `## Points to emphasize` (+ weight) | Jordi | `#6 weight → over`, carried-by on the Brief |
-| Priority (`priority`) | this week's or month's highlight, or a do / don't for this week | `data/directions.md` `## Week`, `## Month`, `## This week only` | Jordi | the new H / M line, the Writer's next wake |
+| Brief change (`brief`) | changes the standing campaign (objective, targets, audience, voice, style rule, never say, topic weights, formats, examples, hold rules) | root spine `## Goal` / `## Targets`, `data/brief.md` sections | Jordi | the section + line changed, link to the Brief |
+| Key message (`key_message`) | push / soften / drop a message across posts | `data/brief.md` `## Points to emphasize` (+ weight) | Jordi | `#6 weight → over`, carried-by on the Brief |
+| Priority (`priority`) | this week's or month's highlight, or a do / don't for this week | `data/brief.md` `## Week`, `## Month`, `## This week only` | Jordi | the new H / M line, the Writer's next wake |
 | Idea (`idea`) | one post's worth: a topic, angle, link or screenshot | `data/ideas.md` row (`from: Jordi`, `state: new`), a file in `data/assets.md` | Jordi | `I-xx`, the Writer's next wake |
 | Big idea → epic (`big_idea`) | more than one post can carry (a tool, persona, video, a series) | a new child epic under the root spine | Delivery manager | the epic code + what it waits on, Home's blocked card |
-| Feedback on a post (`feedback`) | a verdict on an existing post | the post row's `Feedback` + message house `## Feedback log` | Jordi | the post id, logged; a repeat becomes a Style rule (C6) |
+| Feedback on a post (`feedback`) | a verdict on an existing post | the post row's `Feedback` + `data/brief.md` `## Feedback log` | Jordi | the post id, logged; a repeat becomes a Style rule (C6) |
 
 ## Persona wake text (what one role may do)
 

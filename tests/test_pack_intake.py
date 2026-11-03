@@ -35,12 +35,12 @@ class SocialIntake(unittest.TestCase):
     def test_where_each_kind_lands(self) -> None:
         land = lambda key: [pack_intake.landing(SOCIAL, t)[1] for t in SOCIAL["intake"]["kinds"][key]["targets"]]  # noqa: E731
         self.assertIn("docs/spines/root.md#goal", land("brief"))
-        self.assertIn("data/message-house.md#never-say", land("brief"))
-        self.assertEqual(["data/message-house.md#points-to-emphasize"], land("key_message"))
-        self.assertEqual(["data/directions.md#week", "data/directions.md#month", "data/directions.md#this-week-only"], land("priority"))
+        self.assertIn("data/brief.md#never-say", land("brief"))
+        self.assertEqual(["data/brief.md#points-to-emphasize"], land("key_message"))
+        self.assertEqual(["data/brief.md#week", "data/brief.md#month", "data/brief.md#this-week-only"], land("priority"))
         self.assertEqual(["data/ideas.md", "data/assets.md"], land("idea"))
         self.assertEqual(["docs/spines/<slug>.md"], land("big_idea"))
-        self.assertEqual(["data/posts-ledger.md", "data/message-house.md#feedback-log"], land("feedback"))
+        self.assertEqual(["data/posts-ledger.md", "data/brief.md#feedback-log"], land("feedback"))
         self.assertEqual({"ideas.rows.from": "Jordi", "ideas.rows.state": "new"}, SOCIAL["intake"]["kinds"]["idea"]["set"])
         self.assertEqual("Delivery manager", SOCIAL["intake"]["kinds"]["big_idea"]["writer"])
 
@@ -84,7 +84,7 @@ class IntakeCheck(unittest.TestCase):
 ROLE_TARGETS = {  # role -> (writable targets, status moves) the text must name
     "Scout": (["`data/topics.md`", "replace the table each run", "`data/ideas.md`", "every column but Why", "`data/threads.md`", "every column but Reply"],
               ["thread `new → watch`", "`watch → cooled`"]),
-    "Writer": (["`data/message-house.md` › Style rules", "`data/message-house.md` › Feedback log", "`data/ideas.md`: edit only Why", "`data/posts-ledger.md`", "every column but Link, Replies, Metrics, Result, Feedback"],
+    "Writer": (["`data/brief.md` › Style rules", "`data/brief.md` › Feedback log", "`data/ideas.md`: edit only Why", "`data/posts-ledger.md`", "every column but Link, Replies, Metrics, Result, Feedback"],
                ["`idea → draft`", "`draft → scheduled`", "`draft → held`", "`new → open`", "`open → spent`", "`parked → open`", "hold_rules", "`held → scheduled` is Jordi's alone"]),
     "Publisher": (["`data/posts-ledger.md`: edit only Link, Result"], ["`scheduled → posted`", "`scheduled → expired`", "link_present", "delete_live"]),
     "Responder": (["`data/posts-ledger.md`", "add rows", "every column but Feedback", "`data/messages-ledger.md` › Chats, Messages"],
@@ -151,7 +151,7 @@ class WakeText(unittest.TestCase):
         self.assertTrue(text.startswith("## Desk intake (pack social): 6 kinds\n"))
         for label in ("Brief change", "Key message", "Priority", "Idea", "Big idea → epic", "Feedback on a post"):
             self.assertIn(f"**{label}**", text)
-        for link in ("`data/directions.md#month`", "`data/ideas.md`", "`data/message-house.md#feedback-log`", "`docs/spines/<slug>.md`"):
+        for link in ("`data/brief.md#month`", "`data/ideas.md`", "`data/brief.md#feedback-log`", "`docs/spines/<slug>.md`"):
             self.assertIn(link, text)
         self.assertIn("ask Jordi one line back", text)
         self.assertIn("Undo: revert {commit}", text)
