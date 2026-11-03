@@ -109,7 +109,7 @@
       }
     },
     "ideas": {
-      "doc": "Ideas for posts: Jordi's drain (from: Jordi) and the Scout's; the Writer moves an idea; Jordi may drop one (new or picked up -> parked); nobody deletes one.",
+      "doc": "Ideas for posts: Jordi's drain (from: Jordi) and the Scout's; the Writer moves an idea; Jordi may drop an open one (new, open, or legacy picked up / drafted / posted -> parked); nobody deletes one. Ideas never expire: an idea stays open after a post, so one idea becomes posts on several platforms (Reddit, X, LinkedIn), each written fresh; it closes only when Jordi parks it or the Writer marks it spent with a why (agent_team E64-S4).",
       "path": "data/ideas.md",
       "sections": {
         "rows": {"heading": null, "shape": "table", "add_rows": ["Jordi", "Scout"], "writers": ["Jordi", "Scout"], "fields": {
@@ -117,12 +117,13 @@
           "date": {"column": "Date", "type": "date"},
           "idea": {"column": "Idea", "type": "text"},
           "format": {"column": "Format", "type": "text"},
-          "platform": {"column": "Platform", "type": "text"},
+          "platform": {"column": "Platform", "type": "text", "doc": "the platforms it fits, one or more (`Reddit r/ClaudeCode, X, LinkedIn`); empty = any; Open for = these minus Used on"},
           "from": {"column": "From", "type": "role"},
           "link": {"column": "Link or asset", "type": "text"},
           "state": {"column": "State", "type": "enum", "lifecycle": "idea"},
           "why": {"column": "Why", "type": "text", "writers": ["Writer"]},
-          "became": {"column": "Became", "type": "refs", "computed": {"from": "posts.rows.idea"}}
+          "became": {"column": "Became", "type": "refs", "computed": {"from": "posts.rows.idea"}},
+          "used_on": {"column": "Used on", "type": "refs", "computed": {"from": "posts.rows.idea", "group": "platform"}, "doc": "the posts it became, by platform ({\"Reddit\": [\"P-0060\"], \"X\": []}); the export computes it, nobody types it"}
         }}
       }
     },
@@ -146,7 +147,7 @@
           "topic": {"column": "Topic", "type": "ref", "ref": ["topics.rows"]},
           "highlight": {"column": "Highlight", "type": "ref", "ref": ["directions.week", "directions.month"]},
           "messages": {"column": "Messages", "type": "refs", "ref": ["brief.key_messages"]},
-          "idea": {"column": "Idea", "type": "ref", "ref": ["ideas.rows"]},
+          "idea": {"column": "Idea", "type": "ref", "ref": ["ideas.rows"], "doc": "the idea it answers; repeats across rows: one idea, one post per platform (E64-S4)"},
           "checks": {"column": "Checks", "type": "text"},
           "link": {"column": "Link", "type": "url", "writers": ["Publisher", "Responder", "Engager"]},
           "replies": {"column": "Replies", "type": "number", "writers": ["Responder", "Reporter"]},
@@ -191,6 +192,52 @@
         }}
       }
     },
+    "insights": {
+      "doc": "What is working, from post performance we can read: the Reporter's weekly pass (and each campaign's last day) writes it, the Writer reads the top active lines in its wake brief, the campaign's History tab shows them (What's working). A line the numbers no longer support is retired, never deleted. The pass also proposes My calls lines for a campaign's one-pager from Jordi's repeated notes; only Jordi accepts one (agent_team E64-S5, E64-S3).",
+      "path": "data/insights.md",
+      "optional": true,
+      "sections": {
+        "lines": {"heading": "Insights", "shape": "table", "add_rows": ["Reporter"], "writers": ["Reporter"], "fields": {
+          "id": {"column": "Id", "type": "id", "pattern": "^IN-[0-9]+$"},
+          "insight": {"column": "Insight", "type": "text", "doc": "one plain sentence: what works or does not"},
+          "use": {"column": "Use", "type": "text", "doc": "one do / avoid line the Writer can act on"},
+          "evidence": {"column": "Evidence", "type": "text", "doc": "post ids and their numbers (P-0019 score 6, 50 comments)"},
+          "confidence": {"column": "Confidence", "type": "text", "doc": "low / medium / high and how many posts (`medium · 4 posts`)"},
+          "campaign": {"column": "Campaign", "type": "text", "optional": true, "doc": "a campaign's epic code when it holds for that campaign only; empty = the repo"},
+          "since": {"column": "Since", "type": "date"},
+          "state": {"column": "State", "type": "enum", "lifecycle": "insight"}
+        }},
+        "calls": {"heading": "Proposed calls", "shape": "table", "add_rows": ["Reporter"], "writers": ["Reporter"], "fields": {
+          "id": {"column": "Id", "type": "id", "pattern": "^MC-[0-9]+$"},
+          "call": {"column": "Call", "type": "text", "doc": "a line for the one-pager's My calls, in Jordi's words where he said it"},
+          "evidence": {"column": "Evidence", "type": "text", "doc": "the notes it comes from (post ids and dates, two or more)"},
+          "campaign": {"column": "Campaign", "type": "text", "optional": true},
+          "since": {"column": "Since", "type": "date"},
+          "state": {"column": "State", "type": "enum", "lifecycle": "call"}
+        }}
+      }
+    },
+    "threads": {
+      "doc": "Hot threads in our lane, kept (not replaced daily): the Scout adds and scores them (morning scan and a short 16:00 UTC pass), the Engager drafts a disclosed reply as an outreach row in the posts ledger and records it here; every reply waits for Jordi's Approve when the brief holds outreach (agent_team E64-S6).",
+      "path": "data/threads.md",
+      "optional": true,
+      "sections": {
+        "rows": {"heading": null, "shape": "table", "add_rows": ["Scout"], "writers": ["Scout"], "fields": {
+          "id": {"column": "Id", "type": "id", "pattern": "^TH-[0-9]{4}-[0-9]+$"},
+          "found": {"column": "Found", "type": "datetime"},
+          "platform": {"column": "Platform", "type": "text"},
+          "community": {"column": "Community", "type": "text", "doc": "r/ClaudeCode, or the X author"},
+          "title": {"column": "Title", "type": "text"},
+          "link": {"column": "Link", "type": "url"},
+          "why": {"column": "Why ours", "type": "text", "doc": "the key message or topic it touches"},
+          "numbers": {"column": "Numbers", "type": "text", "doc": "what the score is made of, as read (31 comments, 4 h old, score 12; or 1,250 impressions, author 8k followers)"},
+          "visibility": {"column": "Visibility", "type": "number"},
+          "campaign": {"column": "Campaign", "type": "text", "optional": true, "writers": ["Scout", "Engager", "Jordi"]},
+          "reply": {"column": "Reply", "type": "ref", "ref": ["posts.rows"], "writers": ["Engager"], "doc": "our outreach row for it"},
+          "state": {"column": "State", "type": "enum", "lifecycle": "thread"}
+        }}
+      }
+    },
     "assets": {
       "doc": "One library of diagrams, screenshots, clips, videos and logos; files under data/assets/.",
       "path": "data/assets.md",
@@ -222,6 +269,62 @@
     }
   },
   "lifecycles": {
+    "insight": {
+      "field": "insights.lines.state",
+      "initial": "new",
+      "path": ["new", "active", "retired"],
+      "states": {
+        "new": "not a row status: a line is written active",
+        "active": "the numbers support it; the Writer works to it",
+        "retired": "the numbers no longer support it (kept, never deleted)"
+      },
+      "transitions": [
+        {"from": "new", "to": "active", "by": ["Reporter"]},
+        {"from": "active", "to": "retired", "by": ["Reporter", "Jordi"]},
+        {"from": "retired", "to": "active", "by": ["Reporter"], "when": "new numbers support it again"}
+      ]
+    },
+    "call": {
+      "field": "insights.calls.state",
+      "initial": "new",
+      "path": ["new", "proposed", "accepted"],
+      "approval_gate": true,
+      "states": {
+        "new": "not a row status: a call is written proposed",
+        "proposed": "shown under My calls with Accept and Dismiss",
+        "accepted": "Jordi accepted it: the line is in the campaign's one-pager (My calls)",
+        "dismissed": "Jordi dismissed it"
+      },
+      "transitions": [
+        {"from": "new", "to": "proposed", "by": ["Reporter"]},
+        {"from": "proposed", "to": "accepted", "by": ["Jordi"]},
+        {"from": "proposed", "to": "dismissed", "by": ["Jordi"]},
+        {"from": "accepted", "to": "proposed", "by": ["Jordi"], "alone": true, "when": "Undo of Accept"},
+        {"from": "dismissed", "to": "proposed", "by": ["Jordi"], "alone": true, "when": "Undo of Dismiss"}
+      ]
+    },
+    "thread": {
+      "field": "threads.rows.state",
+      "initial": "new",
+      "path": ["new", "watch", "drafted", "sent"],
+      "states": {
+        "new": "not a row status: a thread is written watch",
+        "watch": "in our lane and in the day's top by visibility; no reply yet",
+        "drafted": "the Engager wrote our reply (Reply = the outreach row), waiting for Jordi's Approve when held",
+        "sent": "our reply is live (its row is posted)",
+        "skipped": "not ours after all, Jordi's Don't post, or the caps are used up",
+        "cooled": "too old to answer (12 h on X, 24 h on Reddit) before our reply went out"
+      },
+      "transitions": [
+        {"from": "new", "to": "watch", "by": ["Scout"]},
+        {"from": "watch", "to": "drafted", "by": ["Engager"]},
+        {"from": "drafted", "to": "sent", "by": ["Engager"]},
+        {"from": "watch", "to": "skipped", "by": ["Scout", "Engager"]},
+        {"from": "drafted", "to": "skipped", "by": ["Engager"], "when": "Jordi's Don't post pulled the reply"},
+        {"from": "watch", "to": "cooled", "by": ["Scout", "Engager"]},
+        {"from": "drafted", "to": "cooled", "by": ["Engager"], "when": "the reply expired (cooled) before it was sent"}
+      ]
+    },
     "post": {
       "field": "posts.rows.status",
       "kind_field": "posts.rows.kind",
@@ -248,6 +351,10 @@
         {"from": "scheduled", "to": "posted", "by": ["Publisher"], "kinds": ["post"], "when": "its slot; the link is added in the same commit"},
         {"from": "scheduled", "to": "expired", "by": ["Publisher"], "kinds": ["post"], "when": "best-before passed"},
         {"from": "draft", "to": "posted", "by": ["Responder", "Engager"], "kinds": ["reply", "outreach"], "when": "every check passes"},
+        {"from": "draft", "to": "held", "by": ["Engager"], "kinds": ["outreach"], "when": "a hold rule matches (e.g. `Kind: outreach`: Jordi approves every reply in someone else's thread; agent_team E64-S6)"},
+        {"from": "held", "to": "scheduled", "by": ["Engager"], "kinds": ["outreach"], "when": "Jordi approved it with feedback (his `Approved with feedback:` note): the Engager applies it, then queues it to send"},
+        {"from": "scheduled", "to": "posted", "by": ["Engager"], "kinds": ["outreach"], "when": "sent after Jordi's Approve, inside the caps; the link is added in the same commit"},
+        {"from": "scheduled", "to": "expired", "by": ["Engager"], "kinds": ["outreach"], "when": "cooled: approved but not sent within 12 h on X or 24 h on Reddit (the thread moved on); never sent late"},
         {"from": "posted", "to": "measured", "by": ["Reporter"], "when": "48 h after posting"},
         {"from": "posted", "to": "measured", "by": ["Responder", "Engager"], "kinds": ["reply", "outreach"], "when": "48 h after posting"},
         {"from": "draft", "to": "pulled", "by": ["Jordi"], "effect": "unschedule"},
@@ -333,24 +440,36 @@
     "idea": {
       "field": "ideas.rows.state",
       "initial": "new",
-      "path": ["new", "picked up", "drafted", "posted"],
+      "path": ["new", "open", "spent"],
       "states": {
         "new": "dropped by Jordi or the Scout",
-        "picked up": "the Writer took it",
-        "drafted": "a post row carries it (became)",
-        "posted": "its post is live",
+        "open": "used on one platform or more (Used on), open for the others: ideas never expire",
+        "spent": "closed by the Writer: every platform it fits is used, or the angle is stale; why says which",
+        "picked up": "legacy (before E64-S4), read as open: the Writer took it",
+        "drafted": "legacy (before E64-S4), read as open: a post row carries it (became)",
+        "posted": "legacy (before E64-S4), read as open: its post is live",
         "parked": "not now; why says until when (Writer), or Jordi dropped it",
         "epic": "too big for one post; why names the child epic"
       },
       "transitions": [
-        {"from": "new", "to": "picked up", "by": ["Writer"]},
-        {"from": "picked up", "to": "drafted", "by": ["Writer"]},
-        {"from": "drafted", "to": "posted", "by": ["Writer"]},
+        {"from": "new", "to": "open", "by": ["Writer"], "when": "its first post row is written (Idea = this id)"},
+        {"from": "open", "to": "spent", "by": ["Writer"], "when": "every platform it fits is used, or the angle is stale (why says which)"},
+        {"from": "new", "to": "spent", "by": ["Writer"], "when": "stale or superseded before any post (why names what replaced it)"},
+        {"from": "open", "to": "parked", "by": ["Writer", "Jordi"]},
+        {"from": "parked", "to": "open", "by": ["Writer"]},
+        {"from": "open", "to": "epic", "by": ["Writer"]},
+        {"from": "picked up", "to": "open", "by": ["Writer"], "when": "legacy state moved to open"},
+        {"from": "drafted", "to": "open", "by": ["Writer"], "when": "legacy state moved to open"},
+        {"from": "posted", "to": "open", "by": ["Writer"], "when": "legacy state moved to open"},
+        {"from": "drafted", "to": "parked", "by": ["Writer", "Jordi"], "legacy": true},
+        {"from": "posted", "to": "parked", "by": ["Writer", "Jordi"], "legacy": true},
+        {"from": "new", "to": "picked up", "by": ["Writer"], "legacy": true},
+        {"from": "picked up", "to": "drafted", "by": ["Writer"], "legacy": true},
+        {"from": "drafted", "to": "posted", "by": ["Writer"], "legacy": true},
         {"from": "new", "to": "parked", "by": ["Writer", "Jordi"]},
-        {"from": "picked up", "to": "parked", "by": ["Writer", "Jordi"]},
-        {"from": "parked", "to": "picked up", "by": ["Writer"]},
+        {"from": "picked up", "to": "parked", "by": ["Writer", "Jordi"], "legacy": true},
         {"from": "new", "to": "epic", "by": ["Writer"]},
-        {"from": "picked up", "to": "epic", "by": ["Writer"]}
+        {"from": "picked up", "to": "epic", "by": ["Writer"], "legacy": true}
       ]
     }
   },
@@ -365,13 +484,14 @@
     "dm_messages": {"doc": "DMs and chat requests are not posts: they live in data/messages-ledger.md, never as posts-ledger rows. One Chats row per conversation (platform, our account, who, kind, link, started); each of their messages a `received` row (the text when it is one short line, else `summary: …`, at most 200 characters); your answer a `draft` row with its full text and Answers = their message. NEVER send a draft: Jordi's Send moves it `draft → scheduled` (his `Approved` note). On each wake send every `scheduled` reply exactly as written, dry run first, then for real, within the caps (10 DMs a day, 20 min between Reddit writes, 3 an hour); record the send in Result, move it `scheduled → posted` and the chat to `waiting` in one commit; a `pulled` one is never sent. A chat you leave alone by rule is its own Chats row in `left` with its Reason in plain words and its Link (a request whose text the platform hides until accepted: `hidden`, never accept it yourself); never bundle several chats in one row. Jordi's `Revise requested <when>: …` on a draft: write a new version (Text), keep it `draft`, start Checks with `Revised <YYYY-MM-DD HH:MM> UTC`. His `Draft requested` (or `Accept requested`: accept the request first) on a chat: draft a reply for his Send", "to": "messages.messages", "by": ["Responder"], "undo": "revert that commit (the earlier version is in git)"}
   },
   "checks": {
-    "transitions": {"doc": "a status change must be a listed transition, made by one of its roles", "on": ["post", "idea", "message", "chat"]},
+    "transitions": {"doc": "a status change must be a listed transition, made by one of its roles", "on": ["post", "idea", "message", "chat", "insight", "call", "thread"]},
     "link_rule": {"doc": "Reddit: no link in line 1, at most one link", "at": ["draft>scheduled", "draft>held", "held>scheduled", "draft>posted"], "platforms": ["Reddit"], "params": {"max_links": 1, "no_link_on_line": 1}, "lifecycles": ["post"]},
     "disclosure": {"doc": "Reddit: say you built it in the first two lines (posts and outreach; a reply in our own thread needs none)", "at": ["draft>scheduled", "draft>held", "held>scheduled", "draft>posted"], "platforms": ["Reddit"], "kinds": ["post", "outreach"], "params": {"within_lines": 2, "phrases": ["I built", "I build", "I'm the developer"]}, "lifecycles": ["post"]},
     "never_say": {"doc": "no phrase from the brief's Never say", "at": ["draft>scheduled", "draft>held", "held>scheduled", "draft>posted"], "source": "brief.never_say", "lifecycles": ["post", "message"]},
     "caps": {"doc": "posting caps", "at": ["draft>scheduled", "draft>posted"], "params": {"threads_per_day": 1, "per_community_per_week": 1, "replies_per_day": 20}, "lifecycles": ["post"]},
     "approved": {"doc": "a held post goes out only with Jordi's approval: his `Approved` note in the row's Feedback (only Jordi writes Feedback)", "at": ["held>scheduled"], "params": {"field": "feedback", "phrase": "approved"}, "lifecycles": ["post"]},
     "send_approved": {"doc": "a DM reply goes out only with Jordi's Send: his `Approved` note in the message's Feedback (only Jordi writes Feedback)", "fn": "approved", "lifecycles": ["message"], "at": ["draft>scheduled"], "params": {"field": "feedback", "phrase": "approved", "stays": "draft"}},
+    "hold_rules_outreach": {"doc": "a reply in someone else's thread (outreach) matching a hold rule goes to held, never straight out (agent_team E64-S6, rule `Kind: outreach`)", "fn": "hold_rules", "at": ["draft>posted"], "kinds": ["outreach"], "source": "brief.hold_rules", "lifecycles": ["post"]},
     "hold_rules": {"doc": "a match sends the draft to held instead of scheduled", "at": ["draft>scheduled"], "source": "brief.hold_rules", "lifecycles": ["post"]},
     "link_present": {"doc": "a post goes live with its link in the same commit", "at": ["scheduled>posted", "draft>posted"], "params": {"field": "link"}, "lifecycles": ["post"]},
     "sent": {"doc": "a sent reply records its send in Result (time, tool, dry run) in the same commit", "fn": "filled", "lifecycles": ["message"], "at": ["scheduled>posted", "new>posted"], "params": {"field": "result"}}
