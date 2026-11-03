@@ -3,6 +3,7 @@ a valid change passes, each rule has a failing fixture, init then validate passe
 commit hook blocks a pack repo's bad commit while a repo with no pack is untouched."""
 from __future__ import annotations
 
+import json
 import subprocess
 import sys
 import tempfile
@@ -230,10 +231,26 @@ class Validate(unittest.TestCase):
         # E34-S25: pulled -> scheduled / draft / held are `alone`: no draft -> pulled -> scheduled past the Writer's checks,
         # no held -> pulled -> scheduled past the approved check, no scheduled -> pulled -> draft for an unnamed writer.
         self.assertIn("P-0001: illegal status change draft -> scheduled by Jordi", self.after("Jordi", {"status": "scheduled"}))
-        self.assertIn("P-0002: illegal status change scheduled -> held by Jordi", self.after("Jordi", {}, {"id": "P-0002", "status": "held"}))
+        self.assertIn("P-0002: illegal status change scheduled -> draft by Jordi", self.after("Jordi", {}, {"id": "P-0002", "status": "draft"}))
         self.assertEqual("", self.after("Writer", {"status": "held"}))
         self.repo.commit()
         self.assertIn("P-0001: approved: no approval from Jordi", self.after("Jordi", {"status": "scheduled"}))
+
+    def test_a_late_post_goes_back_to_held_never_out(self) -> None:
+        # agent_team E60-S2: a scheduled post whose slot passed while its campaign was retired comes back held: Jordi's
+        # Restore (scheduled -> held) or the Publisher's no_late_post (scheduled -> held); nobody else holds it.
+        sched = {"status": "scheduled", "slot": "2026-11-03T14:00:00Z"}
+        self.assertEqual("", self.after("Writer", sched))
+        self.repo.commit()
+        self.assertIn("illegal status change scheduled -> held by Writer", self.after("Writer", {**sched, "status": "held"}))
+        self.assertEqual("", self.after("Publisher", {**sched, "status": "held"}))
+        self.assertEqual("", self.after("Jordi", {**sched, "status": "held"}))
+        self.repo.commit()
+        # then his Post now (Approved after the slot) puts it back for the Publisher
+        self.assertEqual("", self.after("Jordi", {**sched, "feedback": "Approved 2026-11-03 15:10 UTC"}))
+        rules = json.loads((SCRIPTS.parent / "packs/social/schema.json").read_text())["rules"]
+        self.assertEqual("Publisher", rules["no_late_post"]["by"])
+        self.assertIn("never goes out", rules["no_late_post"]["doc"])
 
     def test_hold_rule_kind_post_holds_every_post_and_held_drafts_pass_the_text_checks(self) -> None:
         from pack_checks import holds

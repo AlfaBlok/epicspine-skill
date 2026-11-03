@@ -1,9 +1,20 @@
 # Changelog
 
-## 2026.11.03.2 — Every commit names its ticket: a commit-msg hook warns
+## 2026.11.03.4 — Every commit names its ticket: a commit-msg hook warns
 
 - **Added: `scripts/commit_msg.py`, a commit-msg hook installed beside the pre-commit gate** (`agents_block.install_hook`, so every host's session start and repo sync put it in every EpicSpine repo; a foreign hook is kept). A message that names no row, ask, epic or learning code (`E62-S2`, `M2-41`, `EPIC-63`, `E48-A1`, `L-46`) and no spine path (`docs/spines/….md`) gets one warning line; the commit always goes through. Merges, reverts, fixups and the agent_team console's own writes (`via console`, desk chat, voice note) are exempt; trailers (`Run:`, `Co-Authored-By:`) and URLs do not count. `commit_msg.py --check "<message>"` prints ok / orphan.
-- Why: agent_team E63-S7 (EPIC-63: no work without a row). The agent_team console lists the commits on main that still name no ticket for the Delivery Manager, with the same patterns (console/server/src/status/orphanCommits.ts). Test: `tests/test_commit_msg.py`. Skill 2026.11.03.2.
+- Why: agent_team E63-S7 (EPIC-63: no work without a row). The agent_team console lists the commits on main that still name no ticket for the Delivery Manager, with the same patterns (console/server/src/status/orphanCommits.ts). Test: `tests/test_commit_msg.py`. Skill 2026.11.03.4.
+=======
+## 2026.11.03.3 — Social pack: the Publisher's late-post move names "the owner"
+
+- **Changed: the Publisher's `scheduled → held` condition** says "the owner" instead of Jordi, so the agent_team console's wake text no longer lists it under "Moves that wait on Jordi" (it does not wait on him: it is the Publisher's own hold of a late post). Rule `no_late_post` unchanged.
+- Why: agent_team E60-S2 (console test e46s2: the Publisher is told no move that waits on Jordi). Skill 2026.11.03.3.
+
+## 2026.11.03.2 — Social pack: a late post never goes out
+
+- **Added: post `scheduled → held` by the Publisher** when its slot passed more than 60 min ago and Jordi has not released it since (no `Approved <when>` or `Post now <when>` note in Feedback dated at or after the slot), and the rule `no_late_post` that tells it so: a post missed while its campaign was retired or paused, its Publisher off or the egress offline waits for Jordi (Post now or Pick a new time) instead of going out late. Jordi's newer Approved or Post now note still sends it at once.
+- **Added: post `scheduled → held` by Jordi**: the agent_team console's Restore of a retired campaign holds each of its posts whose slot passed while it was retired, in one commit before the campaign is unpaused.
+- Why: agent_team E60-S2 (defect found by E60-S1 iteration 2: Restore would have sent the Epic campaign's approved P-0001 at once, hours after its 14:00 UTC slot). Test: `tests/test_pack_validate.py` `test_a_late_post_goes_back_to_held_never_out`. Skill 2026.11.03.2.
 
 ## 2026.11.03.1 — Social pack: ideas never expire; insights and kept threads are typed files
 
