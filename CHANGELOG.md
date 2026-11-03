@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026.11.03.9 — Social pack: a rejected pile for dropped ideas
+
+- **Added: idea state `rejected`** ("dropped for good; Why keeps the lesson and who dropped it"), so a dropped idea is no longer mislabelled `parked` ("not now"). Moves: `new`, `open` or `parked` → `rejected` by Jordi or the Writer (the Writer records Jordi's drop); the only way out is Jordi's undo `rejected` → `open`. Nothing removed: existing rows stay valid.
+- `packs/social/schema.json` (`idea` lifecycle, `ideas` doc) and `packs/social/README.md` (ideas line) say so.
+- Why: zenod-social EPIC-11-A2 (Jordi on EPIC-11-A1: "it should go into discarded or rejected, as a pile of things, also value in what we discard"). Tests: `tests/test_pack_validate.py` (rejected rows validate; a Scout move to rejected and a Writer undo fail), `tests/test_packs.py` (Jordi's idea moves).
+
 ## 2026.11.03.8 — Social pack: data/insights.md retired into Observations
 
 - **Changed: the Reporter's lessons are Operating Learnings lines of the epic they measure**, not `data/insights.md`. A lesson is `L-<n> | applies when | rule | source and evidence | measured <date>`; a replaced one gets `retired by L-<m>`, never deleted. A brief change the Reporter proposes (totems rule 4: two agreeing items) ends its learning line with `proposed for the brief (<part>): "<line>"`; the owner adds it or says not now on the campaign's Observations tab (the console marks the line `proposal added to the brief <date>` / `proposal not now <date>` and adds a Decision).

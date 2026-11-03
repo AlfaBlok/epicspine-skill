@@ -365,6 +365,33 @@ class Validate(unittest.TestCase):
         # the same idea on two platforms: two post rows, both valid
         self.assertEqual("", self.after("Writer", {"idea": "I-1"}, {"id": "P-0003", "platform": "X", "idea": "I-1", "community": ""}))
 
+    # zenod-social EPIC-11-A2: a dropped idea goes to the rejected pile (Why keeps the lesson); only Jordi undoes it.
+    def test_a_dropped_idea_is_rejected_and_only_jordi_takes_it_back(self) -> None:
+        ideas = self.repo.root / "data/ideas.md"
+        head = ideas.read_text()
+
+        def rows(by: str, *states: str) -> str:
+            ideas.write_text(head + "".join(f"| I-{n} | 2026-10-27 | idea {n} | text | Reddit | Scout | | {s} | |\n" for n, s in enumerate(states, 1)))
+            return "\n".join(self.repo.issues(by))
+
+        rows("Scout", "new", "new", "new")
+        self.repo.commit()
+        self.assertEqual("", rows("Writer", "rejected", "open", "parked"))
+        self.repo.commit()
+        self.assertEqual("", rows("Writer", "rejected", "rejected", "rejected"))  # open and parked -> rejected
+        self.repo.commit()
+        self.assertIn("I-1: illegal state change rejected -> open by Writer", rows("Writer", "open", "rejected", "rejected"))
+        self.assertIn("I-1: illegal state change rejected -> epic by Jordi", rows("Jordi", "epic", "rejected", "rejected"))
+        self.assertEqual("", rows("Jordi", "open", "rejected", "rejected"))  # Jordi's undo
+
+    def test_the_scout_may_not_reject_an_idea(self) -> None:
+        ideas = self.repo.root / "data/ideas.md"
+        head = ideas.read_text()
+        ideas.write_text(head + "| I-1 | 2026-10-27 | idea 1 | text | Reddit | Scout | | new | |\n")
+        self.repo.commit()
+        ideas.write_text(head + "| I-1 | 2026-10-27 | idea 1 | text | Reddit | Scout | | rejected | |\n")
+        self.assertIn("I-1: illegal state change new -> rejected by Scout", "\n".join(self.repo.issues("Scout")))
+
     # agent_team E64-S6: a reply in someone else's thread waits for Jordi when the brief holds outreach (R4 `Kind: outreach`).
     def test_outreach_held_by_a_hold_rule_goes_out_only_after_jordis_approve(self) -> None:
         brief = self.repo.root / "data/brief.md"

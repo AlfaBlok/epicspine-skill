@@ -114,7 +114,7 @@
       }
     },
     "ideas": {
-      "doc": "Ideas for posts: Jordi's drain (from: Jordi) and the Scout's; the Writer moves an idea; Jordi may drop an open one (new, open, or legacy picked up / drafted / posted -> parked); nobody deletes one. Ideas never expire: an idea stays open after a post, so one idea becomes posts on several platforms (Reddit, X, LinkedIn), each written fresh; it closes only when Jordi parks it or the Writer marks it spent with a why (agent_team E64-S4).",
+      "doc": "Ideas for posts: Jordi's drain (from: Jordi) and the Scout's; the Writer moves an idea; Jordi may drop an open one (new, open, or legacy picked up / drafted / posted -> parked); nobody deletes one. Ideas never expire: an idea stays open after a post, so one idea becomes posts on several platforms (Reddit, X, LinkedIn), each written fresh; it closes only when Jordi parks it, the Writer marks it spent with a why (agent_team E64-S4), or it is rejected: dropped for good, the Why keeping the lesson (zenod-social EPIC-11-A2).",
       "path": "data/ideas.md",
       "sections": {
         "rows": {"heading": null, "shape": "table", "add_rows": ["Jordi", "Scout"], "writers": ["Jordi", "Scout"], "fields": {
@@ -456,7 +456,8 @@
         "drafted": "legacy (before E64-S4), read as open: a post row carries it (became)",
         "posted": "legacy (before E64-S4), read as open: its post is live",
         "parked": "not now; why says until when (Writer), or Jordi dropped it",
-        "epic": "too big for one post; why names the child epic"
+        "epic": "too big for one post; why names the child epic",
+        "rejected": "dropped for good; Why keeps the lesson and who dropped it"
       },
       "transitions": [
         {"from": "new", "to": "open", "by": ["Writer"], "when": "its first post row is written (Idea = this id)"},
@@ -476,7 +477,11 @@
         {"from": "new", "to": "parked", "by": ["Writer", "Jordi"]},
         {"from": "picked up", "to": "parked", "by": ["Writer", "Jordi"], "legacy": true},
         {"from": "new", "to": "epic", "by": ["Writer"]},
-        {"from": "picked up", "to": "epic", "by": ["Writer"], "legacy": true}
+        {"from": "picked up", "to": "epic", "by": ["Writer"], "legacy": true},
+        {"from": "new", "to": "rejected", "by": ["Writer", "Jordi"], "when": "dropped for good (the Writer records Jordi's drop); Why keeps the lesson and who dropped it"},
+        {"from": "open", "to": "rejected", "by": ["Writer", "Jordi"], "when": "dropped for good (the Writer records Jordi's drop); Why keeps the lesson and who dropped it"},
+        {"from": "parked", "to": "rejected", "by": ["Writer", "Jordi"], "when": "dropped for good (the Writer records Jordi's drop); Why keeps the lesson and who dropped it"},
+        {"from": "rejected", "to": "open", "by": ["Jordi"], "when": "undo: Jordi takes the idea back"}
       ]
     }
   },
