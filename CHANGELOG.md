@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026.11.03.2 — Social pack: a late post never goes out
+
+- **Added: post `scheduled → held` by the Publisher** when its slot passed more than 60 min ago and Jordi has not released it since (no `Approved <when>` or `Post now <when>` note in Feedback dated at or after the slot), and the rule `no_late_post` that tells it so: a post missed while its campaign was retired or paused, its Publisher off or the egress offline waits for Jordi (Post now or Pick a new time) instead of going out late. Jordi's newer Approved or Post now note still sends it at once.
+- **Added: post `scheduled → held` by Jordi**: the agent_team console's Restore of a retired campaign holds each of its posts whose slot passed while it was retired, in one commit before the campaign is unpaused.
+- Why: agent_team E60-S2 (defect found by E60-S1 iteration 2: Restore would have sent the Epic campaign's approved P-0001 at once, hours after its 14:00 UTC slot). Test: `tests/test_pack_validate.py` `test_a_late_post_goes_back_to_held_never_out`. Skill 2026.11.03.2.
+
 ## 2026.11.03.1 — Social pack: ideas never expire; insights and kept threads are typed files
 
 - **Changed: ideas stay open across platforms** (`idea` lifecycle `new → open → spent`, `parked`, `epic`; `picked up`, `drafted`, `posted` kept as legacy states read as open, each with a move to `open`). One idea becomes a post per platform (a post's Idea repeats across rows); it closes only when Jordi parks it or the Writer marks it `spent` with a why. New computed field `used_on` (Used on): the idea's posts by platform (`computed.group`, `pack_export.py`); Platform holds the platforms it fits, one or more.
