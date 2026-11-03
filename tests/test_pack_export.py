@@ -42,7 +42,8 @@ class Golden(unittest.TestCase):
         d = fixture()
         self.assertTrue(d["brief"]["objective"].startswith("Acme becomes"))
         self.assertEqual("docs/spines/root.md", d["sources"]["brief.objective"]["path"])
-        self.assertEqual("data/message-house.md", d["sources"]["brief.voice"]["path"])
+        self.assertEqual("data/brief.md", d["sources"]["brief.voice"]["path"])
+        self.assertEqual("data/brief.md", d["sources"]["directions.week"]["path"])  # E64-S13: one root brief file
         self.assertEqual(["First person singular on Reddit.", "Plain words, no jargon."], d["brief"]["voice"])
         self.assertEqual("Developers who keep notes in plain files.", d["brief"]["audience"])
 
@@ -89,7 +90,7 @@ class Missing(unittest.TestCase):
         self.assertEqual([], d["directions"]["week"])
         self.assertFalse(any(s["exists"] for s in d["sources"].values()))
         missing = {w["file"] for w in d["warnings"] if w["message"] == "file missing"}
-        self.assertEqual({"docs/spines/root.md", "data/brief.md", "data/message-house.md", "data/directions.md",
+        self.assertEqual({"docs/spines/root.md", "data/brief.md",
                           "data/topics.md", "data/ideas.md", "data/posts-ledger.md", "data/assets.md"}, missing)
         self.assertIn({"file": "data/reports/{date}.md", "line": None, "message": "no files"}, d["warnings"])
         self.assertIn("no 'Pack: social' line", d["warnings"][0]["message"])
@@ -97,12 +98,25 @@ class Missing(unittest.TestCase):
     def test_a_missing_section_and_a_missing_column(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             (Path(tmp) / "data").mkdir()
-            (Path(tmp) / "data" / "directions.md").write_text("# D\n\n## Week\n\n| Id | Highlight |\n|---|---|\n| H1 | x |\n")
+            (Path(tmp) / "data" / "brief.md").write_text("# D\n\n## Week\n\n| Id | Highlight |\n|---|---|\n| H1 | x |\n")
             d = pack_export.export("social", Path(tmp), NOW)
         self.assertEqual([{"id": "H1", "highlight": "x", "why": None, "until": None, "served_by": [], "_line": 7}], d["directions"]["week"])
-        msgs = [w["message"] for w in d["warnings"] if w["file"] == "data/directions.md"]
+        msgs = [w["message"] for w in d["warnings"] if w["file"] == "data/brief.md"]
         self.assertIn("missing column(s): Why, Until", msgs)
         self.assertIn("no 'Month' section (directions.month)", msgs)
+        self.assertEqual(len(msgs), len(set(msgs)), "two file keys share data/brief.md: no warning twice")
+        self.assertIn("no 'Voice' section (brief.voice)", msgs)
+
+    def test_an_old_message_house_warns_and_is_not_read(self) -> None:
+        # agent_team E64-S13: the message house and directions were folded into data/brief.md; an old file is named, never read
+        with tempfile.TemporaryDirectory() as tmp:
+            (Path(tmp) / "data").mkdir()
+            (Path(tmp) / "data" / "message-house.md").write_text("# Message house\n\n## Voice\n\n- plain\n")
+            d = pack_export.export("social", Path(tmp), NOW)
+        self.assertEqual([], d["brief"]["voice"])
+        self.assertIn({"file": "data/message-house.md", "line": None,
+                       "message": "data/message-house.md: folded into data/brief.md (agent_team E64-S13); move its sections"}, d["warnings"])
+        self.assertFalse(any(w["file"] == "data/directions.md" for w in d["warnings"]))
 
 
     def test_campaign_column_exports_and_its_absence_warns_nothing(self) -> None:

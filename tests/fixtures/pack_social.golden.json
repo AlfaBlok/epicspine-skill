@@ -65,7 +65,7 @@
           "P-0001",
           "P-0002"
         ],
-        "_line": 7
+        "_line": 32
       },
       {
         "id": "2",
@@ -75,7 +75,7 @@
         "carried_by": [
           "P-0001"
         ],
-        "_line": 8
+        "_line": 33
       }
     ],
     "voice": [
@@ -95,7 +95,7 @@
         "why": "core difference",
         "source": "Jordi",
         "since": "2026-10-20",
-        "_line": 28
+        "_line": 53
       }
     ],
     "feedback_log": [
@@ -105,7 +105,7 @@
         "feedback": "too many emojis",
         "landed": "Style rules, line 1",
         "applied_by": "Writer",
-        "_line": 34
+        "_line": 59
       }
     ],
     "formats": [
@@ -150,7 +150,7 @@
           "P-0001",
           "P-0003"
         ],
-        "_line": 7
+        "_line": 65
       }
     ],
     "do_dont": [
@@ -158,7 +158,7 @@
         "kind": "don't",
         "rule": "mention pricing",
         "until": "2026-11-02",
-        "_line": 13
+        "_line": 71
       }
     ],
     "voice_note": "Calmer this week.",
@@ -169,7 +169,7 @@
         "why": "we need 20",
         "month": "2026-11",
         "served_by": [],
-        "_line": 23
+        "_line": 81
       }
     ]
   },
@@ -520,32 +520,32 @@
       "exists": true
     },
     "brief.key_messages": {
-      "path": "data/message-house.md",
+      "path": "data/brief.md",
       "heading": "Points to emphasize",
       "exists": true
     },
     "brief.voice": {
-      "path": "data/message-house.md",
+      "path": "data/brief.md",
       "heading": "Voice",
       "exists": true
     },
     "brief.style_rules": {
-      "path": "data/message-house.md",
+      "path": "data/brief.md",
       "heading": "Style rules",
       "exists": true
     },
     "brief.never_say": {
-      "path": "data/message-house.md",
+      "path": "data/brief.md",
       "heading": "Never say",
       "exists": true
     },
     "brief.topic_weights": {
-      "path": "data/message-house.md",
+      "path": "data/brief.md",
       "heading": "Topic weights",
       "exists": true
     },
     "brief.feedback_log": {
-      "path": "data/message-house.md",
+      "path": "data/brief.md",
       "heading": "Feedback log",
       "exists": true
     },
@@ -565,22 +565,22 @@
       "exists": true
     },
     "directions.week": {
-      "path": "data/directions.md",
+      "path": "data/brief.md",
       "heading": "Week",
       "exists": true
     },
     "directions.do_dont": {
-      "path": "data/directions.md",
+      "path": "data/brief.md",
       "heading": "This week only",
       "exists": true
     },
     "directions.voice_note": {
-      "path": "data/directions.md",
+      "path": "data/brief.md",
       "heading": "Voice note",
       "exists": true
     },
     "directions.month": {
-      "path": "data/directions.md",
+      "path": "data/brief.md",
       "heading": "Month",
       "exists": true
     },

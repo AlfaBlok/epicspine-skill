@@ -6,8 +6,8 @@ A social campaign desk: personas scan, write, post, reply and measure; the owner
 
 | File | One item is | Fields | Written by |
 |---|---|---|---|
-| brief (`data/brief.md` + sections kept where they live) | the standing brief | objective (root `## Goal`), targets (root `## Targets`), audience, key messages with weight (message house `## Points to emphasize`, as a `# · Message · Weight · Source` table), voice, style rules, never say, topic weights, feedback log (message house), formats mix (format, share, example), examples (link, like/dislike, why), hold for me (R1…, default none) | Jordi; Writer adds style rules + feedback-log lines (C6) |
-| directions (`data/directions.md`) | a week highlight, a do/don't, the month's priority | `## Week` H1… (highlight, why, until, served by), `## This week only` (do / don't, rule, until), `## Voice note`, `## Month` M1… (priority, why, month, served by) | Jordi |
+| brief (`data/brief.md`, objective and targets in the root spine) | the standing brief | objective (root `## Goal`), targets (root `## Targets`), audience, key messages with weight (`## Points to emphasize`, as a `# · Message · Weight · Source` table), voice, style rules, never say, topic weights, feedback log, formats mix (format, share, example), examples (link, like/dislike, why), hold for me (R1…, default none) | Jordi; Writer adds style rules + feedback-log lines (C6) |
+| directions (the `This week` part of `data/brief.md`; was `data/directions.md`) | a week highlight, a do/don't, the month's priority | `## Week` H1… (highlight, why, until, served by), `## This week only` (do / don't, rule, until), `## Voice note`, `## Month` M1… (priority, why, month, served by) | Jordi |
 | topics (`data/topics.md`) | a finding from today's scan, table replaced daily | rank, T-MMDD-n, topic, where, evidence link, heat, date, reply target, used by | Scout |
 | ideas (`data/ideas.md`) | an idea for a post, open across platforms (never expires) | I-n, date, idea, format, platform (the platforms it fits, one or more), from (role), link or asset, state, why, became, used on (computed: its posts by platform) | Jordi and Scout add; the Writer moves state, Jordi may drop (park) one |
 | posts (`data/posts-ledger.md`) | one post, reply in a thread, or outreach (never a DM) | P-nnnn, date, persona, kind (post / reply / outreach), platform, campaign (optional), community, slot, title, text, format, assets, topic, highlight, messages, idea, checks, link, replies, metrics, result, feedback, status | Writer, Responder, Engager write rows; Publisher the link; Reporter numbers; Jordi feedback (and text before its slot) |
@@ -85,11 +85,15 @@ At `draft → scheduled` / `draft → posted` (the text checks also at `draft �
 
 ## Desk intake (6 kinds)
 
-What Jordi says in the desk chat is one of six kinds; the desk writes it where the kind says (as Jordi, through the console's write API) and replies with where it landed (file + section link) and undo. Brief change → brief sections (root Goal/Targets, message house, brief.md); Key message → message house Points to emphasize (+ weight); Priority → directions Week / Month / This week only; Idea → ideas.md row (from: Jordi, state new, + assets); Big idea → a new child epic (Delivery manager); Feedback on a post → the post's Feedback + message house Feedback log. Unsure: ask one line back. Source: `schema.json` `intake`; prompt text: `pack.py social --wake-text` (a persona's own: `--role Writer`; [references/packs.md](../../references/packs.md) Desk intake).
+What Jordi says in the desk chat is one of six kinds; the desk writes it where the kind says (as Jordi, through the console's write API) and replies with where it landed (file + section link) and undo. Brief change → brief sections (root Goal/Targets, brief.md); Key message → brief.md Points to emphasize (+ weight); Priority → brief.md Week / Month / This week only; Idea → ideas.md row (from: Jordi, state new, + assets); Big idea → a new child epic (Delivery manager); Feedback on a post → the post's Feedback + message house Feedback log. Unsure: ask one line back. Source: `schema.json` `intake`; prompt text: `pack.py social --wake-text` (a persona's own: `--role Writer`; [references/packs.md](../../references/packs.md) Desk intake).
 
 ## Shared totems (agent_team E64-S11, approved under E64-A5 2026-11-03)
 
-Every campaign is an EpicSpine child epic of the repo's root spine, and the four totems of [references/totems.md](../../references/totems.md) are four parts of its spine file. The approved shape (scripts and checks follow in agent_team E64-S12..S14):
+Every campaign is an EpicSpine child epic of the repo's root spine, and the four totems of [references/totems.md](../../references/totems.md) are four parts of its spine file. The approved shape (scripts and checks follow in agent_team E64-S12..S14).
+
+**Done in agent_team E64-S13 (skill 2026.11.03.7):** the message house and directions are folded into `data/brief.md` (the schema's `brief.*` and `directions.*` sections all live there now, headings unchanged; `schema.json` `folded` names the old files, and `pack.py` export and validate warn about a repo still holding one, never failing a commit for it). The `## Feedback log` table stays in `data/brief.md` as the log of Jordi's feedback on posts the console writes; each note is also filed as an Operating Learning of the epic it is about.
+
+The approved shape:
 
 | Totem | Root spine (the whole team) | Campaign spine | Folds in today's |
 |---|---|---|---|

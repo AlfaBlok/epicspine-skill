@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026.11.03.7 — Social pack: one root brief file
+
+- **Changed: the social pack's message house and directions are folded into `data/brief.md`.** `packs/social/schema.json` now places every `brief.*` section (Points to emphasize, Voice, Style rules, Never say, Topic weights, Feedback log) and every `directions.*` section (Week, This week only, Voice note, Month) in `data/brief.md`, headings unchanged, so the root epic's Brief is one file (shared totems, `references/totems.md`). `pack.py init` writes them all into one `data/brief.md` and never creates `data/message-house.md` or `data/directions.md`.
+- **Added: `schema.json` `folded`** (old path → new path). `pack.py social --json` adds a warning `data/message-house.md: folded into data/brief.md (agent_team E64-S13); move its sections` for each old file a repo still holds, and `pack.py validate` prints it as `warning: …` on stderr with exit 0: never a failed commit; the old file is not read.
+- Docs: `packs/social/README.md` (files table, desk intake, Shared totems "Done in E64-S13"), `references/packs.md` (intake landings).
+- Why: agent_team EPIC-64 E64-S13 (zenod-social and epic-campaign moved into their epics under Jordi's E64-A5). Tests: `tests/test_packs.py`, `tests/test_pack_export.py` (golden regenerated: paths and line numbers only; old message house warns), `tests/test_pack_validate.py` (init writes one brief file; an old message house warns, fails no commit), `tests/test_pack_intake.py`.
+
 ## 2026.11.03.6 — Shared totems: the four parts of every epic
 
 - **New reference `references/totems.md`: the four parts of every epic a team reads at wake and leaves traces in** (Brief = Goal, Done means or Targets, plan; Observations = Operating Learnings; History = Decisions, `## Weeks` and log pages; Work = Issue Ledger task rows). Round 2 after the owner's answer to E64-A4 ("are we not using epics? … we also need tasks"): no parallel pages; a campaign is a child epic (ongoing ones `Spine kind: standing`); any one-off job is a task row with an owner, a status and an outcome; seven rules, the lifecycle of an owner's note, the console's five fixed tabs.

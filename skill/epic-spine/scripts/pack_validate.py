@@ -9,10 +9,7 @@ disclosure, never-say, caps, hold rules, link present). The writer is `--by`, el
 `Persona:` trailer in `--message`; with none, only legality is checked, not who. The commit hook runs `staged()`."""
 from __future__ import annotations
 
-import argparse
-import os
-import re
-import subprocess
+import argparse, os, re, subprocess, sys  # noqa: E401
 from collections import deque
 from pathlib import Path
 
@@ -195,5 +192,6 @@ def main(argv: list[str] | None = None) -> int:
     a = ap.parse_args(argv)
     repo = a.repo.resolve()
     issues = run(repo, a.staged, a.by, a.message.read_text(encoding="utf-8") if a.message else None)
+    sys.stderr.write("".join(f"warning: pack {n}: {w}\n" for n in pack.enabled(repo) if n in pack.available() for _, w in md.folded(pack.load(n), repo)))
     print("\n".join(issues) if issues else f"ok ({', '.join(pack.enabled(repo)) or 'no pack on'})")
     return 1 if issues else 0
