@@ -51,6 +51,8 @@ Required reads: <bootstrap map links>
 Acceptance criteria: <issue and spine criteria>
 Human gates: <named approvals or none>
 Handoff: update the issue with branch, commits, validation evidence, blocker, and next action; notify the spine steward to reconcile durable state.
+Claim: before any work, claim the row: `python3 <skill dir>/scripts/spines.py --claim <row> --by <run id or thread> --repo <checkout>` (one pushed commit; exit 3 = someone else holds it: stop and report the holder, never work it). Every commit names the row code, which renews the lease (default 2 h); `--release` gives it back if you stop.
+Review handoff: a finished outcome goes to `review` with its live link in Latest Evidence and its follow-ups in Next Action: `followups: started <code> (<what it covers>), …; start <title> — <why>; park <title> — <why>; confirm: yes — <why the user must confirm it>` (`followups: none` when there are none; `completes: <Done-means id> | goal | ask` when it finishes one). Findings work lists every finding as started or suggested. A step with nothing for the user to confirm closes `done (no confirm: <why>)` and never goes to `review`.
 ```
 
 For an Epic 0 worker that owns the project picture, use:

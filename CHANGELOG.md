@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026.11.02.13 — Claims: one holder per row, from any entry point, with a lease
+
+- **Added: `spines.py --claim ROW --by WHO` (`scripts/claim.py`)**: writes `WHO — claimed <UTC>, lease until <UTC>` into the row's Owner cell and sets Status `active`, in one commit pushed to the integration branch. It works on a fresh partial clone of `origin`, so the caller's checkout can be dirty or on a worktree branch. A live claim by someone else is refused (exit 3, naming the holder) and a closed row is refused (exit 4). A rejected push re-fetches, re-reads and re-checks, up to 3 times. `--renew` and `--release` are included. The worker brief (`references/dispatch-prompts.md` Claim) and `references/role-protocols.md` claim before work.
+- Why: agent_team E63-S3/S4 (EPIC-63, Jordi "FIX PROPER": two sessions can never take the same row, and a dead worker is noticed). Test: `tests/test_claim.py`. Skill 2026.11.02.13.
+
+## 2026.11.02.12 — Review rows carry their follow-ups; a step with nothing to confirm closes itself
+
+- **Changed: worker brief (`references/dispatch-prompts.md` Review handoff) and the `review` status (`references/role-protocols.md`)**: a row set to `review` names its follow-ups in Next Action (`followups: started <code> (<covers>); start <title> — <why>; park <title> — <why>; confirm: yes — <why>`, or `followups: none`; `completes: <Done-means id> | goal | ask`), so the user's close starts or parks each suggestion and none is dropped. Findings work lists every finding. A step the user need not confirm closes `done (no confirm: <why>)` and never reaches `review`.
+- Why: agent_team E48-S24 (E48-8 mockup v2, Jordi 2026-11-02: "if we approve, it will get lost"; Q1: a step waits for him only when he must confirm it). The agent_team console reads this cell (console/server/src/review/followups.ts). Skill 2026.11.02.12.
+
 ## 2026.11.02.11 — Social pack: Jordi can undo his request for a DM draft
 
 - **Added: chat `open → left` and `open → hidden` by Jordi (`alone`)**: the Undo of Draft a reply for me / Accept and draft a reply on the agent_team console's Messages page puts the chat back where it was. The Responder's own `open → left` (the DM rule says leave it) is unchanged.
