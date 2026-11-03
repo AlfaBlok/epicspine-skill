@@ -53,9 +53,21 @@ Default rule: **stay in `main`; isolate execution, integrate frequently.** See `
 Use these gates:
 
 - Claims (one holder per row, any entry point): a worker claims its row before work (`spines.py --claim <row> --by <run>`): the row's Owner cell reads `<by> — claimed <UTC>, lease until <UTC>` and Status `active`, in one pushed commit, and a second claim is refused naming the holder. Commits naming the row renew the lease; an expired lease puts the row back to `ready` with a note (the console does it) and the next Delivery Manager wake re-dispatches it.
-- `review`: implementation is complete, the local branch is handed off, and required automated checks pass; only a finished outcome (what the user asked for, delivered and live) waits there for the user's verdict. A row in `review` carries its follow-ups in Next Action (`followups: started …; start <title> — <why>; park <title> — <why>; confirm: yes — <why>`), so the user's close starts or parks each one and none is dropped; a step the user need not confirm (internal plumbing, a fix another card covers) closes `done (no confirm: <why>)` instead.
+- `review`: implementation is complete, the local branch is handed off, and required automated checks pass; only a finished outcome (what the user asked for, delivered and live) waits there for the user's verdict. A row in `review` carries its follow-ups in Next Action (`followups: started …; start <title> — <why>; park <title> — <why>; confirm: yes — <why>`), so the user's close starts or parks each one and none is dropped; a step the user need not confirm (internal plumbing, a fix another card covers) closes `done (no confirm: <why>)` instead. Before a row goes to `review` its worker writes the row's review card (see Review cards below); a row without one never reaches the user.
 - `testing`: the exact commit is available in the named test surface and acceptance validation is in progress.
 - `done`: acceptance has passed, evidence is linked, and the spine reflects the durable result. A step that only prepares an ask or the next build (proposal, mockup, guide, checklist page, prepared script) closes `done (fed <ask code>)` once its ask is posted, never `review`.
+
+## Review cards
+
+A review card is what the user sees for a row waiting for their verdict. It is a repo-local file, kept next to the row, so any console or review list only reads it; a repo may publish its own card format page (for example `docs/review-cards.md`) and that page wins where it differs from this summary.
+
+- Where: `docs/cards/<row code>.md` in the row's repo, found by its `row:` field or file name (add `spine: <epic file name>` when the row code is not unique in the repo).
+- Fields (front matter): `row`; `title`, one complete past-tense sentence of at most 20 words saying what was made and what it is for; `goal`, the task's own goal in at most 20 words; `delivered`, 2 to 4 lines, each `✓` for what is there or `✗` with the reason, at most 20 words each; `evidence`, the live thing or a rendered evidence page with screenshots and timestamped logs of the real event, never a code-host page (issue, PR, spine, status file) and never a dry run; `screenshot`, an image of the evidence stored in the repo. Optional: `name` (a short task name), `after` (what the team does next once it is marked complete), `next` (one `start: <step>` or `park: <step>` per line), `completes` (`goal` or the Done-means id it finishes, only when it does).
+- `confirm: yes`: in the row's Next Action (`confirm: yes — <why the user must see it>`) or in the card. Without it the row closes itself.
+- Project name and goal sentence: the repo's root spine carries `Project name: [<name>](<url>)` (an epic may name its own; the nearest up the `Parent spine:` chain wins) and the epic carries `Goal sentence: <one sentence>`. Add them if missing.
+- Plain words: every card field is written for a normal human, short complete sentences, one idea each; outside links no `;`, `(`, `)`, `/`, `|`, row codes, file paths, or the word "approve".
+- Gate: a row without `confirm: yes` closes itself; missing or code-host evidence goes back to the agents as needs evidence; a missing field or a plain-words failure goes back as card needs rewriting. The user never sees those three.
+- Nothing to judge: a row with nothing the user can open and judge (internal plumbing, a fix another card covers) writes no card and closes `done (no confirm: <why>)`; a row that only fed an ask closes `done (fed <ask code>)`.
 
 ## Human Gates And Recovery
 

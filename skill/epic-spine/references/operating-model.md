@@ -218,7 +218,7 @@ Use these statuses unless a repository already has its own vocabulary:
 - `ready`: scoped and ready for the owning role.
 - `active`: currently being worked.
 - `blocked`: cannot progress without named input or dependency.
-- `review`: implementation is complete, the local branch is handed off, and required automated checks pass. Only a finished outcome (what the user asked for, delivered and live) waits in `review` for the user's verdict.
+- `review`: implementation is complete, the local branch is handed off, and required automated checks pass. Only a finished outcome (what the user asked for, delivered and live) waits in `review` for the user's verdict, and only with its review card written: a repo-local `docs/cards/<row code>.md` with the card fields, `confirm: yes`, the root spine's `Project name:`, the epic's `Goal sentence:` and plain words (role-protocols.md "Review cards"); a row with nothing for the user to judge closes `done (no confirm: <why>)` instead.
 - `testing`: the exact commit is available in a named test surface and acceptance validation is in progress.
 - `done`: accepted against criteria, evidence is linked, and durable state is reflected in the spine. A step whose output only prepares an ask or the next build (proposal, mockup, guide, checklist page, prepared script) never goes to `review`: once its ask is posted the agent closes it `done (fed <ask code>)`; the ask is the user's one card (a console review list follows the row and drops it).
 - `superseded`: an assignment was replaced; preserve its history and point to the takeover.

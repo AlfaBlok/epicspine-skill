@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026.11.03.4 — Workers write a review card before a row goes to review
+
+- **Changed: the worker brief (`references/dispatch-prompts.md` Card line, `assets/dispatch-prompt-preamble.md`), worker handoff (`references/roles-and-dispatch.md`), the `review` status (`references/role-protocols.md`, `references/operating-model.md`) and the always-on block's review sentence**: before a row goes to `review` its worker writes the row's review card, a repo-local file `docs/cards/<row code>.md` whose front matter holds `row`, `title`, `goal`, `delivered`, `evidence` (never a code-host page or a dry run), `screenshot` and the optional `name`, `after`, `next`, `completes`; `confirm: yes` sits in the row or the card; the root spine names `Project name:` and the epic `Goal sentence:`; every field is plain words. A row with nothing for the user to judge writes no card and closes `done (no confirm: <why>)`.
+- **Added: `references/role-protocols.md` "Review cards"**: the generic card format and gate (closes itself / needs evidence / card needs rewriting); a repo's own card format page wins where it differs.
+- Why: agent_team E48-S28 (the card rule E48-S26 shipped in agent_team's console; until now only that repo's own prompts told workers to write the card). Skill 2026.11.03.4.
+
 ## 2026.11.03.3 — Social pack: the Publisher's late-post move names "the owner"
 
 - **Changed: the Publisher's `scheduled → held` condition** says "the owner" instead of Jordi, so the agent_team console's wake text no longer lists it under "Moves that wait on Jordi" (it does not wait on him: it is the Publisher's own hold of a late post). Rule `no_late_post` unchanged.
