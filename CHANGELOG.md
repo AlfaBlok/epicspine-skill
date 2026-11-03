@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.11.03.3 — Social pack: the Publisher's late-post move names "the owner"
+
+- **Changed: the Publisher's `scheduled → held` condition** says "the owner" instead of Jordi, so the agent_team console's wake text no longer lists it under "Moves that wait on Jordi" (it does not wait on him: it is the Publisher's own hold of a late post). Rule `no_late_post` unchanged.
+- Why: agent_team E60-S2 (console test e46s2: the Publisher is told no move that waits on Jordi). Skill 2026.11.03.3.
+
 ## 2026.11.03.2 — Social pack: a late post never goes out
 
 - **Added: post `scheduled → held` by the Publisher** when its slot passed more than 60 min ago and Jordi has not released it since (no `Approved <when>` or `Post now <when>` note in Feedback dated at or after the slot), and the rule `no_late_post` that tells it so: a post missed while its campaign was retired or paused, its Publisher off or the egress offline waits for Jordi (Post now or Pick a new time) instead of going out late. Jordi's newer Approved or Post now note still sends it at once.
