@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased (proposal, not for release until agent_team E64-A4 is answered) — Shared totems
+
+- **New reference `references/totems.md`: the four places every team reads at wake and leaves traces in** (Brief, Observations, History, Work), seven rules (read at wake, one History line per wake, the owner's words filed and never left in a chat, only the owner moves the brief, observations retired never deleted, digests are views, no new channel), the lifecycle of an owner's note, and the checks to build. A spine already is the four totems for a build goal (Goal/Done means, Operating Learnings, Current State/Decisions/git log, Issue Ledger).
+- **`packs/social/README.md` § Shared totems: how the social pack's files fold into the four** (world brief + campaign `## Brief` slides, `data/observations.md`, `data/history.md`, the ledgers unchanged), the desk intake pointed at the totems with campaign scope, and one totem pack in every role's wake text.
+- Why: Jordi's voice note 2026-11-03 18:16Z (agent_team EPIC-64, E64-S11; deck http://vps3.taild81fbb.ts.net:8971/). Docs only: no script or schema changes yet; the schema, intake text and checks follow in a build after his yes. The version is bumped by whoever merges it.
+
 ## 2026.11.03.5 — Hooks install beside a leak-watch core.hooksPath
 
 - **Fixed: `agents_block.install_hook` (pre-commit gate) and `commit_msg.install` (commit-msg ticket warning) now share `commit_msg.hook_file()`.** Every host sets `core.hooksPath` to infra-vps leak-watch's hooks (agent_team E59-S14), which carry `# leak-watch:hook` and run `$(git rev-parse --git-common-dir)/hooks/<name>`. The installers resolved `git rev-parse --git-path hooks/<name>`, landed on the leak-watch hook, called it foreign and skipped, so no repo set up after leak-watch got the commit-msg warning or the pre-commit gate. When the hooksPath hook is a leak-watch chainer, ours goes into the common-dir hooks it runs (one place for every worktree); any other hook there is still foreign and kept. `uninstall` uses the same path.

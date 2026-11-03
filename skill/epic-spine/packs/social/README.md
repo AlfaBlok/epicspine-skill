@@ -87,6 +87,24 @@ At `draft → scheduled` / `draft → posted` (the text checks also at `draft �
 
 What Jordi says in the desk chat is one of six kinds; the desk writes it where the kind says (as Jordi, through the console's write API) and replies with where it landed (file + section link) and undo. Brief change → brief sections (root Goal/Targets, message house, brief.md); Key message → message house Points to emphasize (+ weight); Priority → directions Week / Month / This week only; Idea → ideas.md row (from: Jordi, state new, + assets); Big idea → a new child epic (Delivery manager); Feedback on a post → the post's Feedback + message house Feedback log. Unsure: ask one line back. Source: `schema.json` `intake`; prompt text: `pack.py social --wake-text` (a persona's own: `--role Writer`; [references/packs.md](../../references/packs.md) Desk intake).
 
+## Shared totems (proposal, agent_team E64-S11: waits on ask E64-A4)
+
+The social pack's files fold into the four totems of [references/totems.md](../../references/totems.md). Proposed shape, built only after the owner says yes:
+
+| Totem | Social pack file | Holds | Folds in today's |
+|---|---|---|---|
+| Brief (world) | `data/brief.md` | positioning, key messages (weight), voice, never say, topic weights, style rules, formats, hold for me; `## This week` (was directions) | `data/brief.md`, `data/message-house.md` (all but Feedback log and Learnings), `data/directions.md`, root `## Goal` / `## Targets` stay where they are and are quoted |
+| Brief (campaign) | the campaign spine's `## Brief`, one `###` per slide: What this is, Why this campaign, The bet, Who and where, How we sound, What we measure and hope, My calls and not doing | what this campaign wants and where it differs from the world brief | `## Campaign plan` and its one-pager (E64-S3), the campaign deck files and their servers (the console draws the deck from this section) |
+| Observations | `data/observations.md`: `## Your notes` (date, note, where from, landed on, state), `## What's working` (IN-n, as insights today), `## Proposed brief changes` (MC-n), `## Retired` | what we learned, with evidence; a campaign column scopes a line | `data/insights.md`, message house `## Feedback log` and `## Learnings` |
+| History | `data/history.md`: `## Week of <date>` + one sentence, `### <date>` + one sentence, `- HH:MM <Role>: <what>, <link>` | one line per wake (rule 2); the Reporter writes the day and week sentences each evening | the Reporter's daily report summary (the report file stays as the day's detail, linked), the digest message (drawn from it), `data/onboarding-log.md` |
+| Work | `data/ideas.md`, `data/threads.md`, `data/posts-ledger.md`, `data/messages-ledger.md`, `data/assets.md` | unchanged | `data/topics.md`: rows kept go to threads or ideas; the daily top list is the Scout's scratch, read by no other role |
+
+**Desk intake, pointed at the totems.** Brief change, Key message, Priority → the Brief: the campaign's slide when the note is about one campaign, the world brief when it is about all (ask "this campaign or all?" when unclear), plus a `## Your notes` line. Feedback on a post → the post's Feedback and a `## Your notes` line. Idea → `data/ideas.md`. Big idea → a new campaign (Delivery manager). A comment on a brief slide → the campaign chat rewrites that slide at once, with Undo. Every kind also adds a History line, and the reply links to where it landed.
+
+**Wake text.** Every role (Scout, Writer, Responder, Engager, Reporter, Publisher for its due posts only) gets the same totem pack at the top of its wake: world brief and campaign brief, active observations, History weeks plus lines since its last wake, its own queue. The Writer brief of E64-S4 becomes this pack plus its ideas pool and posted history.
+
+**Who writes what, added.** Every role: one History line per wake. Reporter: the day and week sentences, `## What's working`, `## Proposed brief changes`. Desk (as Jordi): Brief and `## Your notes`. Jordi: everything in Brief, accept or dismiss a proposed change.
+
 ## From today's zenod-social (for E34-S4)
 
 Listener → Scout; Author → Writer (+ Publisher). The posts ledger keeps its 8 columns and gains Id, Kind, Community, Slot, Text, Format, Assets, Topic, Highlight, Messages, Idea, Checks, Metrics, Feedback; old status `draft (manual)` and `approved` map to `draft`. Topics gain Id and Heat (+ Reply target). Points to emphasize becomes a table with Weight. brief.md, directions.md, ideas.md, assets.md and reports/ are new.
