@@ -87,9 +87,9 @@ At `draft → scheduled` / `draft → posted` (the text checks also at `draft �
 
 What Jordi says in the desk chat is one of six kinds; the desk writes it where the kind says (as Jordi, through the console's write API) and replies with where it landed (file + section link) and undo. Brief change → brief sections (root Goal/Targets, message house, brief.md); Key message → message house Points to emphasize (+ weight); Priority → directions Week / Month / This week only; Idea → ideas.md row (from: Jordi, state new, + assets); Big idea → a new child epic (Delivery manager); Feedback on a post → the post's Feedback + message house Feedback log. Unsure: ask one line back. Source: `schema.json` `intake`; prompt text: `pack.py social --wake-text` (a persona's own: `--role Writer`; [references/packs.md](../../references/packs.md) Desk intake).
 
-## Shared totems (proposal, round 2, agent_team E64-S11: waits on ask E64-A5)
+## Shared totems (agent_team E64-S11, approved under E64-A5 2026-11-03)
 
-Every campaign is an EpicSpine child epic of the repo's root spine, and the four totems of [references/totems.md](../../references/totems.md) are four parts of its spine file. Proposed shape, built only after the owner says yes:
+Every campaign is an EpicSpine child epic of the repo's root spine, and the four totems of [references/totems.md](../../references/totems.md) are four parts of its spine file. The approved shape (scripts and checks follow in agent_team E64-S12..S14):
 
 | Totem | Root spine (the whole team) | Campaign spine | Folds in today's |
 |---|---|---|---|

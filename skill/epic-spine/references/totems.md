@@ -1,6 +1,6 @@
 # Shared totems: the four parts of every epic a team reads and leaves traces in
 
-> **Status: proposal, round 2** (agent_team EPIC-64 row E64-S11, 2026-11-03). It waits on the owner's answer to agent_team ask E64-A5 (round 1 was E64-A4: the owner asked "are we not using epics? … everything should land in an epic file" and "we also need tasks"). The deck is at http://vps3.taild81fbb.ts.net:8971/ (tailnet). Nothing here binds until that ask is answered and this branch is merged.
+> **Status: approved** (agent_team EPIC-64: designed in E64-S11, approved by the owner under ask E64-A5 on 2026-11-03, after round 1 ask E64-A4 where the owner asked "are we not using epics? … everything should land in an epic file" and "we also need tasks"). Deck: http://vps3.taild81fbb.ts.net:8971/ (tailnet). This page is the doctrine; the `## Weeks` validation, intake text and checks land in agent_team E64-S12..S14.
 
 A team of agents works well when every member reads the same few places when it wakes and writes back to the same places when it is done. It fails quietly when each new feature adds a channel (a file, a table, a message kind), because then a note lands somewhere that nobody is handed at the next wake.
 

@@ -1,10 +1,10 @@
 # Changelog
 
-## Unreleased (proposal, not for release until agent_team E64-A5 is answered) — Shared totems, round 2
+## 2026.11.03.6 — Shared totems: the four parts of every epic
 
 - **New reference `references/totems.md`: the four parts of every epic a team reads at wake and leaves traces in** (Brief = Goal, Done means or Targets, plan; Observations = Operating Learnings; History = Decisions, `## Weeks` and log pages; Work = Issue Ledger task rows). Round 2 after the owner's answer to E64-A4 ("are we not using epics? … we also need tasks"): no parallel pages; a campaign is a child epic (ongoing ones `Spine kind: standing`); any one-off job is a task row with an owner, a status and an outcome; seven rules, the lifecycle of an owner's note, the console's five fixed tabs.
 - **`packs/social/README.md` § Shared totems: each social file folds into the root or a campaign epic's sections**, task owners per role (a ticket worker when none fits), desk intake pointed at the epic, one pack in every role's wake text.
-- Why: agent_team EPIC-64 E64-S11 (deck http://vps3.taild81fbb.ts.net:8971/). Docs only: no script or schema changes yet; `## Weeks` validation, the intake text and the checks follow in a build after the owner's yes. The version is bumped by whoever merges it.
+- Why: agent_team EPIC-64 E64-S11 (deck http://vps3.taild81fbb.ts.net:8971/). Approved by the owner under agent_team E64-A5 (2026-11-03). Docs only: no script or schema changes yet; `## Weeks` validation, the intake text and the checks follow in agent_team E64-S12..S14. Book deck names `references/totems.md`. Skill 2026.11.03.6.
 
 ## 2026.11.03.5 — Hooks install beside a leak-watch core.hooksPath
 
