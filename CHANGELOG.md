@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026.11.03.8 — Social pack: data/insights.md retired into Observations
+
+- **Changed: the Reporter's lessons are Operating Learnings lines of the epic they measure**, not `data/insights.md`. A lesson is `L-<n> | applies when | rule | source and evidence | measured <date>`; a replaced one gets `retired by L-<m>`, never deleted. A brief change the Reporter proposes (totems rule 4: two agreeing items) ends its learning line with `proposed for the brief (<part>): "<line>"`; the owner adds it or says not now on the campaign's Observations tab (the console marks the line `proposal added to the brief <date>` / `proposal not now <date>` and adds a Decision).
+- `packs/social/schema.json` `insights` doc and `packs/social/README.md` (files table, Reporter row) say so; the `insights` file kind stays optional and readable, so a repo keeping the file as evidence still validates. No script change.
+- Why: agent_team EPIC-64 E64-S14 (the five campaign tabs read the epic's parts), under the owner's E64-A5.
+
 ## 2026.11.03.7 — Social pack: one root brief file
 
 - **Changed: the social pack's message house and directions are folded into `data/brief.md`.** `packs/social/schema.json` now places every `brief.*` section (Points to emphasize, Voice, Style rules, Never say, Topic weights, Feedback log) and every `directions.*` section (Week, This week only, Voice note, Month) in `data/brief.md`, headings unchanged, so the root epic's Brief is one file (shared totems, `references/totems.md`). `pack.py init` writes them all into one `data/brief.md` and never creates `data/message-house.md` or `data/directions.md`.
