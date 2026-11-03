@@ -50,7 +50,7 @@ def role_text(schema: dict, role: str) -> str:
     bind: list[str] = []
     for name, lc in schema["lifecycles"].items():
         plain: list[str] = []
-        for t in (t for t in lc["transitions"] if role in t["by"]):
+        for t in (t for t in lc["transitions"] if role in t["by"] and not t.get("legacy")):  # legacy moves still validate, never taught
             ck = [k for k, c in schema["checks"].items() if f"{t['from']}>{t['to']}" in c.get("at", []) and name in c.get("lifecycles", [name])]
             used.update({k: schema["checks"][k] for k in ck})
             names = [k + (f" ({'/'.join(schema['checks'][k]['platforms'])})" if schema["checks"][k].get("platforms") else "") for k in ck]

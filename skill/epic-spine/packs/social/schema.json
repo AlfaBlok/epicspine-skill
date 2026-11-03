@@ -461,16 +461,15 @@
         {"from": "picked up", "to": "open", "by": ["Writer"], "when": "legacy state moved to open"},
         {"from": "drafted", "to": "open", "by": ["Writer"], "when": "legacy state moved to open"},
         {"from": "posted", "to": "open", "by": ["Writer"], "when": "legacy state moved to open"},
-        {"from": "drafted", "to": "parked", "by": ["Writer", "Jordi"], "when": "a legacy state is open: Jordi's drop (park) works on it"},
-        {"from": "posted", "to": "parked", "by": ["Writer", "Jordi"], "when": "a legacy state is open: Jordi's drop (park) works on it"},
-        {"from": "new", "to": "picked up", "by": ["Writer"]},
-        {"from": "picked up", "to": "drafted", "by": ["Writer"]},
-        {"from": "drafted", "to": "posted", "by": ["Writer"]},
+        {"from": "drafted", "to": "parked", "by": ["Writer", "Jordi"], "legacy": true},
+        {"from": "posted", "to": "parked", "by": ["Writer", "Jordi"], "legacy": true},
+        {"from": "new", "to": "picked up", "by": ["Writer"], "legacy": true},
+        {"from": "picked up", "to": "drafted", "by": ["Writer"], "legacy": true},
+        {"from": "drafted", "to": "posted", "by": ["Writer"], "legacy": true},
         {"from": "new", "to": "parked", "by": ["Writer", "Jordi"]},
-        {"from": "picked up", "to": "parked", "by": ["Writer", "Jordi"]},
-        {"from": "parked", "to": "picked up", "by": ["Writer"]},
+        {"from": "picked up", "to": "parked", "by": ["Writer", "Jordi"], "legacy": true},
         {"from": "new", "to": "epic", "by": ["Writer"]},
-        {"from": "picked up", "to": "epic", "by": ["Writer"]}
+        {"from": "picked up", "to": "epic", "by": ["Writer"], "legacy": true}
       ]
     }
   },
