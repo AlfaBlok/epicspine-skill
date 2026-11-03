@@ -19,6 +19,7 @@ EXEMPT_SUBJECT = re.compile(r"^(?:Merge\b|Revert\b|fixup! |squash! |amend! |epic
 EXEMPT_MESSAGE = re.compile(r"\bvia console\b|\((?:console|desk chat)\)|\(Jordi, (?:asking the Team desk|his voice note|desk chat)\)", re.I)
 TRAILER = re.compile(r"^(?:Run|Ready|Co-Authored-By|Signed-off-by|Reviewed-by|Change-Id):\s", re.I)
 MARK = "# epicspine:commit-msg"
+CHAINER_MARK = "leak-watch:hook"  # infra-vps leak-watch (agent_team E59-S14): core.hooksPath hooks that exec the common-dir hook
 
 
 def names_ticket(message: str) -> bool:
@@ -43,12 +44,30 @@ def hook_text(skills: str) -> str:
             f'for s in {skills}; do\n  [ -f "$s/scripts/commit_msg.py" ] && exec python3 "$s/scripts/commit_msg.py" "$@"\ndone\nexit 0\n')
 
 
+def hook_file(repo: Path, name: str) -> Path | None:
+    """Where the repo's ``name`` hook goes (honors core.hooksPath); None outside a git repo. A core.hooksPath hook
+    that is a leak-watch chainer runs ``$(git rev-parse --git-common-dir)/hooks/<name>``, so ours goes there, beside
+    it (agent_team E63-S10); any other hook there stays foreign."""
+    def git(*args: str) -> str:
+        done = subprocess.run(["git", "-C", str(repo), "rev-parse", *args], capture_output=True, text=True)
+        return done.stdout.strip() if done.returncode == 0 else ""
+    path = git("--git-path", f"hooks/{name}")
+    if not path:
+        return None
+    hook = repo / path
+    if hook.is_file() and CHAINER_MARK in hook.read_text(encoding="utf-8", errors="replace"):
+        common = git("--git-common-dir")
+        chained = repo / common / "hooks" / name if common else None
+        if chained and chained.resolve() != hook.resolve():
+            return chained
+    return hook
+
+
 def install(repo: Path, skills: str) -> None:
-    """Write the repo's commit-msg hook (honors core.hooksPath); never replaces a foreign hook."""
-    done = subprocess.run(["git", "-C", str(repo), "rev-parse", "--git-path", "hooks/commit-msg"], capture_output=True, text=True)
-    if done.returncode != 0 or not done.stdout.strip():
+    """Write the repo's commit-msg hook (honors core.hooksPath and leak-watch chainers); never replaces a foreign hook."""
+    hook = hook_file(repo, "commit-msg")
+    if hook is None:
         return
-    hook = repo / done.stdout.strip()
     old = hook.read_text(encoding="utf-8", errors="replace") if hook.is_file() else None
     if old is not None and MARK not in old:
         print(f"commit-msg: foreign hook at {hook}; EpicSpine ticket check not installed")

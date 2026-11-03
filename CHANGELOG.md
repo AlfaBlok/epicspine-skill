@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.11.03.5 — Hooks install beside a leak-watch core.hooksPath
+
+- **Fixed: `agents_block.install_hook` (pre-commit gate) and `commit_msg.install` (commit-msg ticket warning) now share `commit_msg.hook_file()`.** Every host sets `core.hooksPath` to infra-vps leak-watch's hooks (agent_team E59-S14), which carry `# leak-watch:hook` and run `$(git rev-parse --git-common-dir)/hooks/<name>`. The installers resolved `git rev-parse --git-path hooks/<name>`, landed on the leak-watch hook, called it foreign and skipped, so no repo set up after leak-watch got the commit-msg warning or the pre-commit gate. When the hooksPath hook is a leak-watch chainer, ours goes into the common-dir hooks it runs (one place for every worktree); any other hook there is still foreign and kept. `uninstall` uses the same path.
+- Why: agent_team E63-S10 (found by E63-S5: a commit naming no ticket never warned on vps1 or vps3). Tests: `tests/test_commit_msg.py` (plain repo, leak-watch hooksPath, foreign hooksPath hook, worktree). Skill 2026.11.03.5.
+
 ## 2026.11.03.4 — Batch: review cards before review; " · " counts as a paragraph break; a Publisher sends only its own campaign's posts; every commit names its ticket
 
 One release for four agent_team rows (E48-S28, E61-S7, E60-S4, E63-S7), merged together on wt/skill-batch-1103 (agent_team E48-A3, root L-41: one topic, one ask). Merging it covers wt/e48-s28, wt/e61-s7, wt/e60-s4 and wt/e63-s7-commit-msg.
