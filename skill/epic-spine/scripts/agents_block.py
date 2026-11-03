@@ -21,6 +21,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import commit_msg  # noqa: E402
 import global_install  # noqa: E402
 
 SKILL_DIR = Path(__file__).resolve().parent.parent
@@ -65,8 +66,12 @@ def hook_path(repo: Path) -> Path | None:
     return repo / done.stdout.strip() if done.returncode == 0 and done.stdout.strip() else None
 
 
+def hook_skills() -> str:
+    return " ".join((f'"{global_install.ig.install_dir(global_install.SKILL_DIR) or SKILL_DIR}"', *HOOK_SKILLS))  # never a worktree path
+
+
 def hook_text() -> str:
-    skills = " ".join((f'"{global_install.ig.install_dir(global_install.SKILL_DIR) or SKILL_DIR}"', *HOOK_SKILLS))  # never a worktree path
+    skills = hook_skills()
     return (f"#!/bin/sh\n{HOOK_MARK} (managed by agents_block.py; logic lives in the skill; commits need --trackable spines/tickets)\n"
             f'for s in {skills}; do\n  [ -f "$s/scripts/pre_commit.py" ] && exec python3 "$s/scripts/pre_commit.py" "$@"\ndone\nexit 0\n')
 
@@ -82,6 +87,7 @@ def install_hook(repo: Path) -> None:
         hook.parent.mkdir(parents=True, exist_ok=True)
         hook.write_text(hook_text(), encoding="utf-8")
         hook.chmod(0o755)
+    commit_msg.install(repo, hook_skills())  # E63-S7: and the commit-msg ticket warning, beside it
 
 
 def install(repo: Path, root_spine: str | None = None, mirrors: bool = False) -> int:
