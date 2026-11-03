@@ -1,8 +1,8 @@
 # Changelog
 
-## 2026.11.03.4 — Batch: review cards before review; " · " counts as a paragraph break; a Publisher sends only its own campaign's posts
+## 2026.11.03.4 — Batch: review cards before review; " · " counts as a paragraph break; a Publisher sends only its own campaign's posts; every commit names its ticket
 
-One release for three agent_team rows (E48-S28, E61-S7, E60-S4), merged together on wt/skill-batch-1103 (agent_team E48-A3, root L-41: one topic, one ask). Merging it covers wt/e48-s28, wt/e61-s7 and wt/e60-s4.
+One release for four agent_team rows (E48-S28, E61-S7, E60-S4, E63-S7), merged together on wt/skill-batch-1103 (agent_team E48-A3, root L-41: one topic, one ask). Merging it covers wt/e48-s28, wt/e61-s7, wt/e60-s4 and wt/e63-s7-commit-msg.
 
 ### Workers write a review card before a row goes to review
 
@@ -19,6 +19,11 @@ One release for three agent_team rows (E48-S28, E61-S7, E60-S4), merged together
 
 - **Added: rule `own_campaign_posts` (Publisher).** A row belongs to the campaign whose epic code is in its Campaign cell; an empty cell is the repo level's (the root spine). A Publisher bound to a campaign acts only on that campaign's rows; one bound to the root spine acts on rows with no Campaign plus the rows of a live campaign with no Publisher of its own. Nobody sends a retired campaign's posts: they wait until Jordi restores the campaign or tags the row for a live one. A Campaign naming no campaign of the repo is nobody's.
 - Why: agent_team E60-S4, a defect found by E60-S1 iteration 3. epic-campaign's new Get testers Publisher would also have sent the retired Epic campaign's approved P-0001..P-0003, because a Publisher treated every due post of its repo as its own. The agent_team console enforces the same split in its wake gate and its Publisher brief. Test: `tests/test_packs.py` `test_publisher_sends_only_its_own_campaigns_posts`. Skill 2026.11.03.4.
+
+### Every commit names its ticket: a commit-msg hook warns
+
+- **Added: `scripts/commit_msg.py`, a commit-msg hook installed beside the pre-commit gate** (`agents_block.install_hook`, so every host's session start and repo sync put it in every EpicSpine repo; a foreign hook is kept). A message that names no row, ask, epic or learning code (`E62-S2`, `M2-41`, `EPIC-63`, `E48-A1`, `L-46`) and no spine path (`docs/spines/….md`) gets one warning line; the commit always goes through. Merges, reverts, fixups and the agent_team console's own writes (`via console`, desk chat, voice note) are exempt; trailers (`Run:`, `Co-Authored-By:`) and URLs do not count. `commit_msg.py --check "<message>"` prints ok / orphan.
+- Why: agent_team E63-S7 (EPIC-63: no work without a row). The agent_team console lists the commits on main that still name no ticket for the Delivery Manager, with the same patterns (console/server/src/status/orphanCommits.ts). Test: `tests/test_commit_msg.py`. Skill 2026.11.03.4.
 
 ## 2026.11.03.3 — Social pack: the Publisher's late-post move names "the owner"
 
