@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.11.03.4 — Social pack: a Publisher sends only its own campaign's posts
+
+- **Added: rule `own_campaign_posts` (Publisher).** A row belongs to the campaign whose epic code is in its Campaign cell; an empty cell is the repo level's (the root spine). A Publisher bound to a campaign acts only on that campaign's rows; one bound to the root spine acts on rows with no Campaign plus the rows of a live campaign with no Publisher of its own. Nobody sends a retired campaign's posts: they wait until Jordi restores the campaign or tags the row for a live one. A Campaign naming no campaign of the repo is nobody's.
+- Why: agent_team E60-S4, a defect found by E60-S1 iteration 3. epic-campaign's new Get testers Publisher would also have sent the retired Epic campaign's approved P-0001..P-0003, because a Publisher treated every due post of its repo as its own. The agent_team console enforces the same split in its wake gate and its Publisher brief. Test: `tests/test_packs.py` `test_publisher_sends_only_its_own_campaigns_posts`. Skill 2026.11.03.4.
+
 ## 2026.11.03.3 — Social pack: the Publisher's late-post move names "the owner"
 
 - **Changed: the Publisher's `scheduled → held` condition** says "the owner" instead of Jordi, so the agent_team console's wake text no longer lists it under "Moves that wait on Jordi" (it does not wait on him: it is the Publisher's own hold of a late post). Rule `no_late_post` unchanged.
