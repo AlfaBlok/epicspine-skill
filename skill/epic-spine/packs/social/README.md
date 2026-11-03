@@ -32,9 +32,11 @@ A social campaign desk: personas scan, write, post, reply and measure; the owner
 | held | scheduled | Writer | Jordi approved it with feedback (`Approved with feedback <date>: …` in Feedback): the Writer applies it to the text, then schedules it |
 | scheduled | posted | Publisher | its slot; link in the same commit |
 | scheduled | expired | Publisher | best-before passed |
+| scheduled | held | Publisher | its slot passed over 60 min ago and Jordi has not released it since (his `Approved` or `Post now` note dated at or after the slot): a late post never goes out, it waits for Jordi (rule `no_late_post`, agent_team E60-S2) |
 | draft | posted | Responder, Engager | reply / outreach rows, checks pass |
 | posted | measured | Reporter (any); Responder, Engager (their rows) | 48 h after posting |
 | draft, held, scheduled | pulled | Jordi | unscheduled, never goes out |
+| scheduled | held | Jordi | Restore of a retired campaign: its posts whose slot passed while it was retired come back held, for him to post now or give a new slot (agent_team E60-S2) |
 | posted, measured | pulled | Jordi | the Publisher deletes the live post at once, link kept (C5) |
 | pulled | held, scheduled, draft | Jordi | Undo of a pull (restore) on a post that never went out (no Link): back to the status it had before, with its slot; a scheduled post whose slot has passed comes back `held`, for him to post now or give a new slot |
 
@@ -71,7 +73,7 @@ The message lifecycle declares its own `approval_gate: true`, so the pack's "no 
 | Jordi (console, digest, desk chat) | brief, directions, ideas (from: Jordi), assets, post feedback, approve held (with or without feedback, or with a new slot when its slot has passed), ask for a new version of a held post (revise), pull any, restore a pulled post that never went out | (nothing waits for him unless a hold rule holds it) |
 | Scout | topics; adds ideas; threads (adds, scores, watch / skipped / cooled) | posts |
 | Writer | post rows as draft; draft → scheduled / held; held → scheduled once Jordi approved it with feedback and the feedback is applied; a new version of a held post on Jordi's `Revise requested` note (stays held, Checks starts `Revised <date>`); idea state; style rule from 2× feedback (C6, undo = revert); asset rows for its posts' diagrams | schedule a failing draft, release a held post Jordi did not approve, post |
-| Publisher | scheduled → posted (link) / expired; deletes pulled live posts | post a draft or held post, change text |
+| Publisher | scheduled → posted (link) / expired; scheduled → held when its slot passed over 60 min ago and Jordi has not released it since (`no_late_post`); deletes pulled live posts | post a draft or held post, post late, change text |
 | Responder · Engager | reply / outreach rows: draft → posted → measured; replies, metrics. Engager: outreach draft → held when a hold rule matches, sends it after Jordi's Approve (scheduled → posted) or marks it cooled (expired); threads' Reply and drafted / sent / skipped / cooled. Responder: the messages ledger (chats, their messages, DM drafts; sends only replies Jordi scheduled) | top-level posts; a DM in the posts ledger; send a DM draft |
 | Delivery manager | moves rows between pack files (old DM rows → messages ledger; the posts row → `moved`) | any other edit |
 | Reporter | posted → measured, metrics, result, reports; insights (lines active / retired) and proposed calls | any other status; accept a call |
