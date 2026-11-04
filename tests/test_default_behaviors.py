@@ -91,6 +91,16 @@ class DefaultBehaviorsTest(unittest.TestCase):
         for needle in ("same session", "check-curl.sh", "read cold", "keeping every fact"):
             self.assertIn(needle, ref)
 
+    def test_every_deliverable_url_goes_into_the_spine_for_the_book(self) -> None:
+        """agent_team EPIC-47 E47-4: each book section lists everything made for its epic, read from the spine, kept as the work goes."""
+        line = next(l for l in self.agents_block().splitlines() if l.startswith("Epic Book:"))
+        for needle in ("Every URL made for the goal", "the moment it exists", "Everything made for this", "stays in the spine", "Deliverable Links"):
+            self.assertIn(needle, line)
+        ref = read("skill/epic-spine/references/spine-model.md")
+        self.assertIn("### Deliverable Links", ref)
+        for needle in ("Latest Evidence", "Never delete a link", "preview-registry.mjs", "Open it at"):
+            self.assertIn(needle, ref)
+
     def test_repo_block_is_thin_pointer_without_shared_rules(self) -> None:
         for name, text in (("template", read("skill/epic-spine/assets/agents-block.md")), ("AGENTS.md", self.repo_block())):
             self.assertLessEqual(len(text.strip().splitlines()), 8, name)
