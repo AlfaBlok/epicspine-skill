@@ -22,6 +22,7 @@
  * axes: light/grotesk-sans/cool · posture: restrained · contrast: pass · fold: pass · draw: b45a7a · v2.0.0 */
 /* Hallmark · pre-emit critique: P4 H5 E4 S4 R4 V4 · weakest: S, a waitlist page could be anyone's; led with the real post flow (idea, research, draft, your OK, replies) playing in the hero instead of claims */
 /* Hallmark · waive 47c · the approval inbox built as a sample inside the hero figure · the inbox is private to each customer, no public screen to capture */
+/* Hallmark · E43-S7 · a "The real tool" section after the hero carries real social.alpha9.io screens (taken read-only, agent_team console/scripts/e43s7-shots.mjs); the hero keeps its built sample */
 /* Hallmark · reworded "Idea persona" to "Ideas agent", "four AI personas" to "four AI agents" · Jordi: not too techy, AI agents */
 /* Hallmark · waive 79 · the water stage runs to y 860 at 1440 x 900; only the head column ends at 726, the hero's lit panel fills the screen */
 /* Hallmark · waive 44c · Stage visual bleeding off the outer edge; the water light runs to the right edge of the window by design of the hero */
@@ -253,6 +254,12 @@ button, input, textarea { font: inherit; color: inherit; }
 .foot nav { display: flex; gap: var(--space-md); flex-wrap: wrap; }
 .foot p { max-width: 62ch; }
 
+.real-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-lg); margin-top: var(--space-lg); }
+.shot { margin: 0; display: grid; gap: var(--space-sm); align-content: start; }
+.shot .frame { border-radius: var(--radius-inner); overflow: hidden; background: var(--color-paper); box-shadow: inset 0 0 0 1px var(--color-rule), var(--shadow-card); }
+.shot .frame img { display: block; width: 100%; height: auto; }
+.shot figcaption { font-size: var(--text-sm); color: var(--color-muted); }
+.shot--big { margin-top: var(--space-xl); }
 @media (max-width: 68rem) {
   .nav .links { display: none; }
   .hero .container { grid-template-columns: minmax(0, 1fr); min-height: 0; gap: var(--space-xl); padding-block: var(--space-xl) var(--space-2xl); }
@@ -268,7 +275,7 @@ button, input, textarea { font: inherit; color: inherit; }
   .figures { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: var(--space-xl); }
   .price { position: static; }
 }
-@media (max-width: 60rem) { :root { --gutter: 24px; --section-gap-s: 88px; --section-gap: 104px; } }
+@media (max-width: 60rem) { .real-grid { grid-template-columns: minmax(0, 1fr); } :root { --gutter: 24px; --section-gap-s: 88px; --section-gap: 104px; } }
 @media (max-width: 40rem) {
   :root { --gutter: 16px; --section-gap-s: 72px; --section-gap: 88px; --gap-columns: 16px; }
   .head { margin-bottom: var(--space-xl); }
@@ -289,11 +296,12 @@ button, input, textarea { font: inherit; color: inherit; }
 <body>
 
 <!-- E43-S2 (EPIC-43): the brand family's shared header line, as on epicspine.dev, team.alpha9.io and social.alpha9.io -->
-<div class="family" aria-label="The Epic family"><div class="container"><a href="https://epicspine.dev/">EpicSpine</a><span>EpicTeam</span><b>EpicSocial</b></div></div>
+<div class="family" aria-label="The Epic family"><div class="container"><a href="https://epicspine.dev/">EpicSpine</a><a href="https://epicspine.dev/team/">EpicTeam</a><b>EpicSocial</b></div></div>
 
 <header class="nav"><div class="container">
   <a class="wordmark" href="#top" aria-label="EpicSocial, back to top"><svg viewBox="0 0 32 32" aria-hidden="true"><g fill="#7c3bed"><path d="M6 0h20a6 6 0 0 1 6 6v16a6 6 0 0 1-6 6H15l-8 4v-4H6a6 6 0 0 1-6-6V6a6 6 0 0 1 6-6z"/></g><g fill="#fff"><g transform="translate(2.98 0) skewX(-12)"><path d="M8 8A4 4 0 0 1 12 4L24 4L24 8L14 8L14 12L20 12A4 4 0 0 1 24 16L24 20A4 4 0 0 1 20 24L8 24L8 20L18 20L18 16L12 16A4 4 0 0 1 8 12Z"/></g></g></svg>EpicSocial</a>
   <nav class="links" aria-label="Sections">
+    <a href="#real">The real tool</a>
     <a href="#flow">How a post is made</a>
     <a href="#team">The team</a>
     <a href="#week">A week</a>
@@ -342,6 +350,32 @@ button, input, textarea { font: inherit; color: inherit; }
       <figcaption class="caption">Example: Forno Lume, a made-up bakery.</figcaption>
     </figure>
   </div>
+</div></section>
+
+<section class="section section--paper2" id="real"><div class="container">
+  <div class="head">
+    <h2>The real tool, today.</h2>
+    <p>Our own EpicSocial team on 4 November 2026: every post on one board, waiting for an OK.</p>
+  </div>
+  <figure class="shot shot--big">
+    <div class="frame"><picture><source media="(max-width: 40rem)" srcset="shots/pipeline-phone.webp" width="780" height="1688"><img src="shots/pipeline.webp" width="1600" height="1000" loading="lazy" alt="The EpicSocial pipeline: ideas from the Scout, drafts ready for you with Schedule, Give feedback and Don't post, scheduled posts and posted ones."></picture></div>
+    <figcaption>The pipeline. Drafts wait until you press Schedule.</figcaption>
+  </figure>
+  <div class="real-grid">
+    <figure class="shot">
+      <div class="frame"><picture><source media="(max-width: 40rem)" srcset="shots/personas-phone.webp" width="780" height="1688"><img src="shots/personas.webp" width="1600" height="1219" loading="lazy" alt="Personas: the Scout finds threads and ideas, the Writer drafts posts, the Responder answers replies, each with its model, its runs, what it did lately and its skills."></picture></div>
+      <figcaption>Personas, each with one job and its own skills.</figcaption>
+    </figure>
+    <figure class="shot">
+      <div class="frame"><picture><source media="(max-width: 40rem)" srcset="shots/post-phone.webp" width="780" height="1688"><img src="shots/post.webp" width="1600" height="1000" loading="lazy" alt="One scheduled X post: when it goes out, which campaign it belongs to, who wrote it with which skills, and its text."></picture></div>
+      <figcaption>A scheduled post, with who wrote it and when it goes out.</figcaption>
+    </figure>
+    <figure class="shot">
+      <div class="frame"><picture><source media="(max-width: 40rem)" srcset="shots/skills-phone.webp" width="780" height="1688"><img src="shots/skills.webp" width="1600" height="1125" loading="lazy" alt="The skills page: one library the whole team shares, each skill pinned to a version."></picture></div>
+      <figcaption>One skill library for the whole team.</figcaption>
+    </figure>
+  </div>
+  <p class="lane-note">EpicSocial runs on <a href="../team/">EpicTeam</a>: the same inbox, personas and shared sign-ins.</p>
 </div></section>
 
 <section class="section" id="flow"><div class="container">
@@ -485,7 +519,7 @@ button, input, textarea { font: inherit; color: inherit; }
 </main>
 
 <footer class="foot"><div class="container">
-  <div class="brand"><b>EpicSocial</b><nav aria-label="The Epic family"><a href="https://epicspine.dev/">EpicSpine</a><span>EpicTeam</span><span>EpicSocial</span></nav></div>
+  <div class="brand"><b>EpicSocial</b><nav aria-label="The Epic family"><a href="https://epicspine.dev/">EpicSpine</a><a href="https://epicspine.dev/team/">EpicTeam</a><span>EpicSocial</span></nav></div>
   <p>Alpha release. EpicSocial runs on EpicTeam and EpicSpine, both open source. Our first team, running on our own product, posts for Zenod; EpicSocial opens right after the Zenod launch. No cookies, no trackers.</p>
 </div></footer>
 
