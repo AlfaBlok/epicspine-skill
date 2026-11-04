@@ -254,7 +254,7 @@ button, input, textarea { font: inherit; color: inherit; }
 .foot nav { display: flex; gap: var(--space-md); flex-wrap: wrap; }
 .foot p { max-width: 62ch; }
 
-.real-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-lg); margin-top: var(--space-lg); }
+.real-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-lg); margin-top: var(--space-lg); }
 .shot { margin: 0; display: grid; gap: var(--space-sm); align-content: start; }
 .shot .frame { border-radius: var(--radius-inner); overflow: hidden; background: var(--color-paper); box-shadow: inset 0 0 0 1px var(--color-rule), var(--shadow-card); }
 .shot .frame img { display: block; width: 100%; height: auto; }
@@ -355,11 +355,11 @@ button, input, textarea { font: inherit; color: inherit; }
 <section class="section section--paper2" id="real"><div class="container">
   <div class="head">
     <h2>The real tool, today.</h2>
-    <p>Our own EpicSocial team on 4 November 2026: every post on one board, waiting for an OK.</p>
+    <p>Our own EpicSocial team on 4 November 2026. Every post sits on one board, from idea to posted.</p>
   </div>
   <figure class="shot shot--big">
-    <div class="frame"><picture><source media="(max-width: 40rem)" srcset="shots/pipeline-phone.webp" width="780" height="1688"><img src="shots/pipeline.webp" width="1600" height="1000" loading="lazy" alt="The EpicSocial pipeline: ideas from the Scout, drafts ready for you with Schedule, Give feedback and Don't post, scheduled posts and posted ones."></picture></div>
-    <figcaption>The pipeline. Drafts wait until you press Schedule.</figcaption>
+    <div class="frame"><picture><source media="(max-width: 40rem)" srcset="shots/pipeline-phone.webp" width="780" height="1688"><img src="shots/pipeline.webp" width="1600" height="1000" loading="lazy" alt="The EpicSocial pipeline for X: ideas from the Scout, scheduled posts with Post now and Pull, and posted ones."></picture></div>
+    <figcaption>The pipeline: ideas, drafts, scheduled and posted.</figcaption>
   </figure>
   <div class="real-grid">
     <figure class="shot">
@@ -369,10 +369,6 @@ button, input, textarea { font: inherit; color: inherit; }
     <figure class="shot">
       <div class="frame"><picture><source media="(max-width: 40rem)" srcset="shots/post-phone.webp" width="780" height="1688"><img src="shots/post.webp" width="1600" height="1000" loading="lazy" alt="One scheduled X post: when it goes out, which campaign it belongs to, who wrote it with which skills, and its text."></picture></div>
       <figcaption>A scheduled post, with who wrote it and when it goes out.</figcaption>
-    </figure>
-    <figure class="shot">
-      <div class="frame"><picture><source media="(max-width: 40rem)" srcset="shots/skills-phone.webp" width="780" height="1688"><img src="shots/skills.webp" width="1600" height="1125" loading="lazy" alt="The skills page: one library the whole team shares, each skill pinned to a version."></picture></div>
-      <figcaption>One skill library for the whole team.</figcaption>
     </figure>
   </div>
   <p class="lane-note">EpicSocial runs on <a href="../team/">EpicTeam</a>: the same inbox, personas and shared sign-ins.</p>

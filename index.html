@@ -70,15 +70,15 @@
         <h2 id="h-again">No more explaining it again.</h2>
         <p class="lead">A new chat starts from the plan: the goal, where things stand and what comes next.</p>
       </div>
-      <figure class="show well" aria-label="A new agent reads the plan in one command">
-        <figcaption class="well-head"><span>a new agent, first command</span><span class="hide-xs">an example, trimmed</span></figcaption>
-<pre><span class="p">$</span> python3 spines.py <span class="arg">--bind EPIC-4.md</span>
-<b>== EPIC-4: Google sign-in</b>
-Status: active
-Next action: build the login button
-Waiting on: nothing
-## Operating Learnings
-- L-2 | every merge | run e2e first</pre>
+      <figure class="show well" aria-label="What a new chat reads before it says a word">
+        <figcaption class="well-head"><span>what a new chat reads first</span><span class="hide-xs">an example</span></figcaption>
+        <dl class="rows">
+          <div><dt>the goal</dt><dd>Google sign-in, live before Friday</dd></div>
+          <div><dt>done so far</dt><dd>step one built and tested</dd></div>
+          <div><dt>next</dt><dd>the login button</dd></div>
+          <div><dt>your rules</dt><dd>run the tests before merging</dd></div>
+          <div><dt>waiting on you</dt><dd>nothing</dd></div>
+        </dl>
       </figure>
     </div>
   </section>
@@ -92,9 +92,9 @@ Waiting on: nothing
       <figure class="show well" aria-label="A correction becomes a rule, and a different agent follows it days later">
         <figcaption class="well-head"><span>a correction, three days on</span></figcaption>
         <ol class="log">
-          <li><time>Mon</time><span class="who you">you</span><span class="hi">always run the e2e tests before merging</span></li>
-          <li><time>Mon</time><span class="who">saved</span><span class="arg">L-2 | every merge | run e2e first</span></li>
-          <li><time>Thu</time><span class="who">Codex</span><span>ran e2e first, as L-2 says, then merged</span></li>
+          <li><time>Mon</time><span class="who you">you</span><span class="hi">always run the tests before merging</span></li>
+          <li><time>Mon</time><span class="who">saved</span><span class="arg">a rule: tests before every merge</span></li>
+          <li><time>Thu</time><span class="who">Codex</span><span>ran the tests first, then merged</span></li>
         </ol>
       </figure>
     </div>
@@ -163,14 +163,14 @@ Waiting on: nothing
         <h2 id="h-repo">The plan lives in your repo.</h2>
         <p class="lead">Plain files next to your code. No server and no account. Works with Claude Code and Codex.</p>
       </div>
-      <figure class="show well" aria-label="A repository with its plan in docs, and the git log of that plan">
-        <figcaption class="well-head"><span>acme-app</span><span class="hide-xs">git log docs</span></figcaption>
-<pre>src/                      <span class="dim"># your code</span>
-docs/EPIC-4-sign-in.md    <span class="dim"># the plan</span>
+      <figure class="show well" aria-label="A project folder with its plan next to the code, and the plan's history">
+        <figcaption class="well-head"><span>your project</span><span class="hide-xs">an example</span></figcaption>
+<pre>src/            <span class="dim">your code</span>
+docs/sign-in.md <span class="dim">the plan</span>
 
-<span class="arg">a41c9e2</span> EPIC-4 step one verified
-<span class="arg">7be03d1</span> L-2 learned: e2e before merge
-<span class="arg">19f0c55</span> EPIC-4 created from chat</pre>
+<span class="arg">Tue</span> step one verified
+<span class="arg">Mon</span> rule learned: tests before merge
+<span class="arg">Mon</span> plan created from chat</pre>
       </figure>
     </div>
   </section>
