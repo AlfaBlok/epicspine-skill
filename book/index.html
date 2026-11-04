@@ -49,7 +49,9 @@
     color: var(--ink);
     font-family: var(--font-sans);
   }
-  body { overflow: hidden; }
+  /* E43-S5: the deck scrolls like a page, each slide one screen tall; no snap, so a short scroll stays where you left it */
+  /* every slide is on the page now, so a long path breaks instead of widening a phone */
+  .slide code { overflow-wrap: anywhere; }
   .progress {
     position: fixed;
     top: 0;
@@ -60,18 +62,16 @@
     background: var(--gold);
     transition: width .18s ease;
   }
-  .deck { height: 100vh; position: relative; }
+  .deck { position: relative; }
   .slide {
-    position: absolute;
-    inset: 0;
-    display: none;
-    padding: 3.4vh 3vw 72px;
-    overflow: auto;
-  }
-  .slide.active {
     display: grid;
     grid-template-rows: auto 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 14px;
+    min-height: 100vh;
+    min-height: 100svh;
+    padding: 3.4vh 3vw 72px;
+    border-bottom: 1px solid var(--line);
   }
   .eyebrow {
     color: var(--gold);
@@ -246,6 +246,7 @@
   .sr { stroke: var(--d-r10); } .sr2 { stroke: var(--d-r20); } .sr3 { stroke: var(--d-r30); }
   .read { color: var(--muted); font-size: 12.5px; line-height: 1.5; max-width: none; }
   .read code { font-size: 11.5px; margin-right: 4px; white-space: nowrap; }
+  @media (max-width: 900px) { .read code { white-space: normal; } }
   .read b { color: var(--gold); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; margin-right: 8px; }
 
   /* Part 5 */
@@ -419,10 +420,10 @@
   }
 
   @media (max-width: 900px) {
-    body { overflow: auto; }
-    .deck { height: auto; min-height: 100vh; }
-    .slide { position: static; min-height: 100vh; padding: 32px 18px 78px; }
-    .slide.active { display: grid; }
+    .slide { padding: 32px 18px 78px; }
+    .grid.fill { flex: none; grid-auto-rows: auto; }
+    .controls { right: 10px; bottom: 10px; padding: 6px 6px 6px 12px; background: var(--bg); border: 1px solid var(--line); border-radius: 12px; }
+    .card.big { padding: 22px 20px; }
     .two, .grid, .principles, .tiles, .filemap { grid-template-columns: 1fr; }
     .row { grid-template-columns: 1fr; }
     .pill { justify-self: start; }
@@ -473,16 +474,16 @@
 
 <main class="deck">
   <!-- 1 -->
-  <section class="slide active" data-part="Part 1 · What and why" data-title="EpicSpine">
+  <section class="slide active" data-part="Part 1 · Three intuitions" data-title="EpicSpine">
     <header>
-      <div class="eyebrow">Part 1 · What and why</div>
+      <div class="eyebrow">Part 1 · Three intuitions</div>
       <h1>EpicSpine</h1>
     </header>
     <div class="body two">
       <div>
         <p class="cs-title-lead">Talk. It becomes a plan.<br><span>The memory is the repo.</span></p>
         <p class="lead" style="margin-top:16px">A skill that turns loose chat into a tracked goal tree, kept as plain files in git next to the code, so every agent and every human picks up exactly where the last one stopped.</p>
-        <p class="hint" style="margin-top:14px">Navigate with <b>&larr; &rarr;</b> or Space; press <b>G</b> for the part-grouped index. Deep-link with <code>#5</code>. Diagrams do the explaining; the text is only a caption.</p>
+        <p class="hint" style="margin-top:14px">Scroll down like a page, or step with <b>&larr; &rarr;</b> or Space; press <b>G</b> for the part-grouped index. Three plain intuitions come first; Part 5 is the technical part. Deep-link with <code>#5</code>. Diagrams do the explaining; the text is only a caption.</p>
       </div>
       <svg class="cs-loop" viewBox="0 0 420 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="csloop-title csloop-desc"><title id="csloop-title">One loop: talk, plan, delivery, outcome</title>
         <desc id="csloop-desc">A loop around the repo: you chat loosely, the chat becomes a goal tree, steps are delivered by agents, an outcome is written that you approve, and you talk again; every turn is written down in the repo.</desc>
@@ -510,9 +511,98 @@
     </div>
   </section>
 
-  <section class="slide" data-part="Part 1 · What and why" data-title="Agents lose the plot">
+  <!-- E43-S5 (agent_team EPIC-43): three plain intuitions before the technical part -->
+  <section class="slide" data-part="Part 1 · Three intuitions" data-title="Every agent knows what it is for">
     <header>
-      <div class="eyebrow">Part 1 · What and why · why</div>
+      <div class="eyebrow">Part 1 · Three intuitions · binding</div>
+      <h2>Every agent knows what it is for.</h2>
+    </header>
+    <div class="body">
+      <div class="grid fill">
+        <div class="card big">
+          <span class="tag">Manager</span>
+          <h3>Plans, never builds</h3>
+          <p>Turns what you ask into a goal and steps, hands each step out, and checks what comes back.</p>
+        </div>
+        <div class="card big">
+          <span class="tag">Writer</span>
+          <h3>Drafts, then waits</h3>
+          <p>Writes in your voice from the research it was given, and stops for your yes before anything goes out.</p>
+        </div>
+        <div class="card big">
+          <span class="tag">Reviewer</span>
+          <h3>Checks against the goal</h3>
+          <p>Judges the work by the done means you agreed, not by taste, and says why in one line.</p>
+        </div>
+      </div>
+      <div class="callout">
+        <p>Before it acts, each agent <b>binds</b>: it reads its goal, where things stand and the rules you taught it. That is where its clarity comes from.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Part 1 · Three intuitions" data-title="It goes as far as the code can">
+    <header>
+      <div class="eyebrow">Part 1 · Three intuitions · relentless</div>
+      <h2>It goes as far as the code can.</h2>
+    </header>
+    <div class="body">
+      <div class="grid fill">
+        <div class="card big">
+          <span class="tag">Keeps going</span>
+          <h3>Step after step</h3>
+          <p>When one step is verified, the next one starts. Nobody has to remember to ask.</p>
+        </div>
+        <div class="card big">
+          <span class="tag">Unsticks itself</span>
+          <h3>Wakes find what stalled</h3>
+          <p>A worker stops, a lease runs out, a test turns red. A scheduled wake notices and starts it again.</p>
+        </div>
+        <div class="card big">
+          <span class="tag">Stops for you</span>
+          <h3>Only where you matter</h3>
+          <p>A decision, a look at something live, a yes to publish. Everything else is already done when you arrive.</p>
+        </div>
+      </div>
+      <div class="callout">
+        <p>You are needed <b>only where a step truly needs a person</b>. The rest of the way, the team does not wait.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Part 1 · Three intuitions" data-title="Ask once. Everyone pushes for it">
+    <header>
+      <div class="eyebrow">Part 1 · Three intuitions · together</div>
+      <h2>Ask once. Everyone pushes for it.</h2>
+    </header>
+    <div class="body">
+      <div class="grid fill">
+        <div class="card big">
+          <span class="tag">You ask</span>
+          <h3>Say it loosely</h3>
+          <p>“Google sign-in before Friday, and don’t break email login.” That is enough to start.</p>
+        </div>
+        <div class="card big">
+          <span class="tag">They conspire</span>
+          <h3>Everyone takes a side</h3>
+          <p>The manager plans, workers build, the reviewer checks. Each one pushes the same goal from where it stands.</p>
+        </div>
+        <div class="card big">
+          <span class="tag">The line moves</span>
+          <h3>You see where it is</h3>
+          <p>The goal file says what is done, what is running and what waits on you, at any hour.</p>
+        </div>
+      </div>
+      <div class="callout">
+        <p>It feels like <b>summoning people who want what you want</b> and keep moving the line forward with you.</p>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="slide" data-part="Part 2 · What and why" data-title="Agents lose the plot">
+    <header>
+      <div class="eyebrow">Part 2 · What and why · why</div>
       <h2>Agents lose the plot between chats.</h2>
     </header>
     <div class="body">
@@ -539,9 +629,9 @@
     </div>
   </section>
 
-  <section class="slide" data-part="Part 1 · What and why" data-title="Talk. It becomes a plan.">
+  <section class="slide" data-part="Part 2 · What and why" data-title="Talk. It becomes a plan.">
     <header>
-      <div class="eyebrow">Part 1 · What and why · idea 1</div>
+      <div class="eyebrow">Part 2 · What and why · idea 1</div>
       <h2 class="cs-h">Talk. It becomes a plan.</h2>
       <p class="cs-sub">Say it loosely. It is structured for you into goals that are tracked and delivered.</p>
     </header>
@@ -590,9 +680,9 @@
     </div>
   </section>
 
-  <section class="slide" data-part="Part 1 · What and why" data-title="The memory is the repo.">
+  <section class="slide" data-part="Part 2 · What and why" data-title="The memory is the repo.">
     <header>
-      <div class="eyebrow">Part 1 · What and why · idea 2</div>
+      <div class="eyebrow">Part 2 · What and why · idea 2</div>
       <h2 class="cs-h">The memory is the repo.</h2>
       <p class="cs-sub">Goals, status, decisions and lessons are plain files, committed in git next to the code.</p>
     </header>
@@ -647,9 +737,9 @@
     </div>
   </section>
 
-  <section class="slide" data-part="Part 1 · What and why" data-title="One living spine">
+  <section class="slide" data-part="Part 2 · What and why" data-title="One living spine">
     <header>
-      <div class="eyebrow">Part 1 · What and why · the file under both ideas</div>
+      <div class="eyebrow">Part 2 · What and why · the file under both ideas</div>
       <h2>One living spine carries intent; everything else carries detail.</h2>
     </header>
     <div class="body">
@@ -701,9 +791,9 @@
     </div>
   </section>
 
-  <section class="slide" data-part="Part 1 · What and why" data-title="The core loop">
+  <section class="slide" data-part="Part 2 · What and why" data-title="The core loop">
     <header>
-      <div class="eyebrow">Part 1 · What and why · the cycle</div>
+      <div class="eyebrow">Part 2 · What and why · the cycle</div>
       <h2>Intent to issues to proof to Book, then round again.</h2>
     </header>
     <div class="body">
@@ -778,9 +868,9 @@
     </div>
   </section>
 
-  <section class="slide" data-part="Part 2 · Basic principles" data-title="The core principles">
+  <section class="slide" data-part="Part 3 · Basic principles" data-title="The core principles">
     <header>
-      <div class="eyebrow">Part 2 · Basic principles</div>
+      <div class="eyebrow">Part 3 · Basic principles</div>
       <h2>Eight principles everything else follows from.</h2>
     </header>
     <div class="body">
@@ -800,47 +890,47 @@
     </div>
   </section>
 
-  <section class="slide" data-part="Part 3 · Feature map" data-title="Feature map">
+  <section class="slide" data-part="Part 4 · Feature map" data-title="Feature map">
     <header>
-      <div class="eyebrow">Part 3 · Feature map</div>
+      <div class="eyebrow">Part 4 · Feature map</div>
       <h2>Everything the skill does, and where to dig in.</h2>
     </header>
     <div class="body">
       <div class="tiles">
-        <a class="tile" href="#3"><strong>Talk becomes a plan</strong><span>Chat structured into a goal tree.</span><span class="go">Idea 1 &rarr;</span></a>
-        <a class="tile" href="#4"><strong>The memory is the repo</strong><span>Plain files in git; bind and know.</span><span class="go">Idea 2 &rarr;</span></a>
-        <a class="tile" href="#6"><strong>Core loop</strong><span>Intent, issues, proof, Book.</span><span class="go">Loop &rarr;</span></a>
-        <a class="tile" href="#5"><strong>Spine model</strong><span>One intent; authority by artifact.</span><span class="go">Surfaces &rarr;</span></a>
-        <a class="tile" href="#9"><strong>Profiles: compact / full</strong><span>Document size control.</span><span class="go">Anatomy &rarr;</span></a>
-        <a class="tile" href="#9"><strong>Dialect v1 / v2</strong><span>Acceptance workflow; SHIP / HARDEN.</span><span class="go">Anatomy &rarr;</span></a>
-        <a class="tile" href="#10"><strong>Hierarchy + rollups</strong><span>Root to child; one level up.</span><span class="go">Hierarchy &rarr;</span></a>
-        <a class="tile" href="#11"><strong>Bind path</strong><span>AGENTS.md, root spine, branch spine.</span><span class="go">Bind &rarr;</span></a>
-        <a class="tile" href="#12"><strong>Roles + dispatch</strong><span>Manager and worker; who writes where.</span><span class="go">Roles &rarr;</span></a>
-        <a class="tile" href="#13"><strong>Dispatch profile</strong><span>Ask once, record it, reuse it.</span><span class="go">Profile &rarr;</span></a>
-        <a class="tile" href="#14"><strong>Ask-first + ready frontier</strong><span>Settle forks, then launch.</span><span class="go">Dispatch &rarr;</span></a>
-        <a class="tile" href="#15"><strong>Git doctrine</strong><span>Worktree, ff-only, revert on red.</span><span class="go">Git &rarr;</span></a>
-        <a class="tile" href="#16"><strong>Two-axis verification</strong><span>Standards and spec.</span><span class="go">Verify &rarr;</span></a>
-        <a class="tile" href="#17"><strong>Learnings</strong><span>Explicit, scoped memory.</span><span class="go">Learnings &rarr;</span></a>
-        <a class="tile" href="#18"><strong>Validation tooling</strong><span>Structural and graph checks.</span><span class="go">Tooling &rarr;</span></a>
-        <a class="tile" href="#19"><strong>Hygiene + sweeps</strong><span>Clean as you go.</span><span class="go">Hygiene &rarr;</span></a>
-        <a class="tile" href="#20"><strong>Skill install</strong><span>One hub, linked per harness.</span><span class="go">Install &rarr;</span></a>
-        <a class="tile" href="#21"><strong>Always-on bind</strong><span>A bind line on every harness.</span><span class="go">Always on &rarr;</span></a>
-        <a class="tile" href="#22"><strong>Skill updates</strong><span>Freshness by content, at bind.</span><span class="go">Updates &rarr;</span></a>
-        <a class="tile" href="#23"><strong>Book companion</strong><span>Chapters, leaves, contract.</span><span class="go">Book &rarr;</span></a>
-        <a class="tile" href="#25"><strong>Shortlists + HTML serving</strong><span>JSON to table-first page on 127.0.0.1.</span><span class="go">Shortlists &rarr;</span></a>
-        <a class="tile" href="#26"><strong>Ticket backends</strong><span>GitHub default; local files.</span><span class="go">Backends &rarr;</span></a>
-        <a class="tile" href="#27"><strong>Ticket lifecycle</strong><span>Draft to done, plus two off-path states.</span><span class="go">Lifecycle &rarr;</span></a>
-        <a class="tile" href="#28"><strong>Draft until stamped ready</strong><span>Only the user readies; the repo delivers itself.</span><span class="go">Stamp &rarr;</span></a>
-        <a class="tile" href="#29"><strong>One task end to end</strong><span>Goal to merged and recorded.</span><span class="go">Sequence &rarr;</span></a>
-        <a class="tile" href="#18"><strong>Migration</strong><span>Full to compact, hash-gated.</span><span class="go">Tooling &rarr;</span></a>
-        <a class="tile" href="#30"><strong>Dogfood invariant</strong><span>Skill, spine and Book move together.</span><span class="go">One repo &rarr;</span></a>
+        <a class="tile" href="#6"><strong>Talk becomes a plan</strong><span>Chat structured into a goal tree.</span><span class="go">Idea 1 &rarr;</span></a>
+        <a class="tile" href="#7"><strong>The memory is the repo</strong><span>Plain files in git; bind and know.</span><span class="go">Idea 2 &rarr;</span></a>
+        <a class="tile" href="#9"><strong>Core loop</strong><span>Intent, issues, proof, Book.</span><span class="go">Loop &rarr;</span></a>
+        <a class="tile" href="#8"><strong>Spine model</strong><span>One intent; authority by artifact.</span><span class="go">Surfaces &rarr;</span></a>
+        <a class="tile" href="#12"><strong>Profiles: compact / full</strong><span>Document size control.</span><span class="go">Anatomy &rarr;</span></a>
+        <a class="tile" href="#12"><strong>Dialect v1 / v2</strong><span>Acceptance workflow; SHIP / HARDEN.</span><span class="go">Anatomy &rarr;</span></a>
+        <a class="tile" href="#13"><strong>Hierarchy + rollups</strong><span>Root to child; one level up.</span><span class="go">Hierarchy &rarr;</span></a>
+        <a class="tile" href="#14"><strong>Bind path</strong><span>AGENTS.md, root spine, branch spine.</span><span class="go">Bind &rarr;</span></a>
+        <a class="tile" href="#15"><strong>Roles + dispatch</strong><span>Manager and worker; who writes where.</span><span class="go">Roles &rarr;</span></a>
+        <a class="tile" href="#16"><strong>Dispatch profile</strong><span>Ask once, record it, reuse it.</span><span class="go">Profile &rarr;</span></a>
+        <a class="tile" href="#17"><strong>Ask-first + ready frontier</strong><span>Settle forks, then launch.</span><span class="go">Dispatch &rarr;</span></a>
+        <a class="tile" href="#18"><strong>Git doctrine</strong><span>Worktree, ff-only, revert on red.</span><span class="go">Git &rarr;</span></a>
+        <a class="tile" href="#19"><strong>Two-axis verification</strong><span>Standards and spec.</span><span class="go">Verify &rarr;</span></a>
+        <a class="tile" href="#20"><strong>Learnings</strong><span>Explicit, scoped memory.</span><span class="go">Learnings &rarr;</span></a>
+        <a class="tile" href="#21"><strong>Validation tooling</strong><span>Structural and graph checks.</span><span class="go">Tooling &rarr;</span></a>
+        <a class="tile" href="#22"><strong>Hygiene + sweeps</strong><span>Clean as you go.</span><span class="go">Hygiene &rarr;</span></a>
+        <a class="tile" href="#23"><strong>Skill install</strong><span>One hub, linked per harness.</span><span class="go">Install &rarr;</span></a>
+        <a class="tile" href="#24"><strong>Always-on bind</strong><span>A bind line on every harness.</span><span class="go">Always on &rarr;</span></a>
+        <a class="tile" href="#25"><strong>Skill updates</strong><span>Freshness by content, at bind.</span><span class="go">Updates &rarr;</span></a>
+        <a class="tile" href="#26"><strong>Book companion</strong><span>Chapters, leaves, contract.</span><span class="go">Book &rarr;</span></a>
+        <a class="tile" href="#28"><strong>Shortlists + HTML serving</strong><span>JSON to table-first page on 127.0.0.1.</span><span class="go">Shortlists &rarr;</span></a>
+        <a class="tile" href="#29"><strong>Ticket backends</strong><span>GitHub default; local files.</span><span class="go">Backends &rarr;</span></a>
+        <a class="tile" href="#30"><strong>Ticket lifecycle</strong><span>Draft to done, plus two off-path states.</span><span class="go">Lifecycle &rarr;</span></a>
+        <a class="tile" href="#31"><strong>Draft until stamped ready</strong><span>Only the user readies; the repo delivers itself.</span><span class="go">Stamp &rarr;</span></a>
+        <a class="tile" href="#32"><strong>One task end to end</strong><span>Goal to merged and recorded.</span><span class="go">Sequence &rarr;</span></a>
+        <a class="tile" href="#21"><strong>Migration</strong><span>Full to compact, hash-gated.</span><span class="go">Tooling &rarr;</span></a>
+        <a class="tile" href="#33"><strong>Dogfood invariant</strong><span>Skill, spine and Book move together.</span><span class="go">One repo &rarr;</span></a>
       </div>
     </div>
   </section>
 
-  <section class="slide" data-part="Part 4 · How it works" data-title="Anatomy of a spine">
+  <section class="slide" data-part="Part 5 · How it works, technically" data-title="Anatomy of a spine">
     <header>
-      <div class="eyebrow">Part 4 · How it works · 1 of 20</div>
+      <div class="eyebrow">Part 5 · How it works, technically · 1 of 20</div>
       <h2>A spine is small on purpose.</h2>
     </header>
     <div class="body">
@@ -915,9 +1005,9 @@
     </div>
   </section>
 
-  <section class="slide" data-part="Part 4 · How it works" data-title="Root, children, rollups">
+  <section class="slide" data-part="Part 5 · How it works, technically" data-title="Root, children, rollups">
     <header>
-      <div class="eyebrow">Part 4 · How it works · 2 of 20</div>
+      <div class="eyebrow">Part 5 · How it works, technically · 2 of 20</div>
       <h2>One root. Children own local truth.</h2>
     </header>
     <div class="body">
@@ -989,9 +1079,9 @@
     </div>
   </section>
 
-  <section class="slide" data-part="Part 4 · How it works" data-title="Bind first, read three hops">
+  <section class="slide" data-part="Part 5 · How it works, technically" data-title="Bind first, read three hops">
     <header>
-      <div class="eyebrow">Part 4 · How it works · 3 of 20</div>
+      <div class="eyebrow">Part 5 · How it works, technically · 3 of 20</div>
       <h2>Bind first. Then read three hops.</h2>
     </header>
     <div class="body">
@@ -1070,9 +1160,9 @@
     </div>
   </section>
 
-  <section class="slide" data-part="Part 4 · How it works" data-title="Roles and dispatch">
+  <section class="slide" data-part="Part 5 · How it works, technically" data-title="Roles and dispatch">
     <header>
-      <div class="eyebrow">Part 4 · How it works · 4 of 20</div>
+      <div class="eyebrow">Part 5 · How it works, technically · 4 of 20</div>
       <h2>Independence comes from fresh context.</h2>
     </header>
     <div class="body">
@@ -1161,9 +1251,9 @@
     </div>
   </section>
 
-  <section class="slide" data-part="Part 4 · How it works" data-title="Which worker runs the task">
+  <section class="slide" data-part="Part 5 · How it works, technically" data-title="Which worker runs the task">
     <header>
-      <div class="eyebrow">Part 4 · How it works · 5 of 20</div>
+      <div class="eyebrow">Part 5 · How it works, technically · 5 of 20</div>
       <h2>Task instruction beats repo profile beats default.</h2>
     </header>
     <div class="body">
@@ -1217,9 +1307,9 @@
     </div>
   </section>
 
-  <section class="slide" data-part="Part 4 · How it works" data-title="Ask first, then dispatch">
+  <section class="slide" data-part="Part 5 · How it works, technically" data-title="Ask first, then dispatch">
     <header>
-      <div class="eyebrow">Part 4 · How it works · 6 of 20</div>
+      <div class="eyebrow">Part 5 · How it works, technically · 6 of 20</div>
       <h2>Settle the forks. Launch only the ready frontier.</h2>
     </header>
     <div class="body">
@@ -1300,9 +1390,9 @@
     </div>
   </section>
 
-  <section class="slide" data-part="Part 4 · How it works" data-title="Git lanes">
+  <section class="slide" data-part="Part 5 · How it works, technically" data-title="Git lanes">
     <header>
-      <div class="eyebrow">Part 4 · How it works · 7 of 20</div>
+      <div class="eyebrow">Part 5 · How it works, technically · 7 of 20</div>
       <h2>Stay in main. Isolate execution. Merge verified.</h2>
     </header>
     <div class="body">
@@ -1390,9 +1480,9 @@
     </div>
   </section>
 
-  <section class="slide" data-part="Part 4 · How it works" data-title="Two-axis verification">
+  <section class="slide" data-part="Part 5 · How it works, technically" data-title="Two-axis verification">
     <header>
-      <div class="eyebrow">Part 4 · How it works · 8 of 20</div>
+      <div class="eyebrow">Part 5 · How it works, technically · 8 of 20</div>
       <h2>Verify on two axes before anything merges.</h2>
     </header>
     <div class="body">
@@ -1452,9 +1542,9 @@
     </div>
   </section>
 
-  <section class="slide" data-part="Part 4 · How it works" data-title="Operating Learnings">
+  <section class="slide" data-part="Part 5 · How it works, technically" data-title="Operating Learnings">
     <header>
-      <div class="eyebrow">Part 4 · How it works · 9 of 20</div>
+      <div class="eyebrow">Part 5 · How it works, technically · 9 of 20</div>
       <h2>Memory, at the depth where it applies.</h2>
     </header>
     <div class="body">
@@ -1517,9 +1607,9 @@
     </div>
   </section>
 
-  <section class="slide" data-part="Part 4 · How it works" data-title="Validation and tooling">
+  <section class="slide" data-part="Part 5 · How it works, technically" data-title="Validation and tooling">
     <header>
-      <div class="eyebrow">Part 4 · How it works · 10 of 20</div>
+      <div class="eyebrow">Part 5 · How it works, technically · 10 of 20</div>
       <h2>Documents have a contract. Checks prove it.</h2>
     </header>
     <div class="body">
@@ -1588,9 +1678,9 @@
     </div>
   </section>
 
-  <section class="slide" data-part="Part 4 · How it works" data-title="Hygiene and resumability">
+  <section class="slide" data-part="Part 5 · How it works, technically" data-title="Hygiene and resumability">
     <header>
-      <div class="eyebrow">Part 4 · How it works · 11 of 20</div>
+      <div class="eyebrow">Part 5 · How it works, technically · 11 of 20</div>
       <h2>Leave the repo clean and the next agent a map.</h2>
     </header>
     <div class="body">
@@ -1665,9 +1755,9 @@
     </div>
   </section>
 
-  <section class="slide" data-part="Part 4 · How it works" data-title="Skill install">
+  <section class="slide" data-part="Part 5 · How it works, technically" data-title="Skill install">
     <header>
-      <div class="eyebrow">Part 4 · How it works · 12 of 20</div>
+      <div class="eyebrow">Part 5 · How it works, technically · 12 of 20</div>
       <h2>One source, installed once, linked everywhere.</h2>
     </header>
     <div class="body">
@@ -1740,9 +1830,9 @@
     </div>
   </section>
 
-  <section class="slide" data-part="Part 4 · How it works" data-title="Always-on bind">
+  <section class="slide" data-part="Part 5 · How it works, technically" data-title="Always-on bind">
     <header>
-      <div class="eyebrow">Part 4 · How it works · 13 of 20</div>
+      <div class="eyebrow">Part 5 · How it works, technically · 13 of 20</div>
       <h2>Bound on the first reply, on every harness.</h2>
     </header>
     <div class="body">
@@ -1813,9 +1903,9 @@
     </div>
   </section>
 
-  <section class="slide" data-part="Part 4 · How it works" data-title="Skill updates at bind">
+  <section class="slide" data-part="Part 5 · How it works, technically" data-title="Skill updates at bind">
     <header>
-      <div class="eyebrow">Part 4 · How it works · 14 of 20</div>
+      <div class="eyebrow">Part 5 · How it works, technically · 14 of 20</div>
       <h2>Freshness is checked by content, once a day.</h2>
     </header>
     <div class="body">
@@ -1904,9 +1994,9 @@
     </div>
   </section>
 
-  <section class="slide" data-part="Part 4 · How it works" data-title="The Book companion">
+  <section class="slide" data-part="Part 5 · How it works, technically" data-title="The Book companion">
     <header>
-      <div class="eyebrow">Part 4 · How it works · 15 of 20</div>
+      <div class="eyebrow">Part 5 · How it works, technically · 15 of 20</div>
       <h2>The spine owns development. The Book owns understanding.</h2>
     </header>
     <div class="body">
@@ -1983,9 +2073,9 @@
     </div>
   </section>
 
-  <section class="slide" data-part="Part 4 · How it works" data-title="The Book contract">
+  <section class="slide" data-part="Part 5 · How it works, technically" data-title="The Book contract">
     <header>
-      <div class="eyebrow">Part 4 · How it works · 16 of 20</div>
+      <div class="eyebrow">Part 5 · How it works, technically · 16 of 20</div>
       <h2>Declare it once. Every bound agent then authors.</h2>
     </header>
     <div class="body">
@@ -2064,9 +2154,9 @@
     </div>
   </section>
 
-  <section class="slide" data-part="Part 4 · How it works" data-title="Shortlists">
+  <section class="slide" data-part="Part 5 · How it works, technically" data-title="Shortlists">
     <header>
-      <div class="eyebrow">Part 4 · How it works · 17 of 20</div>
+      <div class="eyebrow">Part 5 · How it works, technically · 17 of 20</div>
       <h2>A shortlist is a first-class deliverable.</h2>
     </header>
     <div class="body">
@@ -2152,9 +2242,9 @@
     </div>
   </section>
 
-  <section class="slide" data-part="Part 4 · How it works" data-title="Ticket backends">
+  <section class="slide" data-part="Part 5 · How it works, technically" data-title="Ticket backends">
     <header>
-      <div class="eyebrow">Part 4 · How it works · 18 of 20</div>
+      <div class="eyebrow">Part 5 · How it works, technically · 18 of 20</div>
       <h2>GitHub by default. Local files when declared.</h2>
     </header>
     <div class="body">
@@ -2215,9 +2305,9 @@
     </div>
   </section>
 
-  <section class="slide" data-part="Part 4 · How it works" data-title="Ticket lifecycle">
+  <section class="slide" data-part="Part 5 · How it works, technically" data-title="Ticket lifecycle">
     <header>
-      <div class="eyebrow">Part 4 · How it works · 19 of 20</div>
+      <div class="eyebrow">Part 5 · How it works, technically · 19 of 20</div>
       <h2>A ticket moves from draft to done on evidence.</h2>
     </header>
     <div class="body">
@@ -2314,9 +2404,9 @@
     </div>
   </section>
 
-  <section class="slide" data-part="Part 4 · How it works" data-title="Draft until stamped ready">
+  <section class="slide" data-part="Part 5 · How it works, technically" data-title="Draft until stamped ready">
     <header>
-      <div class="eyebrow">Part 4 · How it works · 20 of 20</div>
+      <div class="eyebrow">Part 5 · How it works, technically · 20 of 20</div>
       <h2>Draft until stamped ready: the repo delivers itself.</h2>
     </header>
     <div class="body">
@@ -2333,9 +2423,9 @@
     </div>
   </section>
 
-  <section class="slide" data-part="Part 5 · Putting it together" data-title="One task, end to end">
+  <section class="slide" data-part="Part 6 · Putting it together" data-title="One task, end to end">
     <header>
-      <div class="eyebrow">Part 5 · Putting it together · 1 of 4</div>
+      <div class="eyebrow">Part 6 · Putting it together · 1 of 4</div>
       <h2>One full task, goal to merged and recorded.</h2>
     </header>
     <div class="body">
@@ -2403,9 +2493,9 @@
     </div>
   </section>
 
-  <section class="slide" data-part="Part 5 · Putting it together" data-title="Skill, spine, Book: one repo">
+  <section class="slide" data-part="Part 6 · Putting it together" data-title="Skill, spine, Book: one repo">
     <header>
-      <div class="eyebrow">Part 5 · Putting it together · 2 of 4</div>
+      <div class="eyebrow">Part 6 · Putting it together · 2 of 4</div>
       <h2>This repo is the skill, its own spine, and its own Book.</h2>
     </header>
     <div class="body">
@@ -2456,9 +2546,9 @@
     </div>
   </section>
 
-  <section class="slide" data-part="Part 5 · Putting it together" data-title="How divergence is caught">
+  <section class="slide" data-part="Part 6 · Putting it together" data-title="How divergence is caught">
     <header>
-      <div class="eyebrow">Part 5 · Putting it together · 3 of 4</div>
+      <div class="eyebrow">Part 6 · Putting it together · 3 of 4</div>
       <h2>Three surfaces, three checks, one final gate.</h2>
     </header>
     <div class="body">
@@ -2530,9 +2620,9 @@
     </div>
   </section>
 
-  <section class="slide" data-part="Part 5 · Putting it together" data-title="Where to go next">
+  <section class="slide" data-part="Part 6 · Putting it together" data-title="Where to go next">
     <header>
-      <div class="eyebrow">Part 5 · Putting it together · 4 of 4</div>
+      <div class="eyebrow">Part 6 · Putting it together · 4 of 4</div>
       <h2>Read the source, not the summary.</h2>
     </header>
     <div class="body two" style="align-items:start">
@@ -2621,7 +2711,7 @@
 </main>
 
 <div class="controls" role="group" aria-label="Slide navigation">
-  <span id="counter">1 / 32</span>
+  <span id="counter">1 / 35</span>
   <button type="button" id="index-btn" aria-label="Slide index" aria-expanded="false" title="Slide index (g)">&#9776;</button>
   <button type="button" id="prev" aria-label="Previous slide" title="Previous (left arrow)">&lsaquo;</button>
   <button type="button" id="next" aria-label="Next slide" title="Next (right arrow)">&rsaquo;</button>
@@ -2676,24 +2766,37 @@
       indexList.appendChild(li);
     });
 
-    function show(n) {
-      index = Math.max(0, Math.min(slides.length - 1, n));
-      slides.forEach(function (slide, i) {
-        slide.classList.toggle("active", i === index);
-      });
+    // E43-S5 (agent_team EPIC-43): the deck is one page; show() scrolls to a slide and mark() follows the scroll.
+    function mark(n) {
+      if (n === index && counter.textContent.indexOf(String(n + 1) + " /") === 0) { return; }
+      index = n;
+      slides.forEach(function (slide, i) { slide.classList.toggle("active", i === index); });
       counter.textContent = (index + 1) + " / " + slides.length;
       progress.style.width = (((index + 1) / slides.length) * 100) + "%";
-      slides[index].scrollTop = 0;
-      if (window.history && history.replaceState) {
-        history.replaceState(null, "", "#" + (index + 1));
-      } else {
-        window.location.hash = String(index + 1);
-      }
+      if (window.history && history.replaceState) { history.replaceState(null, "", "#" + (index + 1)); }
       var items = indexList.querySelectorAll("li:not(.idx-part)");
       Array.prototype.forEach.call(items, function (li, i) {
         li.classList.toggle("current", i === index);
       });
     }
+    function show(n, instant) {
+      n = Math.max(0, Math.min(slides.length - 1, n));
+      var top = slides[n].getBoundingClientRect().top + window.scrollY;
+      var still = instant || window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      window.scrollTo({ top: top, behavior: still ? "instant" : "smooth" });
+      mark(n);
+    }
+    function inView() {
+      var y = window.innerHeight * 0.4, best = 0;
+      slides.forEach(function (slide, i) { if (slide.getBoundingClientRect().top <= y) { best = i; } });
+      return best;
+    }
+    var ticking = false;
+    window.addEventListener("scroll", function () {
+      if (ticking) { return; }
+      ticking = true;
+      requestAnimationFrame(function () { ticking = false; mark(inView()); });
+    }, { passive: true });
 
     function openIndex() {
       indexPanel.classList.add("open");
@@ -2717,10 +2820,11 @@
 
     window.addEventListener("keydown", function (e) {
       var k = e.key;
-      if (k === "ArrowRight" || k === "PageDown" || k === " " || k === "Spacebar") {
-        e.preventDefault(); show(index + 1);
-      } else if (k === "ArrowLeft" || k === "PageUp") {
-        e.preventDefault(); show(index - 1);
+      if (e.altKey || e.ctrlKey || e.metaKey) { return; }
+      if (k === "ArrowRight" || k === "PageDown" || (k === " " && !e.shiftKey) || k === "Spacebar") {
+        e.preventDefault(); show(inView() + 1);
+      } else if (k === "ArrowLeft" || k === "PageUp" || (k === " " && e.shiftKey)) {
+        e.preventDefault(); show(inView() - 1);
       } else if (k === "Home") {
         e.preventDefault(); show(0);
       } else if (k === "End") {
@@ -2732,42 +2836,27 @@
       }
     });
 
-    // E43-S1 (agent_team EPIC-43): scrolling and swiping flip slides; a tall slide scrolls first, then flips at its edge.
-    var lock = 0;
-    function atEdge(slide, dir) {
-      if (dir > 0) { return slide.scrollTop + slide.clientHeight >= slide.scrollHeight - 2; }
-      return slide.scrollTop <= 0;
-    }
-    function flip(dir) {
-      var now = Date.now();
-      if (now < lock || !atEdge(slides[index], dir)) { return false; }
-      lock = now + 650;
-      show(index + dir);
-      return true;
-    }
-    window.addEventListener("wheel", function (e) {
-      if (indexPanel.classList.contains("open") || e.ctrlKey || Math.abs(e.deltaY) < 12) { return; }
-      flip(e.deltaY > 0 ? 1 : -1);
-    }, { passive: true });
+    // E43-S1 made the wheel and a swipe flip slides; E43-S5 lets them scroll the page instead,
+    // and a sideways swipe on a phone still steps one slide.
     var touchX = null, touchY = null;
     window.addEventListener("touchstart", function (e) {
       touchX = e.touches[0].clientX; touchY = e.touches[0].clientY;
     }, { passive: true });
     window.addEventListener("touchend", function (e) {
-      if (touchY === null || indexPanel.classList.contains("open")) { return; }
+      if (touchX === null || indexPanel.classList.contains("open")) { return; }
       var dx = e.changedTouches[0].clientX - touchX, dy = e.changedTouches[0].clientY - touchY;
       touchX = touchY = null;
-      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) { lock = 0; flip(dx < 0 ? 1 : -1); }
-      else if (Math.abs(dy) > 50) { flip(dy < 0 ? 1 : -1); }
+      if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 2) { show(inView() + (dx < 0 ? 1 : -1)); }
     }, { passive: true });
 
     window.addEventListener("hashchange", function () {
       var n = parseInt(window.location.hash.replace("#", ""), 10);
-      if (!isNaN(n)) { show(n - 1); }
+      if (!isNaN(n) && n - 1 !== index) { show(n - 1); }
     });
 
     var start = parseInt(window.location.hash.replace("#", ""), 10);
-    show(isNaN(start) ? 0 : start - 1);
+    index = -1;
+    if (isNaN(start) || start <= 1) { mark(0); } else { show(start - 1, true); }
   })();
 </script>
 </body>

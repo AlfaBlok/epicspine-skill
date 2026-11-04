@@ -10,21 +10,24 @@
 <meta name="theme-color" content="#0b120d">
 <meta http-equiv="origin-trial" content="AtDrsViSr8mDLBvm0KVKUeVmmJMrXiGoIy8qNZ86ZvC5hEOThzKxAElBvvn+8cUhqJ/Mnpqy/F0sJlp8VBLKVwYAAABNeyJvcmlnaW4iOiJodHRwczovL2VwaWNzcGluZS5kZXY6NDQzIiwiZmVhdHVyZSI6IldlYk1DUCIsImV4cGlyeSI6MTgwNjM2NDgwMH0=">
 <script>
-  // Old Book deep links (epicspine.dev/#9) moved with the Book to /book/ (agent_team E43-S1).
-  if (/^#\d+$/.test(location.hash)) { location.replace("book/" + location.hash); }
+  // Old Book deep links (epicspine.dev/#9) moved with the Book to /book/ (agent_team E43-S1);
+  // three intuition slides now follow its cover, so slide 2 onward moved down by three (E43-S5).
+  if (/^#\d+$/.test(location.hash)) { var n = +location.hash.slice(1); location.replace("book/#" + (n > 1 ? n + 3 : n)); }
   document.documentElement.classList.add("js");
 </script>
 <link rel="preload" href="fonts/martian-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
 <style>
-/* Hallmark · shape: Slides (one idea a screen, scroll flips) · genre: atmospheric · theme: Terminal (by request) · redesign: full
+/* Hallmark · shape: Slides (one idea a screen, scroll flips) · genre: atmospheric · theme: Terminal (by request) · redesign: full · E43-S5: three intuitions open, then the technical section
  * hero: Split (head on 1 to 5, the bind session on 7 to 12) · nav: edge-aligned numbered stops, the family line above · footer: a reference list, the family, the licence · imagery: the product (real spines.py output) · signature: a cold agent binding in one command, typed in the hero
  * axes: dark/mono/chromatic-green · posture: committed · contrast: pass · fold: pass · job: install · v2.0.0 */
 /* Hallmark · pre-emit critique: P4 H4 E4 S5 R4 V4 · weakest: P, the old deck explained everything at once; each screen now argues one thing and the Book holds the rest */
+/* Hallmark · E43-S5 critique: the page opened on machinery; three plain screens (what each agent is for, how far it goes, who pushes with you) now come first, and the machinery sits behind a contents screen */
 /* Hallmark · waive 47b · one well per screen holds a real session, the skill's own commands and output · the terminal is where EpicSpine runs */
 /* Hallmark · waive 77 · memory holds two wells, roles a four-row table, each beside its head · every slide must fit one snapped screen, so a slide carries one object, not a tall one */
 /* Hallmark · waive 79 · the hero head and the bind session are centred in a 100svh slide · the snap gives every slide equal air above and below; the bind session stays its real length */
 /* Hallmark · dismissed 29 · the header blur is the one glass licence the atmospheric genre gives the nav; nothing else is glass */
 /* Hallmark · answered F8 · the one scroll pattern is the slide snap Jordi asked for; no other scroll motion */
+/* Hallmark · answered 58 · twelve one-screen slides, each under 80 words; the page total grows with the three intuition screens and the technical contents (E43-S5) */
 @font-face {
   font-family: "Martian Mono";
   font-style: normal;
@@ -201,11 +204,29 @@ p { margin: 0; text-wrap: pretty; }
 .install pre { font-size: var(--text-md); }
 .notes { display: grid; gap: var(--space-sm); margin: 0; padding: 0; list-style: none; color: var(--color-ink-2); }
 
+/* Intuitions: one plain idea, one example underneath */
+.intu .slide-head h2 { max-width: 18ch; }
+.intu .lead { max-width: 40ch; }
+.well .rows { padding-inline: var(--space-lg); }
+.well .rows > div:first-child { border-top: 0; }
+.well .rows > div:last-child { border-bottom: 0; }
+.night li { display: grid; grid-template-columns: 6ch minmax(0, 1fr); gap: var(--space-md); padding: var(--space-xs) var(--space-lg); }
+.night ol { list-style: none; margin: 0; padding: var(--space-sm) 0; }
+.night time { color: var(--color-muted); }
+.night .stuck { color: var(--color-ink); background: var(--color-paper-3); }
+.night .wake { color: var(--color-ink); background: var(--color-accent-wash); }
+.night .you { color: var(--color-accent); }
+
+/* The technical section's contents */
+.contents dt a { font-size: var(--text-lg); font-stretch: var(--stretch-display); white-space: nowrap; }
+
 /* Next */
 .links { display: grid; margin: 0; }
-.links > div { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--gap-columns); padding-block: var(--space-md); border-top: var(--rule-hair) solid var(--color-rule); align-items: baseline; }
+.links > div, .contents > div { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--gap-columns); padding-block: var(--space-md); border-top: var(--rule-hair) solid var(--color-rule); align-items: baseline; }
 .links dt a { white-space: nowrap; font-size: var(--text-lg); font-stretch: var(--stretch-display); }
-.links dd { margin: 0; color: var(--color-muted); }
+.links dd, .contents dd { margin: 0; color: var(--color-muted); }
+.contents { display: grid; margin: 0; }
+.contents > div:last-child { border-bottom: var(--rule-hair) solid var(--color-rule); }
 .foot { grid-column: 1 / -1; display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-md); padding-top: var(--space-lg); border-top: var(--rule-hair) solid var(--color-rule-2); font-size: var(--text-sm); color: var(--color-muted); }
 .foot p { max-width: none; }
 
@@ -223,7 +244,7 @@ p { margin: 0; text-wrap: pretty; }
   .slide > .container { row-gap: var(--space-lg); }
   .stops { display: none; }
   .family .container { gap: var(--space-md); }
-  .rows > div, .links > div { grid-template-columns: minmax(0, 1fr); gap: var(--space-2xs); }
+  .rows > div, .links > div, .contents > div { grid-template-columns: minmax(0, 1fr); gap: var(--space-2xs); }
   .diff { font-size: var(--text-sm); }
   .diff li { padding-inline: var(--space-sm); }
   .well pre { padding: var(--space-md); }
@@ -238,6 +259,12 @@ p { margin: 0; text-wrap: pretty; }
   #plan .pair { gap: var(--space-sm); }
   .roles th, .roles td { padding-right: var(--space-sm); font-size: var(--text-sm); }
   .hide-s { display: none; }
+  .night li { padding-inline: var(--space-md); font-size: var(--text-sm); }
+  .well .rows { padding-inline: var(--space-md); }
+  .intu .rows > div { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--space-sm); padding-block: var(--space-sm); }
+  .intu .rows dt { font-size: var(--text-sm); }
+  .contents > div { padding-block: var(--space-xs); }
+  .contents dt a { font-size: var(--text-md); }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -253,13 +280,12 @@ p { margin: 0; text-wrap: pretty; }
   <nav class="nav" aria-label="Sections"><div class="container">
     <a class="mark" href="#top" aria-label="EpicSpine, back to the start">epicspine</a>
     <ul class="stops">
-      <li><a href="#why"><span>1</span>why</a></li>
-      <li><a href="#plan"><span>2</span>plan</a></li>
-      <li><a href="#memory"><span>3</span>memory</a></li>
-      <li><a href="#loop"><span>4</span>loop</a></li>
-      <li><a href="#roles"><span>5</span>roles</a></li>
-      <li><a href="#install"><span>6</span>install</a></li>
-      <li><a href="#next"><span>7</span>read</a></li>
+      <li><a href="#clear"><span>1</span>clear</a></li>
+      <li><a href="#relentless"><span>2</span>relentless</a></li>
+      <li><a href="#together"><span>3</span>together</a></li>
+      <li><a href="#technical"><span>4</span>technical</a></li>
+      <li><a href="#install"><span>5</span>install</a></li>
+      <li><a href="#next"><span>6</span>read</a></li>
     </ul>
     <div class="nav-end"><a href="book/">book</a><a class="gh" href="https://github.com/AlfaBlok/epicspine-skill">source</a></div>
   </div></nav>
@@ -293,7 +319,79 @@ p { margin: 0; text-wrap: pretty; }
     </div>
   </section>
 
-  <section class="slide alt" id="why" aria-labelledby="h-why">
+  <section class="slide alt intu" id="clear" aria-labelledby="h-clear">
+    <div class="container">
+      <div class="slide-head">
+        <h2 id="h-clear">Every agent knows what it is for.</h2>
+        <p class="lead">Before it acts, an agent binds: it reads its goal, where things stand and the rules you taught it. Then it stops guessing and does its one job.</p>
+      </div>
+      <figure class="slide-body well" style="margin:0" aria-label="Four agents on one team, each with the one thing it is for">
+        <figcaption class="well-head"><span>one team, after binding</span></figcaption>
+        <dl class="rows">
+          <div><dt>manager</dt><dd>turns what you ask into a plan and hands out the steps</dd></div>
+          <div><dt>researcher</dt><dd>finds what is true before anyone writes</dd></div>
+          <div><dt>writer</dt><dd>drafts in your voice, then waits for your yes</dd></div>
+          <div><dt>reviewer</dt><dd>checks the work against the goal, not against taste</dd></div>
+        </dl>
+      </figure>
+    </div>
+  </section>
+
+  <section class="slide intu" id="relentless" aria-labelledby="h-relentless">
+    <div class="container">
+      <div class="slide-head">
+        <h2 id="h-relentless">It goes as far as the code can.</h2>
+        <p class="lead">The team keeps working until a step truly needs you. When something gets stuck, a scheduled wake finds it and starts it again.</p>
+      </div>
+      <figure class="slide-body well night" style="margin:0" aria-label="An example night on one goal">
+        <figcaption class="well-head"><span>an example night, EPIC-4</span><span class="hide-s">while you sleep</span></figcaption>
+        <ol>
+          <li><time>23:10</time><span>S1 OAuth app built, tests green</span></li>
+          <li class="stuck"><time>23:40</time><span>S2 stuck: its worker stopped</span></li>
+          <li class="wake"><time>00:10</time><span>a wake finds S2, starts a fresh worker</span></li>
+          <li><time>00:55</time><span>S2 login button verified, merged</span></li>
+          <li class="you"><time>01:05</time><span>S3 live check: waiting on you</span></li>
+        </ol>
+      </figure>
+    </div>
+  </section>
+
+  <section class="slide alt intu" id="together" aria-labelledby="h-together">
+    <div class="container">
+      <div class="slide-head">
+        <h2 id="h-together">Ask once. Everyone pushes for it.</h2>
+        <p class="lead">Say what you want and every agent on the team works toward it, each from its own side, moving the line forward with you.</p>
+      </div>
+      <figure class="slide-body well" style="margin:0" aria-label="What happens after one ask">
+        <figcaption class="well-head"><span>you: “Google sign-in before Friday”</span></figcaption>
+        <dl class="rows">
+          <div><dt>manager</dt><dd>wrote the goal and three steps</dd></div>
+          <div><dt>worker</dt><dd>built the OAuth app</dd></div>
+          <div><dt>worker</dt><dd>built the button, kept email login green</dd></div>
+          <div><dt>reviewer</dt><dd>checked both against the goal</dd></div>
+          <div><dt>you</dt><dd>one look, live</dd></div>
+        </dl>
+      </figure>
+    </div>
+  </section>
+
+  <section class="slide" id="technical" aria-labelledby="h-technical">
+    <div class="container">
+      <div class="slide-head">
+        <h2 id="h-technical">How it works, technically.</h2>
+        <p class="lead">Five screens on the machinery underneath: the file, the tree, the memory, the loop and the roles.</p>
+      </div>
+      <dl class="slide-body contents">
+        <div><dt><a href="#why">the file</a></dt><dd>the plan moves out of the chat</dd></div>
+        <div><dt><a href="#plan">the tree</a></dt><dd>loose talk becomes goals and steps</dd></div>
+        <div><dt><a href="#memory">the memory</a></dt><dd>plain files in git, next to the code</dd></div>
+        <div><dt><a href="#loop">the loop</a></dt><dd>bind, dispatch, verify, merge, learn</dd></div>
+        <div><dt><a href="#roles">the roles</a></dt><dd>who writes what to the spine</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="slide alt" id="why" data-stop="technical" aria-labelledby="h-why">
     <div class="container">
       <div class="slide-head">
         <h2 id="h-why">Agents lose the plot between chats.</h2>
@@ -314,7 +412,7 @@ p { margin: 0; text-wrap: pretty; }
     </div>
   </section>
 
-  <section class="slide" id="plan" aria-labelledby="h-plan">
+  <section class="slide" id="plan" data-stop="technical" aria-labelledby="h-plan">
     <div class="container stack">
       <div class="slide-head">
         <h2 id="h-plan">Say it loosely. Get a goal tree.</h2>
@@ -348,7 +446,7 @@ p { margin: 0; text-wrap: pretty; }
     </div>
   </section>
 
-  <section class="slide alt" id="memory" aria-labelledby="h-memory">
+  <section class="slide alt" id="memory" data-stop="technical" aria-labelledby="h-memory">
     <div class="container">
       <div class="slide-head">
         <h2 id="h-memory">The memory is the repo.</h2>
@@ -372,7 +470,7 @@ p { margin: 0; text-wrap: pretty; }
     </div>
   </section>
 
-  <section class="slide" id="loop" aria-labelledby="h-loop">
+  <section class="slide" id="loop" data-stop="technical" aria-labelledby="h-loop">
     <div class="container stack">
       <div class="slide-head">
         <h2 id="h-loop">Bind, dispatch, verify, merge, learn.</h2>
@@ -387,7 +485,7 @@ p { margin: 0; text-wrap: pretty; }
     </div>
   </section>
 
-  <section class="slide alt" id="roles" aria-labelledby="h-roles">
+  <section class="slide alt" id="roles" data-stop="technical" aria-labelledby="h-roles">
     <div class="container">
       <div class="slide-head">
         <h2 id="h-roles">The manager never implements.</h2>
@@ -434,7 +532,7 @@ p { margin: 0; text-wrap: pretty; }
     <div class="container">
       <div class="slide-head">
         <h2 id="h-next">Read the source, not the summary.</h2>
-        <p class="lead">The Book explains every part in 32 slides.</p>
+        <p class="lead">The Book explains every part in 35 slides, intuitions first.</p>
       </div>
       <dl class="slide-body links">
         <div><dt><a href="book/">The Book</a></dt><dd>Spines, roles, dispatch, git lanes, learnings</dd></div>
@@ -507,7 +605,7 @@ p { margin: 0; text-wrap: pretty; }
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (en) {
         if (!en.isIntersecting) { return; }
-        var id = en.target.id;
+        var id = en.target.getAttribute("data-stop") || en.target.id;
         stops.forEach(function (a) { a.setAttribute("aria-current", a.getAttribute("href") === "#" + id ? "true" : "false"); });
         if (en.target.contains(hero)) { hero.classList.add("on"); }
       });
