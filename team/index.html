@@ -12,10 +12,10 @@
 <meta name="description" content="EpicTeam is an AI team that works on your goals. Personas with one job each, shared skills and sign-ins, several AI subscriptions, and one inbox for what needs you.">
 <meta property="og:title" content="EpicTeam: an AI team that works on your goals">
 <meta property="og:description" content="You only see what needs you, in one inbox. Real screens of the tool.">
-<meta name="theme-color" content="#0b120d">
+<meta name="theme-color" content="#0d1a33">
 <!-- EpicTeam's public page (agent_team E43-S7). Every picture is a real production screen of team.alpha9.io, taken
      read-only by agent_team console/scripts/e43s7-shots.mjs; private parts are folded or cropped out. -->
-<link rel="preload" href="../fonts/martian-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../fonts/funnel-display-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="../fonts/funnel-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../epic.css">
 </head>
@@ -180,8 +180,21 @@
         <li>AGPL-3.0</li>
       </ul></div>
     </div>
-    <p class="fine">Screens taken on team.alpha9.io, 4 November 2026. Set in Martian Mono and Funnel Sans (SIL OFL 1.1).</p>
+    <p class="fine">Screens taken on team.alpha9.io, 4 November 2026. Set in Funnel Display, Funnel Sans and Martian Mono (SIL OFL 1.1).</p> <!-- taste-skill-ignore: the font credit names the code face -->
   </div>
 </footer>
+<script>
+// The entrance (E43-S6): the parts of each section rise once as it enters, as on the EpicSpine page.
+// Without script, or without IntersectionObserver, everything simply shows.
+(function () {
+  if (!("IntersectionObserver" in window)) { return; }
+  var els = document.querySelectorAll(".band .say > *, .band .show");
+  var io = new IntersectionObserver(function (es) {
+    es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+  }, { rootMargin: "0px 0px -8% 0px" });
+  els.forEach(function (el) { el.classList.add("rise"); io.observe(el); });
+  document.documentElement.classList.add("js");
+})();
+</script>
 </body>
 </html>

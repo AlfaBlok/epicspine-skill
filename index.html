@@ -13,7 +13,7 @@
 <meta name="description" content="EpicSpine is a free agent skill. Your goals, progress and rules live as plain files in your repo, so every AI agent starts where the last one stopped.">
 <meta property="og:title" content="EpicSpine: your agents keep the plan">
 <meta property="og:description" content="Every agent starts where the last one stopped. A free skill for Claude Code and Codex.">
-<meta name="theme-color" content="#0b120d">
+<meta name="theme-color" content="#0d1a33">
 <meta http-equiv="origin-trial" content="AtDrsViSr8mDLBvm0KVKUeVmmJMrXiGoIy8qNZ86ZvC5hEOThzKxAElBvvn+8cUhqJ/Mnpqy/F0sJlp8VBLKVwYAAABNeyJvcmlnaW4iOiJodHRwczovL2VwaWNzcGluZS5kZXY6NDQzIiwiZmVhdHVyZSI6IldlYk1DUCIsImV4cGlyeSI6MTgwNjM2NDgwMH0=">
 <script>
   // Old Book deep links (epicspine.dev/#9) moved with the Book to /book/ (agent_team E43-S1); three intuition slides follow
@@ -21,9 +21,11 @@
   // the Book in E43-S6, so those links open it.
   if (/^#\d+$/.test(location.hash)) { var n = +location.hash.slice(1); location.replace("book/#" + (n > 1 ? n + 3 : n)); }
   else if (/^#(technical|why|plan|memory|loop|roles)$/.test(location.hash)) { location.replace("book/"); }
+  document.documentElement.classList.add("js");
 </script>
-<link rel="preload" href="fonts/martian-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/funnel-display-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/funnel-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/martian-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="epic.css">
 </head>
 <body>
@@ -41,115 +43,129 @@
 </header>
 
 <main>
-  <section class="band hero" id="top" aria-labelledby="h-top">
-    <div class="container split">
-      <div class="say">
-        <h1 id="h-top">Your agents keep the plan.</h1>
+  <section class="hero" id="top" aria-labelledby="h-top">
+    <div class="container">
+      <h1 id="h-top" class="rise">Your agents keep<br class="br-wide"> the plan.</h1>
+      <div class="hero-foot rise">
         <p class="lead">Every agent starts where the last one stopped.</p>
         <div class="actions">
           <a class="btn btn--primary" href="#install">Install it, free</a>
           <a class="btn" href="#again">See what changes</a>
         </div>
       </div>
-      <figure class="show well" aria-label="One goal carried by three agent sessions over two days, nothing repeated">
-        <figcaption class="well-head"><span>one goal, three chats, two days</span><span class="hide-xs">an example</span></figcaption>
-        <ol class="log">
-          <li><time>Mon 09:04</time><span class="who you">you</span><span class="hi">Google sign-in before Friday</span></li>
-          <li><time>Mon 09:06</time><span class="who">Claude</span><span>wrote the goal and three steps</span></li>
-          <li><time>Mon 23:10</time><span class="who">Codex</span><span>read the plan, built step one</span></li>
-          <li><time>Tue 08:02</time><span class="who">Claude</span><span>new chat, carried on at step two</span></li>
-          <li class="mark-you"><time>Tue 08:03</time><span class="who you">you</span><span>nothing to explain again</span></li>
-        </ol>
-      </figure>
     </div>
   </section>
 
-  <section class="band alt" id="again" aria-labelledby="h-again">
-    <div class="container split flip">
-      <div class="say">
+  <section class="sec sec--again" id="again" aria-labelledby="h-again">
+    <div class="container again">
+      <div class="head rise">
         <h2 id="h-again">No more explaining it again.</h2>
         <p class="lead">A new chat starts from the plan: the goal, where things stand and what comes next.</p>
       </div>
-      <figure class="show well" aria-label="What a new chat reads before it says a word">
-        <figcaption class="well-head"><span>what a new chat reads first</span><span class="hide-xs">an example</span></figcaption>
-        <dl class="rows">
-          <div><dt>the goal</dt><dd>Google sign-in, live before Friday</dd></div>
-          <div><dt>done so far</dt><dd>step one built and tested</dd></div>
-          <div><dt>next</dt><dd>the login button</dd></div>
-          <div><dt>your rules</dt><dd>run the tests before merging</dd></div>
-          <div><dt>waiting on you</dt><dd>nothing</dd></div>
-        </dl>
+      <figure class="chat rise" data-ui aria-label="The first minute of a new chat, without EpicSpine and with it">
+        <div class="switch" role="tablist" aria-label="Show the new chat">
+          <button type="button" role="tab" id="t-without" aria-controls="p-without" aria-selected="false" tabindex="-1">Without EpicSpine</button>
+          <button type="button" role="tab" id="t-with" aria-controls="p-with" aria-selected="true">With EpicSpine</button>
+        </div>
+        <div class="pane" role="tabpanel" id="p-without" aria-labelledby="t-without">
+          <div class="talk">
+            <p class="msg you"><span class="who">You</span>Carry on with the sign-in work.</p>
+            <p class="msg"><span class="who">New chat</span>Happy to. Which sign-in is this? What is done so far, and what comes next?</p>
+            <p class="msg you"><span class="who">You</span>Google sign-in, before Friday. Step one is built, and…</p>
+          </div>
+          <p class="aside">Ten minutes later, you are still explaining.</p>
+        </div>
+        <div class="pane" role="tabpanel" id="p-with" aria-labelledby="t-with">
+          <div class="talk">
+            <p class="msg you"><span class="who">You</span>Carry on with the sign-in work.</p>
+            <p class="msg"><span class="who">New chat</span>Step one is built and tested. Starting on the login button now.</p>
+          </div>
+          <dl class="read" aria-label="What the new chat read first">
+            <div><dt>The goal</dt><dd>Google sign-in, live before Friday</dd></div>
+            <div><dt>Done so far</dt><dd>step one built and tested</dd></div>
+            <div><dt>Next</dt><dd>the login button</dd></div>
+            <div><dt>Your rules</dt><dd>run the tests before merging</dd></div>
+            <div><dt>Waiting on you</dt><dd>nothing</dd></div>
+          </dl>
+        </div>
       </figure>
     </div>
   </section>
 
-  <section class="band" id="sticks" aria-labelledby="h-sticks">
-    <div class="container split">
-      <div class="say">
+  <section class="sec sec--sticks" id="sticks" aria-labelledby="h-sticks">
+    <div class="container sticks">
+      <div class="head rise">
         <h2 id="h-sticks">Say it once. It sticks.</h2>
         <p class="lead">Correct an agent one time. It becomes a rule that every agent follows from then on.</p>
       </div>
-      <figure class="show well" aria-label="A correction becomes a rule, and a different agent follows it days later">
-        <figcaption class="well-head"><span>a correction, three days on</span></figcaption>
-        <ol class="log">
-          <li><time>Mon</time><span class="who you">you</span><span class="hi">always run the tests before merging</span></li>
-          <li><time>Mon</time><span class="who">saved</span><span class="arg">a rule: tests before every merge</span></li>
-          <li><time>Thu</time><span class="who">Codex</span><span>ran the tests first, then merged</span></li>
-        </ol>
-      </figure>
+      <ol class="calls">
+        <li class="rise">
+          <p class="when">On Monday, you correct Claude.</p>
+          <p class="call">Always run the tests before merging.</p>
+        </li>
+        <li class="rise">
+          <p class="when">The plan keeps it as a rule.</p>
+          <pre class="answer" data-ui><code>L-1 | before a merge | run the tests | you asked, Mon</code></pre>
+        </li>
+        <li class="rise">
+          <p class="when">On Thursday, Codex follows it.</p>
+          <div class="answer answer--wide" data-ui>
+            <p class="line"><span class="tag">Codex</span>Rules in force: L-1</p>
+            <p class="line"><span class="tag">ran</span>the tests first, all green</p>
+            <p class="line"><span class="tag">then</span>merged step two</p>
+          </div>
+        </li>
+      </ol>
     </div>
   </section>
 
-  <section class="band alt" id="clear" aria-labelledby="h-clear">
-    <div class="container split flip">
-      <div class="say">
+  <section class="sec sec--clear" id="clear" aria-labelledby="h-clear">
+    <div class="container clear">
+      <div class="head rise">
         <h2 id="h-clear">Every agent knows its job.</h2>
         <p class="lead">Before it acts, each agent reads what it is for. It stops guessing and does that one thing well.</p>
       </div>
-      <figure class="show well" aria-label="Four agents on one team, each with the one thing it is for">
-        <figcaption class="well-head"><span>one team, after binding</span></figcaption>
-        <dl class="rows">
-          <div><dt>manager</dt><dd>turns what you ask into a plan</dd></div>
-          <div><dt>worker</dt><dd>builds one step and proves it works</dd></div>
-          <div><dt>reviewer</dt><dd>checks the work against the goal</dd></div>
-          <div><dt>you</dt><dd>decide, and correct once</dd></div>
-        </dl>
-      </figure>
+      <ul class="roles rise" data-ui aria-label="One team, each with the one thing it is for">
+        <li><button type="button" aria-pressed="true"><span class="role">Manager</span><span class="does">turns what you ask into a plan</span></button></li>
+        <li><button type="button" aria-pressed="false"><span class="role">Worker</span><span class="does">builds one step and proves it works</span></button></li>
+        <li><button type="button" aria-pressed="false"><span class="role">Reviewer</span><span class="does">checks the work against the goal</span></button></li>
+        <li><button type="button" aria-pressed="false"><span class="role">You</span><span class="does">decide, and correct once</span></button></li>
+      </ul>
     </div>
   </section>
 
-  <section class="band" id="relentless" aria-labelledby="h-relentless">
-    <div class="container split">
-      <div class="say">
+  <section class="sec sec--night" id="relentless" aria-labelledby="h-relentless">
+    <div class="container night">
+      <div class="head rise">
         <h2 id="h-relentless">Work keeps moving overnight.</h2>
         <p class="lead">The team goes as far as it can without you. When a step stalls, a scheduled wake starts it again.</p>
       </div>
-      <figure class="show well" aria-label="An example night on one goal">
-        <figcaption class="well-head"><span>an example night</span><span class="hide-xs">while you sleep</span></figcaption>
-        <ol class="log two">
-          <li><time>23:10</time><span>step one built, tests green</span></li>
-          <li class="mark-stuck"><time>23:40</time><span>step two stuck, its worker stopped</span></li>
-          <li><time>00:10</time><span>a wake finds it, starts a fresh worker</span></li>
-          <li><time>00:55</time><span>step two verified and merged</span></li>
-          <li class="mark-you"><time>01:05</time><span>live check, waiting on you</span></li>
+      <figure class="clock rise" data-ui aria-label="An example night on one goal, from 23:00 to 01:30">
+        <ol class="events">
+          <li style="--at: 0.11"><time>23:10</time><span>step one built, tests green</span></li>
+          <li class="is-stuck" style="--at: 0.27"><time>23:40</time><span>step two stuck, its worker stopped</span></li>
+          <li class="is-wake" style="--at: 0.44"><time>00:10</time><span>a wake finds it and starts a fresh worker</span></li>
+          <li style="--at: 0.69"><time>00:55</time><span>step two verified and merged</span></li>
+          <li class="is-you" style="--at: 0.81"><time>01:05</time><span>live check, waiting on you</span></li>
         </ol>
+        <div class="axis" aria-hidden="true"><span>23:00</span><span>00:00</span><span>01:00</span><span>01:30</span></div>
       </figure>
     </div>
   </section>
 
-  <section class="band alt" id="together" aria-labelledby="h-together">
-    <div class="container split flip">
-      <div class="say">
+  <section class="sec sec--together" id="together" aria-labelledby="h-together">
+    <div class="container together">
+      <div class="head rise">
         <h2 id="h-together">Only real decisions reach you.</h2>
         <p class="lead">The team settles the rest. Each question comes with a recommendation and one tap to answer.</p>
       </div>
-      <figure class="show well" aria-label="A question from the team, ready to answer">
-        <figcaption class="well-head"><span>waiting on you</span><span class="hide-xs">an example</span></figcaption>
-        <div class="ask">
+      <figure class="stage rise">
+        <div class="ask" data-ui aria-label="A question from the team, ready to answer">
+          <p class="ask-from">Waiting on you</p>
           <p class="q">Turn on Google sign-in for everyone today?</p>
           <dl>
-            <div><dt>why you</dt><dd>it changes what every user sees</dd></div>
-            <div><dt>recommend</dt><dd>yes: tests green, one step to undo</dd></div>
+            <div><dt>Why you</dt><dd>it changes what every user sees</dd></div>
+            <div><dt>Recommend</dt><dd>yes: tests green, one step to undo</dd></div>
           </dl>
           <div class="choices" aria-hidden="true"><span class="choice yes">Yes</span><span class="choice">Not yet</span></div>
         </div>
@@ -157,47 +173,53 @@
     </div>
   </section>
 
-  <section class="band" id="repo" aria-labelledby="h-repo">
-    <div class="container split">
-      <div class="say">
+  <section class="sec sec--repo" id="repo" aria-labelledby="h-repo">
+    <figure class="plate rise">
+      <picture>
+        <source media="(max-width: 700px)" srcset="img/volumes-960.webp">
+        <img src="img/volumes.webp" width="1920" height="1288" loading="lazy" decoding="async" alt="Seven matching volumes of one long work on a library shelf, numbered X to XIII, navy cloth with gold lettering.">
+      </picture>
+      <figcaption class="container">One long work in many volumes, each picking up where the last stopped. Finnish National Library.</figcaption>
+    </figure>
+    <div class="container repo">
+      <div class="head rise">
         <h2 id="h-repo">The plan lives in your repo.</h2>
         <p class="lead">Plain files next to your code. No server and no account. Works with Claude Code and Codex.</p>
       </div>
-      <figure class="show well" aria-label="A project folder with its plan next to the code, and the plan's history">
-        <figcaption class="well-head"><span>your project</span><span class="hide-xs">an example</span></figcaption>
-<pre>src/            <span class="dim">your code</span>
-docs/sign-in.md <span class="dim">the plan</span>
+      <figure class="tree rise" data-ui aria-label="A project folder with its plan next to the code, and the plan's history">
+<pre><code>src/              <span class="dim">your code</span>
+docs/sign-in.md   <span class="dim">the plan</span>
 
-<span class="arg">Tue</span> step one verified
-<span class="arg">Mon</span> rule learned: tests before merge
-<span class="arg">Mon</span> plan created from chat</pre>
+<span class="arg">Tue</span>  step one verified
+<span class="arg">Mon</span>  rule learned: tests before merge
+<span class="arg">Mon</span>  plan created from chat</code></pre>
       </figure>
     </div>
   </section>
 
-  <section class="band alt" id="family" aria-labelledby="h-family">
-    <div class="container">
-      <h2 id="h-family">Want the team without the setup?</h2>
-      <div class="family-grid">
-        <article class="product">
-          <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><rect class="tile" width="32" height="32" rx="7"/><g transform="translate(3.40 0) skewX(-12)"><path class="g" d="M8 6H24V10H19V26H13V10H8Z"/></g></svg>
-          <h3><a href="team/">EpicTeam</a></h3>
+  <section class="sec sec--family" id="family" aria-labelledby="h-family">
+    <div class="container family-wrap">
+      <h2 id="h-family" class="rise">Want the team without the setup?</h2>
+      <div class="products">
+        <article class="product product--team rise">
+          <a class="shotlink" href="team/" tabindex="-1" aria-hidden="true"><img src="team/shots/inbox.webp" width="1600" height="1219" loading="lazy" decoding="async" alt=""></a>
+          <h3><svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><rect class="tile" width="32" height="32" rx="7"/><g transform="translate(3.40 0) skewX(-12)"><path class="g" d="M8 6H24V10H19V26H13V10H8Z"/></g></svg><a href="team/">EpicTeam</a></h3>
           <p>An AI team that works on your goals. Everything that needs you lands in one inbox.</p>
-          <div class="actions"><a class="btn" href="team/">See EpicTeam</a></div>
+          <a class="btn" href="team/">See EpicTeam</a>
         </article>
-        <article class="product">
-          <svg class="mark social" viewBox="0 0 32 32" aria-hidden="true"><path class="tile" d="M6 0h20a6 6 0 0 1 6 6v16a6 6 0 0 1-6 6H15l-8 4v-4H6a6 6 0 0 1-6-6V6a6 6 0 0 1 6-6z"/><g transform="translate(2.98 0) skewX(-12)"><path class="g" d="M8 8A4 4 0 0 1 12 4L24 4L24 8L14 8L14 12L20 12A4 4 0 0 1 24 16L24 20A4 4 0 0 1 20 24L8 24L8 20L18 20L18 16L12 16A4 4 0 0 1 8 12Z"/></g></svg>
-          <h3><a href="social/">EpicSocial</a></h3>
+        <article class="product product--social rise">
+          <a class="shotlink" href="social/" tabindex="-1" aria-hidden="true"><img src="social/shots/pipeline.webp" width="1600" height="1000" loading="lazy" decoding="async" alt=""></a>
+          <h3><svg class="mark social" viewBox="0 0 32 32" aria-hidden="true"><path class="tile" d="M6 0h20a6 6 0 0 1 6 6v16a6 6 0 0 1-6 6H15l-8 4v-4H6a6 6 0 0 1-6-6V6a6 6 0 0 1 6-6z"/><g transform="translate(2.98 0) skewX(-12)"><path class="g" d="M8 8A4 4 0 0 1 12 4L24 4L24 8L14 8L14 12L20 12A4 4 0 0 1 24 16L24 20A4 4 0 0 1 20 24L8 24L8 20L18 20L18 16L12 16A4 4 0 0 1 8 12Z"/></g></svg><a href="social/">EpicSocial</a></h3>
           <p>AI agents that find ideas, write your posts and answer replies. You approve every post.</p>
-          <div class="actions"><a class="btn" href="social/">See EpicSocial</a></div>
+          <a class="btn" href="social/">See EpicSocial</a>
         </article>
       </div>
     </div>
   </section>
 
-  <section class="band" id="install" aria-labelledby="h-install">
-    <div class="container split wide">
-      <div class="say">
+  <section class="sec sec--install" id="install" aria-labelledby="h-install">
+    <div class="container install">
+      <div class="head rise">
         <h2 id="h-install">Install once per machine.</h2>
         <ul class="notes">
           <li>Python 3.10 or newer, no packages.</li>
@@ -206,8 +228,8 @@ docs/sign-in.md <span class="dim">the plan</span>
         </ul>
         <p class="more">How it works inside, from the file to the roles: <a href="book/">read the Book</a>.</p>
       </div>
-      <figure class="show well install">
-        <figcaption class="well-head"><span>shell</span><button class="copy" type="button" data-copy="install-cmd">Copy</button></figcaption>
+      <figure class="shell rise">
+        <div class="shell-bar"><span>Shell</span><button class="copy" type="button" data-copy="install-cmd">Copy</button></div>
 <pre id="install-cmd"><span class="p">$</span> git clone https://github.com/AlfaBlok/epicspine-skill
 <span class="p">$</span> cd epicspine-skill
 <span class="p">$</span> mkdir -p ~/.agents/skills
@@ -238,7 +260,8 @@ docs/sign-in.md <span class="dim">the plan</span>
         <li>AGPL-3.0</li>
       </ul></div>
     </div>
-    <p class="fine">Set in Martian Mono and Funnel Sans (SIL OFL 1.1).</p>
+    <p class="giant" aria-hidden="true">EpicSpine</p>
+    <p class="fine">Photograph: <a href="https://commons.wikimedia.org/wiki/File:Suomen_kansan_vanhat_runot_vols_X-2_to_XIII-4_on_shelf_247_north_reading_room_of_Finnish_national_library.jpg">Suomen kansan vanhat runot on shelf 247</a> by Alarichall, <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>, via Wikimedia Commons. Set in Funnel Display, Funnel Sans and Martian Mono (SIL OFL 1.1).</p> <!-- taste-skill-ignore: the font credit names the code face -->
   </div>
 </footer>
 
@@ -260,6 +283,48 @@ document.querySelectorAll("[data-copy]").forEach(function (b) {
     } else { done(false); }
   });
 });
+</script>
+<script>
+// The live parts (E43-S6): the new-chat switch, the roles list and the entrances. Without script every
+// pane and every role line shows, and nothing waits for an entrance.
+(function () {
+  var tabs = Array.prototype.slice.call(document.querySelectorAll(".switch [role=tab]"));
+  function pick(t, focus) {
+    tabs.forEach(function (o) {
+      var on = o === t;
+      o.setAttribute("aria-selected", on ? "true" : "false");
+      o.tabIndex = on ? 0 : -1;
+      document.getElementById(o.getAttribute("aria-controls")).hidden = !on;
+    });
+    if (focus) { t.focus(); }
+  }
+  tabs.forEach(function (t, i) {
+    t.addEventListener("click", function () { pick(t); });
+    t.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowRight" || e.key === "ArrowLeft") { e.preventDefault(); pick(tabs[(i + (e.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length], true); }
+    });
+  });
+  var cur = tabs.filter(function (t) { return t.getAttribute("aria-selected") === "true"; })[0];
+  if (cur) { pick(cur); }
+
+  var roles = Array.prototype.slice.call(document.querySelectorAll(".roles button"));
+  function choose(b) { roles.forEach(function (o) { o.setAttribute("aria-pressed", o === b ? "true" : "false"); }); }
+  roles.forEach(function (b, i) {
+    b.addEventListener("click", function () { choose(b); });
+    b.addEventListener("mouseenter", function () { if (matchMedia("(hover: hover)").matches) { choose(b); } });
+    b.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); var n = roles[(i + (e.key === "ArrowDown" ? 1 : roles.length - 1)) % roles.length]; choose(n); n.focus(); }
+    });
+  });
+  document.documentElement.classList.add("live");
+
+  var rises = document.querySelectorAll(".rise");
+  if (!("IntersectionObserver" in window)) { rises.forEach(function (el) { el.classList.add("in"); }); return; }
+  var io = new IntersectionObserver(function (es) {
+    es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+  }, { rootMargin: "0px 0px -8% 0px" });
+  rises.forEach(function (el) { io.observe(el); });
+})();
 </script>
 <script>
 // WebMCP (EPIC-10): read-only tools for an agent in the visitor's browser. Everything is read
