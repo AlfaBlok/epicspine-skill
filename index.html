@@ -3,519 +3,204 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>EpicSpine: talk to your agents, get a plan kept in git</title>
-<meta name="description" content="EpicSpine is an agent skill that turns chat into a goal tree kept as plain files in git, so every agent starts where the last one stopped.">
-<meta property="og:title" content="EpicSpine: talk, and it becomes a plan">
-<meta property="og:description" content="An agent skill that turns chat into a goal tree in git.">
+<title>EpicSpine: your AI agents keep the plan</title>
+<meta name="description" content="EpicSpine is a free agent skill. Your goals, progress and rules live as plain files in your repo, so every AI agent starts where the last one stopped.">
+<meta property="og:title" content="EpicSpine: your agents keep the plan">
+<meta property="og:description" content="Every agent starts where the last one stopped. A free skill for Claude Code and Codex.">
 <meta name="theme-color" content="#0b120d">
 <meta http-equiv="origin-trial" content="AtDrsViSr8mDLBvm0KVKUeVmmJMrXiGoIy8qNZ86ZvC5hEOThzKxAElBvvn+8cUhqJ/Mnpqy/F0sJlp8VBLKVwYAAABNeyJvcmlnaW4iOiJodHRwczovL2VwaWNzcGluZS5kZXY6NDQzIiwiZmVhdHVyZSI6IldlYk1DUCIsImV4cGlyeSI6MTgwNjM2NDgwMH0=">
 <script>
-  // Old Book deep links (epicspine.dev/#9) moved with the Book to /book/ (agent_team E43-S1);
-  // three intuition slides now follow its cover, so slide 2 onward moved down by three (E43-S5).
+  // Old Book deep links (epicspine.dev/#9) moved with the Book to /book/ (agent_team E43-S1); three intuition slides follow
+  // its cover (E43-S5). The technical screens of E43-S5 (#technical, #why, #plan, #memory, #loop, #roles) moved back into
+  // the Book in E43-S6, so those links open it.
   if (/^#\d+$/.test(location.hash)) { var n = +location.hash.slice(1); location.replace("book/#" + (n > 1 ? n + 3 : n)); }
-  document.documentElement.classList.add("js");
+  else if (/^#(technical|why|plan|memory|loop|roles)$/.test(location.hash)) { location.replace("book/"); }
 </script>
 <link rel="preload" href="fonts/martian-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
-<style>
-/* Hallmark · shape: Slides (one idea a screen, scroll flips) · genre: atmospheric · theme: Terminal (by request) · redesign: full · E43-S5: three intuitions open, then the technical section
- * hero: Split (head on 1 to 5, the bind session on 7 to 12) · nav: edge-aligned numbered stops, the family line above · footer: a reference list, the family, the licence · imagery: the product (real spines.py output) · signature: a cold agent binding in one command, typed in the hero
- * axes: dark/mono/chromatic-green · posture: committed · contrast: pass · fold: pass · job: install · v2.0.0 */
-/* Hallmark · pre-emit critique: P4 H4 E4 S5 R4 V4 · weakest: P, the old deck explained everything at once; each screen now argues one thing and the Book holds the rest */
-/* Hallmark · E43-S5 critique: the page opened on machinery; three plain screens (what each agent is for, how far it goes, who pushes with you) now come first, and the machinery sits behind a contents screen */
-/* Hallmark · waive 47b · one well per screen holds a real session, the skill's own commands and output · the terminal is where EpicSpine runs */
-/* Hallmark · waive 77 · memory holds two wells, roles a four-row table, each beside its head · every slide must fit one snapped screen, so a slide carries one object, not a tall one */
-/* Hallmark · waive 79 · the hero head and the bind session are centred in a 100svh slide · the snap gives every slide equal air above and below; the bind session stays its real length */
-/* Hallmark · dismissed 29 · the header blur is the one glass licence the atmospheric genre gives the nav; nothing else is glass */
-/* Hallmark · answered F8 · the one scroll pattern is the slide snap Jordi asked for; no other scroll motion */
-/* Hallmark · answered 58 · twelve one-screen slides, each under 80 words; the page total grows with the three intuition screens and the technical contents (E43-S5) */
-@font-face {
-  font-family: "Martian Mono";
-  font-style: normal;
-  font-weight: 400 700;
-  font-stretch: 75% 112.5%;
-  font-display: swap;
-  src: url("fonts/martian-mono-latin.woff2") format("woff2");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-:root {
-  color-scheme: dark;
-  --space-3xs: 2px; --space-2xs: 4px; --space-xs: 8px; --space-sm: 12px; --space-md: 16px; --space-lg: 24px; --space-xl: 40px; --space-2xl: 64px; --space-3xl: 96px; --space-4xl: 144px;
-  --text-xs: 0.8125rem; --text-sm: 0.875rem; --text-md: 1rem; --text-lg: 1.25rem; --text-xl: 1.5625rem; --text-2xl: 1.953rem; --text-3xl: 2.441rem;
-  --text-display-s: clamp(2rem, 3.2vw + 0.5rem, 3.25rem); --text-display: clamp(2.25rem, 3.6vw + 1rem, 3.75rem);
-  --text-section: clamp(1.75rem, 2.2vw + 0.75rem, 2.75rem); --text-title: clamp(1.125rem, 0.6vw + 0.875rem, 1.5rem); --text-lead: clamp(1rem, 0.35vw + 0.9rem, 1.25rem);
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1); --ease-in: cubic-bezier(0.7, 0, 0.84, 0); --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
-  --dur-micro: 120ms; --dur-short: 220ms; --dur-long: 420ms;
-  --container: 1440px; --gutter: 64px; --gap-columns: 32px;
-  --z-base: 1; --z-raised: 10; --z-sticky: 200; --z-sticky-nav: 300;
-  --color-paper: oklch(12.5% 0.012 150); --color-paper-2: oklch(16% 0.016 150); --color-paper-3: oklch(20.5% 0.022 150);
-  --color-ink: oklch(94% 0.03 140); --color-ink-2: oklch(82% 0.05 142); --color-muted: oklch(68% 0.06 145);
-  --color-rule: oklch(27% 0.028 148); --color-rule-2: oklch(38% 0.045 146);
-  --color-accent: oklch(87% 0.2 142); --color-accent-ink: oklch(14% 0.02 150); --color-focus: oklch(87% 0.2 142);
-  --color-accent-wash: oklch(23% 0.06 145);
-  --color-header: oklch(12.5% 0.012 150 / 0.92);
-  --font-display: "Martian Mono", ui-monospace, monospace; --font-body: var(--font-display);
-  --rule-hair: 1px;
-  --tracking-display: -0.02em; --display-weight: 500; --stretch-display: 112.5%; --stretch-body: 87.5%;
-  --header-h: 92px;
-}
-*, *::before, *::after { box-sizing: border-box; }
-html, body { overflow-x: clip; }
-html {
-  scrollbar-color: var(--color-muted) var(--color-paper);
-  scroll-snap-type: y mandatory;
-  scroll-behavior: smooth;
-}
-body {
-  margin: 0; background: var(--color-paper); color: var(--color-ink);
-  font-family: var(--font-body); font-size: var(--text-md); line-height: 1.6;
-  font-stretch: var(--stretch-body); font-variant-numeric: tabular-nums; font-synthesis: none;
-  -webkit-font-smoothing: antialiased; caret-color: var(--color-accent);
-}
-::selection { background: var(--color-accent-wash); color: var(--color-ink); }
-:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
-a { color: var(--color-ink-2); text-decoration: underline dotted; text-decoration-thickness: 1px; text-underline-offset: 0.2em; transition: color var(--dur-micro) steps(1); }
-a:hover { color: var(--color-accent); }
-a:active { color: var(--color-ink); }
-h1, h2, h3 {
-  margin: 0; font-family: var(--font-display); font-weight: var(--display-weight); font-stretch: var(--stretch-display);
-  letter-spacing: var(--tracking-display); line-height: 1.12; overflow-wrap: break-word; min-width: 0; text-wrap: balance;
-}
-h1 { font-size: var(--text-display); max-width: 14ch; }
-h2 { font-size: var(--text-section); max-width: 24ch; }
-h3 { font-size: var(--text-title); }
-p { margin: 0; text-wrap: pretty; }
-.lead { font-size: var(--text-lead); line-height: 1.55; color: var(--color-ink-2); max-width: 46ch; }
-.muted { color: var(--color-muted); }
-.container { width: 100%; max-width: var(--container); margin-inline: auto; padding-inline: var(--gutter); }
-.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-
-/* Header: the family line (E43-S2), then the numbered stops */
-.top { position: fixed; inset: 0 0 auto 0; z-index: var(--z-sticky-nav); background: var(--color-header); border-bottom: var(--rule-hair) solid var(--color-rule); backdrop-filter: blur(6px); }
-.family { border-bottom: var(--rule-hair) solid var(--color-rule); font-size: var(--text-xs); color: var(--color-muted); }
-.family .container { display: flex; gap: var(--space-lg); align-items: center; min-height: 32px; }
-.family b { color: var(--color-ink); font-weight: 700; }
-.family a { color: var(--color-muted); }
-.family a:hover { color: var(--color-accent); }
-.nav .container { display: flex; align-items: stretch; min-height: 60px; gap: var(--space-lg); }
-.mark { display: inline-flex; align-items: center; padding-inline: var(--space-md); background: var(--color-accent); color: var(--color-accent-ink); font-weight: 700; font-size: var(--text-sm); text-decoration: none; white-space: nowrap; }
-.mark:hover { color: var(--color-accent-ink); background: var(--color-ink); }
-.stops { display: flex; gap: var(--space-2xs); margin: 0; padding: 0; list-style: none; align-items: stretch; overflow-x: auto; scrollbar-width: none; }
-.stops li { display: flex; }
-.stops a { display: flex; align-items: center; gap: var(--space-xs); padding-inline: var(--space-sm); font-size: var(--text-sm); color: var(--color-ink-2); text-decoration: none; white-space: nowrap; border-bottom: 2px solid transparent; }
-.stops a span { color: var(--color-muted); }
-.stops a:hover { color: var(--color-ink); background: var(--color-paper-2); }
-.stops a[aria-current="true"] { color: var(--color-ink); background: var(--color-accent-wash); border-bottom-color: var(--color-accent); }
-.nav-end { margin-left: auto; display: flex; align-items: center; gap: var(--space-lg); font-size: var(--text-md); }
-.nav-end a { white-space: nowrap; }
-
-/* Slides: each one screen, snapped */
-.slide {
-  min-height: 100svh;
-  scroll-snap-align: start; scroll-snap-stop: always;
-  display: flex; align-items: center;
-  padding-block: calc(var(--header-h) + var(--space-xl)) var(--space-2xl);
-  border-bottom: var(--rule-hair) solid var(--color-rule);
-}
-.slide > .container { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gap-columns); row-gap: var(--space-xl); align-items: center; }
-.slide-head { grid-column: 1 / span 5; display: grid; gap: var(--space-lg); align-content: center; }
-.slide-body { grid-column: 7 / span 6; min-width: 0; }
-#top .slide-head { grid-column: 1 / span 5; }
-#top .slide-body { grid-column: 6 / span 7; }
-#top .well pre { font-size: var(--text-md); padding-block: var(--space-xl); }
-#top .out { color: var(--color-muted); }
-#top .out b { color: var(--color-ink-2); }
-#memory .well pre, #install .well pre { font-size: var(--text-lg); }
-#plan .well pre, #plan .said { font-size: var(--text-lg); }
-.roles { font-size: var(--text-lg); }
-.rows dd { font-size: var(--text-lg); }
-.stack .slide-head { grid-column: 1 / span 8; }
-.stack .slide-body { grid-column: 1 / -1; }
-.alt { background: var(--color-paper-2); }
-.alt .well { background: var(--color-paper); }
-
-/* Controls */
-.actions { display: flex; flex-wrap: wrap; gap: var(--space-sm); }
-.btn {
-  display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding-inline: var(--space-lg);
-  font: inherit; font-size: var(--text-sm); font-weight: 700; text-decoration: none; white-space: nowrap; cursor: pointer;
-  border: var(--rule-hair) solid var(--color-ink-2); background: transparent; color: var(--color-ink);
-  transition: background-color var(--dur-micro) steps(1), color var(--dur-micro) steps(1);
-}
-.btn:hover { background: var(--color-paper-3); color: var(--color-ink); }
-.btn:active { background: var(--color-accent-wash); }
-.btn--primary { background: var(--color-accent); color: var(--color-accent-ink); border-color: var(--color-accent); }
-.btn--primary:hover { background: var(--color-ink); color: var(--color-accent-ink); border-color: var(--color-ink); }
-.btn--primary:active { background: var(--color-ink-2); color: var(--color-accent-ink); }
-.btn:disabled { opacity: 0.55; cursor: not-allowed; }
-
-/* Wells: a session, a file, a diff */
-.well { background: var(--color-paper-2); border: var(--rule-hair) solid var(--color-rule); min-width: 0; }
-.well-head { display: flex; justify-content: space-between; gap: var(--space-md); padding: var(--space-sm) var(--space-lg); border-bottom: var(--rule-hair) solid var(--color-rule-2); font-size: var(--text-sm); color: var(--color-muted); }
-.well pre { margin: 0; padding: var(--space-lg); font: inherit; font-size: var(--text-sm); line-height: 1.7; white-space: pre-wrap; overflow-wrap: anywhere; color: var(--color-ink-2); }
-.well pre b { color: var(--color-ink); font-weight: 500; }
-.p { color: var(--color-muted); }
-.arg { color: var(--color-accent); }
-.out { color: var(--color-ink-2); }
-.dim { color: var(--color-muted); }
-
-/* The hero session types itself once */
-.js .typed .ln { opacity: 0; }
-.js .typed.on .ln { animation: line-in var(--dur-short) steps(1) forwards; animation-delay: calc(var(--i) * 140ms); }
-@keyframes line-in { to { opacity: 1; } }
-.caret { display: inline-block; width: 0.6em; height: 1.1em; vertical-align: text-bottom; background: var(--color-accent); animation: blink 1s steps(1) 5 both; }
-@keyframes blink { 50% { opacity: 0; } }
-
-/* Diff */
-.diff { font-size: var(--text-md); }
-.diff ol { list-style: none; margin: 0; padding: var(--space-sm) 0; counter-reset: ln; }
-.diff li { display: grid; grid-template-columns: 3.5ch 2ch minmax(0, 1fr); gap: var(--space-sm); padding: var(--space-xs) var(--space-lg); counter-increment: ln; }
-.diff li::before { content: counter(ln); color: var(--color-rule-2); text-align: right; }
-.diff .hunk { color: var(--color-muted); }
-.diff .del { color: var(--color-muted); }
-.diff .add { background: var(--color-accent-wash); color: var(--color-ink); }
-.diff .sign { color: var(--color-muted); }
-.diff .add .sign { color: var(--color-accent); }
-
-/* Talk to plan */
-.pair { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--gap-columns); align-items: start; }
-.said { display: grid; gap: var(--space-sm); margin: 0; padding: var(--space-lg); list-style: none; font-size: var(--text-md); }
-.said time { display: block; font-size: var(--text-xs); color: var(--color-muted); }
-
-/* Reference rows */
-.rows { display: grid; margin: 0; }
-.rows > div { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--gap-columns); padding-block: var(--space-md); border-top: var(--rule-hair) solid var(--color-rule); align-items: baseline; }
-.rows > div:last-child { border-bottom: var(--rule-hair) solid var(--color-rule); }
-.rows dt { font-size: var(--text-title); font-stretch: var(--stretch-display); font-weight: 500; color: var(--color-accent); }
-.rows dd { margin: 0; color: var(--color-ink-2); max-width: 60ch; }
-
-/* Roles table */
-.roles { width: 100%; border-collapse: collapse; font-size: var(--text-md); }
-.roles th, .roles td { text-align: left; padding: var(--space-md) var(--space-lg) var(--space-md) 0; border-top: var(--rule-hair) solid var(--color-rule); vertical-align: baseline; }
-.roles thead th { font-size: var(--text-sm); font-weight: 400; color: var(--color-muted); border-top: 0; border-bottom: var(--rule-hair) solid var(--color-rule-2); }
-.roles tbody th { font-weight: 700; color: var(--color-ink); white-space: nowrap; font-stretch: var(--stretch-display); }
-.roles td { color: var(--color-ink-2); }
-
-/* Install */
-.copy { font: inherit; font-size: var(--text-sm); min-height: 44px; padding-inline: var(--space-md); border: var(--rule-hair) solid var(--color-rule-2); background: transparent; color: var(--color-ink-2); cursor: pointer; transition: background-color var(--dur-micro) steps(1), color var(--dur-micro) steps(1); }
-.copy:hover { background: var(--color-paper-3); color: var(--color-ink); }
-.copy:active { background: var(--color-accent-wash); }
-.copy[data-done] { color: var(--color-accent); border-color: var(--color-accent); }
-.install .well-head { align-items: center; }
-.install pre { font-size: var(--text-md); }
-.notes { display: grid; gap: var(--space-sm); margin: 0; padding: 0; list-style: none; color: var(--color-ink-2); }
-
-/* Intuitions: one plain idea, one example underneath */
-.intu .slide-head h2 { max-width: 18ch; }
-.intu .lead { max-width: 40ch; }
-.well .rows { padding-inline: var(--space-lg); }
-.well .rows > div:first-child { border-top: 0; }
-.well .rows > div:last-child { border-bottom: 0; }
-.night li { display: grid; grid-template-columns: 6ch minmax(0, 1fr); gap: var(--space-md); padding: var(--space-xs) var(--space-lg); }
-.night ol { list-style: none; margin: 0; padding: var(--space-sm) 0; }
-.night time { color: var(--color-muted); }
-.night .stuck { color: var(--color-ink); background: var(--color-paper-3); }
-.night .wake { color: var(--color-ink); background: var(--color-accent-wash); }
-.night .you { color: var(--color-accent); }
-
-/* The technical section's contents */
-.contents dt a { font-size: var(--text-lg); font-stretch: var(--stretch-display); white-space: nowrap; }
-
-/* Next */
-.links { display: grid; margin: 0; }
-.links > div, .contents > div { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--gap-columns); padding-block: var(--space-md); border-top: var(--rule-hair) solid var(--color-rule); align-items: baseline; }
-.links dt a { white-space: nowrap; font-size: var(--text-lg); font-stretch: var(--stretch-display); }
-.links dd, .contents dd { margin: 0; color: var(--color-muted); }
-.contents { display: grid; margin: 0; }
-.contents > div:last-child { border-bottom: var(--rule-hair) solid var(--color-rule); }
-.foot { grid-column: 1 / -1; display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-md); padding-top: var(--space-lg); border-top: var(--rule-hair) solid var(--color-rule-2); font-size: var(--text-sm); color: var(--color-muted); }
-.foot p { max-width: none; }
-
-@media (max-width: 60rem) {
-  :root { --gutter: 24px; --header-h: 84px; }
-  .slide-head, .stack .slide-head { grid-column: 1 / -1; }
-  .slide-body, #top .slide-head, #top .slide-body { grid-column: 1 / -1; }
-  .pair { grid-template-columns: minmax(0, 1fr); }
-  .nav-end .gh { display: none; }
-  .stops a span { display: none; }
-}
-@media (max-width: 40rem) {
-  :root { --gutter: 16px; --gap-columns: 16px; }
-  .slide { padding-block: calc(var(--header-h) + var(--space-lg)) var(--space-xl); align-items: flex-start; }
-  .slide > .container { row-gap: var(--space-lg); }
-  .stops { display: none; }
-  .family .container { gap: var(--space-md); }
-  .rows > div, .links > div, .contents > div { grid-template-columns: minmax(0, 1fr); gap: var(--space-2xs); }
-  .diff { font-size: var(--text-sm); }
-  .diff li { padding-inline: var(--space-sm); }
-  .well pre { padding: var(--space-md); }
-  .install pre { font-size: var(--text-sm); }
-  .nav .container { min-height: 48px; }
-  #top .well pre { font-size: var(--text-xs); padding-block: var(--space-md); }
-
-  #memory .well pre, #install .well pre, #plan .well pre, #plan .said, .roles, .rows dd { font-size: var(--text-sm); }
-  #plan .well pre { font-size: var(--text-xs); }
-  .said time { display: none; }
-  .said { gap: var(--space-2xs); padding: var(--space-md); }
-  #plan .pair { gap: var(--space-sm); }
-  .roles th, .roles td { padding-right: var(--space-sm); font-size: var(--text-sm); }
-  .hide-s { display: none; }
-  .night li { padding-inline: var(--space-md); font-size: var(--text-sm); }
-  .well .rows { padding-inline: var(--space-md); }
-  .intu .rows > div { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--space-sm); padding-block: var(--space-sm); }
-  .intu .rows dt { font-size: var(--text-sm); }
-  .contents > div { padding-block: var(--space-xs); }
-  .contents dt a { font-size: var(--text-md); }
-}
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after { animation-duration: 0.01ms !important; animation-delay: 0ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
-  .js .typed .ln { opacity: 1; }
-}
-</style>
+<link rel="preload" href="fonts/funnel-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="epic.css">
 </head>
 <body>
 <header class="top">
-  <!-- E43-S2 (agent_team EPIC-43): the brand family's shared header line, also on /social/, team.alpha9.io and social.alpha9.io -->
-  <div class="family" aria-label="The Epic family"><div class="container"><b>EpicSpine</b><span>Epic Team</span><a href="social/">Epic Social</a></div></div>
-  <nav class="nav" aria-label="Sections"><div class="container">
-    <a class="mark" href="#top" aria-label="EpicSpine, back to the start">epicspine</a>
-    <ul class="stops">
-      <li><a href="#clear"><span>1</span>clear</a></li>
-      <li><a href="#relentless"><span>2</span>relentless</a></li>
-      <li><a href="#together"><span>3</span>together</a></li>
-      <li><a href="#technical"><span>4</span>technical</a></li>
-      <li><a href="#install"><span>5</span>install</a></li>
-      <li><a href="#next"><span>6</span>read</a></li>
+  <div class="family" aria-label="The Epic family"><div class="container"><a href="./" aria-current="page">EpicSpine</a><a href="team/">EpicTeam</a><a href="social/">EpicSocial</a></div></div>
+  <nav class="nav" aria-label="Main"><div class="container">
+    <a class="wordmark" href="#top" aria-label="EpicSpine, back to the start"><svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><rect class="tile" width="32" height="32" rx="7"/><g transform="translate(3.40 0) skewX(-12)"><path class="g" d="M8 6H24V10H14V14H22V18H14V22H24V26H8Z"/></g></svg>EpicSpine</a>
+    <ul class="links">
+      <li class="hide-s"><a href="#again">Why</a></li>
+      <li><a href="book/">Book</a></li>
+      <li class="hide-s"><a href="https://github.com/AlfaBlok/epicspine-skill">Source</a></li>
     </ul>
-    <div class="nav-end"><a href="book/">book</a><a class="gh" href="https://github.com/AlfaBlok/epicspine-skill">source</a></div>
+    <a class="btn btn--primary btn--sm" href="#install">Install</a>
   </div></nav>
 </header>
 
 <main>
-  <section class="slide" id="top" aria-labelledby="h-top">
-    <div class="container">
-      <div class="slide-head">
-        <h1 id="h-top">Talk. It becomes a plan.</h1>
-        <p class="lead">An agent skill that turns chat into a goal tree in git.</p>
+  <section class="band hero" id="top" aria-labelledby="h-top">
+    <div class="container split">
+      <div class="say">
+        <h1 id="h-top">Your agents keep the plan.</h1>
+        <p class="lead">Every agent starts where the last one stopped.</p>
         <div class="actions">
-          <a class="btn btn--primary" href="#install">Install it</a>
-          <a class="btn" href="book/">Read the Book</a>
+          <a class="btn btn--primary" href="#install">Install it, free</a>
+          <a class="btn" href="#again">See what changes</a>
         </div>
       </div>
-      <figure class="slide-body well typed" style="margin:0" aria-label="A new agent binds to a spine and reads it in one command">
-        <figcaption class="well-head"><span>a new agent, first command</span><span class="hide-s">real output, trimmed</span></figcaption>
-<pre><span class="ln" style="--i:0"><span class="p">$</span> python3 spines.py <span class="arg">--bind examples/EPIC-0-CLI-EXAMPLE.md</span></span>
-<span class="ln out" style="--i:1"><b>== # EPIC: Local CLI validation example</b></span>
-<span class="ln out" style="--i:2">## Current State</span>
-<span class="ln out" style="--i:3">Status: ready</span>
-<span class="ln out hide-s" style="--i:3">Phase: planning</span>
-<span class="ln out" style="--i:4">Next action: Run the first documented CLI command.</span>
-<span class="ln out hide-s" style="--i:5">Blockers: none</span>
-<span class="ln out" style="--i:6">## Operating Learnings</span>
-<span class="ln out" style="--i:7">- L-1 | any change | run the tests before handoff</span>
-<span class="ln out hide-s" style="--i:8">- L-2 | every commit | end with the Co-Authored-By trailer</span>
-<span class="ln" style="--i:9"><span class="p">$</span> <span class="caret" aria-hidden="true"></span></span></pre>
+      <figure class="show well" aria-label="One goal carried by three agent sessions over two days, nothing repeated">
+        <figcaption class="well-head"><span>one goal, three chats, two days</span><span class="hide-xs">an example</span></figcaption>
+        <ol class="log">
+          <li><time>Mon 09:04</time><span class="who you">you</span><span class="hi">Google sign-in before Friday</span></li>
+          <li><time>Mon 09:06</time><span class="who">Claude</span><span>wrote the goal and three steps</span></li>
+          <li><time>Mon 23:10</time><span class="who">Codex</span><span>read the plan, built step one</span></li>
+          <li><time>Tue 08:02</time><span class="who">Claude</span><span>new chat, carried on at step two</span></li>
+          <li class="mark-you"><time>Tue 08:03</time><span class="who you">you</span><span>nothing to explain again</span></li>
+        </ol>
       </figure>
     </div>
   </section>
 
-  <section class="slide alt intu" id="clear" aria-labelledby="h-clear">
-    <div class="container">
-      <div class="slide-head">
-        <h2 id="h-clear">Every agent knows what it is for.</h2>
-        <p class="lead">Before it acts, an agent binds: it reads its goal, where things stand and the rules you taught it. Then it stops guessing and does its one job.</p>
+  <section class="band alt" id="again" aria-labelledby="h-again">
+    <div class="container split flip">
+      <div class="say">
+        <h2 id="h-again">No more explaining it again.</h2>
+        <p class="lead">A new chat usually starts from zero. Here it starts from the plan: the goal, where things stand, what comes next.</p>
       </div>
-      <figure class="slide-body well" style="margin:0" aria-label="Four agents on one team, each with the one thing it is for">
+      <figure class="show well" aria-label="A new agent reads the plan in one command">
+        <figcaption class="well-head"><span>a new agent, first command</span><span class="hide-xs">an example, trimmed</span></figcaption>
+<pre><span class="p">$</span> python3 spines.py <span class="arg">--bind EPIC-4.md</span>
+<b>== EPIC-4: Google sign-in</b>
+Status: active
+Next action: build the login button
+Waiting on: nothing
+## Operating Learnings
+- L-2 | every merge | run e2e first</pre>
+      </figure>
+    </div>
+  </section>
+
+  <section class="band" id="sticks" aria-labelledby="h-sticks">
+    <div class="container split">
+      <div class="say">
+        <h2 id="h-sticks">Say it once. It sticks.</h2>
+        <p class="lead">Correct an agent one time. It becomes a rule that every agent follows from then on.</p>
+      </div>
+      <figure class="show well" aria-label="A correction becomes a rule, and a different agent follows it days later">
+        <figcaption class="well-head"><span>a correction, three days on</span></figcaption>
+        <ol class="log">
+          <li><time>Mon</time><span class="who you">you</span><span class="hi">always run the e2e tests before merging</span></li>
+          <li><time>Mon</time><span class="who">saved</span><span class="arg">L-2 | every merge | run e2e first</span></li>
+          <li><time>Thu</time><span class="who">Codex</span><span>ran e2e first, as L-2 says, then merged</span></li>
+        </ol>
+      </figure>
+    </div>
+  </section>
+
+  <section class="band alt" id="clear" aria-labelledby="h-clear">
+    <div class="container split flip">
+      <div class="say">
+        <h2 id="h-clear">Every agent knows its job.</h2>
+        <p class="lead">Before it acts, each agent reads what it is for. It stops guessing and does that one thing well.</p>
+      </div>
+      <figure class="show well" aria-label="Four agents on one team, each with the one thing it is for">
         <figcaption class="well-head"><span>one team, after binding</span></figcaption>
         <dl class="rows">
-          <div><dt>manager</dt><dd>turns what you ask into a plan and hands out the steps</dd></div>
-          <div><dt>researcher</dt><dd>finds what is true before anyone writes</dd></div>
-          <div><dt>writer</dt><dd>drafts in your voice, then waits for your yes</dd></div>
-          <div><dt>reviewer</dt><dd>checks the work against the goal, not against taste</dd></div>
+          <div><dt>manager</dt><dd>turns what you ask into a plan</dd></div>
+          <div><dt>worker</dt><dd>builds one step and proves it works</dd></div>
+          <div><dt>reviewer</dt><dd>checks the work against the goal</dd></div>
+          <div><dt>you</dt><dd>decide, and correct once</dd></div>
         </dl>
       </figure>
     </div>
   </section>
 
-  <section class="slide intu" id="relentless" aria-labelledby="h-relentless">
-    <div class="container">
-      <div class="slide-head">
-        <h2 id="h-relentless">It goes as far as the code can.</h2>
-        <p class="lead">The team keeps working until a step truly needs you. When something gets stuck, a scheduled wake finds it and starts it again.</p>
+  <section class="band" id="relentless" aria-labelledby="h-relentless">
+    <div class="container split">
+      <div class="say">
+        <h2 id="h-relentless">Work keeps moving overnight.</h2>
+        <p class="lead">The team goes as far as it can without you. When a step stalls, a scheduled wake finds it and starts it again.</p>
       </div>
-      <figure class="slide-body well night" style="margin:0" aria-label="An example night on one goal">
-        <figcaption class="well-head"><span>an example night, EPIC-4</span><span class="hide-s">while you sleep</span></figcaption>
-        <ol>
-          <li><time>23:10</time><span>S1 OAuth app built, tests green</span></li>
-          <li class="stuck"><time>23:40</time><span>S2 stuck: its worker stopped</span></li>
-          <li class="wake"><time>00:10</time><span>a wake finds S2, starts a fresh worker</span></li>
-          <li><time>00:55</time><span>S2 login button verified, merged</span></li>
-          <li class="you"><time>01:05</time><span>S3 live check: waiting on you</span></li>
+      <figure class="show well" aria-label="An example night on one goal">
+        <figcaption class="well-head"><span>an example night</span><span class="hide-xs">while you sleep</span></figcaption>
+        <ol class="log two">
+          <li><time>23:10</time><span>step one built, tests green</span></li>
+          <li class="mark-stuck"><time>23:40</time><span>step two stuck, its worker stopped</span></li>
+          <li><time>00:10</time><span>a wake finds it, starts a fresh worker</span></li>
+          <li><time>00:55</time><span>step two verified and merged</span></li>
+          <li class="mark-you"><time>01:05</time><span>live check, waiting on you</span></li>
         </ol>
       </figure>
     </div>
   </section>
 
-  <section class="slide alt intu" id="together" aria-labelledby="h-together">
-    <div class="container">
-      <div class="slide-head">
-        <h2 id="h-together">Ask once. Everyone pushes for it.</h2>
-        <p class="lead">Say what you want and every agent on the team works toward it, each from its own side, moving the line forward with you.</p>
+  <section class="band alt" id="together" aria-labelledby="h-together">
+    <div class="container split flip">
+      <div class="say">
+        <h2 id="h-together">Only real decisions reach you.</h2>
+        <p class="lead">The team settles the rest. Each question comes with what it knows, what it recommends and one tap to answer.</p>
       </div>
-      <figure class="slide-body well" style="margin:0" aria-label="What happens after one ask">
-        <figcaption class="well-head"><span>you: “Google sign-in before Friday”</span></figcaption>
-        <dl class="rows">
-          <div><dt>manager</dt><dd>wrote the goal and three steps</dd></div>
-          <div><dt>worker</dt><dd>built the OAuth app</dd></div>
-          <div><dt>worker</dt><dd>built the button, kept email login green</dd></div>
-          <div><dt>reviewer</dt><dd>checked both against the goal</dd></div>
-          <div><dt>you</dt><dd>one look, live</dd></div>
-        </dl>
+      <figure class="show well" aria-label="A question from the team, ready to answer">
+        <figcaption class="well-head"><span>waiting on you</span><span class="hide-xs">an example</span></figcaption>
+        <div class="ask">
+          <p class="q">Turn on Google sign-in for everyone today?</p>
+          <dl>
+            <div><dt>why you</dt><dd>it changes what every user sees</dd></div>
+            <div><dt>recommend</dt><dd>yes: tests green, one step to undo</dd></div>
+          </dl>
+          <div class="choices" aria-hidden="true"><span class="choice yes">Yes</span><span class="choice">Not yet</span></div>
+        </div>
       </figure>
     </div>
   </section>
 
-  <section class="slide" id="technical" aria-labelledby="h-technical">
-    <div class="container">
-      <div class="slide-head">
-        <h2 id="h-technical">How it works, technically.</h2>
-        <p class="lead">Five screens on the machinery underneath: the file, the tree, the memory, the loop and the roles.</p>
+  <section class="band" id="repo" aria-labelledby="h-repo">
+    <div class="container split">
+      <div class="say">
+        <h2 id="h-repo">The plan lives in your repo.</h2>
+        <p class="lead">Plain files next to your code. No server and no account. Works with Claude Code and Codex.</p>
       </div>
-      <dl class="slide-body contents">
-        <div><dt><a href="#why">the file</a></dt><dd>the plan moves out of the chat</dd></div>
-        <div><dt><a href="#plan">the tree</a></dt><dd>loose talk becomes goals and steps</dd></div>
-        <div><dt><a href="#memory">the memory</a></dt><dd>plain files in git, next to the code</dd></div>
-        <div><dt><a href="#loop">the loop</a></dt><dd>bind, dispatch, verify, merge, learn</dd></div>
-        <div><dt><a href="#roles">the roles</a></dt><dd>who writes what to the spine</dd></div>
-      </dl>
-    </div>
-  </section>
+      <figure class="show well" aria-label="A repository with its plan in docs, and the git log of that plan">
+        <figcaption class="well-head"><span>acme-app</span><span class="hide-xs">git log docs</span></figcaption>
+<pre>src/                      <span class="dim"># your code</span>
+docs/EPIC-4-sign-in.md    <span class="dim"># the plan</span>
 
-  <section class="slide alt" id="why" data-stop="technical" aria-labelledby="h-why">
-    <div class="container">
-      <div class="slide-head">
-        <h2 id="h-why">Agents lose the plot between chats.</h2>
-        <p class="lead">EpicSpine moves the plan out of the chat and into a file.</p>
-      </div>
-      <figure class="slide-body well diff" style="margin:0" aria-label="What changes, as a diff">
-        <figcaption class="well-head"><span>--- a/chat-only</span><span>+++ b/epicspine</span></figcaption>
-        <ol>
-          <li class="hunk"><span></span><span>@@ where the plan lives @@</span></li>
-          <li class="del"><span class="sign">-</span><span>intent in a transcript no one rereads</span></li>
-          <li class="del"><span class="sign">-</span><span>a ticket too narrow for the whole story</span></li>
-          <li class="del"><span class="sign">-</span><span>workers planning, reviewers rewriting</span></li>
-          <li class="add"><span class="sign">+</span><span>one spine file: goal, done means, state</span></li>
-          <li class="add"><span class="sign">+</span><span>every decision kept with its why</span></li>
-          <li class="add"><span class="sign">+</span><span>one job per role, each in fresh context</span></li>
-        </ol>
-      </figure>
-    </div>
-  </section>
-
-  <section class="slide" id="plan" data-stop="technical" aria-labelledby="h-plan">
-    <div class="container stack">
-      <div class="slide-head">
-        <h2 id="h-plan">Say it loosely. Get a goal tree.</h2>
-        <p class="lead hide-s">Each goal has done means, steps with an owner, and a state you can read.</p>
-      </div>
-      <div class="slide-body pair">
-        <figure class="well" style="margin:0">
-          <figcaption class="well-head"><span>what you say</span></figcaption>
-          <ul class="said">
-            <li><time>09:02</time>users keep asking for Google sign-in</li>
-            <li><time>09:03</time>don’t break the email login though</li>
-            <li><time>09:05</time>can it be live before Friday’s launch?</li>
-            <li><time>09:06</time>and always run the e2e tests before merging</li>
-          </ul>
-        </figure>
-        <figure class="well" style="margin:0">
-          <figcaption class="well-head"><span>docs/EPIC-4-google-sign-in.md</span><span class="hide-s">in progress</span></figcaption>
-<pre><b>Goal</b>  Sign in with Google, live before Friday;
-      email login keeps working.
-<b>Done means</b>
-  [ ] Google button on the login page
-  [ ] Email login still passes its tests
-  [ ] You check it live
-<b>Steps</b>
-  S1  OAuth app     worker  <span class="arg">done</span>
-  S2  Login button  worker  running
-  S3  Live check    you     waiting
-<b>L-2</b>   always run e2e before merging</pre>
-        </figure>
-      </div>
-    </div>
-  </section>
-
-  <section class="slide alt" id="memory" data-stop="technical" aria-labelledby="h-memory">
-    <div class="container">
-      <div class="slide-head">
-        <h2 id="h-memory">The memory is the repo.</h2>
-        <p class="lead">Goals, state, decisions and lessons are plain files, committed next to the code.</p>
-      </div>
-      <div class="slide-body" style="display:grid;gap:var(--space-lg)">
-        <figure class="well" style="margin:0" aria-label="A repository with its memory in docs">
-          <figcaption class="well-head"><span>acme-app/</span></figcaption>
-<pre>|-- src/                         <span class="dim"># the code</span>
-`-- docs/                        <span class="dim"># the memory</span>
-    |-- EPIC-0-root.md
-    `-- EPIC-4-google-sign-in.md</pre>
-        </figure>
-        <figure class="well" style="margin:0" aria-label="The git log of that memory">
-          <figcaption class="well-head"><span><span class="p">$</span> git log --oneline docs/</span></figcaption>
-<pre><span class="arg">a41c9e2</span> EPIC-4 S1 OAuth app verified
+<span class="arg">a41c9e2</span> EPIC-4 step one verified
 <span class="arg">7be03d1</span> L-2 learned: e2e before merge
 <span class="arg">19f0c55</span> EPIC-4 created from chat</pre>
-        </figure>
-      </div>
+      </figure>
     </div>
   </section>
 
-  <section class="slide" id="loop" data-stop="technical" aria-labelledby="h-loop">
-    <div class="container stack">
-      <div class="slide-head">
-        <h2 id="h-loop">Bind, dispatch, verify, merge, learn.</h2>
-      </div>
-      <dl class="slide-body rows">
-        <div><dt>bind</dt><dd>Every agent reads the goal, its state and the learnings before it acts.</dd></div>
-        <div><dt>dispatch</dt><dd>Each step goes to a fresh worker in its own worktree, <code>wt/&lt;task&gt;</code>.</dd></div>
-        <div><dt>verify</dt><dd>On two axes before anything merges. Tests run in main; red is reverted.</dd></div>
-        <div><dt>merge</dt><dd>Verified work only, with its history. Never squashed.</dd></div>
-        <div><dt>learn</dt><dd>A correction you make once becomes a rule, <code>L-&lt;n&gt;</code>, at the depth where it applies.</dd></div>
-      </dl>
-    </div>
-  </section>
-
-  <section class="slide alt" id="roles" data-stop="technical" aria-labelledby="h-roles">
+  <section class="band alt" id="family" aria-labelledby="h-family">
     <div class="container">
-      <div class="slide-head">
-        <h2 id="h-roles">The manager never implements.</h2>
-        <p class="lead">It dispatches and verifies. Workers build. You decide.</p>
-      </div>
-      <div class="slide-body">
-        <table class="roles">
-          <thead><tr><th scope="col">role</th><th scope="col">writes to the spine</th></tr></thead>
-          <tbody>
-            <tr><th scope="row">manager</th><td>the goal, the steps, the current state</td></tr>
-            <tr><th scope="row">worker</th><td>done, with evidence, and the outcome</td></tr>
-            <tr><th scope="row">reviewer</th><td>a decision and its why</td></tr>
-            <tr><th scope="row">you</th><td>a correction, once; it stays as a rule</td></tr>
-          </tbody>
-        </table>
+      <h2 id="h-family">Want the team without the setup?</h2>
+      <div class="family-grid">
+        <article class="product">
+          <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><rect class="tile" width="32" height="32" rx="7"/><g transform="translate(3.40 0) skewX(-12)"><path class="g" d="M8 6H24V10H19V26H13V10H8Z"/></g></svg>
+          <h3><a href="team/">EpicTeam</a></h3>
+          <p>An AI team that works on your goals. Everything that needs you lands in one inbox.</p>
+          <div class="actions"><a class="btn" href="team/">See EpicTeam</a></div>
+        </article>
+        <article class="product">
+          <svg class="mark social" viewBox="0 0 32 32" aria-hidden="true"><path class="tile" d="M6 0h20a6 6 0 0 1 6 6v16a6 6 0 0 1-6 6H15l-8 4v-4H6a6 6 0 0 1-6-6V6a6 6 0 0 1 6-6z"/><g transform="translate(2.98 0) skewX(-12)"><path class="g" d="M8 8A4 4 0 0 1 12 4L24 4L24 8L14 8L14 12L20 12A4 4 0 0 1 24 16L24 20A4 4 0 0 1 20 24L8 24L8 20L18 20L18 16L12 16A4 4 0 0 1 8 12Z"/></g></svg>
+          <h3><a href="social/">EpicSocial</a></h3>
+          <p>AI agents that find ideas, write your posts and answer replies. You approve every post.</p>
+          <div class="actions"><a class="btn" href="social/">See EpicSocial</a></div>
+        </article>
       </div>
     </div>
   </section>
 
-  <section class="slide" id="install" aria-labelledby="h-install">
-    <div class="container">
-      <div class="slide-head">
+  <section class="band" id="install" aria-labelledby="h-install">
+    <div class="container split wide">
+      <div class="say">
         <h2 id="h-install">Install once per machine.</h2>
         <ul class="notes">
           <li>Python 3.10 or newer, no packages.</li>
           <li>Then, in each repo: <code>agents_block.py install</code>.</li>
-          <li>Then talk to your agent. It binds on its first reply.</li>
+          <li>Then talk to your agent as usual.</li>
         </ul>
+        <p class="more">How it works inside, from the file to the roles: <a href="book/">read the Book</a>.</p>
       </div>
-      <figure class="slide-body well install" style="margin:0">
+      <figure class="show well install">
         <figcaption class="well-head"><span>shell</span><button class="copy" type="button" data-copy="install-cmd">Copy</button></figcaption>
 <pre id="install-cmd"><span class="p">$</span> git clone https://github.com/AlfaBlok/epicspine-skill
 <span class="p">$</span> cd epicspine-skill
@@ -527,110 +212,48 @@ p { margin: 0; text-wrap: pretty; }
       </figure>
     </div>
   </section>
-
-  <section class="slide alt" id="next" aria-labelledby="h-next">
-    <div class="container">
-      <div class="slide-head">
-        <h2 id="h-next">Read the source, not the summary.</h2>
-        <p class="lead">The Book explains every part in 35 slides, intuitions first.</p>
-      </div>
-      <dl class="slide-body links">
-        <div><dt><a href="book/">The Book</a></dt><dd>Spines, roles, dispatch, git lanes, learnings</dd></div>
-        <div><dt><a href="https://github.com/AlfaBlok/epicspine-skill#readme">README</a></dt><dd>Install, upgrade, every harness</dd></div>
-        <div><dt><a href="https://github.com/AlfaBlok/epicspine-skill/blob/main/examples/EPIC-0-CLI-EXAMPLE.md">An example spine</a></dt><dd>Populated, and it validates locally</dd></div>
-        <div><dt><a href="social/">Epic Social</a></dt><dd>Agents that write and answer your posts</dd></div>
-        <div><dt><a href="testers/">Test Epic Social</a></dt><dd>Apply for the alpha</dd></div>
-      </dl>
-      <footer class="foot">
-        <p>EpicSpine, AGPL-3.0, <a href="https://github.com/AlfaBlok/epicspine-skill">github.com/AlfaBlok/epicspine-skill</a></p>
-        <p>Set in Martian Mono (SIL OFL 1.1)</p>
-      </footer>
-    </div>
-  </section>
 </main>
 
+<footer class="foot" id="next">
+  <div class="container">
+    <div class="cols">
+      <div><h2>EpicSpine</h2><ul>
+        <li><a href="book/">The Book</a></li>
+        <li><a href="https://github.com/AlfaBlok/epicspine-skill#readme">README</a></li>
+        <li><a href="https://github.com/AlfaBlok/epicspine-skill/blob/main/examples/EPIC-0-CLI-EXAMPLE.md">An example spine</a></li>
+      </ul></div>
+      <div><h2>Built on it</h2><ul>
+        <li><a href="team/">EpicTeam</a></li>
+        <li><a href="social/">EpicSocial</a></li>
+        <li><a href="testers/">Test EpicSocial</a></li>
+      </ul></div>
+      <div><h2>Source</h2><ul>
+        <li><a href="https://github.com/AlfaBlok/epicspine-skill">github.com/AlfaBlok/epicspine-skill</a></li>
+        <li>AGPL-3.0</li>
+      </ul></div>
+    </div>
+    <p class="fine">Set in Martian Mono and Funnel Sans (SIL OFL 1.1).</p>
+  </div>
+</footer>
+
 <script>
-(function () {
-  var slides = Array.prototype.slice.call(document.querySelectorAll(".slide"));
-  var stops = Array.prototype.slice.call(document.querySelectorAll(".stops a"));
-  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
-  var current = 0, lockUntil = 0, lastWheel = 0;
-
-  function nearest() {
-    var y = window.scrollY + window.innerHeight * 0.4, best = 0;
-    slides.forEach(function (s, i) { if (s.offsetTop <= y) { best = i; } });
-    return best;
-  }
-  function go(i) {
-    i = Math.max(0, Math.min(slides.length - 1, i));
-    current = i;
-    lockUntil = Date.now() + (reduce.matches ? 250 : 750);
-    window.scrollTo({ top: slides[i].offsetTop, behavior: reduce.matches ? "auto" : "smooth" });
-  }
-  // A slide taller than the screen (a phone in landscape) scrolls inside first, then flips.
-  function canFlip(dir) {
-    var s = slides[current], top = s.offsetTop, bottom = top + s.offsetHeight, vb = window.scrollY + window.innerHeight;
-    return dir > 0 ? vb >= bottom - 4 : window.scrollY <= top + 4;
-  }
-  window.addEventListener("wheel", function (e) {
-    if (e.ctrlKey || Math.abs(e.deltaY) < Math.abs(e.deltaX)) { return; }
-    var now = Date.now(), fresh = now - lastWheel > 180;
-    lastWheel = now;
-    current = now < lockUntil ? current : nearest();
-    var dir = e.deltaY > 0 ? 1 : -1;
-    if (!canFlip(dir)) { return; }
-    e.preventDefault();
-    if (now < lockUntil || !fresh && Math.abs(e.deltaY) < 40) { return; }
-    if (slides[current + dir]) { go(current + dir); }
-  }, { passive: false });
-
-  window.addEventListener("keydown", function (e) {
-    var t = e.target, tag = t && t.tagName;
-    if (e.altKey || e.ctrlKey || e.metaKey || tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || (t && t.isContentEditable)) { return; }
-    var k = e.key, dir = 0;
-    if (k === "ArrowDown" || k === "PageDown" || (k === " " && !e.shiftKey)) { dir = 1; }
-    else if (k === "ArrowUp" || k === "PageUp" || (k === " " && e.shiftKey)) { dir = -1; }
-    else if (k === "Home") { e.preventDefault(); go(0); return; }
-    else if (k === "End") { e.preventDefault(); go(slides.length - 1); return; }
-    if (!dir || (k === " " && tag === "BUTTON")) { return; }
-    current = Date.now() < lockUntil ? current : nearest();
-    if (!canFlip(dir)) { return; }
-    e.preventDefault();
-    go(current + dir);
+// Copy the install lines, without the prompts.
+document.querySelectorAll("[data-copy]").forEach(function (b) {
+  b.addEventListener("click", function () {
+    var src = document.getElementById(b.getAttribute("data-copy"));
+    var text = src.textContent.split("\n").map(function (l) { return l.replace(/^\$ /, ""); }).join("\n");
+    var status = document.getElementById("copy-status");
+    function done(ok) {
+      b.textContent = ok ? "Copied" : "Select and copy";
+      if (ok) { b.setAttribute("data-done", ""); }
+      status.textContent = ok ? "Install lines copied" : "Copy failed; select the lines instead";
+      setTimeout(function () { b.textContent = "Copy"; b.removeAttribute("data-done"); }, 1400);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(false); });
+    } else { done(false); }
   });
-
-  // Mark the stop for the slide in view; start the hero session once.
-  var hero = document.querySelector(".typed");
-  if ("IntersectionObserver" in window) {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        if (!en.isIntersecting) { return; }
-        var id = en.target.getAttribute("data-stop") || en.target.id;
-        stops.forEach(function (a) { a.setAttribute("aria-current", a.getAttribute("href") === "#" + id ? "true" : "false"); });
-        if (en.target.contains(hero)) { hero.classList.add("on"); }
-      });
-    }, { threshold: 0.55 });
-    slides.forEach(function (s) { io.observe(s); });
-  } else if (hero) { hero.classList.add("on"); }
-
-  // Copy the install lines, without the prompts.
-  document.querySelectorAll("[data-copy]").forEach(function (b) {
-    b.addEventListener("click", function () {
-      var src = document.getElementById(b.getAttribute("data-copy"));
-      var text = src.textContent.split("\n").map(function (l) { return l.replace(/^\$ /, ""); }).join("\n");
-      var status = document.getElementById("copy-status");
-      function done(ok) {
-        b.textContent = ok ? "Copied" : "Select and copy";
-        if (ok) { b.setAttribute("data-done", ""); }
-        status.textContent = ok ? "Install lines copied" : "Copy failed; select the lines instead";
-        setTimeout(function () { b.textContent = "Copy"; b.removeAttribute("data-done"); }, 1400);
-      }
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(false); });
-      } else { done(false); }
-    });
-  });
-})();
+});
 </script>
 <script>
 // WebMCP (EPIC-10): read-only tools for an agent in the visitor's browser. Everything is read
