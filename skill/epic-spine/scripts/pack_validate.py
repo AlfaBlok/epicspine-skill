@@ -99,6 +99,9 @@ def check_section(schema: dict, s: dict, at: str, new: str, old: str | None, rol
         for x in s.get("refuse_new", []) if prev is None and not convert else []:  # e.g. a DM as a posts row
             if re.search(x["pattern"], rec.get(x["field"], ""), re.I):
                 say(f"{flds[x['field']]['column']} {rec[x['field']]!r}: {x['why']}")
+        for x in s.get("refuse", []) if not convert else []:  # a new or changed cell of the wrong shape, e.g. a post body in Format
+            if (prev is None or rec[x["field"]] != prev[x["field"]]) and re.search(x["pattern"], rec.get(x["field"], ""), re.I):
+                say(f"{flds[x['field']]['column']} {rec[x['field']][:60]!r}: {x['why']}")
         for k in [k for k, f in flds.items() if prev and lk and prev[lk].lower() in f.get("frozen_in", []) and rec[k] != prev[k]]:
             say(f"{flds[k]['column']} may not change once {prev[lk].lower()} (Jordi approved this exact text; a new text is a new draft)")
         if role and prev:
