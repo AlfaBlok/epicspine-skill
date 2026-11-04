@@ -7,4 +7,4 @@
            {"id": "a", "label": "I approve", "sub": "or approve with feedback", "tone": "warm"},
            {"id": "p", "label": "Posted", "sub": "replies and DMs follow", "tone": "muted"}],
  "edges": [["me", "i", "dump"], ["i", "t", "draft"], ["t", "a", "ask"], ["a", "p", "go"]],
- "footer": "Epic Social · epicspine.dev/testers"}
+ "footer": "EpicSocial · epicspine.dev/testers"}
