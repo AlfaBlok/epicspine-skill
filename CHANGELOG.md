@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026.11.04.1 — Social pack: a campaign's brief has six set parts
+
+- **Changed: a campaign plan's brief is six set parts in the owner's words**: topics (`### Key messages`), voice, format (`### Format`: text only, text + images, video, or a mix), channels (the `Platform:` line, one or several), cadence per channel (`### Cadence per channel`) and the reader action (`### Reader action`). Rule `campaign_tag` tells every persona woken on a campaign to start from them and to name a missing part instead of inventing it. Existing plans stay valid: the new parts are optional `### ` parts.
+- `packs/social/schema.json` (`campaign_tag` doc) and `packs/social/README.md` (campaigns paragraph) say so. No script change.
+- Why: agent_team EPIC-60 E60-4/E60-5, E60-S6 (Jordi on the Team desk 2026-11-02: a plan is "topics, voice, text/video/images, channels, expected actions"; "the ones that are pinned need to be proper campaigns").
+
 ## 2026.11.03.10 — Feedback is never approval: `[feedback …]` asks
 
 - **Added: the `[feedback <code> <date> @<who>] … — feedback: <words>` ask line** (agent_team EPIC-67, E67-S1). Every ask has three outcomes, approve, feedback, deny; feedback is changes wanted, never an approval: the row the ask names goes back to `active (feedback <code> by <who> <date>, round <n>: <words>)`, the builder is woken, and the next round comes back as a new ask or card; then the line gets ` · done <date> <sha> round <n> <new code>`. Free text on an `approve` ask is feedback.
