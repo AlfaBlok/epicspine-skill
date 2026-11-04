@@ -4,6 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>EpicSpine: talk to your agents, get a plan kept in git</title>
+<!-- agent_team E65-S5: one letter per product on logo C (E for EpicSpine, S for EpicSocial), made by agent_team console/scripts/gen-brand.mjs -->
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16.png" type="image/png" sizes="16x16">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="description" content="EpicSpine is an agent skill that turns chat into a goal tree kept as plain files in git, so every agent starts where the last one stopped.">
 <meta property="og:title" content="EpicSpine: talk, and it becomes a plan">
 <meta property="og:description" content="An agent skill that turns chat into a goal tree in git.">
@@ -96,6 +102,7 @@ p { margin: 0; text-wrap: pretty; }
 .nav .container { display: flex; align-items: stretch; min-height: 60px; gap: var(--space-lg); }
 .mark { display: inline-flex; align-items: center; padding-inline: var(--space-md); background: var(--color-accent); color: var(--color-accent-ink); font-weight: 700; font-size: var(--text-sm); text-decoration: none; white-space: nowrap; }
 .mark:hover { color: var(--color-accent-ink); background: var(--color-ink); }
+.mark .logo { width: 18px; height: 18px; margin-right: var(--space-xs); flex: none; } /* agent_team E65-S5: logo C, the E for EpicSpine */
 .stops { display: flex; gap: var(--space-2xs); margin: 0; padding: 0; list-style: none; align-items: stretch; overflow-x: auto; scrollbar-width: none; }
 .stops li { display: flex; }
 .stops a { display: flex; align-items: center; gap: var(--space-xs); padding-inline: var(--space-sm); font-size: var(--text-sm); color: var(--color-ink-2); text-decoration: none; white-space: nowrap; border-bottom: 2px solid transparent; }
@@ -249,9 +256,9 @@ p { margin: 0; text-wrap: pretty; }
 <body>
 <header class="top">
   <!-- E43-S2 (agent_team EPIC-43): the brand family's shared header line, also on /social/, team.alpha9.io and social.alpha9.io -->
-  <div class="family" aria-label="The Epic family"><div class="container"><b>EpicSpine</b><span>Epic Team</span><a href="social/">Epic Social</a></div></div>
+  <div class="family" aria-label="The Epic family"><div class="container"><b>EpicSpine</b><span>EpicTeam</span><a href="social/">EpicSocial</a></div></div>
   <nav class="nav" aria-label="Sections"><div class="container">
-    <a class="mark" href="#top" aria-label="EpicSpine, back to the start">epicspine</a>
+    <a class="mark" href="#top" aria-label="EpicSpine, back to the start"><svg class="logo" viewBox="0 0 32 32" aria-hidden="true"><g fill="currentColor"><rect width="32" height="32" rx="7"/></g><g fill="var(--color-accent)"><g transform="translate(3.40 0) skewX(-12)"><path d="M8 6H24V10H14V14H22V18H14V22H24V26H8Z"/></g></g></svg>epicspine</a>
     <ul class="stops">
       <li><a href="#why"><span>1</span>why</a></li>
       <li><a href="#plan"><span>2</span>plan</a></li>
@@ -440,8 +447,8 @@ p { margin: 0; text-wrap: pretty; }
         <div><dt><a href="book/">The Book</a></dt><dd>Spines, roles, dispatch, git lanes, learnings</dd></div>
         <div><dt><a href="https://github.com/AlfaBlok/epicspine-skill#readme">README</a></dt><dd>Install, upgrade, every harness</dd></div>
         <div><dt><a href="https://github.com/AlfaBlok/epicspine-skill/blob/main/examples/EPIC-0-CLI-EXAMPLE.md">An example spine</a></dt><dd>Populated, and it validates locally</dd></div>
-        <div><dt><a href="social/">Epic Social</a></dt><dd>Agents that write and answer your posts</dd></div>
-        <div><dt><a href="testers/">Test Epic Social</a></dt><dd>Apply for the alpha</dd></div>
+        <div><dt><a href="social/">EpicSocial</a></dt><dd>Agents that write and answer your posts</dd></div>
+        <div><dt><a href="testers/">Test EpicSocial</a></dt><dd>Apply for the alpha</dd></div>
       </dl>
       <footer class="foot">
         <p>EpicSpine, AGPL-3.0, <a href="https://github.com/AlfaBlok/epicspine-skill">github.com/AlfaBlok/epicspine-skill</a></p>
