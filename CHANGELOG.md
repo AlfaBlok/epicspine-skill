@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026.11.04.2 — Epic Book: every deliverable URL goes into the spine
+
+- **Always-on block, "Epic Book"**: every URL made for a goal (mockup, deck, proposal, live page, preview, evidence) goes into the spine the moment it exists (the row's Latest Evidence, the ask line, or Decisions Evidence), so the book's "Everything made for this" lists it; a link that stops answering stays (the book marks it); a tailnet preview records the folder it serves.
+- `references/spine-model.md` "Deliverable Links": where links are read from, how a label is written, never deleting a stopped link, recording a preview's folder (agent_team `console/scripts/preview-registry.mjs`).
+- Why: agent_team E47-S4, Jordi's ask E47-4 ("each section (epic) links all deliverables produced for it … so nothing is scattered and he can find them later"). Test: `tests/test_default_behaviors.py::test_every_deliverable_url_goes_into_the_spine_for_the_book`.
+
 ## 2026.11.04.1 — Social pack: a shifted posts row is refused
 
 - **Added: section flag `refuse`** (`pack_validate.py`): like `refuse_new`, but on every new row and every row whose named cell changed; the posts ledger uses it twice. Format must be a short format word (no " · ", at most 40 characters), and Text must not read like a title (one line ending in "(… discussion; …)").
