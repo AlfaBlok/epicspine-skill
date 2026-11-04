@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.11.04.1 — Social pack: a shifted posts row is refused
+
+- **Added: section flag `refuse`** (`pack_validate.py`): like `refuse_new`, but on every new row and every row whose named cell changed; the posts ledger uses it twice. Format must be a short format word (no " · ", at most 40 characters), and Text must not read like a title (one line ending in "(… discussion; …)").
+- Why: zenod-social's Writer redrafted P-0104 and P-0105 with the cells shifted one column (the new title in Text, the post body in Format), and the post page showed no post. Tests: `tests/test_pack_validate.py` (`test_a_shifted_row_is_refused_format_word_and_body_in_text`).
+
 ## 2026.11.03.10 — Feedback is never approval: `[feedback …]` asks
 
 - **Added: the `[feedback <code> <date> @<who>] … — feedback: <words>` ask line** (agent_team EPIC-67, E67-S1). Every ask has three outcomes, approve, feedback, deny; feedback is changes wanted, never an approval: the row the ask names goes back to `active (feedback <code> by <who> <date>, round <n>: <words>)`, the builder is woken, and the next round comes back as a new ask or card; then the line gets ` · done <date> <sha> round <n> <new code>`. Free text on an `approve` ask is feedback.

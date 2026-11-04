@@ -334,6 +334,18 @@ class Validate(unittest.TestCase):
         self.repo.commit()
         self.assertIn("illegal status change moved -> draft", self.after(None, {"status": "draft"}))
 
+    def test_a_shifted_row_is_refused_format_word_and_body_in_text(self) -> None:
+        # zenod-social P-0104/P-0105 (2026-11-04): a redraft wrote the title in Text and the body in Format, so the page showed no post.
+        body = "One thing sped up my dev. · A central memory sits under it. · How do you hand work to agents?"
+        shifted = {"title": "Old title", "text": "How I hand work to agents now (r/LLMDevs discussion; E11-S8, L-6)", "format": body}
+        out = self.after("Writer", shifted)
+        self.assertIn("P-0001: Format 'One thing sped up my dev.", out)
+        self.assertIn("P-0001: Text 'How I hand work to agents now (r/LLMDevs discussion; E11-S8,': Text reads like a title", out)
+        self.assertIn("Format", self.after("Writer", {"format": "x" * 41}))
+        self.assertEqual("", self.after("Writer", {"title": "How I hand work to agents now (r/LLMDevs discussion; E11-S8)", "text": body, "format": "text"}))
+        self.assertEqual("", self.after("Writer", {"text": "1/ a · 2/ b", "format": "thread (2 posts)"}))
+        self.assertEqual("", self.after("Writer", {"format": "demo clip"}))
+
     def test_a_removed_row(self) -> None:
         self.repo.ledger({})
         self.assertIn("P-0002: row removed", "\n".join(self.repo.issues()))

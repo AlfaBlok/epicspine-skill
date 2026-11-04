@@ -136,7 +136,7 @@
       "doc": "One row per post, reply in a thread, or outreach, from draft to its numbers; Jordi's feedback in its row. DMs are not posts: they live in the messages ledger.",
       "path": "data/posts-ledger.md",
       "sections": {
-        "rows": {"heading": null, "shape": "table", "add_rows": ["Writer", "Responder", "Engager"], "writers": ["Writer", "Responder", "Engager"], "refuse_new": [{"field": "community", "pattern": "^\\s*DMs?\\b", "why": "a DM is not a post: write it to data/messages-ledger.md (a Chats row per conversation, a Messages row per message), never as a posts-ledger row"}], "fields": {
+        "rows": {"heading": null, "shape": "table", "add_rows": ["Writer", "Responder", "Engager"], "writers": ["Writer", "Responder", "Engager"], "refuse_new": [{"field": "community", "pattern": "^\\s*DMs?\\b", "why": "a DM is not a post: write it to data/messages-ledger.md (a Chats row per conversation, a Messages row per message), never as a posts-ledger row"}], "refuse": [{"field": "format", "pattern": "\\s·\\s|^.{41,}$", "why": "Format is the format word (text, thread (n posts), demo clip, diagram, screenshot), not the post: the cells are shifted; on a redraft the new title goes in Title, the post body in Text, Format stays the format word (zenod-social P-0104/P-0105)"}, {"field": "text", "pattern": "^(?!.*\\s·\\s)[^\\n]*\\([^()]*\\bdiscussion;[^()]*\\)\\s*$", "why": "Text reads like a title (one line ending in '(… discussion; …)'): the post body goes in Text, the title in Title (zenod-social P-0104/P-0105)"}], "fields": {
           "id": {"column": "Id", "type": "id", "pattern": "^P-[0-9]{4}$"},
           "date": {"column": "Date", "type": "date"},
           "persona": {"column": "Persona", "type": "role"},
