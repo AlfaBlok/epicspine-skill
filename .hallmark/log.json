@@ -5,6 +5,36 @@
   "scope": "site",
   "shape": "Feature Stack",
   "theme": "rim",
+  "hero": "Banner (/), Stage (/team/)",
+  "imagery": "product",
+  "photos": [
+   "volumes"
+  ],
+  "signature": "each benefit is its real screen first, named after; /team/ three projects then one feed",
+  "sections": [
+   "hero",
+   "again",
+   "sticks",
+   "together",
+   "repo",
+   "family",
+   "install"
+  ],
+  "waived": [
+   "83",
+   "79",
+   "44c",
+   "47c"
+  ],
+  "prompt": "E43-S6/S7 round 3: every benefit shown by a real screen (EPIC-43 L-1)",
+  "date": "2026-11-06"
+ },
+ {
+  "mode": "redesign",
+  "depth": "full",
+  "scope": "site",
+  "shape": "Feature Stack",
+  "theme": "rim",
   "axes": "dark/grotesk-sans/cool",
   "hero": "Banner",
   "nav": "banner over a bar",

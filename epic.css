@@ -1,15 +1,15 @@
 /* Hallmark · shape: Feature Stack (swapped from the draw's Conversational FAQ: every benefit needs its one picture) · genre: modern-minimal · theme: Rim, station colourway, the family's own faces (Funnel Display and Funnel Sans, self-hosted, kept as the brand) (deal 1/3, seed free-agent-skill-keeps-044b·8886203a·2026-11-04·r0) · redesign: full · draw: b5fdeb · job: try (/), try (/team/) · E43-S6 iteration 2, E43-S7
- * hero: Banner (/), Stage (/team/) · nav: banner over a bar (the family line scrolls away, the bar stays) · footer: mast, the wordmark across the width · imagery: the product (the switch, the rule, the night, the ask, the file), one photograph (a many-volume work on a shelf), real EpicTeam and EpicSocial screens · signature: the new chat, without EpicSpine and with it, one switch apart
+ * hero: Banner (/), Stage (/team/, the before and after of Jordi's example) · nav: banner over a bar (the family line scrolls away, the bar stays) · footer: mast, the wordmark across the width · imagery: one real screen per benefit (EPIC-43 L-1, round 3): real terminal captures of a demo repo (agent_team console/scripts/e43-term-shot.py), the real waiting-on-you card, real EpicTeam and EpicSocial screens (e43-benefit-shots.mjs, read-only), one photograph (a many-volume work on a shelf) · signature: each benefit is its real screen first, named after in a few words; on /team/ three projects with items waiting, then the one Team feed
  * axes: dark/grotesk-sans/cool · posture: committed · contrast: pass · fold: pass · v2.0.0 */
-/* Hallmark · pre-emit critique: P4 H4 E4 S4 R4 V4 · weakest: H, a type-only hero can read empty; the head runs at poster size across the width and the live switch starts above the fold */
+/* Hallmark · pre-emit critique: P4 H4 E4 S5 R4 V5 · weakest: H on /, a type-only hero; the first real screen starts inside the first fold at 1440 */
 /* Hallmark · waive 64 · mono only inside pre and code · the rule line, the file list and the install lines are literal text an agent reads */
-/* Hallmark · waive 39b · the 112px controls are the role rows of the team list · each role row is a list line set at section size, and a tap opens its one sentence */
+/* Hallmark · dropped #clear, #relentless, the new-chat switch, the roles list and the night clock · round 3 (Jordi 2026-11-06, EPIC-43 L-1): a built mock is not a real screen; each benefit now shows a real one */
+/* Hallmark · dropped /team/ #inbox, #personas, #skills and the memory well · round 3: the hero before and after shows the feed; personas, skills and connections had no benefit line of their own */
 /* Hallmark · dropped 09:04, 09:06, 08:02, 08:03 · the hero log of three chats over two days; the new chat switch right under the hero tells the same story */
+/* Hallmark · waive 83 · every picture below the hero is the product's own screen, one per benefit · EPIC-43 L-1, Jordi 2026-11-06: show each benefit with its real screen, first and largest */
+/* Hallmark · dismissed F4 · on /team/ the #try band is a gold field, so its two buttons invert to stay visible there; elsewhere one gold primary */
 /* Hallmark · answered F8 · one reveal: the parts of each section rise once as it enters (taste house style asks for an entrance layer); visible without script and under reduced motion */
-/* Hallmark · waive 79 · the /team/ hero shows the real review card, a wide 1600 by 562 screen kept from E43-S7 · on /team/ the hero ends with that card and its caption, and the inbox section follows at the normal band gap */
-/* Hallmark · dismissed F4 · one button recipe; the gold fills on the pressed role row and the sample Yes are states inside product fragments, not actions */
-/* Hallmark · dismissed 59 · ten blocks: the WebMCP tools and old links read nine section ids (top to install), kept from E43-S6 iteration 1 */
-/* Rim zone rule: the night's times are an example in the reader's own clock, not a measurement, so they carry no zone */
+/* Hallmark · waive 79 · the /team/ hero carries the before and after of Jordi's example (three projects, then the one feed), cropped to the frame · it is the page's signature */
 @import url("./tokens.css");
 @import url("./base.css");
 @font-face {
@@ -31,7 +31,7 @@
   --color-accent: oklch(83% 0.13 82); --color-accent-hi: oklch(88% 0.12 85); --color-accent-ink: oklch(19% 0.055 262);
   --color-accent-2: oklch(84% 0.1 200); --color-accent-2-ink: oklch(19% 0.055 262);
   --color-focus-on-dark: oklch(88% 0.12 85); --color-focus: var(--color-focus-on-dark);
-  --color-field-gold: oklch(83% 0.13 82); --color-field-ice: oklch(84% 0.1 200);
+  --color-field-gold: oklch(83% 0.13 82); --color-field-ice: oklch(84% 0.1 200); --color-field-ice-2: oklch(78% 0.1 200);
   --color-tile: oklch(98% 0.005 286); --color-tile-ink: oklch(21% 0.006 286);
   --color-social: oklch(66% 0.2 300); --color-social-ink: oklch(21% 0.006 286);
   --font-display: "Funnel Display", ui-sans-serif, system-ui, sans-serif; --font-body: "Funnel Sans", ui-sans-serif, system-ui, sans-serif;
@@ -113,109 +113,29 @@ code, pre { font-family: var(--font-mono); font-size: var(--text-sm); }
 .hero-foot .lead { font-size: var(--text-lead); max-width: 46ch; }
 .actions { display: flex; flex-wrap: wrap; gap: var(--space-sm); }
 
-/* the new chat, one switch apart */
-.sec--again { padding-top: var(--space-3xl); background: var(--color-paper); }
-.again { display: grid; gap: var(--space-2xl); }
-.again .head { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); align-items: end; gap: var(--gap-columns); }
-.chat { margin: 0; background: var(--color-paper-2); padding: clamp(20px, 3vw, 48px); display: grid; gap: var(--space-xl); }
-.switch { display: inline-flex; justify-self: start; background: var(--color-paper-3); padding: var(--space-2xs); gap: var(--space-2xs); }
-.switch button { min-height: 48px; padding: 0 var(--space-lg); border: 0; border-radius: 0; background: transparent; color: var(--color-ink-2); font: 500 var(--text-md)/1 var(--font-body); cursor: pointer; transition: background-color var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out); }
-.switch button:hover { color: var(--color-ink); background: var(--color-rule-2); }
-.switch button[aria-selected="true"] { background: var(--color-ink); color: var(--color-paper); }
-.switch button:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
-.pane { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--gap-columns); align-items: start; }
-.html-nojs .pane + .pane { margin-top: var(--space-xl); }
-.talk { display: grid; gap: var(--space-md); }
-.msg { margin: 0; max-width: 34ch; font-size: var(--text-lead); line-height: 1.4; color: var(--color-ink); background: var(--color-paper-3); padding: var(--space-md) var(--space-lg); }
-.msg.you { justify-self: end; background: var(--color-rule); }
-.msg .who { display: block; font-size: var(--text-sm); color: var(--color-muted); margin-bottom: var(--space-2xs); }
-.aside { align-self: center; font-size: var(--text-section); line-height: 1.05; letter-spacing: -0.03em; color: var(--color-muted); max-width: 12ch; }
-.read { margin: 0; display: grid; gap: var(--space-2xs); }
-.read div { display: grid; grid-template-columns: 9.5em minmax(0, 1fr); gap: var(--space-md); padding: var(--space-sm) var(--space-md); background: var(--color-paper-3); }
-.read div:first-child { background: var(--color-accent); color: var(--color-accent-ink); }
-.read div:first-child dt { color: var(--color-accent-ink); }
-.read dt { color: var(--color-muted); }
-.read dd { margin: 0; }
-
-/* a correction, kept: call and response down one column */
-.sticks { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--space-2xl) var(--gap-columns); }
-.sticks .head { grid-column: 1 / 6; align-self: start; position: sticky; top: calc(var(--nav-h) + var(--space-xl)); }
-.calls { grid-column: 7 / 13; list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2xl); }
-.calls li { display: grid; gap: var(--space-md); }
-.when { font-size: var(--text-lead); font-weight: 500; color: var(--color-ink); }
-.call { font-size: clamp(1.5rem, 1.6vw + 0.9rem, 2.25rem); line-height: 1.15; letter-spacing: -0.02em; color: var(--color-accent); max-width: 22ch; }
-.answer { margin: 0; background: var(--color-paper-2); padding: var(--space-lg); color: var(--color-ink); white-space: pre-wrap; overflow-wrap: anywhere; }
-.answer--wide { display: grid; gap: var(--space-xs); padding: var(--space-xl); }
-.answer .line { display: grid; grid-template-columns: 4.5em minmax(0, 1fr); gap: var(--space-sm); font-size: var(--text-lead); white-space: normal; }
-.answer .tag { color: var(--color-accent); }
-
-/* roles: the team as a list, the one you point at opens */
-.sec--clear { background: var(--color-paper-3); }
-.clear { display: grid; gap: var(--space-2xl); }
-.clear .head { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); align-items: end; gap: var(--gap-columns); }
-.roles { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2xs); }
-.roles button {
-  width: 100%; display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); align-items: center; gap: var(--gap-columns);
-  min-height: 112px; padding: var(--space-md) var(--space-lg); border: 0; border-radius: 0; background: var(--color-paper); color: var(--color-ink-2);
-  font: inherit; text-align: left; cursor: pointer; transition: background-color var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out);
-}
-.roles button:hover { background: var(--color-paper-2); color: var(--color-ink); }
-.roles button:focus-visible { outline: 2px solid var(--color-focus); outline-offset: -2px; }
-.roles .role { font-size: var(--text-section); font-weight: 400; letter-spacing: -0.03em; line-height: 1; }
-.roles .does { font-size: var(--text-lead); line-height: 1.35; }
-.live .roles button[aria-pressed="false"] .does { opacity: 0.55; }
-.roles button[aria-pressed="true"] { background: var(--color-accent); color: var(--color-accent-ink); }
-
-/* an example night, drawn on its clock */
-.night { display: grid; gap: var(--space-2xl); }
-.night .head { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); align-items: end; gap: var(--gap-columns); }
-.clock { margin: 0; position: relative; background: var(--color-paper-2); padding: var(--space-xl) var(--space-2xl); }
-.events { list-style: none; margin: 0; padding: 0; position: relative; height: 340px; }
-.events::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: var(--space-2xs); margin-top: calc(-1 * var(--space-3xs)); background: var(--color-rule); }
-.events li { position: absolute; left: calc(var(--at) * 100%); width: min(15em, calc((1 - var(--at)) * 100%)); display: grid; gap: var(--space-2xs); padding-left: var(--space-md); }
-.events li::before { content: ""; position: absolute; left: -6px; width: 12px; height: 12px; background: var(--color-ink-2); }
-.events li::after { content: ""; position: absolute; left: -1px; width: 2px; background: var(--color-ink-2); }
-.events li:nth-child(odd) { bottom: calc(50% + 24px); }
-.events li:nth-child(odd)::before { bottom: -30px; }
-.events li:nth-child(odd)::after { bottom: -24px; height: 24px; }
-.events li:nth-child(even) { top: calc(50% + 24px); }
-.events li:nth-child(even)::before { top: -30px; }
-.events li:nth-child(even)::after { top: -24px; height: 24px; }
-.events time { font-size: var(--text-lead); font-weight: 500; color: var(--color-ink); }
-.events span { color: var(--color-ink-2); }
-.events .is-stuck time, .events .is-you time { color: var(--color-accent); }
-.events .is-stuck::before, .events .is-you::before, .events .is-stuck::after, .events .is-you::after { background: var(--color-accent); }
-.events .is-wake time { color: var(--color-accent-2); }
-.events .is-wake::before, .events .is-wake::after { background: var(--color-accent-2); }
-.axis { display: flex; justify-content: space-between; color: var(--color-muted); font-size: var(--text-sm); margin-top: var(--space-md); }
-
-/* only real decisions: the question on a field of ice */
+/* a benefit, shown (EPIC-43 L-1): the real screen first and largest, then the benefit in a few words */
+.proof { display: grid; gap: var(--space-xl); }
+.pic { margin: 0; display: grid; gap: var(--space-sm); justify-items: center; background: var(--color-paper-2); padding: var(--space-2xl); }
+.pic img { display: block; width: auto; max-width: 100%; height: auto; }
+.pic figcaption { justify-self: stretch; font-size: var(--text-md); color: var(--color-ink-2); }
+.pic picture { display: block; max-width: 100%; }
+.pic--term { background: var(--color-paper-3); }
+.pic--term picture, .pic--term img { width: 100%; }
+.proof .say { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--space-sm) var(--gap-columns); align-items: baseline; }
+.proof h2 { max-width: 18ch; overflow-wrap: break-word; min-width: 0; }
+.was { color: var(--color-ink-2); font-size: var(--text-lead); max-width: 34ch; }
+@media (max-width: 48rem) { .proof .say { grid-template-columns: minmax(0, 1fr); } }
+.sec--sticks { background: var(--color-paper-3); }
+.sec--sticks .pic--term { background: var(--color-paper); }
 .sec--together { background: var(--color-field-ice); color: var(--color-accent-2-ink); }
-.sec--together h2, .sec--together .lead { color: var(--color-accent-2-ink); }
-.together { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--space-2xl) var(--gap-columns); align-items: center; }
-.together .head { grid-column: 1 / 6; }
-.stage { grid-column: 6 / 13; margin: 0; }
-.ask { background: var(--color-paper); color: var(--color-ink); padding: var(--space-2xl); display: grid; gap: var(--space-xl); }
-.ask-from { color: var(--color-accent); font-weight: 500; }
-.ask .q { font-size: clamp(1.5rem, 1.6vw + 0.9rem, 2.25rem); line-height: 1.15; letter-spacing: -0.02em; font-weight: 500; max-width: 22ch; }
-.ask dl { margin: 0; display: grid; gap: var(--space-sm); font-size: var(--text-lead); }
-.ask dl div { display: grid; grid-template-columns: 7.5em minmax(0, 1fr); gap: var(--space-md); }
-.ask dt { color: var(--color-muted); }
-.ask dd { margin: 0; }
-.choices { display: flex; gap: var(--space-sm); }
-.choice { display: inline-flex; align-items: center; min-height: 52px; padding: 0 var(--space-xl); background: var(--color-paper-2); font-weight: 500; }
-.choice.yes { background: var(--color-accent); color: var(--color-accent-ink); }
+.sec--together h2, .sec--together .was, .sec--together figcaption { color: var(--color-accent-2-ink); }
+.sec--together .pic { background: var(--color-field-ice-2); }
 
 /* the plan lives in your repo: one photograph, then the file */
 .sec--repo { padding-top: 0; }
 .plate { margin: 0 0 var(--space-3xl); }
 .plate img { width: 100%; height: clamp(320px, 78vh, 860px); object-fit: cover; object-position: 50% 12%; filter: saturate(0.9) contrast(1.05); }
 .plate figcaption { margin-top: var(--space-sm); font-size: var(--text-sm); color: var(--color-muted); }
-.repo { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--space-2xl) var(--gap-columns); align-items: end; }
-.repo .head { grid-column: 1 / 7; }
-.tree { grid-column: 7 / 13; margin: 0; background: var(--color-paper-2); padding: var(--space-xl); }
-.tree pre { margin: 0; font-size: var(--text-sm); line-height: 1.8; white-space: pre-wrap; color: var(--color-ink); }
-.dim { color: var(--color-muted); }
 .arg { color: var(--color-accent); }
 
 /* the family: each product shown by its own real screen, on a flat field */
@@ -272,7 +192,7 @@ code, pre { font-family: var(--font-mono); font-size: var(--text-sm); }
 .band { padding-block: var(--section-gap-s); }
 .band.alt { background: var(--color-paper-3); color: var(--color-ink); }
 .band.hero { padding-block: var(--space-2xl) var(--space-xl); }
-.band.hero h1 { font-size: var(--text-display); line-height: 0.94; max-width: none; }
+.band.hero h1 { font-size: clamp(2.5rem, 5.2vw, 5.25rem); line-height: 0.98; max-width: none; }
 .band.hero .split { grid-template-columns: minmax(0, 1fr); gap: var(--space-2xl); }
 .band.hero .say { grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--space-xl) var(--space-xl); }
 .band.hero .say h1 { grid-column: 1 / -1; }
@@ -312,6 +232,16 @@ code, pre { font-family: var(--font-mono); font-size: var(--text-sm); }
 .rows dd { margin: 0; }
 .more { color: var(--color-ink-2); }
 
+/* /team/ hero: three projects, each with its own items waiting, then the one Team feed (Jordi's example, EPIC-43 L-1) */
+.ba { margin: 0; display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--gap-columns); align-items: stretch; }
+.ba-side { display: grid; grid-template-rows: auto 1fr; gap: var(--space-sm); min-width: 0; }
+.ba-label { color: var(--color-ink-2); font-size: var(--text-lead); }
+.ba-after .ba-label { color: var(--color-accent); }
+.ba-rows { display: grid; align-content: center; gap: var(--space-sm); background: var(--color-paper-2); padding: var(--space-xl); }
+.ba-rows img { width: 100%; height: auto; }
+.ba-after .frame { background: var(--color-field-ice); padding: var(--space-xl) 0 0 var(--space-xl); overflow: hidden; height: clamp(300px, 30vw, 440px); }
+.ba-after .frame img { width: 125%; max-width: none; height: auto; }
+
 /* under 60rem every composition stacks in reading order */
 @media (max-width: 60rem) {
   .again .head, .clear .head, .night .head, .band .stack .say { grid-template-columns: minmax(0, 1fr); align-items: start; gap: var(--space-md); }
@@ -321,7 +251,7 @@ code, pre { font-family: var(--font-mono); font-size: var(--text-sm); }
   .sticks .head { position: static; }
   .roles button { grid-template-columns: minmax(0, 1fr); gap: var(--space-xs); min-height: 88px; }
   .clock { padding: var(--space-xl) var(--space-lg); }
-  .products, .split, .pair, .pair.even, .band.hero .split, .band:has(.shot--narrow) .stack { grid-template-columns: minmax(0, 1fr); gap: var(--space-2xl); }
+  .products, .split, .pair, .pair.even, .band.hero .split, .band:has(.shot--narrow) .stack, .ba { grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); }
 }
 @media (max-width: 40rem) {
   .band#try .say, .band.hero .say { grid-template-columns: minmax(0, 1fr); }
@@ -348,5 +278,8 @@ code, pre { font-family: var(--font-mono); font-size: var(--text-sm); }
   .giant { font-size: 20.4vw; }
   .shell pre { font-size: var(--text-sm); }
   .ask, .clock, .tree, .well { padding: var(--space-lg); }
-  .shotlink, .shot .frame { padding: var(--space-md); }
+  .shotlink, .shot .frame, .pic { padding: var(--space-md); }
+  .ba-rows { padding: var(--space-md); }
+  .ba-after .frame { height: 620px; padding: var(--space-md) var(--space-md) 0; }
+  .ba-after .frame img { width: 100%; }
 }

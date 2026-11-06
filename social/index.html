@@ -22,10 +22,13 @@
  * axes: light/grotesk-sans/cool · posture: restrained · contrast: pass · fold: pass · draw: b45a7a · v2.0.0 */
 /* Hallmark · pre-emit critique: P4 H5 E4 S4 R4 V4 · weakest: S, a waitlist page could be anyone's; led with the real post flow (idea, research, draft, your OK, replies) playing in the hero instead of claims */
 /* Hallmark · waive 47c · the approval inbox built as a sample inside the hero figure · the inbox is private to each customer, no public screen to capture */
-/* Hallmark · E43-S7 · a "The real tool" section after the hero carries real social.alpha9.io screens (taken read-only, agent_team console/scripts/e43s7-shots.mjs); the hero keeps its built sample */
+/* Hallmark · E43-S7 round 3 (EPIC-43 L-1) · the five benefit lines of EPIC-71 (draft) each shown by one real social.alpha9.io screen, taken read-only (agent_team console/scripts/e43-benefit-shots.mjs), the benefit named after it; the hero keeps its built sample */
+/* Hallmark · waive 83 · every picture below the hero is the product's own screen, one per benefit · EPIC-43 L-1, Jordi 2026-11-06: show each benefit with its real screen, first and largest */
+/* Hallmark · dropped #real, #flow, #team, #week, #get and the sample week script · round 3: explanation the real screens make unnecessary */
 /* Hallmark · reworded "Idea persona" to "Ideas agent", "four AI personas" to "four AI agents" · Jordi: not too techy, AI agents */
-/* Hallmark · waive 79 · the water stage runs to y 860 at 1440 x 900; only the head column ends at 726, the hero's lit panel fills the screen */
-/* Hallmark · waive 44c · Stage visual bleeding off the outer edge; the water light runs to the right edge of the window by design of the hero */
+/* Hallmark · waive 79 · the water stage runs to y 860 at 1440 x 900 · only the head column ends at 726, the hero's lit panel fills the screen */
+/* Hallmark · waive 44c · Stage visual bleeding off the outer edge · the water light runs to the right edge of the window by design of the hero */
+/* Hallmark · dismissed 59 · ten blocks: the hero, the five benefit lines of EPIC-71 (each needs its own screen), alpha, questions, the waitlist and the footer */
 /* Hallmark · dismissed 70 · the thanks shows only on ?signed=1, after the console at team.alpha9.io/api/public/testers stored the email and answered 303 */
 /* Hallmark · answered F7 · avatars, status chips and the day picker are round like the controls they sit with, by the theme's soft-pill language */
 /* Hallmark · dropped #how (five setup steps), the repo tree and "Under the hood: two ideas" · Jordi: minimalist, not too techy; ownership kept as one plain section, setup kept in the alpha list */
@@ -260,6 +263,17 @@ button, input, textarea { font: inherit; color: inherit; }
 .shot .frame img { display: block; width: 100%; height: auto; }
 .shot figcaption { font-size: var(--text-sm); color: var(--color-muted); }
 .shot--big { margin-top: var(--space-xl); }
+/* a benefit, shown (EPIC-43 L-1): the real screen first and largest, then the benefit in a few words */
+.proof { display: grid; gap: var(--space-xl); }
+.pic { justify-items: center; }
+.pic .frame { width: fit-content; max-width: 100%; }
+.pic .frame img { width: auto; max-width: 100%; }
+.pic figcaption { justify-self: stretch; font-size: var(--text-md); }
+.proof .say { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--space-sm) var(--gap-columns); align-items: baseline; }
+.proof h2 { max-width: 20ch; }
+.was { font-size: var(--text-lead); line-height: 1.45; color: var(--color-ink-2); max-width: 36ch; }
+@media (max-width: 48rem) { .proof .say { grid-template-columns: minmax(0, 1fr); } }
+
 @media (max-width: 68rem) {
   .nav .links { display: none; }
   .hero .container { grid-template-columns: minmax(0, 1fr); min-height: 0; gap: var(--space-xl); padding-block: var(--space-xl) var(--space-2xl); }
@@ -301,10 +315,9 @@ button, input, textarea { font: inherit; color: inherit; }
 <header class="nav"><div class="container">
   <a class="wordmark" href="#top" aria-label="EpicSocial, back to top"><svg viewBox="0 0 32 32" aria-hidden="true"><g fill="#7c3bed"><path d="M6 0h20a6 6 0 0 1 6 6v16a6 6 0 0 1-6 6H15l-8 4v-4H6a6 6 0 0 1-6-6V6a6 6 0 0 1 6-6z"/></g><g fill="#fff"><g transform="translate(2.98 0) skewX(-12)"><path d="M8 8A4 4 0 0 1 12 4L24 4L24 8L14 8L14 12L20 12A4 4 0 0 1 24 16L24 20A4 4 0 0 1 20 24L8 24L8 20L18 20L18 16L12 16A4 4 0 0 1 8 12Z"/></g></g></svg>EpicSocial</a>
   <nav class="links" aria-label="Sections">
-    <a href="#real">The real tool</a>
-    <a href="#flow">How a post is made</a>
-    <a href="#team">The team</a>
-    <a href="#week">A week</a>
+    <a href="#everyday">Every day</a>
+    <a href="#yes">Your yes</a>
+    <a href="#threads">Threads</a>
     <a href="#alpha">Alpha</a>
     <a href="#pricing">Pricing</a>
     <a href="#faq">FAQ</a>
@@ -352,96 +365,56 @@ button, input, textarea { font: inherit; color: inherit; }
   </div>
 </div></section>
 
-<section class="section section--paper2" id="real"><div class="container">
-  <div class="head">
-    <h2>The real tool, today.</h2>
-    <p>Our own EpicSocial team on 4 November 2026. Every post sits on one board, from idea to posted.</p>
-  </div>
-  <figure class="shot shot--big">
-    <div class="frame"><picture><source media="(max-width: 40rem)" srcset="shots/pipeline-phone.webp" width="780" height="1688"><img src="shots/pipeline.webp" width="1600" height="1000" loading="lazy" alt="The EpicSocial pipeline for X: ideas from the Scout, scheduled posts with Post now and Pull, and posted ones."></picture></div>
-    <figcaption>The pipeline: ideas, drafts, scheduled and posted.</figcaption>
-  </figure>
-  <div class="real-grid">
-    <figure class="shot">
-      <div class="frame"><picture><source media="(max-width: 40rem)" srcset="shots/personas-phone.webp" width="780" height="1688"><img src="shots/personas.webp" width="1600" height="1219" loading="lazy" alt="Personas: the Scout finds threads and ideas, the Writer drafts posts, the Responder answers replies, each with its model, its runs, what it did lately and its skills."></picture></div>
-      <figcaption>Personas, each with one job and its own skills.</figcaption>
-    </figure>
-    <figure class="shot">
-      <div class="frame"><picture><source media="(max-width: 40rem)" srcset="shots/post-phone.webp" width="780" height="1688"><img src="shots/post.webp" width="1600" height="1000" loading="lazy" alt="One scheduled X post: when it goes out, which campaign it belongs to, who wrote it with which skills, and its text."></picture></div>
-      <figcaption>A scheduled post, with who wrote it and when it goes out.</figcaption>
-    </figure>
-  </div>
-  <p class="lane-note">EpicSocial runs on <a href="../team/">EpicTeam</a>: the same inbox, personas and shared sign-ins.</p>
+<section class="section section--paper2" id="everyday" aria-labelledby="h-everyday"><div class="container proof">
+<figure class="shot pic">
+<div class="frame"><picture><source media="(max-width: 40rem)" srcset="shots/everyday-phone.webp" width="374" height="660"><img src="shots/everyday.webp" width="960" height="290" loading="lazy" alt="EpicSocial's numbers for our own X account, @ZenodAgent, over the last 7 days: 4 posts, 9 replies received, 23 replies sent, 3 followers, 29 impressions, each with a bar per day."></picture></div>
+<figcaption>Our own X account in EpicSocial, the week to 6 November 2026.</figcaption>
+</figure>
+<div class="say">
+<h2 id="h-everyday">On Reddit and X, every day.</h2>
+<p class="was">You only say yes or no. Before: “I post when I find the time.”</p>
+</div>
 </div></section>
-
-<section class="section" id="flow"><div class="container">
-  <div class="head">
-    <h2>Every post starts with an idea and ends with your OK.</h2>
-    <p>Nothing random. Each idea is researched before anyone writes a word.</p>
-  </div>
-  <ol class="lane">
-    <li><span class="n">1</span><h3>An idea</h3><p>Yours, from a topic list, a voice note or a line in chat. Or one the Ideas agent spots in your space.</p></li>
-    <li><span class="n">2</span><h3>Research</h3><p>The Researcher finds what has been said, sources, numbers and the question to open with.</p></li>
-    <li><span class="n">3</span><h3>A draft</h3><p>The Writer turns it into a post in your voice, with one diagram.</p></li>
-    <li class="you"><span class="n">4</span><h3>Your OK</h3><p>Approve it, or approve it with feedback. The Writer learns from every note.</p></li>
-    <li><span class="n">5</span><h3>Posted</h3><p>On Reddit and X. The Responder answers the replies, and what worked feeds the next ideas.</p></li>
-  </ol>
-  <p class="lane-note">This is how our own team posts today, for Zenod and for EpicSocial itself.</p>
+<section class="section" id="yes" aria-labelledby="h-yes"><div class="container proof">
+<figure class="shot pic">
+<div class="frame"><picture><source media="(max-width: 40rem)" srcset="shots/yes-phone.webp" width="378" height="882"><img src="shots/yes.webp" width="788" height="536" loading="lazy" alt="A held X post in EpicSocial: waiting for your approval, its slot has passed and it is not posted. Four buttons: schedule for Sunday 15 November, pick a new time, give feedback, don't post."></picture></div>
+<figcaption>A post that missed its slot waits for you. 6 November 2026.</figcaption>
+</figure>
+<div class="say">
+<h2 id="h-yes">Nothing goes out unless you said yes.</h2>
+<p class="was">Before: “I’m scared of what a bot might say in my name.”</p>
+</div>
 </div></section>
-
-<section class="section section--paper2" id="team"><div class="container">
-  <div class="head">
-    <h2>Four AI agents, one brand: yours.</h2>
-    <p>Each one works on a schedule, does its job and hands the work to the next.</p>
-  </div>
-  <ul class="team">
-    <li><h3 class="who" data-initial="I">Ideas agent</h3><p>Keeps your idea list, adds its own from trends and a few competitors you choose, and picks the week’s three.</p><span class="when">Every Monday</span></li>
-    <li><h3 class="who" data-initial="Re">Researcher</h3><p>Researches each idea before it is written, and sends a weekly report: what worked, what competitors did.</p><span class="when">Before each post, and weekly</span></li>
-    <li><h3 class="who" data-initial="W">Writer</h3><p>Writes every post, text and diagram, in your voice, puts it in your inbox and applies your feedback.</p><span class="when">3 times a week</span></li>
-    <li><h3 class="who" data-initial="R">Responder</h3><p>Answers replies and mentions on your posts. Anything sensitive comes to you instead.</p><span class="when">Every 12 hours</span></li>
-  </ul>
+<section class="section section--paper2" id="threads" aria-labelledby="h-threads"><div class="container proof">
+<figure class="shot pic">
+<div class="frame"><picture><source media="(max-width: 40rem)" srcset="shots/reply-phone.webp" width="340" height="1083"><img src="shots/reply.webp" width="926" height="459" loading="lazy" alt="A reply waiting in EpicSocial: where it goes, a Reddit thread in r/AI_Agents about agents handling stale state, and what it says, four short paragraphs drafted by the team. Buttons: schedule this reply, new iteration with feedback, deny."></picture></div>
+<figcaption>A thread the team found, with its reply drafted. 6 November 2026.</figcaption>
+</figure>
+<div class="say">
+<h2 id="h-threads">The right threads come to you, reply drafted.</h2>
+<p class="was">Before: “I miss the threads that matter.”</p>
+</div>
 </div></section>
-
-<section class="section" id="week"><div class="container">
-  <div class="head">
-    <h2>Tap a day.</h2>
-    <p>A week for Forno Lume, a made-up bakery. Wednesday’s post is waiting for you.</p>
-  </div>
-  <div class="week">
-    <div>
-      <div class="days" role="tablist" id="days" aria-label="Days of the week"></div>
-      <div class="log" id="log" role="tabpanel" aria-live="polite"></div>
-    </div>
-    <div class="sample" id="post">
-      <div class="post-by"><span class="av">W</span><b>Writer</b><span class="where">for Wed 10:00, Reddit and X</span></div>
-      <div class="diagram">Sourdough: 36 hours, 30 minutes of work.</div>
-      <div id="ptext">How long do you think good bread takes? Ours takes 36 hours, and we touch it for about 30 minutes. The rest is the dough working on its own: slow fermentation builds flavour no shortcut can. Fresh loaves from 7:00, Tuesday to Saturday.</div>
-      <div class="acts" id="pact">
-        <button class="btn btn--sm" type="button" id="approve">Approve</button>
-        <button class="btn btn--clear btn--sm" type="button" id="editb">Approve with feedback</button>
-      </div>
-      <span class="state wait" id="pstate">Waiting for you</span>
-      <p class="caption">In the real app this is your approval inbox. Your feedback is saved to your brand voice, so the Writer learns it.</p>
-    </div>
-  </div>
+<section class="section" id="rules" aria-labelledby="h-rules"><div class="container proof">
+<figure class="shot pic">
+<div class="frame"><picture><source media="(max-width: 40rem)" srcset="shots/rules-phone.webp" width="378" height="411"><img src="shots/rules.webp" width="788" height="367" loading="lazy" alt="The checks on one post: waiting for your approval because every post is held, then ticks for X brand voice, one idea per post, each post 280 characters or fewer, ends on the question, no hype words or exclamation marks, and more."></picture></div>
+<figcaption>Every post is checked against your rules before it reaches you.</figcaption>
+</figure>
+<div class="say">
+<h2 id="h-rules">Say it once. Every next post follows it.</h2>
+<p class="was">Before: “I explain the same thing to every tool, every time.”</p>
+</div>
 </div></section>
-
-<section class="section section--paper2" id="get"><div class="container">
-  <div class="head">
-    <h2>Steady presence, without the hours.</h2>
-  </div>
-  <ul class="figures">
-    <li><span class="fig">3</span><h3>posts a week</h3><p>Each from a researched idea, with a diagram, on Reddit and X.</p></li>
-    <li><span class="fig">12 h</span><h3>reply time</h3><p>Everyone who comments on or mentions your posts hears back within 12 hours.</p></li>
-    <li><span class="fig">1</span><h3>weekly report</h3><p>What worked, what didn’t and what competitors did, with numbers.</p></li>
-    <li><span class="fig"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h3>approval inbox</h3><p>See every draft. Approve, or approve with feedback, in one tap.</p></li>
-  </ul>
-  <div class="own">
-    <h3 style="font-size: var(--text-2xl)">Everything your team learns stays yours.</h3>
-    <p>Your brand voice, your idea list, every post, every reply and every lesson are kept in files you own. Cancel any time and they stay with you. The engine behind the team is open source, and posts go out from your own accounts through each platform’s official tools.</p>
-  </div>
+<section class="section section--paper2" id="answered" aria-labelledby="h-answered"><div class="container proof">
+<figure class="shot pic">
+<div class="frame"><picture><source media="(max-width: 40rem)" srcset="shots/answered-phone.webp" width="374" height="681"><img src="shots/answered.webp" width="960" height="365" loading="lazy" alt="EpicSocial's Reddit numbers for u/jordimr over 7 days: 3 posts, 7 replies received, 19 replies sent, 1 follower. The best Reddit post, P-0019 in r/AI_Agents, has 50 comments, score 6 and 13 replies from us."></picture></div>
+<figcaption>Jordi’s Reddit account, the week to 6 November 2026.</figcaption>
+</figure>
+<div class="say">
+<h2 id="h-answered">See what people answered.</h2>
+<p class="was">Before: “I post and guess what worked.” What readers ask for comes next.</p>
+</div>
 </div></section>
-
 <section class="section" id="alpha"><div class="container alpha">
   <div>
     <div class="head" style="margin-bottom: 0">
@@ -597,56 +570,6 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)');
   fig.addEventListener('focusout', () => { hover = false; stop(); tick(); });
   tick();
 })();
-
-// ---- A week with your team (demo data, fictional bakery)
-const P = { I: 'Ideas agent', Re: 'Researcher', W: 'Writer', R: 'Responder', Y: 'You' };
-const WEEK = [
-  ['Mon', [['I','08:00','Added 2 ideas to your list (autumn menu, why slow dough tastes better) and picked the week: Wed sourdough story, Fri weekend menu, Sun behind the scenes.'],['R','08:00','Answered 3 weekend comments on Sunday’s post.'],['R','20:00','Nothing new to answer. Back at 08:00.']]],
-  ['Tue', [['R','08:00','Answered a question about gluten-free options; flagged a complaint about a late order to you instead of replying.'],['Re','11:00','Researched Wednesday’s idea: 3 sources on slow fermentation, "slow food" posts up this week, opening question: how long does good bread take?'],['W','15:00','Drafted Wednesday’s post with a diagram from the research. It’s in your inbox.'],['R','20:00','Answered 2 replies.']]],
-  ['Wed', [['Y','09:12','You approve Wednesday’s post, or approve it with feedback (try it beside this list).'],['W','10:00','Posted to Reddit and X; added the links to your post history.'],['R','20:00','Answered 4 replies on today’s post.']]],
-  ['Thu', [['R','08:00','Answered 5 overnight replies.'],['Re','11:00','Researched Friday’s weekend menu: what nearby bakeries posted, which dishes people ask about.'],['W','15:00','Drafted Friday’s weekend menu post.'],['R','20:00','Answered 1 mention.']]],
-  ['Fri', [['Re','09:00','Weekly report: Wednesday’s post got 3 times your usual replies. Competitors posted 9 times, mostly prices. Suggestion: more process stories.'],['W','10:00','Posted the weekend menu (approved with your feedback Thursday night: "mention the vegan loaf").'],['R','20:00','Answered 3 replies.']]],
-  ['Sat', [['R','08:00','Answered 2 replies.'],['R','20:00','Nothing new.']]],
-  ['Sun', [['W','10:00','Posted behind the scenes: shaping loaves at 5 am.'],['R','20:00','Answered 4 replies.'],['I','20:30','Read the Researcher’s report: next week’s ideas lean into process stories.']]]
-];
-const daysEl = document.getElementById('days'), logEl = document.getElementById('log');
-function show(i, focus) {
-  [...daysEl.children].forEach((b, j) => { b.setAttribute('aria-selected', j === i); b.tabIndex = j === i ? 0 : -1; });
-  if (focus) daysEl.children[i].focus();
-  logEl.innerHTML = '';
-  WEEK[i][1].forEach(([k, t, txt]) => {
-    const ev = document.createElement('div'); ev.className = 'ev';
-    const a = document.createElement('span'); a.className = 'av' + (k === 'Y' ? ' av--you' : ''); a.textContent = k === 'Y' ? 'You' : k;
-    const body = document.createElement('div'); const meta = document.createElement('span'); meta.className = 't'; meta.textContent = P[k] + ', ' + t;
-    const p = document.createElement('p'); p.textContent = txt; body.append(meta, p); ev.append(a, body); logEl.append(ev);
-  });
-}
-WEEK.forEach(([d], i) => {
-  const b = document.createElement('button'); b.type = 'button'; b.className = 'day'; b.setAttribute('role', 'tab'); b.textContent = d;
-  b.addEventListener('click', () => show(i));
-  b.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); show((i + (e.key === 'ArrowRight' ? 1 : 6)) % 7, true); } });
-  daysEl.append(b);
-});
-show(2);
-
-// ---- Approve / Approve with feedback on the sample post
-const st = document.getElementById('pstate'), txt = document.getElementById('ptext'), act = document.getElementById('pact');
-function setPState(cls, label) { st.className = 'state ' + cls; st.textContent = label; }
-function mk(cls, id, label) { const b = document.createElement('button'); b.type = 'button'; b.className = cls; b.id = id; b.textContent = label; return b; }
-function reset(keep) { if (typeof keep === 'string') txt.textContent = keep; setPState('wait', 'Waiting for you'); act.replaceChildren(mk('btn btn--sm', 'approve', 'Approve'), mk('btn btn--clear btn--sm', 'editb', 'Approve with feedback')); bindActions(); }
-function bindActions() {
-  document.getElementById('approve').onclick = () => { setPState('ok', 'Approved, goes out Wed 10:00'); const u = mk('btn btn--clear btn--sm', 'undo', 'Undo'); act.replaceChildren(u); u.onclick = reset; u.focus(); };
-  document.getElementById('editb').onclick = () => {
-    const cur = txt.textContent; setPState('wait', 'Your feedback');
-    const ta = document.createElement('textarea'); ta.id = 'ta'; ta.setAttribute('aria-label', 'Your feedback'); ta.placeholder = 'e.g. mention the vegan loaf';
-    txt.append(ta); ta.focus();
-    const save = mk('btn btn--sm', 'save', 'Approve with feedback'), cancel = mk('btn btn--clear btn--sm', 'cancel', 'Cancel');
-    act.replaceChildren(save, cancel);
-    save.onclick = () => { const f = ta.value.trim(); txt.textContent = cur; setPState('ok', f ? 'Approved with feedback' : 'Approved, goes out Wed 10:00'); const n = document.createElement('span'); n.className = 'caption'; n.textContent = f ? 'The Writer applies your feedback, then it goes out.' : 'Approved.'; const u = mk('btn btn--clear btn--sm', 'undo', 'Undo'); act.replaceChildren(n, u); u.onclick = () => reset(cur); u.focus(); };
-    cancel.onclick = () => reset(cur);
-  };
-}
-bindActions();
 
 // ---- Waitlist (E10-S6, EPIC-10-A2): a plain form post to the console's sign-up list (offer waitlist-alpha, email only, no payment).
 // The console answers 303 back to this page with ?signed=1 or ?error=<code>#join.

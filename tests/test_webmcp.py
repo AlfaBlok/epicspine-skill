@@ -155,13 +155,14 @@ class WebMCPTests(unittest.TestCase):
 
         ids = [s["id"] for s in self.page.sections]
         # agent_team E43-S6: the page leads with benefits; the technical screens moved into the Book.
-        for i in ("top", "again", "sticks", "clear", "relentless", "together", "repo", "family", "install"):
+        # Round 3 (EPIC-43 L-1): each benefit is one real screen, so the roles and night mocks went.
+        for i in ("top", "again", "sticks", "together", "repo", "family", "install"):
             self.assertIn(i, ids)
         listed = out["calls"]["list"]["sections"]
         self.assertEqual([s["id"] for s in listed], ids)
         again = next(s for s in listed if s["id"] == "again")
         self.assertEqual(again["heading"], "No more explaining it again.")
-        self.assertEqual(again["firstParagraph"], "A new chat starts from the plan: the goal, where things stand and what comes next.")
+        self.assertEqual(again["firstParagraph"], "Before: every new chat asks what you are working on.")
 
         self.assertEqual(out["tools"]["go_to_section"]["inputSchema"]["properties"]["id"]["enum"], ids)
         self.assertEqual(out["tools"]["go_to_section"]["inputSchema"]["required"], ["id"])

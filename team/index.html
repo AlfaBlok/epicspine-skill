@@ -25,9 +25,9 @@
   <nav class="nav" aria-label="Main"><div class="container">
     <a class="wordmark" href="#top" aria-label="EpicTeam, back to the start"><svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><rect class="tile" width="32" height="32" rx="7"/><g transform="translate(3.40 0) skewX(-12)"><path class="g" d="M8 6H24V10H19V26H13V10H8Z"/></g></svg>EpicTeam</a>
     <ul class="links">
-      <li class="hide-s"><a href="#inbox">Inbox</a></li>
-      <li class="hide-s"><a href="#personas">Personas</a></li>
+      <li class="hide-s"><a href="#review">Finished work</a></li>
       <li class="hide-s"><a href="#signins">Sign-ins</a></li>
+      <li class="hide-s"><a href="#seats">Seats</a></li>
       <li><a href="../book/">Book</a></li>
     </ul>
     <a class="btn btn--primary btn--sm" href="#try">Try it</a>
@@ -39,112 +39,78 @@
     <div class="container split">
       <div class="say">
         <h1 id="h-top">An AI team working on your goals.</h1>
-        <p class="lead">You only see what needs you, in one inbox.</p>
+        <p class="lead">Everything that needs you, in one feed.</p>
         <div class="actions">
           <a class="btn btn--primary" href="#try">Try it</a>
-          <a class="btn" href="#inbox">See the real screens</a>
+          <a class="btn" href="#review">See the real screens</a>
         </div>
       </div>
-      <figure class="show shot">
-        <div class="frame"><img src="shots/review.webp" width="1600" height="562" fetchpriority="high" alt="A finished task in EpicTeam's inbox on 4 November 2026: what you are marking as complete, the goal of the task and what was delivered, with a try-this step."></div>
-        <figcaption>A finished task in the real inbox, 4 November 2026.</figcaption>
+      <figure class="show ba" aria-label="Before and after, in the real EpicTeam console on 6 November 2026">
+        <div class="ba-side">
+          <p class="ba-label">Three projects, each with items waiting</p>
+          <div class="ba-rows">
+            <img src="shots/project-1.webp" width="243" height="91" alt="The Epic Social launch project: 3 items waiting on you.">
+            <img src="shots/project-2.webp" width="243" height="71" alt="The Zenod launch project: 2 items waiting on you.">
+            <img src="shots/project-3.webp" width="243" height="71" alt="The agent_team project: 5 items waiting on you.">
+          </div>
+        </div>
+        <div class="ba-side ba-after">
+          <p class="ba-label">Select Team: one feed</p>
+          <div class="frame"><picture><source media="(max-width: 560px)" srcset="shots/feed-phone.webp" width="390" height="1038"><img src="shots/feed.webp" width="1024" height="898" fetchpriority="high" alt="EpicTeam's Team view: one list for every project. Blocked, waiting on you: 8. Snoozed: 4. Decided for you: 4. Coming up: 5. Answered: 58. Done, waiting for your review: 4."></picture></div>
+        </div>
       </figure>
     </div>
   </section>
 
-  <section class="band alt" id="inbox" aria-labelledby="h-inbox">
-    <div class="container stack">
-      <div class="say">
-        <h2 id="h-inbox">Everything that needs you, in one place.</h2>
-        <p class="lead">Questions, finished work and decisions made for you share one list. Each card says what was done and how to check it.</p>
-      </div>
-      <div class="show pair">
-        <figure class="shot">
-          <div class="frame"><img src="shots/inbox.webp" width="1600" height="1219" loading="lazy" alt="EpicTeam's home: one list with Blocked, waiting on you, Snoozed, Decided for you, Coming up, Answered and Done, waiting for your review, which holds three finished tasks."></div>
-          <figcaption>One list for everything. Private asks are folded here.</figcaption>
-        </figure>
-        <figure class="shot">
-          <div class="frame"><img src="shots/inbox-phone.webp" width="780" height="1688" loading="lazy" alt="The same inbox on a phone."></div>
-          <figcaption>The same inbox on a phone.</figcaption>
-        </figure>
-      </div>
-    </div>
-  </section>
-
-  <section class="band" id="personas" aria-labelledby="h-personas">
-    <div class="container stack">
-      <div class="say">
-        <h2 id="h-personas">Personas, one job each.</h2>
-        <p class="lead">Each persona has a role, a model and the goals it works on. It wakes on a schedule and says what it did.</p>
-      </div>
-      <figure class="show shot">
-        <div class="frame"><picture><source media="(max-width: 560px)" srcset="shots/personas-phone.webp" width="780" height="1688"><img src="shots/personas.webp" width="1600" height="625" loading="lazy" alt="Two personas: the Watcher keeps one scoreboard honest and never fixes, the Diagnostician turns a problem into a diagnosis and never changes a running system. Each shows its model, its runs and what it did lately."></picture></div>
-        <figcaption>Two of the team’s personas, each with the one thing it does.</figcaption>
+  <section class="band alt" id="review" aria-labelledby="h-review">
+    <div class="container proof">
+      <figure class="pic">
+        <picture><source media="(max-width: 560px)" srcset="shots/review-card-phone.webp" width="390" height="1116"><img src="shots/review-card.webp" width="934" height="920" loading="lazy" alt="A finished task in EpicTeam's feed: what you are marking as complete, the goal of the task, what was delivered with one gap marked, a picture of the result, where it sits among the goal's tasks, and three buttons: mark this task complete, new iteration with feedback, deny."></picture>
+        <figcaption>A finished task in our own feed, 6 November 2026.</figcaption>
       </figure>
-    </div>
-  </section>
-
-  <section class="band alt" id="skills" aria-labelledby="h-skills">
-    <div class="container stack">
       <div class="say">
-        <h2 id="h-skills">One skill library for the whole team.</h2>
-        <p class="lead">Add a skill once from GitHub, pinned to a version. Then pick which personas use it.</p>
+        <h2 id="h-review">Every finished task shows how to check it.</h2>
+        <p class="was">Before: you dig through chats to see what got done.</p>
       </div>
-      <figure class="show shot">
-        <div class="frame"><picture><source media="(max-width: 560px)" srcset="shots/skills-phone.webp" width="780" height="1688"><img src="shots/skills.webp" width="1600" height="767" loading="lazy" alt="Team skills: copy-editing, copywriting, design-taste-frontend and diagram-design, each with when to use it, its GitHub source pinned to a commit, and the personas that use it."></picture></div>
-        <figcaption>The skills page, each skill pinned to a commit.</figcaption>
-      </figure>
     </div>
   </section>
 
   <section class="band" id="signins" aria-labelledby="h-signins">
-    <div class="container stack">
+    <div class="container proof">
+      <figure class="pic">
+        <img src="shots/signins.webp" width="561" height="412" loading="lazy" alt="Browser sign-ins shared with every agent: Airbnb, Reddit, Twitter and X, each synced from Chrome on the owner's laptop.">
+        <figcaption>Sign-ins synced from one laptop. The values stay encrypted and are never shown.</figcaption>
+      </figure>
       <div class="say">
         <h2 id="h-signins">Sign in once. Every agent can use it.</h2>
-        <p class="lead">Your browser logins and connected tools are shared with the team. The values stay encrypted and are never shown.</p>
-      </div>
-      <div class="show pair even">
-        <figure class="shot">
-          <div class="frame"><picture><source media="(max-width: 560px)" srcset="shots/signins-phone.webp" width="780" height="1688"><img src="shots/signins.webp" width="1104" height="854" loading="lazy" alt="Browser sign-ins shared with every agent: Airbnb, Reddit, Twitter and X, each from Chrome on the owner’s laptop, with when it was last synced."></picture></div>
-          <figcaption>Browser sign-ins, synced from your laptop.</figcaption>
-        </figure>
-        <figure class="shot">
-          <div class="frame"><picture><source media="(max-width: 560px)" srcset="shots/connections-phone.webp" width="780" height="1688"><img src="shots/connections.webp" width="1600" height="1188" loading="lazy" alt="Connections: the Zenod memory server, connected, with its secret set and the personas allowed to use it."></picture></div>
-          <figcaption>Connections, with access per persona.</figcaption>
-        </figure>
+        <p class="was">Before: every agent needs its own logins.</p>
       </div>
     </div>
   </section>
 
   <section class="band alt" id="seats" aria-labelledby="h-seats">
-    <div class="container stack">
-      <div class="say">
-        <h2 id="h-seats">Several subscriptions, one pool.</h2>
-        <p class="lead">Each AI subscription is a seat. The team draws on the whole pool, so one usage limit never stops the work.</p>
-      </div>
-      <figure class="show shot shot--narrow">
-        <div class="frame"><img src="shots/hosts.webp" width="992" height="448" loading="lazy" alt="The console’s machine: up, and 4 of the 5 seats in the pool in use."></div>
-        <figcaption>Five seats in the pool, four in use.</figcaption>
+    <div class="container proof">
+      <figure class="pic">
+        <img src="shots/hosts.webp" width="496" height="224" loading="lazy" alt="The console's machine: up, and 4 of the 5 seats in the pool in use.">
+        <figcaption>Five AI subscriptions in one pool, four at work, 4 November 2026.</figcaption>
       </figure>
+      <div class="say">
+        <h2 id="h-seats">One usage limit never stops the work.</h2>
+        <p class="was">Before: one subscription hits its limit and everything waits.</p>
+      </div>
     </div>
   </section>
 
   <section class="band" id="spine" aria-labelledby="h-spine">
-    <div class="container split">
+    <div class="container proof">
+      <figure class="pic pic--term">
+        <picture><source media="(max-width: 40rem)" srcset="../shots/repo-phone.webp" width="412" height="333"><img src="../shots/repo.webp" width="691" height="245" loading="lazy" alt="A repo in a terminal: the plan is one file next to the code, and git log shows its history."></picture>
+        <figcaption>Every goal, decision and lesson is a file in git.</figcaption>
+      </figure>
       <div class="say">
         <h2 id="h-spine">Its memory is your repo.</h2>
-        <p class="lead">EpicTeam runs on EpicSpine. Every goal, decision and lesson is a file in git, so nothing is locked inside the app.</p>
-        <p class="more"><a href="../">What EpicSpine does</a></p>
+        <p class="was">EpicTeam runs on EpicSpine, so nothing is locked inside the app. <a href="../">What EpicSpine does</a></p>
       </div>
-      <figure class="show well" aria-label="The finished task above, as it is kept in the goal's file in git">
-        <figcaption class="well-head"><span>the goal’s file in git</span><span class="hide-xs">trimmed</span></figcaption>
-        <dl class="rows">
-          <div><dt>goal</dt><dd>a public page for each product</dd></div>
-          <div><dt>task</dt><dd>simple ideas first on the site</dd></div>
-          <div><dt>status</dt><dd>waiting for your review</dd></div>
-          <div><dt>evidence</dt><dd>the preview, on desktop and phone</dd></div>
-        </dl>
-      </figure>
     </div>
   </section>
 
@@ -166,9 +132,10 @@
   <div class="container">
     <div class="cols">
       <div><h2>EpicTeam</h2><ul>
-        <li><a href="#inbox">The inbox</a></li>
-        <li><a href="#personas">Personas</a></li>
+        <li><a href="#top">One feed</a></li>
+        <li><a href="#review">Finished work</a></li>
         <li><a href="#signins">Shared sign-ins</a></li>
+        <li><a href="#seats">One pool of seats</a></li>
       </ul></div>
       <div><h2>The family</h2><ul>
         <li><a href="../">EpicSpine</a></li>
@@ -188,7 +155,7 @@
 // Without script, or without IntersectionObserver, everything simply shows.
 (function () {
   if (!("IntersectionObserver" in window)) { return; }
-  var els = document.querySelectorAll(".band .say > *, .band .show");
+  var els = document.querySelectorAll(".band .say > *, .band .show, .band .pic, .ba-side");
   var io = new IntersectionObserver(function (es) {
     es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
   }, { rootMargin: "0px 0px -8% 0px" });
