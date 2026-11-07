@@ -28,6 +28,13 @@
       "sections": {
         "objective": {"path": "docs/spines/root.md", "heading": "Goal", "shape": "text", "writers": ["Jordi"]},
         "targets": {"path": "docs/spines/root.md", "heading": "Targets", "shape": "text", "writers": ["Jordi"]},
+        "benefits": {"path": "data/brief.md", "heading": "Benefits", "shape": "table", "optional": true, "add_rows": ["Jordi"], "writers": ["Jordi"], "doc": "The benefits home (agent_team E71-S2, approved under E71-A4): what the user gets from the product, as Jordi's own lines in his order and words, each with its status and the real screen that shows it. It is the first section of the brief and every persona reads it as a key element; only Jordi edits it, and a change the team sees reason for comes as an Observations line `proposed for the brief (Benefits)`. A repo with no benefits home leaves the section out.", "fields": {
+          "id": {"column": "#", "type": "id", "pattern": "^[1-9][0-9]*$"},
+          "benefit": {"column": "Benefit", "type": "text", "doc": "one line a user would say, someone acting in it (a writer, a researcher, the team, you)"},
+          "status": {"column": "Status", "type": "enum", "values": ["works today", "half built", "not built"], "doc": "a post or page promises only a line that works today; the others read `coming soon`"},
+          "screen": {"column": "Screen", "type": "text", "doc": "the real screen that shows the line: a link to a screenshot or the live page (EPIC-43 L-1: shown, not told)"},
+          "carried_by": {"column": "Carried by", "type": "refs", "computed": {"from": "posts.rows.benefit"}}
+        }},
         "audience": {"heading": "Audience", "shape": "text", "writers": ["Jordi"]},
         "key_messages": {"path": "data/brief.md", "heading": "Points to emphasize", "shape": "table", "add_rows": ["Jordi"], "writers": ["Jordi"], "fields": {
           "id": {"column": "#", "type": "id", "pattern": "^[1-9][0-9]*$"},
@@ -127,6 +134,7 @@
           "link": {"column": "Link or asset", "type": "text"},
           "state": {"column": "State", "type": "enum", "lifecycle": "idea"},
           "why": {"column": "Why", "type": "text", "writers": ["Writer"]},
+          "benefit": {"column": "Benefit", "type": "ref", "ref": ["brief.benefits"], "optional": true, "writers": ["Jordi", "Scout", "Writer"], "doc": "the number of the benefit (brief Benefits) the idea shows; Jordi's loose ideas may come without one: the Writer names it when it takes the idea; a ledger without the column reads as all empty (agent_team E71-S2)"},
           "became": {"column": "Became", "type": "refs", "computed": {"from": "posts.rows.idea"}},
           "used_on": {"column": "Used on", "type": "refs", "computed": {"from": "posts.rows.idea", "group": "platform"}, "doc": "the posts it became, by platform ({\"Reddit\": [\"P-0060\"], \"X\": []}); the export computes it, nobody types it"}
         }}
@@ -152,6 +160,7 @@
           "topic": {"column": "Topic", "type": "ref", "ref": ["topics.rows"]},
           "highlight": {"column": "Highlight", "type": "ref", "ref": ["directions.week", "directions.month"]},
           "messages": {"column": "Messages", "type": "refs", "ref": ["brief.key_messages"]},
+          "benefit": {"column": "Benefit", "type": "ref", "ref": ["brief.benefits"], "optional": true, "doc": "the number of the one benefit (brief Benefits) the post shows, with its real proof; a new post in a repo with a benefits home opens on it and names it (check benefit_named); old rows and ledgers without the column read as empty (agent_team E71-S2)"},
           "idea": {"column": "Idea", "type": "ref", "ref": ["ideas.rows"], "doc": "the idea it answers; repeats across rows: one idea, one post per platform (E64-S4)"},
           "checks": {"column": "Checks", "type": "text"},
           "link": {"column": "Link", "type": "url", "writers": ["Publisher", "Responder", "Engager"]},
@@ -489,6 +498,21 @@
     "unschedule": "the post never goes out",
     "delete_live": "the Publisher deletes the live post at once (C5); the row keeps its link"
   },
+  "benefits": {
+    "doc": "The benefits home (agent_team E71-S2, Jordi's E71-A4 approval 2026-11-07): the first section of data/brief.md, `## Benefits`. Every persona is handed it with the brief, reads it as a key element and writes from it; the rule for writing a benefit is the recipe below (agent_team EPIC-71 L-1).",
+    "home": "brief.benefits",
+    "post_rule": "A new post shows ONE benefit from the Benefits table, names its number in Benefit, opens on that benefit (what the user gets, shown with the real screen, someone acting) and may ask a question after it. The benefit must be `works today`; a `half built` or `not built` line is never promised as working, only called coming soon. A post already approved or scheduled is not rewritten to fit this rule.",
+    "idea_rule": "An idea may come without a benefit; the Writer names the one it demonstrates when it takes the idea. One benefit fans out into many posts across ideas and platforms.",
+    "recipe": [
+      "Draft first: seven lines or fewer on one screen, before any research.",
+      "If the voice matters and there is no example, ask for one or write one and say so.",
+      "Walk the product in the order the user meets it, one thing per line.",
+      "Someone acts in every line: a writer, a researcher, the team, you.",
+      "Plain words a user would say; no slogans, abstract nouns or method names.",
+      "Mark each line works today, half built or not built, with a real screen."
+    ],
+    "discovery": "What people say they want (a comment, a reply, a desk note) is noted with its link as an Observations line `L-<n> | … | proposed for the brief (Benefits): \"<the line to add or change>\"` when two notes agree; Jordi adds it to the Benefits table or says not now. Nobody but Jordi edits the table."
+  },
   "rules": {
     "style_rule_from_feedback": {"doc": "the same feedback twice becomes a Style rule, with undo (C6)", "from": "posts.rows.feedback", "repeats": 2, "to": "brief.style_rules", "by": "Writer", "log": "brief.feedback_log", "undo": "revert that commit; the rule line names the feedback it came from"},
     "campaign_tag": {"doc": "When your wake is bound to a campaign (a child epic of this repo whose spine has a `## Campaign plan` section; the wake prompt names it), every post, reply or outreach row you add for it carries that epic's code (e.g. `EPIC-7`) in Campaign, and you follow its plan: platform, period, key messages, voice, posting and reply style, targets. A row for another platform or outside its period is not the campaign's (Campaign empty). Bound to the repo's root spine, leave Campaign empty", "to": "posts.rows.campaign", "by": ["Writer", "Responder", "Engager"], "undo": "empty the cell (the row then counts toward the repo, no campaign)"},
@@ -507,6 +531,7 @@
     "send_approved": {"doc": "a DM reply goes out only with Jordi's Send: his `Approved` note in the message's Feedback (only Jordi writes Feedback)", "fn": "approved", "lifecycles": ["message"], "at": ["draft>scheduled"], "params": {"field": "feedback", "phrase": "approved", "stays": "draft"}},
     "hold_rules_outreach": {"doc": "a reply in someone else's thread (outreach) matching a hold rule goes to held, never straight out (agent_team E64-S6, rule `Kind: outreach`)", "fn": "hold_rules", "at": ["draft>posted"], "kinds": ["outreach"], "source": "brief.hold_rules", "lifecycles": ["post"]},
     "hold_rules": {"doc": "a match sends the draft to held instead of scheduled", "at": ["draft>scheduled"], "source": "brief.hold_rules", "lifecycles": ["post"]},
+    "benefit_named": {"doc": "a new post names the one benefit it shows (its number in the brief's Benefits); a post with none stays a draft; a repo with no Benefits section is not asked; the benefit must work today", "at": ["draft>scheduled", "draft>held"], "kinds": ["post"], "source": "brief.benefits", "lifecycles": ["post"]},
     "link_present": {"doc": "a post goes live with its link in the same commit", "at": ["scheduled>posted", "draft>posted"], "params": {"field": "link"}, "lifecycles": ["post"]},
     "sent": {"doc": "a sent reply records its send in Result (time, tool, dry run) in the same commit", "fn": "filled", "lifecycles": ["message"], "at": ["scheduled>posted", "new>posted"], "params": {"field": "result"}}
   },

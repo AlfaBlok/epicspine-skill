@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026.11.07.1 — Social pack: the benefits home
+
+- **Added: `## Benefits` in `data/brief.md`** (`brief.benefits`, an optional section: a repo with none is not warned or failed): Jordi's own lines on what the user gets, `# · Benefit · Status (works today, half built, not built) · Screen`, with a computed `Carried by` from the posts. Every persona's wake text now carries a "Benefits home" block (`pack_role.py`, from the schema's new `benefits` key): where it lives, the post rule, the idea rule, the six-step recipe for writing a benefit (agent_team EPIC-71 L-1) and how what people ask for reaches it (an Observations line `proposed for the brief (Benefits)`).
+- **Added: optional `Benefit` column** on posts and ideas (the number of one line in Benefits); check `benefit_named` at `draft → scheduled` and `draft → held` for posts: a repo with a Benefits section needs a new post to name a benefit that works today (a half built line is only ever called coming soon); a repo with none is not asked; replies, outreach and rows already approved or scheduled are not touched.
+- **Section flag `optional`** (`pack_validate.py`, `pack_export.py`, `pack_init.py`): a section a repo may leave out.
+- Why: agent_team E71-S2, Jordi's E71-A4 approval ("APPROVED", 2026-11-07). Tests: `tests/test_pack_validate.py` (`test_a_new_post_names_a_benefit_that_works_today_when_the_brief_has_a_benefits_home`), `tests/test_pack_intake.py` (`test_every_role_is_handed_the_benefits_home_as_a_key_element`), the export golden.
+
 ## 2026.11.04.2 — Epic Book: every deliverable URL goes into the spine
 
 - **Always-on block, "Epic Book"**: every URL made for a goal (mockup, deck, proposal, live page, preview, evidence) goes into the spine the moment it exists (the row's Latest Evidence, the ask line, or Decisions Evidence), so the book's "Everything made for this" lists it; a link that stops answering stays (the book marks it); a tailnet preview records the folder it serves.

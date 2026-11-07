@@ -39,6 +39,18 @@ def _writes(schema: dict, role: str) -> list[str]:
     return [f"- {p}" + (" › " + ", ".join(h) if all(h) else "") + f": {how}" for (p, how), h in out.items()]
 
 
+def _benefits(schema: dict) -> list[str]:
+    """The benefits home as a key element every role is handed (agent_team E71-S2): where it lives, the post and idea rules,
+    the recipe for writing a benefit, and how what people ask for reaches it. Empty for a pack with no `benefits`."""
+    b = schema.get("benefits")
+    if not b:
+        return []
+    fkey, skey = b["home"].split(".")
+    f, s = schema["files"][fkey], schema["files"][fkey]["sections"][skey]
+    return ["", f"Benefits home (a key element: read it first, with the brief): {_where(f, s)}. " + "Jordi's own lines on what the user gets, each with its status and screen; only he edits them.",
+            f"- Posts: {b['post_rule']}", f"- Ideas: {b['idea_rule']}", "- Writing a benefit (the recipe):"] + [f"  {i}. {x}" for i, x in enumerate(b["recipe"], 1)] + [f"- Discovery: {b['discovery']}"]
+
+
 def role_text(schema: dict, role: str) -> str:
     """What one persona may do, from the schema alone, as Markdown for its wake prompt: duty, writable targets, status
     moves with their checks, the hold / approval rules that bind it, the commit signature. `role` is a key of `roles`."""
@@ -82,5 +94,6 @@ def role_text(schema: dict, role: str) -> str:
         out += ["", "Checks the hook runs on those moves:"] + [f"- `{k}`: {c['doc']}" for k, c in used.items()]
     if bind:
         out += ["", "Rules that bind you:"] + bind
+    out += _benefits(schema)
     out += ["", f"Every step is a commit signed `Persona: {role}` (`EPICSPINE_PERSONA={role}`); the hook rejects an illegal transition."]
     return "\n".join(out) + "\n"

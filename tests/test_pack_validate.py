@@ -86,6 +86,27 @@ class Validate(unittest.TestCase):
         self.assertEqual("", self.after("Writer", {"status": "scheduled"}))
         self.assertEqual("", self.after(None, {"status": "scheduled"}))
 
+    def test_a_new_post_names_a_benefit_that_works_today_when_the_brief_has_a_benefits_home(self) -> None:
+        brief = self.repo.root / "data/brief.md"
+        self.assertEqual("", self.after("Writer", {"status": "scheduled"}))  # no Benefits section: the repo is not asked, and not failed for it
+        brief.write_text(brief.read_text() + "\n## Benefits\n\n| # | Benefit | Status | Screen |\n|---|---|---|---|\n"
+                         "| 1 | You drop in loose ideas, and a writer turns them into posts. | works today | https://example.com/pipeline.png |\n"
+                         "| 2 | A researcher reads your competitors. | half built | |\n")
+        self.repo.ledger({}, {"id": "P-0002", "status": "scheduled", "slot": "2026-10-29 09:00", "community": "r/other"})
+        self.repo.commit()  # Jordi's table is part of HEAD: the Writer is not judged for adding it
+        none = self.after("Writer", {"status": "scheduled"})
+        self.assertIn("benefit_named: names no benefit", none)
+        self.assertEqual("", self.after("Writer", {"status": "scheduled", "benefit": "1"}))
+        self.assertIn("benefit_named: benefit 2 is half built", self.after("Writer", {"status": "scheduled", "benefit": "2"}))
+        self.assertIn("names no benefit", self.after("Writer", {"status": "held", "benefit": "9"}))
+        reply = self.after("Responder", {"status": "posted", "kind": "reply", "link": "https://x.com/a/1"})
+        self.assertNotIn("benefit_named", reply)  # only a new post names a benefit, never a reply
+
+    def test_a_benefit_status_is_one_of_three_words(self) -> None:
+        brief = self.repo.root / "data/brief.md"
+        brief.write_text(brief.read_text() + "\n## Benefits\n\n| # | Benefit | Status | Screen |\n|---|---|---|---|\n| 1 | A line. | soonish | |\n")
+        self.assertIn("Status 'soonish' not one of works today, half built, not built", "\n".join(self.repo.issues()))
+
     def test_missing_column(self) -> None:
         path = self.repo.root / "data/posts-ledger.md"
         path.write_text(path.read_text().replace("| Status |", "| State |"))

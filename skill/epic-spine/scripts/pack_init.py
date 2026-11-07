@@ -39,7 +39,7 @@ def init(repo: Path, name: str, notes: list[str] | None = None) -> list[str]:
         if text is None and rel.startswith("docs/spines/"):
             notes.append(f"skipped {rel}: no such spine (create it, then rerun init for its " + ", ".join(f"## {s['heading']}" for s in secs) + ")")
             continue
-        add = [s for s in secs if missing(text, s)]
+        add = [s for s in secs if missing(text, s) and not s.get("optional")]
         if not add:
             continue
         chunks = "\n".join(section_text(s) for s in add)

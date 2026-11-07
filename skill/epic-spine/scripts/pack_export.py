@@ -126,8 +126,7 @@ def section(repo: Path, rel: str, addr: str, sec: dict, warn, states: dict, cach
         return empty
     found = block(cache[rel], sec.get("heading"))
     if found is None:
-        warn(rel, None, f"no '{sec['heading']}' section ({addr})")
-        return empty
+        return empty if sec.get("optional") else warn(rel, None, f"no '{sec['heading']}' section ({addr})") or empty  # optional: Benefits (E71-S2)
     sources[addr]["exists"] = True
     start, body = found
     return table(sec, start, body, rel, warn, states, skip) if shape == "table" else items(body) if shape == "list" else "\n".join(body).strip() or None

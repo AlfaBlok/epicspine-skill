@@ -7,6 +7,7 @@ A social campaign desk: personas scan, write, post, reply and measure; the owner
 | File | One item is | Fields | Written by |
 |---|---|---|---|
 | brief (`data/brief.md`, objective and targets in the root spine) | the standing brief | objective (root `## Goal`), targets (root `## Targets`), audience, key messages with weight (`## Points to emphasize`, as a `# · Message · Weight · Source` table), voice, style rules, never say, topic weights, feedback log, formats mix (format, share, example), examples (link, like/dislike, why), hold for me (R1…, default none) | Jordi; Writer adds style rules + feedback-log lines (C6) |
+| benefits (the `## Benefits` section of `data/brief.md`, optional, first in the brief; agent_team E71-S2) | one line on what the user gets: Jordi's own words, in his order | #, benefit, status (works today / half built / not built), screen (the real screen that shows it), carried by (computed from the posts' `Benefit`) | Jordi |
 | directions (the `This week` part of `data/brief.md`; was `data/directions.md`) | a week highlight, a do/don't, the month's priority | `## Week` H1… (highlight, why, until, served by), `## This week only` (do / don't, rule, until), `## Voice note`, `## Month` M1… (priority, why, month, served by) | Jordi |
 | topics (`data/topics.md`) | a finding from today's scan, table replaced daily | rank, T-MMDD-n, topic, where, evidence link, heat, date, reply target, used by | Scout |
 | ideas (`data/ideas.md`) | an idea for a post, open across platforms (never expires) | I-n, date, idea, format, platform (the platforms it fits, one or more), from (role), link or asset, state, why, became, used on (computed: its posts by platform) | Jordi and Scout add; the Writer moves state, Jordi may drop (park) one |
@@ -18,6 +19,15 @@ A social campaign desk: personas scan, write, post, reply and measure; the owner
 | reports (`data/reports/<date>.md`) | one 3-day report | Numbers, Best and worst, Learned, Highlights covered, Feedback themes, Cost | Reporter |
 
 "Used by", "served by", "carried by" and "became" are computed by the export from post fields; nobody types them.
+
+## Benefits home (agent_team E71-S2, approved under E71-A4 2026-11-07)
+
+The brief opens with `## Benefits`: what the user gets, as Jordi's own lines, each with a status and the real screen that shows it. Every persona's wake text carries it as a key element (`pack.py social --wake-text --role R`, from the schema's `benefits` key). The rules:
+
+- **Posts.** A new post shows one benefit from the table, names its number in a `Benefit` column (optional: a ledger without it reads as empty) and opens on that benefit, with the real screen as proof, then may ask a question. Check `benefit_named` makes a draft with no benefit, or with one that is not `works today`, stay a draft; a half built or not built line is only ever called coming soon. A repo with no Benefits section is not asked, and rows already approved or scheduled are never rewritten to fit.
+- **Ideas.** An idea may come without a benefit; the Writer fills the optional `Benefit` column when it takes the idea. One benefit fans out into many ideas and posts across platforms.
+- **Writing a benefit** (the recipe, EPIC-71 L-1): draft first, seven lines or fewer on one screen, before any research; if the voice matters and there is no example, ask for one or write one and say so; walk the product in the order the user meets it, one thing per line; someone acts in every line (a writer, a researcher, the team, you); plain words a user would say, no slogans, abstract nouns or method names; mark each line works today, half built or not built, with a real screen.
+- **Discovery.** What people say they want is noted with its link as an Observations line ending `proposed for the brief (Benefits): "<line>"` once two notes agree; Jordi adds it to the table or says not now. Only Jordi edits the table.
 
 ## Post statuses
 
