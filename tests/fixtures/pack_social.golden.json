@@ -279,7 +279,6 @@
         "1",
         "2"
       ],
-      "benefit": null,
       "idea": "I-1",
       "checks": "ok",
       "link": "https://x.com/acme/status/10",
@@ -288,6 +287,7 @@
       "result": "good",
       "feedback": "more like this",
       "status": "measured",
+      "benefit": null,
       "_line": 5
     },
     {
@@ -308,7 +308,6 @@
       "messages": [
         "1"
       ],
-      "benefit": null,
       "idea": null,
       "checks": "ok",
       "link": "https://reddit.com/r/notes/1/c",
@@ -317,6 +316,7 @@
       "result": null,
       "feedback": null,
       "status": "posted",
+      "benefit": null,
       "_line": 6
     },
     {
@@ -340,7 +340,6 @@
       "messages": [
         "3"
       ],
-      "benefit": null,
       "idea": null,
       "checks": "ok",
       "link": null,
@@ -349,6 +348,7 @@
       "result": null,
       "feedback": null,
       "status": "approved",
+      "benefit": null,
       "_line": 7
     }
   ],

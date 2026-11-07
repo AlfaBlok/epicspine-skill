@@ -160,7 +160,6 @@
           "topic": {"column": "Topic", "type": "ref", "ref": ["topics.rows"]},
           "highlight": {"column": "Highlight", "type": "ref", "ref": ["directions.week", "directions.month"]},
           "messages": {"column": "Messages", "type": "refs", "ref": ["brief.key_messages"]},
-          "benefit": {"column": "Benefit", "type": "ref", "ref": ["brief.benefits"], "optional": true, "doc": "the number of the one benefit (brief Benefits) the post shows, with its real proof; a new post in a repo with a benefits home opens on it and names it (check benefit_named); old rows and ledgers without the column read as empty (agent_team E71-S2)"},
           "idea": {"column": "Idea", "type": "ref", "ref": ["ideas.rows"], "doc": "the idea it answers; repeats across rows: one idea, one post per platform (E64-S4)"},
           "checks": {"column": "Checks", "type": "text"},
           "link": {"column": "Link", "type": "url", "writers": ["Publisher", "Responder", "Engager"]},
@@ -168,7 +167,8 @@
           "metrics": {"column": "Metrics", "type": "text", "writers": ["Reporter", "Responder", "Engager"]},
           "result": {"column": "Result", "type": "text", "writers": ["Reporter", "Responder", "Engager", "Publisher", "Delivery manager"]},
           "feedback": {"column": "Feedback", "type": "text", "writers": ["Jordi"]},
-          "status": {"column": "Status", "type": "enum", "lifecycle": "post"}
+          "status": {"column": "Status", "type": "enum", "lifecycle": "post"},
+          "benefit": {"column": "Benefit", "type": "ref", "ref": ["brief.benefits"], "optional": true, "doc": "the number of the one benefit (brief Benefits) the post shows, with its real proof; a new post in a repo with a benefits home opens on it and names it (check benefit_named); old rows and ledgers without the column read as empty (agent_team E71-S2)"}
         }}
       }
     },

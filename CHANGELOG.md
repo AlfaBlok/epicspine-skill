@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.11.07.2 — Social pack: the Benefit column goes last
+
+- The posts ledger's optional `Benefit` column moved from after Messages to the end (after Status), so a ledger or fixture written by position (the console's test ledgers) keeps reading its Status; a ledger without the column reads as empty either way. Found by agent_team's console tests (E71-S2), which refused every feedback write with "no Status" on the 2026.11.07.1 order.
+
 ## 2026.11.07.1 — Social pack: the benefits home
 
 - **Added: `## Benefits` in `data/brief.md`** (`brief.benefits`, an optional section: a repo with none is not warned or failed): Jordi's own lines on what the user gets, `# · Benefit · Status (works today, half built, not built) · Screen`, with a computed `Carried by` from the posts. Every persona's wake text now carries a "Benefits home" block (`pack_role.py`, from the schema's new `benefits` key): where it lives, the post rule, the idea rule, the six-step recipe for writing a benefit (agent_team EPIC-71 L-1) and how what people ask for reaches it (an Observations line `proposed for the brief (Benefits)`).
