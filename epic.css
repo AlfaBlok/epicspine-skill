@@ -283,3 +283,63 @@ code, pre { font-family: var(--font-mono); font-size: var(--text-sm); }
   .ba-after .frame { height: 620px; padding: var(--space-md) var(--space-md) 0; }
   .ba-after .frame img { width: 100%; }
 }
+
+/* the tree of goals (agent_team E43-S8): drawn by tools/goal_tree.py from the real repos; bigger goals above,
+   the steps that finish them below; one gold node is the focus; under 64rem the same tree reads as an outline */
+.sec--tree { background: var(--color-paper-3); }
+.pic--tree, .pic--fan { justify-items: stretch; padding: var(--space-2xl) var(--space-xl) var(--space-xl); }
+.sec--tree .pic--tree { background: var(--color-paper); }
+.gt-wrap, .fan-wrap { width: 100%; }
+.gt, .fan { display: block; width: 100%; height: auto; font-family: var(--font-body); }
+.gt--phone, .fan--phone { display: none; max-width: 30rem; margin-inline: auto; }
+@media (max-width: 64rem) {
+  .gt--wide, .fan--wide { display: none; }
+  .gt--phone, .fan--phone { display: block; }
+}
+.gt-line, .fan-line { fill: none; stroke: var(--color-muted-2); stroke-width: 1.25; }
+.gt-box rect { fill: var(--color-paper-2); stroke: var(--color-rule); stroke-width: 1; }
+.gt-name { fill: var(--color-ink); font-weight: 500; }
+.gt-sub { fill: var(--color-muted); }
+.gt-l0 rect { fill: var(--color-ink); stroke: none; }
+.gt-l0 .gt-name { fill: var(--color-accent-ink); font-family: var(--font-display); font-weight: 400; }
+.gt-l0 .gt-sub { fill: var(--color-accent-ink); opacity: 0.75; }
+.gt-l1 .gt-name { font-family: var(--font-display); font-weight: 400; }
+.gt-more rect { fill: none; stroke: var(--color-muted-2); stroke-dasharray: 4 3; }
+.gt-more .gt-name { fill: var(--color-muted); font-weight: 400; }
+.gt-focus rect { fill: var(--color-paper-2); stroke: var(--color-accent); stroke-width: 2; }
+.gt-focus .gt-note { fill: var(--color-accent); }
+.gt-dot { stroke-width: 1.5; }
+.gt-done, .gt-key .gt-done { fill: var(--color-accent-2); stroke: var(--color-accent-2); background: var(--color-accent-2); }
+.gt-review, .gt-key .gt-review { fill: var(--color-accent); stroke: var(--color-accent); background: var(--color-accent); }
+.gt-active, .gt-key .gt-active { fill: transparent; stroke: var(--color-ink); box-shadow: inset 0 0 0 2px var(--color-ink); }
+.gt-planned, .gt-key .gt-planned { fill: transparent; stroke: var(--color-muted-2); stroke-dasharray: 2 2; box-shadow: inset 0 0 0 1px var(--color-muted-2); }
+.gt-key { display: flex; flex-wrap: wrap; gap: var(--space-xs) var(--space-lg); margin: 0; padding: 0; list-style: none; font-size: var(--text-sm); color: var(--color-ink-2); justify-self: start; }
+.gt-key li { display: inline-flex; align-items: center; gap: var(--space-xs); }
+.gt-key i { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+
+/* one voice note, many threads, one inbox (agent_team E43-S9) */
+.fan-box rect, .fan-group rect { fill: var(--color-paper-2); stroke: var(--color-rule); }
+.fan-name { fill: var(--color-ink); font-family: var(--font-display); font-size: 19px; }
+.fan-sub, .fan-gname { fill: var(--color-ink-2); font-size: 14px; }
+.fan-gname { fill: var(--color-ink); font-size: 15px; }
+.fan-wave { fill: var(--color-accent-2); }
+.fan-dot { fill: var(--color-accent-2); }
+.fan-dot.fan-ask { fill: var(--color-accent); }
+.fan-ask rect { stroke: var(--color-accent); }
+.fan-inbox rect { fill: var(--color-accent); stroke: none; }
+.fan-inbox .fan-name, .fan-inbox .fan-sub { fill: var(--color-accent-ink); }
+.fan-kind .fan-name { font-size: 17px; }
+.fan-cards { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--gap-columns); align-items: start; }
+.fan-card { margin: 0; display: grid; gap: var(--space-sm); min-width: 0; }
+.fan-card-label { color: var(--color-ink); font-size: var(--text-lead); }
+.fan-card--ask .fan-card-label { color: var(--color-accent); }
+.fan-card .frame { background: var(--color-paper); color: var(--color-ink); padding: var(--space-lg) var(--space-lg) 0; height: clamp(260px, 26vw, 380px); overflow: hidden; }
+.fan-card img { width: 100%; height: auto; }
+.fan-card--ask .frame { height: auto; padding-bottom: var(--space-lg); }
+.pic--fan { gap: var(--space-xl); }
+@media (max-width: 40rem) {
+  .pic--tree, .pic--fan { padding: var(--space-lg) var(--space-md) var(--space-md); }
+  .fan-cards { grid-template-columns: minmax(0, 1fr); }
+  .fan-card .frame { height: 420px; padding: var(--space-md) var(--space-md) 0; }
+  .fan-card--ask .frame { height: auto; padding-bottom: var(--space-md); }
+}

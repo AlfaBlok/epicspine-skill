@@ -1,0 +1,67 @@
+{
+  "_about": "Which part of each real goal tree the public pages draw (agent_team E43-S8), and the fan-out diagram (E43-S9). tools/goal_tree.py reads the repos named here and writes the drawings into the pages between their goal-tree markers. Statuses, counts and links come from the repos; a label is the public wording of the real title (no private names or repo internals; the script refuses a drawing that carries one).",
+  "trees": {
+    "spine": {
+      "page": "index.html",
+      "repo": "skill",
+      "title": "EpicSpine's own plan as a tree of goals",
+      "root": {"path": "docs/EPIC-0-OPERATING-SYSTEM.md", "label": "EpicSpine: your agents keep the plan"},
+      "children": [
+        {"path": "docs/EPIC-3-EPIC-LOG.md", "label": "Every repo keeps one tree of goals", "focus": true, "rows": [
+          {"id": 0, "label": "Start a goal with one command"},
+          {"id": 1, "label": "Every new ask finds its place"},
+          {"id": 2, "label": "Each new goal gets its code"},
+          {"id": 3, "label": "Older repos moved into the tree"},
+          {"id": 6, "label": "The console reads the tree"}
+        ]},
+        {"path": "docs/EPIC-4-DOCTRINE-2.md", "label": "Each goal says what done means"},
+        {"path": "docs/EPIC-5-PERSONA-AND-STANDING-SPINES.md", "label": "A file for each team role"},
+        {"path": "docs/EPIC-6-STATUS-TRUE-SPINES.md", "label": "Status you can trust"},
+        {"path": "docs/EPIC-10-WEBMCP-ON-EPICSPINE-DEV.md", "label": "Browser agents can install it"}
+      ]
+    },
+    "team": {
+      "page": "team/index.html",
+      "repo": "agent_team",
+      "title": "Our AI team's goals as one tree",
+      "root": {"path": "docs/spines/root.md", "label": "Our AI team: everything it works on"},
+      "children": [
+        {"path": "docs/spines/epic-43-live-sites.md", "label": "Our public sites", "rows": [
+          {"id": "E43-S1", "label": "epicspine.dev goes live"},
+          {"id": "E43-S6", "label": "Lead with the benefits"},
+          {"id": "E43-S7", "label": "Show the real tool"},
+          {"id": "E43-S8", "label": "Draw the tree of goals", "focus": true, "note": "this picture"},
+          {"id": "E43-S9", "label": "One voice note, one inbox"}
+        ]},
+        {"path": "docs/spines/epic-42-talk-to-desk.md", "label": "Talk to the team by voice"},
+        {"path": "docs/spines/epic-48-review-inbox.md", "label": "Finished work waits for review"},
+        {"path": "docs/spines/epic-36-agent-team-product.md", "label": "The team as a product"},
+        {"path": "docs/spines/epic-62-repo-is-the-source.md", "label": "The repo is the only source"}
+      ]
+    },
+    "social": {
+      "page": "social/index.html",
+      "repo": "campaign",
+      "title": "One campaign's tree: goal, steps and posts",
+      "root": {"path": "docs/spines/root.md", "label": "Make the Epic family known"},
+      "children": [
+        {"path": "docs/spines/campaign-get-testers.md", "label": "Campaign: get testers", "rows": [
+          {"id": "E1-S1", "label": "A one-page plan for the campaign"},
+          {"id": "E1-S2", "label": "The call for testers", "focus": true, "posts": {"ledger": "data/posts-ledger.md", "labels": {
+            "P-0006": "Post on X", "P-0007": "Post on r/SideProject", "P-0008": "Post on r/alphaandbetausers"}}},
+          {"id": "E1-S3", "label": "Answer every reply within 3 hours"},
+          {"id": "E1-S4", "label": "Count the applications daily"},
+          {"id": "E1-S5", "label": "A diagram for each post"}
+        ]}
+      ]
+    }
+  },
+  "fan": {
+    "page": "team/index.html",
+    "repo": "agent_team",
+    "source": "docs/status/e73-s2-tickets.md",
+    "minutes": 30,
+    "day": "7 November 2026"
+  },
+  "private": ["jordi", "vps", "alpha9", "run_", "hetzner", "tailnet", "t3agent", "obsidian", "zenod", "agent_team", "seat"]
+}
