@@ -2,6 +2,13 @@
 
 Objective and targets live in the root spine; everything else of the brief is here (the message house and directions were folded in, agent_team E64-S13).
 
+## Benefits
+
+| # | Benefit | Status | Screen |
+|---|---|---|---|
+| 1 | You drop in loose ideas, and a writer turns them into posts for you. | works today | https://acme.example/pipeline.png |
+| 2 | A researcher reads your competitors for new ideas. | half built | |
+
 ## Audience
 
 Developers who keep notes in plain files.

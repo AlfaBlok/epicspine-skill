@@ -54,6 +54,24 @@
   "brief": {
     "objective": "Acme becomes a known voice in note-taking: 500 followers by December.",
     "targets": "- 1 thread a day\n- replies answered within 3 h",
+    "benefits": [
+      {
+        "id": "1",
+        "benefit": "You drop in loose ideas, and a writer turns them into posts for you.",
+        "status": "works today",
+        "screen": "https://acme.example/pipeline.png",
+        "carried_by": [],
+        "_line": 9
+      },
+      {
+        "id": "2",
+        "benefit": "A researcher reads your competitors for new ideas.",
+        "status": "half built",
+        "screen": null,
+        "carried_by": [],
+        "_line": 10
+      }
+    ],
     "audience": "Developers who keep notes in plain files.",
     "key_messages": [
       {
@@ -65,7 +83,7 @@
           "P-0001",
           "P-0002"
         ],
-        "_line": 32
+        "_line": 39
       },
       {
         "id": "2",
@@ -75,7 +93,7 @@
         "carried_by": [
           "P-0001"
         ],
-        "_line": 33
+        "_line": 40
       }
     ],
     "voice": [
@@ -95,7 +113,7 @@
         "why": "core difference",
         "source": "Jordi",
         "since": "2026-10-20",
-        "_line": 53
+        "_line": 60
       }
     ],
     "feedback_log": [
@@ -105,7 +123,7 @@
         "feedback": "too many emojis",
         "landed": "Style rules, line 1",
         "applied_by": "Writer",
-        "_line": 59
+        "_line": 66
       }
     ],
     "formats": [
@@ -113,13 +131,13 @@
         "format": "text",
         "share": 60,
         "example": "https://x.com/acme/status/1",
-        "_line": 13
+        "_line": 20
       },
       {
         "format": "diagram",
         "share": 40,
         "example": "https://x.com/acme/status/2",
-        "_line": 14
+        "_line": 21
       }
     ],
     "examples": [
@@ -127,7 +145,7 @@
         "link": "https://x.com/other/status/9",
         "verdict": "like",
         "why": "short, one claim, a screenshot",
-        "_line": 20
+        "_line": 27
       }
     ],
     "hold_rules": [
@@ -135,7 +153,7 @@
         "id": "R1",
         "match": "it names a competitor",
         "why": "legal",
-        "_line": 26
+        "_line": 33
       }
     ]
   },
@@ -150,7 +168,7 @@
           "P-0001",
           "P-0003"
         ],
-        "_line": 65
+        "_line": 72
       }
     ],
     "do_dont": [
@@ -158,7 +176,7 @@
         "kind": "don't",
         "rule": "mention pricing",
         "until": "2026-11-02",
-        "_line": 71
+        "_line": 78
       }
     ],
     "voice_note": "Calmer this week.",
@@ -169,7 +187,7 @@
         "why": "we need 20",
         "month": "2026-11",
         "served_by": [],
-        "_line": 81
+        "_line": 88
       }
     ]
   },
@@ -212,6 +230,7 @@
       "link": "A-1",
       "state": "drafted",
       "why": null,
+      "benefit": null,
       "became": [
         "P-0001"
       ],
@@ -232,6 +251,7 @@
       "link": null,
       "state": "parked",
       "why": "after the launch",
+      "benefit": null,
       "became": [],
       "used_on": {},
       "_line": 6
@@ -267,6 +287,7 @@
       "result": "good",
       "feedback": "more like this",
       "status": "measured",
+      "benefit": null,
       "_line": 5
     },
     {
@@ -295,6 +316,7 @@
       "result": null,
       "feedback": null,
       "status": "posted",
+      "benefit": null,
       "_line": 6
     },
     {
@@ -326,6 +348,7 @@
       "result": null,
       "feedback": null,
       "status": "approved",
+      "benefit": null,
       "_line": 7
     }
   ],
@@ -512,6 +535,11 @@
     "brief.targets": {
       "path": "docs/spines/root.md",
       "heading": "Targets",
+      "exists": true
+    },
+    "brief.benefits": {
+      "path": "data/brief.md",
+      "heading": "Benefits",
       "exists": true
     },
     "brief.audience": {

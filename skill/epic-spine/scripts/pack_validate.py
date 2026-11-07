@@ -55,8 +55,8 @@ def route(lc: dict, prev: str | None, to: str, kind: str | None, role: str | Non
 def check_section(schema: dict, s: dict, at: str, new: str, old: str | None, role: str | None, source) -> list[str]:
     tag = f"{at} ## {s['heading']}" if s["heading"] else at
     text = md.body(new, s["heading"])
-    if text is None:
-        return [f"{at}: missing section ## {s['heading']} (pack.py init adds it)"]
+    if text is None:  # an optional section (Benefits, E71-S2) may be left out
+        return [] if s.get("optional") else [f"{at}: missing section ## {s['heading']} (pack.py init adds it)"]
     who = set(s.get("writers", [])) | set(s.get("add_rows", []))
     if s["shape"] != "table":
         changed = (md.body(old, s["heading"]) or "").strip() != text.strip()
@@ -145,7 +145,7 @@ def validate(schema: dict, repo: Path, new, old, role: str | None = None, only: 
     def source(addr: str) -> list:
         fk, sk = addr.split(".")
         s = schema["files"][fk]["sections"][sk]
-        text = md.body(new(md.where(schema["files"][fk], s)), s["heading"])
+        text = md.body(new(md.where(schema["files"][fk], s)) or "", s["heading"])
         if s["shape"] != "table":
             return md.items(text)
         tbl = md.table(text)

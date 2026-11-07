@@ -59,6 +59,16 @@ def run_check(key: str, c: dict, rec: dict, ctx: dict) -> list[str]:
     if key == "hold_rules":
         return [f"matches hold rule {r.get('id') or r.get('match')} ({r.get('match')}): it goes to held, not scheduled"
                 for r in ctx["source"](c["source"]) if r.get("match") and holds(r["match"], rec)]
+    if key == "benefit_named":
+        rows = [r for r in ctx["source"](c["source"]) if r.get("id")]
+        if not rows:
+            return []  # a repo with no benefits home is not asked
+        b = (rec.get("benefit") or "").strip()
+        hit = next((r for r in rows if r["id"] == b), None)
+        if not hit:
+            return [f"names no benefit (Benefit: the number of one line in the brief's Benefits, {', '.join(r['id'] for r in rows)}): a post with none stays a draft"]
+        return [] if (hit.get("status") or "").lower() == "works today" else [
+            f"benefit {b} is {hit.get('status') or 'not marked works today'}: a post shows only a line that works today (call the others coming soon)"]
     if key == "approved":
         field, phrase = p.get("field", "feedback"), p.get("phrase", "approved")
         return [] if phrase.lower() in (rec.get(field) or "").lower() else [

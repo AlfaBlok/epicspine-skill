@@ -111,6 +111,17 @@ class RoleText(unittest.TestCase):
             if not moves:
                 self.assertIn("- none", text)
 
+    def test_every_role_is_handed_the_benefits_home_as_a_key_element(self) -> None:
+        for role in ROLE_TARGETS:
+            text = pack_intake.role_text(SOCIAL, role)
+            self.assertIn("Benefits home (a key element: read it first, with the brief): `data/brief.md` › Benefits", text, role)
+            self.assertIn("Mark each line works today, half built or not built, with a real screen.", text, role)
+            self.assertIn("A post already approved or scheduled is not rewritten", text, role)
+        self.assertIn("edit only Why, Benefit", pack_intake.role_text(SOCIAL, "Writer"))  # the Writer names the benefit an idea shows
+        s = copy.deepcopy(SOCIAL)
+        del s["benefits"]
+        self.assertNotIn("Benefits home", pack_intake.role_text(s, "Writer"))  # a pack with none says nothing
+
     def test_a_role_is_told_only_its_own_moves(self) -> None:
         self.assertNotIn("`scheduled → posted`", pack_intake.role_text(SOCIAL, "Writer"))
         self.assertNotIn("`draft → scheduled`", pack_intake.role_text(SOCIAL, "Publisher"))
