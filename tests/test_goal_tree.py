@@ -60,6 +60,35 @@ class GoalTreeTest(unittest.TestCase):
             self.assertIn(f"<!-- goal-tree:{name} begin", (ROOT / s["page"]).read_text(encoding="utf-8"))
         self.assertIn("<!-- goal-tree:fan begin", (ROOT / CFG["fan"]["page"]).read_text(encoding="utf-8"))
 
+    def test_glance_hides_extras_and_counts_them_in_more(self):
+        """E43-S8 round 2: the at-a-glance tree leaves out "extra" items; its "+N more" counts them with the rest."""
+        repo = gt.Repo(ROOT)
+        full, glance = gt.build(self.spec, repo), gt.build(self.spec, repo, full=False)
+        names = lambda t: {n["label"] for n in gt.walk(t) if not n["more"]}  # noqa: E731
+        extras = {i["label"] for i in gt.walk_spec(self.spec) if i.get("extra")}
+        self.assertTrue(extras)
+        self.assertFalse(extras & names(glance))
+        self.assertTrue(extras <= names(full))
+        more = lambda t: next(k for k in t["kids"] if k["more"])["label"]  # noqa: E731
+        n_full, n_glance = (int(re.search(r"\+(\d+)", more(t)).group(1)) for t in (full, glance))
+        shown_extra = sum(1 for c in self.spec["children"] if c.get("extra"))
+        self.assertEqual(n_glance, n_full + shown_extra)
+
+    def test_fan_is_one_slide_with_two_real_cards(self):
+        """E43-S9 round 2: the wide drawing is one 1200x520 slide, the phone one fits a 390x844 screen, both carry the
+        two real cards as links and every part has its step of the animation."""
+        c = {"ready": 10, "asks": 3, "draft": 7, "covered": 6, "other": 12, "total": 35, "placed": 38}
+        wide = gt.fan_wide(c, 30, "7 November 2026", "f", "t", "d")
+        phone = gt.fan_phone(c, 30, "7 November 2026", "f", "t", "d")
+        self.assertIn('viewBox="0 0 1200 520"', wide)
+        h = int(re.search(r'viewBox="0 0 360 (\d+)"', phone).group(1))
+        self.assertLessEqual(h, 640)
+        for svg in (wide, phone):
+            self.assertEqual(svg.count("<image "), 2)
+            self.assertEqual(svg.count('class="fan-card-link"'), 2)
+            self.assertIn('data-s="5"', svg)
+            self.assertIn('style="--ar:', svg)
+
 
 if __name__ == "__main__":
     unittest.main()

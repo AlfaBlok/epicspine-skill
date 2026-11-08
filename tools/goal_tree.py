@@ -82,11 +82,14 @@ def node(label, level, state=None, sub="", focus=False, more=False, note=""):
     return {"label": label, "level": level, "state": state, "sub": sub, "focus": focus, "more": more, "note": note, "kids": []}
 
 
-def build(spec: dict, repo: Repo) -> dict:
+def build(spec: dict, repo: Repo, full: bool = True) -> dict:
+    """The tree to draw. Without `full`, items marked "extra" in the config stay out (the at-a-glance view);
+    the "+N more" nodes count them with the rest."""
     rp = spec["root"]["path"]
+    shown = lambda items: [i for i in items if full or not i.get("extra")]  # noqa: E731
     goals, steps = repo.below(rp)
     root = node(spec["root"]["label"], 0, None, f"{plural(goals, 'goal', 'goals')} and {plural(steps, 'step', 'steps')} in its repo")
-    for c in spec["children"]:
+    for c in shown(spec["children"]):
         n = repo.nodes[c["path"]]
         g, s = repo.below(c["path"])
         sub = (f"{plural(g, 'goal', 'goals')} below, " if g else "") + plural(s, "step", "steps")
@@ -95,7 +98,7 @@ def build(spec: dict, repo: Repo) -> dict:
         if "rows" in c:
             rows = repo.rows(c["path"])
             live = [r for r in rows if state_of(r.get("Status", ""))]
-            for r in c["rows"]:
+            for r in shown(c["rows"]):
                 row = rows[r["id"]] if isinstance(r["id"], int) else next(x for x in rows if x.get("Issue") == r["id"])
                 step = node(r["label"], 2, state_of(row["Status"]), "", r.get("focus", False), note=r.get("note", ""))
                 kid["kids"].append(step)
@@ -105,13 +108,20 @@ def build(spec: dict, repo: Repo) -> dict:
                     by_id = {p.get("Id"): p for p in ledger}
                     for pid in dict.fromkeys(ids):
                         step["kids"].append(node(r["posts"]["labels"][pid], 3, state_of(by_id[pid]["Status"])))
-            rest = len(live) - len(c["rows"])
+            rest = len(live) - len(shown(c["rows"]))
             if rest > 0:
                 kid["kids"].append(node(f"+{plural(rest, 'more step', 'more steps')}", 2, more=True))
-    rest = len(repo.kids(rp)) - len(spec["children"])
+    rest = len(repo.kids(rp)) - len(shown(spec["children"]))
     if rest > 0:
         root["kids"].append(node(f"+{plural(rest, 'more goal', 'more goals')}", 1, more=True))
     return root
+
+
+def walk_spec(spec: dict):
+    """Every child and row the config names, to see whether any is kept for the fuller view."""
+    for c in spec["children"]:
+        yield c
+        yield from c.get("rows", [])
 
 
 def walk(n: dict):
@@ -137,9 +147,13 @@ def wrap(text: str, size: float, width: float, lines: int = 2) -> list[str]:
     return out
 
 
-# level: width, label size, sub size (wide drawing)
+# level: width, label size, sub size (wide drawing). GLANCE is the at-a-glance view (E43-S8 round 2: fewer nodes,
+# larger labels, drawn on a narrower canvas so the type lands near its set size); WIDE the fuller one behind "more".
 WIDE = {0: (360, 22, 14), 1: (184, 16, 13), 2: (176, 15, 13), 3: (176, 14, 13)}
+GLANCE = {0: (400, 26, 16), 1: (224, 20, 15), 2: (212, 19, 15), 3: (212, 16, 14)}
 W = 1200
+GW = 980
+GLANCE_PHONE = {0: (21, 14), 1: (18, 14), 2: (17, 14), 3: (16, 14)}
 GAP = 16
 BAND = 64  # vertical room between levels for the connectors
 
@@ -172,7 +186,8 @@ def box(n: dict, x: float, y: float, w: float, h: float, lines: list[str], size:
     return "".join(out)
 
 
-def wide(tree: dict, slug: str, title: str, desc: str) -> str:
+def wide(tree: dict, slug: str, title: str, desc: str, dims: dict | None = None, width: int = W, cls: str = "gt gt--wide") -> str:
+    WIDE, W = dims or globals()["WIDE"], width  # noqa: N806
     levels: dict[int, list[dict]] = {}
     for n in walk(tree):
         levels.setdefault(n["level"], []).append(n)
@@ -214,14 +229,14 @@ def wide(tree: dict, slug: str, title: str, desc: str) -> str:
         w, size, sub = WIDE[n["level"]]
         y0, h = geo[n["level"]]
         parts_boxes.append(box(n, n["_x"], y0, w, h, n["_lines"], size, sub))
-    return svg(slug + "-wide", "gt gt--wide", W, height, title, desc, parts_lines + parts_boxes)
+    return svg(slug + "-wide", cls, W, height, title, desc, parts_lines + parts_boxes)
 
 
 NW = 360
 
 
-def narrow(tree: dict, slug: str, title: str, desc: str) -> str:
-    sizes = {0: (19, 13), 1: (16, 13), 2: (15, 13), 3: (14, 13)}
+def narrow(tree: dict, slug: str, title: str, desc: str, sizes: dict | None = None, cls: str = "gt gt--phone") -> str:
+    sizes = sizes or {0: (19, 13), 1: (16, 13), 2: (15, 13), 3: (14, 13)}
     indent = 22
     parts_lines, parts_boxes = [], []
     y = 4
@@ -252,11 +267,11 @@ def narrow(tree: dict, slug: str, title: str, desc: str) -> str:
         parts_lines.append(f'<path class="gt-line" d="{" ".join(d)}"/>')
     for n, x, y0, w, h, lines, size, sub in place:
         parts_boxes.append(box(n, x, y0, w, h, lines, size, sub))
-    return svg(slug + "-phone", "gt gt--phone", NW, y - 6, title, desc, parts_lines + parts_boxes)
+    return svg(slug + "-phone", cls, NW, y - 6, title, desc, parts_lines + parts_boxes)
 
 
 def svg(slug: str, cls: str, w: float, h: float, title: str, desc: str, body: list[str]) -> str:
-    return (f'<svg class="{cls}" viewBox="0 0 {w:.0f} {h:.0f}" width="{w:.0f}" height="{h:.0f}" role="img" '
+    return (f'<svg class="{cls}" viewBox="0 0 {w:.0f} {h:.0f}" width="{w:.0f}" height="{h:.0f}" style="--ar:{w / h:.3f}" role="img" '
             f'aria-labelledby="{slug}-title {slug}-desc"><title id="{slug}-title">{esc(title)}</title>'
             f'<desc id="{slug}-desc">{esc(desc)}</desc>' + "".join(body) + "</svg>")
 
@@ -288,113 +303,141 @@ def counts(text: str) -> dict:
     return c
 
 
-GROUPS = [("ready", "ready to build", "{n} built, each in its own thread"),
-          ("asks", "questions for you", "{n} questions only you can answer"),
-          ("draft", "drafts", "{n} ideas kept as drafts"),
-          ("covered", "already planned", "{n} already in the plan"),
-          ("other", "for other teams", "{n} passed to two other teams")]
+GROUPS = [("ready", "built in their own threads", "{n} built, each in its own thread"),
+          ("asks", "questions only you can answer", "{n} questions only you can answer"),
+          ("draft", "ideas kept as drafts", "{n} ideas kept as drafts"),
+          ("covered", "already in the plan", "{n} already in the plan"),
+          ("other", "passed to two other teams", "{n} passed to two other teams")]
+
+# The two real cards the inbox holds (E43-S9 round 2: inside the one slide, each opens full size).
+CARDS = [("Blocked on you", "Pay $8 to verify our X account", "shots/ask-e73.webp", 934, 426, "fan-ask", "Blocked on you"),
+         ("Done, for your approval", "Daily numbers on the home page", "shots/review-card.webp", 1868, 1840, "", "Done for review")]
+
+
+def stage(n: int, d: int) -> str:
+    """The step of the animation an element belongs to, and its delay in ms (CSS plays them once, in order)."""
+    return f' data-s="{n}" style="--d:{d}ms"'
 
 
 def dots(x: float, y: float, n: int, per: int, cls: str) -> str:
     return "".join(f'<circle class="fan-dot {cls}" cx="{x + (i % per) * 14:.0f}" cy="{y + (i // per) * 14:.0f}" r="4.5"/>' for i in range(n))
 
 
-def fan_box(x, y, w, h, name, sub, cls="") -> str:
-    out = [f'<g class="fan-box {cls}"><rect x="{x}" y="{y}" width="{w}" height="{h}" rx="2"/>',
-           f'<text class="fan-name" x="{x + 16}" y="{y + 28}">{esc(name)}</text>']
+def fan_box(x, y, w, h, name, sub, cls="", st="") -> str:
+    out = [f'<g class="fan-box {cls}"{st}><rect x="{x}" y="{y}" width="{w}" height="{h}" rx="2"/>',
+           f'<text class="fan-name" x="{x + 16}" y="{y + 30}">{esc(name)}</text>']
     if sub:
-        out.append(f'<text class="fan-sub" x="{x + 16}" y="{y + 50}">{esc(sub)}</text>')
+        out.append(f'<text class="fan-sub" x="{x + 16}" y="{y + 54}">{esc(sub)}</text>')
     return "".join(out) + "</g>"
 
 
 def wave(x, y) -> str:
     hs = [6, 14, 22, 12, 26, 18, 8, 20, 28, 14, 6, 16, 24, 10, 18, 6]
-    return "".join(f'<rect class="fan-wave" x="{x + i * 7}" y="{y - h / 2:.0f}" width="3" height="{h}" rx="1.5"/>' for i, h in enumerate(hs))
+    return ('<g class="fan-wave-g">' + "".join(f'<rect class="fan-wave" x="{x + i * 7}" y="{y - h / 2:.0f}" width="3" height="{h}" rx="1.5" style="--i:{i}"/>'
+                                               for i, h in enumerate(hs)) + "</g>")
+
+
+def line(d: str, st: str = "") -> str:
+    return f'<path class="fan-line" pathLength="1" d="{d}"{st}/>'
+
+
+def card(slug: str, i: int, x, y, w, h, top: int, phone: bool = False) -> str:
+    """One real card: its kind and what it asks, then the screen itself, scaled to the width and cut at the box.
+    On the phone only the short kind is written; the screen shows the rest."""
+    name, sub, href, iw, ih, cls, short = CARDS[i]
+    if phone:
+        name, sub = short, ""
+    ix, iy, imw = x + 8, y + top, w - 16
+    imh = min(ih * imw / iw, y + h - 8 - iy)
+    clip = f"{slug}-clip{i}"
+    return (f'<a class="fan-card-link" href="{href}" aria-label="{esc(name)}: open the real card full size">'
+            f'<g class="fan-box fan-kind {cls}"{stage(5, 2400 + i * 160)}><rect x="{x}" y="{y}" width="{w}" height="{h}" rx="2"/>'
+            f'<text class="fan-name" x="{x + 12}" y="{y + 26}">{esc(name)}</text>'
+            + (f'<text class="fan-sub" x="{x + 12}" y="{y + 47}">{esc(sub)}</text>' if sub else "") +
+            f'<clipPath id="{clip}"><rect x="{ix}" y="{iy}" width="{imw}" height="{imh:.0f}"/></clipPath>'
+            f'<rect class="fan-paper" x="{ix}" y="{iy}" width="{imw}" height="{imh:.0f}"/>'
+            f'<image href="{href}" x="{ix}" y="{iy}" width="{imw}" height="{ih * imw / iw:.0f}" clip-path="url(#{clip})" preserveAspectRatio="xMidYMin meet"/>'
+            "</g></a>")
 
 
 def fan_wide(c: dict, minutes: int, day: str, slug: str, title: str, desc: str) -> str:
-    H = 470
+    """One slide at 1280x800 (E43-S9 round 2): the note, the tree, five groups, one inbox and its two real cards."""
+    H = 520
     lines, boxes = [], []
-    # voice note
-    boxes.append(fan_box(0, 176, 184, 118, "One voice note", f"{minutes} minutes, {day.rsplit(' ', 1)[0]}") + wave(16, 270))
-    # the tree
-    boxes.append(fan_box(232, 176, 184, 118, "Placed in the tree", f"{c['total']} items, each under", "fan-tree") +
-                 '<text class="fan-sub" x="248" y="248">its goal in the tree</text>')
-    lines.append('<path class="fan-line" d="M184 235H232"/>')
-    # groups
-    gy, gh, gap = 8, 78, 16
-    gx, gw = 508, 300
+    boxes.append(fan_box(0, 200, 188, 120, "One voice note", f"{minutes} minutes, {day.rsplit(' ', 1)[0]}", st=stage(1, 0)) + wave(16, 292))
+    boxes.append(fan_box(212, 200, 196, 120, "Placed in the tree", f"{c['total']} items, each under", "fan-tree", stage(2, 500)) +
+                 f'<text class="fan-sub" x="228" y="276"{stage(2, 500)}>its own goal</text>')
+    lines.append(line("M188 260H212", stage(2, 400)))
+    gy, gh, gap, gx, gw = 32, 80, 14, 464, 290
     ys = []
     for i, (key, _, label) in enumerate(GROUPS):
         y = gy + i * (gh + gap)
         ys.append(y + gh / 2)
         n = c[key]
         cls = "fan-ask" if key == "asks" else ""
-        boxes.append(f'<g class="fan-group {cls}"><rect x="{gx}" y="{y}" width="{gw}" height="{gh}" rx="2"/>'
-                     f'<text class="fan-gname" x="{gx + 16}" y="{y + 26}">{esc(label.format(n=n))}</text>'
-                     + dots(gx + 20, y + 48, n, 18, "fan-ask" if key == "asks" else "") + "</g>")
-    # fan out: from the tree's right edge, one attach point per group, elbows at r=8
+        boxes.append(f'<g class="fan-group {cls}"{stage(3, 1000 + i * 110)}><rect x="{gx}" y="{y}" width="{gw}" height="{gh}" rx="2"/>'
+                     f'<text class="fan-gname" x="{gx + 16}" y="{y + 28}">{esc(label.format(n=n))}</text>'
+                     + dots(gx + 20, y + 52, n, 18, cls) + "</g>")
     for i, yc in enumerate(ys):
-        ay = 176 + 118 * (i + 1) / (len(ys) + 1)
+        ay = 200 + 120 * (i + 1) / (len(ys) + 1)
         # an upward line turns earlier the higher it goes, a downward one the lower it goes, so no two cross
-        mx = 452 + (i if yc <= ay else len(ys) - 1 - i) * 10
-        lines.append(elbow(416, ay, mx, yc, gx))
-    # fan in to the inbox
-    ix, iy, iw, ih = 900, 176, 164, 118
+        mx = 424 + (i if yc <= ay else len(ys) - 1 - i) * 8
+        lines.append(elbow(408, ay, mx, yc, gx, st=stage(3, 850 + i * 110)))
+    ix, iy, iw, ih = 800, 200, 164, 120
     for i, yc in enumerate(ys):
         ay = iy + ih * (i + 1) / (len(ys) + 1)
-        mx = 836 + (len(ys) - 1 - i) * 10 if yc < ay else 836 + i * 10
-        lines.append(elbow(gx + gw, yc, mx, ay, ix))
-    boxes.append(fan_box(ix, iy, iw, ih, "One inbox", "only what needs you", "fan-inbox"))
-    # the two kinds of card
-    kx, kw = 1100, 100
-    for i, (name, sub, cls) in enumerate([("Blocked", "on you", "fan-ask"), ("Done", "for approval", "")]):
-        ky = 120 + i * 150
-        lines.append(elbow(ix + iw, iy + ih * (i + 1) / 3, 1082, ky + 40, kx))
-        boxes.append(fan_box(kx, ky, kw, 80, name, sub, "fan-kind " + cls))
+        mx = 766 + (len(ys) - 1 - i) * 8 if yc < ay else 766 + i * 8
+        lines.append(elbow(gx + gw, yc, mx, ay, ix, st=stage(4, 1700 + i * 60)))
+    boxes.append(fan_box(ix, iy, iw, ih, "One inbox", "only what needs you", "fan-inbox", stage(4, 2050)))
+    # each card box is as tall as its screen needs: the wide blocked card is short, the review card tall
+    kx, kw, top = 990, 210, 60
+    khs = [min(top + 8 + (kw - 16) * k[4] / k[3], 280) for k in CARDS]
+    ky = round((H - sum(round(k) for k in khs) - 24) / 2)
+    for i in range(2):
+        iw_, ih_ = CARDS[i][3], CARDS[i][4]
+        kh = min(top + 8 + (kw - 16) * ih_ / iw_, 280)
+        lines.append(elbow(ix + iw, iy + ih * (i + 1) / 3, 976, ky + kh / 2, kx, st=stage(5, 2300 + i * 160)))
+        boxes.append(card(slug + "-wide", i, kx, ky, kw, round(kh), top))
+        ky += round(kh) + 24
     return svg(slug + "-wide", "fan fan--wide", 1200, H, title, desc, lines + boxes)
 
 
-def elbow(x1, y1, mx, y2, x2, r=8) -> str:
+def elbow(x1, y1, mx, y2, x2, r=8, st="") -> str:
     """A right-angle connector: across to mx, down or up to y2, across to x2, corners rounded at r."""
     if abs(y2 - y1) < 1:
-        return f'<path class="fan-line" d="M{x1:.0f} {y1:.0f}H{x2:.0f}"/>'
+        return line(f"M{x1:.0f} {y1:.0f}H{x2:.0f}", st)
     s = 1 if y2 > y1 else -1
     r = min(r, abs(y2 - y1) / 2)
-    return (f'<path class="fan-line" d="M{x1:.0f} {y1:.1f}H{mx - r:.0f}Q{mx:.0f} {y1:.1f} {mx:.0f} {y1 + s * r:.1f}'
-            f'V{y2 - s * r:.1f}Q{mx:.0f} {y2:.1f} {mx + r:.0f} {y2:.1f}H{x2:.0f}"/>')
+    return line(f"M{x1:.0f} {y1:.1f}H{mx - r:.0f}Q{mx:.0f} {y1:.1f} {mx:.0f} {y1 + s * r:.1f}"
+                f"V{y2 - s * r:.1f}Q{mx:.0f} {y2:.1f} {mx + r:.0f} {y2:.1f}H{x2:.0f}", st)
 
 
 def fan_phone(c: dict, minutes: int, day: str, slug: str, title: str, desc: str) -> str:
+    """The same slide on a phone, top to bottom, short enough for one 390x844 screen."""
     lines, boxes = [], []
-    w = NW
-    boxes.append(fan_box(40, 0, 280, 96, "One voice note", f"{minutes} minutes, {day.rsplit(' ', 1)[0]}") + wave(56, 74))
-    lines.append('<path class="fan-line" d="M180 96V124"/>')
-    boxes.append(fan_box(40, 124, 280, 72, "Placed in the tree", f"{c['total']} items, each under its goal", "fan-tree"))
-    y = 236
-    rows = []
-    for key, _, label in GROUPS:
-        n = c[key]
-        h = 44 + ((n - 1) // 18 + 1) * 14
+    boxes.append(fan_box(0, 0, 166, 72, "One voice note", f"{minutes} minutes", st=stage(1, 0)))
+    lines.append(line("M166 36H194", stage(2, 400)))
+    boxes.append(fan_box(194, 0, 166, 72, "In the tree", f"{c['total']} items", "fan-tree", stage(2, 500)))
+    y, rows = 100, []
+    for i, (key, short, _) in enumerate(GROUPS):
         cls = "fan-ask" if key == "asks" else ""
-        boxes.append(f'<g class="fan-group {cls}"><rect x="40" y="{y}" width="280" height="{h}" rx="2"/>'
-                     f'<text class="fan-gname" x="56" y="{y + 24}">{esc(label.format(n=n))}</text>'
-                     + dots(60, y + 40, n, 18, cls) + "</g>")
-        rows.append(y + 24)
-        y += h + 12
-    # out on the left rail, back in on the right rail
-    lines.append(f'<path class="fan-line" d="M140 196V214Q140 222 132 222H28Q20 222 20 230V{rows[-1] - 8}"/>')
-    for ry in rows:
-        lines.append(f'<path class="fan-line" d="M20 {ry - 8}Q20 {ry} 28 {ry}H40"/>')
-        lines.append(f'<path class="fan-line" d="M320 {ry}H332Q340 {ry} 340 {ry + 8}V{y + 4}"/>')
-    lines.append(f'<path class="fan-line" d="M340 {y + 4}Q340 {y + 12} 332 {y + 12}H180V{y + 28}"/>')
-    iy = y + 28
-    boxes.append(fan_box(40, iy, 280, 72, "One inbox", "only what needs you", "fan-inbox"))
-    ky = iy + 108
-    lines.append(f'<path class="fan-line" d="M110 {iy + 72}V{ky}"/><path class="fan-line" d="M250 {iy + 72}V{ky}"/>')
-    boxes.append(fan_box(40, ky, 132, 64, "Blocked", "on you", "fan-kind fan-ask"))
-    boxes.append(fan_box(188, ky, 132, 64, "Done", "for approval", "fan-kind"))
-    return svg(slug + "-phone", "fan fan--phone", w, ky + 68, title, desc, lines + boxes)
+        boxes.append(f'<g class="fan-group {cls}"{stage(3, 1000 + i * 110)}><rect x="24" y="{y}" width="336" height="44" rx="2"/>'
+                     f'<text class="fan-count" x="40" y="{y + 30}">{c[key]}</text>'
+                     f'<text class="fan-gname" x="80" y="{y + 28}">{esc(short)}</text></g>')
+        rows.append(y + 22)
+        y += 52
+    # out on the left rail from the tree, back in on the same rail to the inbox
+    lines.append(line(f"M277 72V84Q277 88 273 88H16Q8 88 8 96V{rows[-1] - 6}", stage(3, 850)))
+    for i, ry in enumerate(rows):
+        lines.append(line(f"M8 {ry - 6}Q8 {ry} 14 {ry}H24", stage(3, 950 + i * 110)))
+    iy = y + 20
+    lines.append(line(f"M192 {y - 8}V{iy}", stage(4, 1800)))
+    boxes.append(fan_box(0, iy, 360, 64, "One inbox", "only what needs you", "fan-inbox", stage(4, 2050)))
+    ky = iy + 88
+    lines.append(line(f"M86 {iy + 64}V{ky}", stage(5, 2300)) + line(f"M274 {iy + 64}V{ky}", stage(5, 2460)))
+    boxes.append(card(slug + "-phone", 0, 0, ky, 172, 168, 38, True))
+    boxes.append(card(slug + "-phone", 1, 188, ky, 172, 168, 38, True))
+    return svg(slug + "-phone", "fan fan--phone", 360, ky + 170, title, desc, lines + boxes)
 
 
 # ---- write into the pages -----------------------------------------------------------------------------------------
@@ -417,9 +460,17 @@ def main() -> int:
     repos = {k: Repo(Path(v).expanduser().resolve()) for k, v in paths.items()}
     blocks: dict[str, dict[str, str]] = {}
     for name, spec in cfg["trees"].items():
-        tree = build(spec, repos[spec["repo"]])
+        repo = repos[spec["repo"]]
+        tree = build(spec, repo, full=False)
         desc = describe(tree)
-        block = wide(tree, f"gt-{name}", spec["title"], desc) + "\n" + narrow(build(spec, repos[spec["repo"]]), f"gt-{name}", spec["title"], desc)
+        block = (wide(tree, f"gt-{name}", spec["title"], desc, GLANCE, GW)
+                 + "\n" + narrow(build(spec, repo, full=False), f"gt-{name}", spec["title"], desc, GLANCE_PHONE))
+        if any(i.get("extra") for i in walk_spec(spec)):
+            full = build(spec, repo)
+            fdesc = describe(full)
+            block += ('\n<details class="gt-all"><summary>Show more of the tree</summary>\n'
+                      + wide(full, f"gt-{name}-all", spec["title"], fdesc) + "\n"
+                      + narrow(build(spec, repo), f"gt-{name}-all", spec["title"], fdesc) + "\n</details>")
         blocks.setdefault(spec["page"], {})[name] = block
     f = cfg["fan"]
     c = counts((repos[f["repo"]].root / f["source"]).read_text(encoding="utf-8"))

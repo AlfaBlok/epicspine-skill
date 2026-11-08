@@ -2,6 +2,11 @@
  * hero: Banner (/), Stage (/team/, the before and after of Jordi's example) · nav: banner over a bar (the family line scrolls away, the bar stays) · footer: mast, the wordmark across the width · imagery: one real screen per benefit (EPIC-43 L-1, round 3): real terminal captures of a demo repo (agent_team console/scripts/e43-term-shot.py), the real waiting-on-you card, real EpicTeam and EpicSocial screens (e43-benefit-shots.mjs, read-only), one photograph (a many-volume work on a shelf) · signature: each benefit is its real screen first, named after in a few words; on /team/ three projects with items waiting, then the one Team feed
  * axes: dark/grotesk-sans/cool · posture: committed · contrast: pass · fold: pass · v2.0.0 */
 /* Hallmark · pre-emit critique: P4 H4 E4 S5 R4 V5 · weakest: H on /, a type-only hero; the first real screen starts inside the first fold at 1440 */
+/* Hallmark · E43-S8 and E43-S9 round 2 (Jordi 2026-11-08: "very difficult to read", "not clear which headline goes with which screenshot", the voice diagram "too tall for the screen") · every benefit is one unit: its headline first, its one screen beside it in a window capped at min(480px, 60vh), so no screen is taller than its section; drawings take the width under a one-row headline; the tree shows three goals at a glance and the rest behind "Show more of the tree"; the voice note is one slide sized by the screen's height, played once as it enters */
+/* Hallmark · waive 77 · "Say it once. It sticks." · its real screen is a two-line terminal answer; a taller frame would be empty ground */
+/* Hallmark · dismissed 59 · the negative gap is the closed "Show more of the tree" drawing, measured while hidden; nothing overlaps on screen */
+/* Hallmark · waive 72 · figure.pic captions at left 0 · each caption sits flush with the left edge of its own window, as every caption on the page */
+/* Hallmark · waive 44a · /team/ hero 64px above, 54px below at 1440 · the hero is unchanged in this round: its before and after stage fills the screen under the head */
 /* Hallmark · waive 64 · mono only inside pre and code · the rule line, the file list and the install lines are literal text an agent reads */
 /* Hallmark · dropped #clear, #relentless, the new-chat switch, the roles list and the night clock · round 3 (Jordi 2026-11-06, EPIC-43 L-1): a built mock is not a real screen; each benefit now shows a real one */
 /* Hallmark · dropped /team/ #inbox, #personas, #skills and the memory well · round 3: the hero before and after shows the feed; personas, skills and connections had no benefit line of their own */
@@ -91,7 +96,8 @@ code, pre { font-family: var(--font-mono); font-size: var(--text-sm); }
 .wordmark { display: inline-flex; align-items: center; gap: var(--space-sm); font-weight: 500; font-size: var(--text-lead); letter-spacing: -0.02em; color: var(--color-ink); text-decoration: none; margin-right: auto; }
 .wordmark:hover { color: var(--color-ink); }
 .links { display: flex; gap: var(--space-lg); list-style: none; margin: 0; padding: 0; }
-.links a { color: var(--color-ink-2); text-decoration: none; padding: var(--space-xs) 0; }
+.links a { color: var(--color-ink-2); text-decoration: none; padding: var(--space-xs) 0; white-space: nowrap; }
+@media (max-width: 60rem) { .links li.hide-s { display: none; } }
 .links a:hover { color: var(--color-accent); }
 
 /* entrances: one reveal, parts of a section in turn; visible without script and under reduced motion */
@@ -113,18 +119,31 @@ code, pre { font-family: var(--font-mono); font-size: var(--text-sm); }
 .hero-foot .lead { font-size: var(--text-lead); max-width: 46ch; }
 .actions { display: flex; flex-wrap: wrap; gap: var(--space-sm); }
 
-/* a benefit, shown (EPIC-43 L-1): the real screen first and largest, then the benefit in a few words */
-.proof { display: grid; gap: var(--space-xl); }
-.pic { margin: 0; display: grid; gap: var(--space-sm); justify-items: center; background: var(--color-paper-2); padding: var(--space-2xl); }
-.pic img { display: block; width: auto; max-width: 100%; height: auto; }
-.pic figcaption { justify-self: stretch; font-size: var(--text-md); color: var(--color-ink-2); }
-.pic picture { display: block; max-width: 100%; }
-.pic--term { background: var(--color-paper-3); }
-.pic--term picture, .pic--term img { width: 100%; }
-.proof .say { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--space-sm) var(--gap-columns); align-items: baseline; }
-.proof h2 { max-width: 18ch; overflow-wrap: break-word; min-width: 0; }
-.was { color: var(--color-ink-2); font-size: var(--text-lead); max-width: 34ch; }
-@media (max-width: 48rem) { .proof .say { grid-template-columns: minmax(0, 1fr); } }
+/* a benefit, shown (EPIC-43 L-1), one unit per section (E43-S8 round 2, Jordi 2026-11-08: "not clear which headline
+   goes with which screenshot", "screenshots way taller than the section"): the headline first, its one screen beside
+   it in a window of fixed height, so a screen is never taller than its section; a long screen shows its top */
+.sec:has(> .proof), .band:has(> .proof) { padding-block: clamp(var(--space-2xl), 11vh, var(--space-3xl)); }
+.proof { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-xl) var(--space-2xl); align-items: center; }
+.proof .say { display: grid; gap: var(--space-md); align-content: center; }
+.proof h2 { font-size: clamp(2rem, 2.2vw + 0.8rem, 3.25rem); max-width: none; overflow-wrap: break-word; min-width: 0; }
+.was { color: var(--color-ink-2); font-size: var(--text-lead); max-width: 30ch; }
+.pic { margin: 0; display: grid; gap: var(--space-sm); min-width: 0; }
+.pic figcaption { font-size: var(--text-md); color: var(--color-ink-2); }
+.win { max-height: min(480px, 60vh); display: grid; grid-template-columns: minmax(0, 1fr); place-items: start center; overflow: hidden; background: var(--color-paper-2); padding: var(--space-lg); }
+.win picture { display: contents; }
+.win img { display: block; width: min(100%, var(--w, 100%)); height: auto; }
+.band.alt .win, .sec--sticks .win { background: var(--color-paper); color: var(--color-ink); }
+.pic--term .win { background: var(--color-paper-3); }
+.sec--sticks .pic--term .win { background: var(--color-paper); }
+/* a drawing needs the width: its headline sits on one line above it, the drawing right under it */
+.proof--wide { grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); }
+.proof--wide .say { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--space-sm) var(--gap-columns); align-items: end; }
+.proof--wide h2 { max-width: 22ch; }
+@media (max-width: 48rem) {
+  .proof, .proof--wide .say { grid-template-columns: minmax(0, 1fr); }
+  .proof { gap: var(--space-lg); }
+  .win { max-height: min(460px, 58svh); padding: var(--space-md); }
+}
 .sec--sticks { background: var(--color-paper-3); }
 .sec--sticks .pic--term { background: var(--color-paper); }
 .sec--together { background: var(--color-field-ice); color: var(--color-accent-2-ink); }
@@ -278,7 +297,7 @@ code, pre { font-family: var(--font-mono); font-size: var(--text-sm); }
   .giant { font-size: 20.4vw; }
   .shell pre { font-size: var(--text-sm); }
   .ask, .clock, .tree, .well { padding: var(--space-lg); }
-  .shotlink, .shot .frame, .pic { padding: var(--space-md); }
+  .shotlink, .shot .frame { padding: var(--space-md); }
   .ba-rows { padding: var(--space-md); }
   .ba-after .frame { height: 620px; padding: var(--space-md) var(--space-md) 0; }
   .ba-after .frame img { width: 100%; }
@@ -287,8 +306,19 @@ code, pre { font-family: var(--font-mono); font-size: var(--text-sm); }
 /* the tree of goals (agent_team E43-S8): drawn by tools/goal_tree.py from the real repos; bigger goals above,
    the steps that finish them below; one gold node is the focus; under 64rem the same tree reads as an outline */
 .sec--tree { background: var(--color-paper-3); }
-.pic--tree, .pic--fan { justify-items: stretch; padding: var(--space-2xl) var(--space-xl) var(--space-xl); }
-.sec--tree .pic--tree { background: var(--color-paper); }
+.pic--tree, .pic--fan { justify-items: stretch; padding: var(--space-xl) var(--space-xl) var(--space-lg); }
+.pic--tree { background: var(--color-paper-2); gap: var(--space-md); }
+.sec--tree .pic--tree, .band.alt .pic--tree { background: var(--color-paper); color: var(--color-ink); }
+.gt.gt--wide { width: min(100%, 980px, calc((100svh - 400px) * var(--ar, 2.2))); margin-inline: auto; }
+.sec:has(> .proof--wide), .band:has(> .proof--wide) { padding-block: clamp(var(--space-xl), 8vh, var(--space-2xl)); }
+/* the rest of the tree waits behind one control (E43-S8 round 2: fewer levels at a glance, the rest behind "more") */
+.gt-all { margin-top: var(--space-md); }
+.gt-all summary { display: inline-flex; align-items: center; min-height: 44px; padding: 0 var(--space-md); background: var(--color-paper-3); color: var(--color-ink); cursor: pointer; list-style: none; transition: background-color var(--dur-short) var(--ease-out); }
+.gt-all summary::-webkit-details-marker { display: none; }
+.gt-all summary:hover { background: var(--color-rule); }
+.gt-all summary:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+.gt-all[open] summary { margin-bottom: var(--space-lg); }
+.gt-all .gt.gt--wide { width: 100%; }
 .gt-wrap, .fan-wrap { width: 100%; }
 .gt, .fan { display: block; width: 100%; height: auto; font-family: var(--font-body); }
 .gt--phone, .fan--phone { display: none; max-width: 30rem; margin-inline: auto; }
@@ -329,17 +359,40 @@ code, pre { font-family: var(--font-mono); font-size: var(--text-sm); }
 .fan-inbox rect { fill: var(--color-accent); stroke: none; }
 .fan-inbox .fan-name, .fan-inbox .fan-sub { fill: var(--color-accent-ink); }
 .fan-kind .fan-name { font-size: 17px; }
-.fan-cards { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--gap-columns); align-items: start; }
-.fan-card { margin: 0; display: grid; gap: var(--space-sm); min-width: 0; }
-.fan-card-label { color: var(--color-ink); font-size: var(--text-lead); }
-.fan-card--ask .fan-card-label { color: var(--color-accent); }
-.fan-card .frame { background: var(--color-paper); color: var(--color-ink); padding: var(--space-lg) var(--space-lg) 0; height: clamp(260px, 26vw, 380px); overflow: hidden; }
-.fan-card img { width: 100%; height: auto; }
-.fan-card--ask .frame { height: auto; padding-bottom: var(--space-lg); }
-.pic--fan { gap: var(--space-xl); }
+/* the voice note as one slide (E43-S9 round 2, Jordi: "one slide where all the content is there without having to
+   scroll", "maybe animate this"): the drawing is sized by the screen's height as well as its width, so headline,
+   drawing and both cards fit at 1280x800 and on a 390x844 phone */
+.band.band--slide { min-height: calc(100svh - var(--nav-h)); display: grid; align-items: center; padding-block: var(--space-lg); }
+.band--slide .proof { gap: var(--space-md); }
+.proof--slide .say { grid-template-columns: minmax(0, 1fr); gap: var(--space-xs); }
+.proof--slide h2 { font-size: clamp(1.875rem, 2.4vw + 0.75rem, 3.25rem); max-width: none; }
+.proof--slide .was { max-width: none; }
+.pic--fan { gap: var(--space-xs); padding: var(--space-md) var(--space-lg); background: var(--color-paper); }
+.fan--wide { width: min(100%, calc((100svh - var(--nav-h) - 240px) * 1200 / 520)); margin-inline: auto; }
+.fan--phone { width: min(100%, calc((100svh - var(--nav-h) - 270px) * 360 / 635)); max-width: none; }
+.fan { overflow: visible; }
+.fan-foot { display: flex; flex-wrap: nowrap; align-items: center; justify-content: space-between; gap: var(--space-xs) var(--space-md); }
+.fan-count { fill: var(--color-ink); font-family: var(--font-display); font-size: 24px; }
+.fan-group.fan-ask .fan-count { fill: var(--color-accent); }
+.fan-paper { fill: var(--color-tile); }
+.fan-card-link:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+.fan-card-link:hover .fan-kind > rect:first-child { stroke: var(--color-accent-hi); stroke-width: 2; }
+.fan-kind .fan-name { font-size: 17px; }
+.fan-kind .fan-sub { font-size: 13px; }
+.fan-inbox-sub { font-size: 15px; }
+@media (prefers-reduced-motion: no-preference) {
+  .js .fan .fan-line { stroke-dasharray: 1; }
+  .js .fan:not(.play) [data-s] { opacity: 0; }
+  .js .fan.play g[data-s] { animation: fan-up 560ms var(--ease-out) var(--d) both; transform-box: fill-box; }
+  .js .fan.play .fan-line[data-s] { animation: fan-draw 460ms var(--ease-out) var(--d) both; }
+  .js .fan.play .fan-wave { animation: fan-talk 520ms var(--ease-in-out) calc(var(--i) * 40ms) 6 alternate; transform-box: fill-box; transform-origin: center; }
+  @keyframes fan-up { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+  @keyframes fan-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+  @keyframes fan-talk { from { transform: scaleY(1); } to { transform: scaleY(0.3); } }
+}
 @media (max-width: 40rem) {
-  .pic--tree, .pic--fan { padding: var(--space-lg) var(--space-md) var(--space-md); }
-  .fan-cards { grid-template-columns: minmax(0, 1fr); }
-  .fan-card .frame { height: 420px; padding: var(--space-md) var(--space-md) 0; }
-  .fan-card--ask .frame { height: auto; padding-bottom: var(--space-md); }
+  .band.band--slide { padding-block: var(--space-md); }
+  .pic--tree { padding: var(--space-lg) var(--space-md) var(--space-md); }
+  .pic--fan { padding: var(--space-sm); }
+  .proof--slide .was { font-size: var(--text-md); }
 }

@@ -1,5 +1,5 @@
 {
-  "_about": "Which part of each real goal tree the public pages draw (agent_team E43-S8), and the fan-out diagram (E43-S9). tools/goal_tree.py reads the repos named here and writes the drawings into the pages between their goal-tree markers. Statuses, counts and links come from the repos; a label is the public wording of the real title (no private names or repo internals; the script refuses a drawing that carries one).",
+  "_about": "Which part of each real goal tree the public pages draw (agent_team E43-S8), and the fan-out diagram (E43-S9). tools/goal_tree.py reads the repos named here and writes the drawings into the pages between their goal-tree markers. Statuses, counts and links come from the repos; a label is the public wording of the real title (no private names or repo internals; the script refuses a drawing that carries one). An item marked \"extra\" stays out of the at-a-glance drawing and shows only behind its \"Show more of the tree\" (E43-S8 round 2).",
   "trees": {
     "spine": {
       "page": "index.html",
@@ -10,14 +10,14 @@
         {"path": "docs/EPIC-3-EPIC-LOG.md", "label": "Every repo keeps one tree of goals", "focus": true, "rows": [
           {"id": 0, "label": "Start a goal with one command"},
           {"id": 1, "label": "Every new ask finds its place"},
-          {"id": 2, "label": "Each new goal gets its code"},
-          {"id": 3, "label": "Older repos moved into the tree"},
+          {"id": 2, "label": "Each new goal gets its code", "extra": true},
+          {"id": 3, "label": "Older repos moved into the tree", "extra": true},
           {"id": 6, "label": "The console reads the tree"}
         ]},
         {"path": "docs/EPIC-4-DOCTRINE-2.md", "label": "Each goal says what done means"},
-        {"path": "docs/EPIC-5-PERSONA-AND-STANDING-SPINES.md", "label": "A file for each team role"},
+        {"path": "docs/EPIC-5-PERSONA-AND-STANDING-SPINES.md", "label": "A file for each team role", "extra": true},
         {"path": "docs/EPIC-6-STATUS-TRUE-SPINES.md", "label": "Status you can trust"},
-        {"path": "docs/EPIC-10-WEBMCP-ON-EPICSPINE-DEV.md", "label": "Browser agents can install it"}
+        {"path": "docs/EPIC-10-WEBMCP-ON-EPICSPINE-DEV.md", "label": "Browser agents can install it", "extra": true}
       ]
     },
     "team": {
@@ -27,16 +27,16 @@
       "root": {"path": "docs/spines/root.md", "label": "Our AI team: everything it works on"},
       "children": [
         {"path": "docs/spines/epic-43-live-sites.md", "label": "Our public sites", "rows": [
-          {"id": "E43-S1", "label": "epicspine.dev goes live"},
-          {"id": "E43-S6", "label": "Lead with the benefits"},
+          {"id": "E43-S1", "label": "epicspine.dev goes live", "extra": true},
+          {"id": "E43-S6", "label": "Lead with the benefits", "extra": true},
           {"id": "E43-S7", "label": "Show the real tool"},
           {"id": "E43-S8", "label": "Draw the tree of goals", "focus": true, "note": "this picture"},
           {"id": "E43-S9", "label": "One voice note, one inbox"}
         ]},
         {"path": "docs/spines/epic-42-talk-to-desk.md", "label": "Talk to the team by voice"},
         {"path": "docs/spines/epic-48-review-inbox.md", "label": "Finished work waits for review"},
-        {"path": "docs/spines/epic-36-agent-team-product.md", "label": "The team as a product"},
-        {"path": "docs/spines/epic-62-repo-is-the-source.md", "label": "The repo is the only source"}
+        {"path": "docs/spines/epic-36-agent-team-product.md", "label": "The team as a product", "extra": true},
+        {"path": "docs/spines/epic-62-repo-is-the-source.md", "label": "The repo is the only source", "extra": true}
       ]
     },
     "social": {
@@ -50,8 +50,8 @@
           {"id": "E1-S2", "label": "The call for testers", "focus": true, "posts": {"ledger": "data/posts-ledger.md", "labels": {
             "P-0006": "Post on X", "P-0007": "Post on r/SideProject", "P-0008": "Post on r/alphaandbetausers"}}},
           {"id": "E1-S3", "label": "Answer every reply within 3 hours"},
-          {"id": "E1-S4", "label": "Count the applications daily"},
-          {"id": "E1-S5", "label": "A diagram for each post"}
+          {"id": "E1-S4", "label": "Count the applications daily", "extra": true},
+          {"id": "E1-S5", "label": "A diagram for each post", "extra": true}
         ]}
       ]
     }
