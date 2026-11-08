@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.11.08.13 — Social pack: each metric names its source
+
+- **Changed:** the pack's metric docs and schema say each metric reads a source per world (root spine `Metric sources:`) or per campaign (`source <id>` on the Metric line), with a `ledger` source for a world's own data file and `none` until a source exists; free sources named for backlinks, customers and MCP listings (agent_team E78-S9, from zenod-social's report that their testers count read our form; E78-S8, the follow-up Jordi started when closing E78-S1).
+
 ## 2026.11.08.12 — Agents read the epic deck first
 
 - **Changed:** `spines.py --bind` and the always-on rule point agents at the milestone's and the epic's deck first, so work inside a milestone starts from its deck, not only the screen (agent_team E47-S4 round 4, Jordi 2026-11-08: "when people work on inside this milestone, they get a reference to that deck immediately"); merged as E47-S5 on his close of E47-S4.
