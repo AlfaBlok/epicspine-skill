@@ -21,6 +21,8 @@
   // the Book in E43-S6, so those links open it.
   if (/^#\d+$/.test(location.hash)) { var n = +location.hash.slice(1); location.replace("book/#" + (n > 1 ? n + 3 : n)); }
   else if (/^#(technical|why|plan|memory|loop|roles)$/.test(location.hash)) { location.replace("book/"); }
+  // E43-S6 round 3 of 2026-11-08: the seven things it does lead the page; #again and #repo became #context.
+  else if (/^#(again|repo)$/.test(location.hash)) { location.replace("#context"); }
   document.documentElement.classList.add("js");
 </script>
 <link rel="preload" href="fonts/funnel-display-latin.woff2" as="font" type="font/woff2" crossorigin>
@@ -34,8 +36,8 @@
   <nav class="nav" aria-label="Main"><div class="container">
     <a class="wordmark" href="#top" aria-label="EpicSpine, back to the start"><svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><rect class="tile" width="32" height="32" rx="7"/><g transform="translate(3.40 0) skewX(-12)"><path class="g" d="M8 6H24V10H14V14H22V18H14V22H24V26H8Z"/></g></svg>EpicSpine</a>
     <ul class="links">
+      <li class="hide-s"><a href="#context">What it does</a></li>
       <li class="hide-s"><a href="#tree">The tree</a></li>
-      <li class="hide-s"><a href="#again">Why</a></li>
       <li><a href="book/">Book</a></li>
       <li class="hide-s"><a href="https://github.com/AlfaBlok/epicspine-skill">Source</a></li>
     </ul>
@@ -51,17 +53,104 @@
         <p class="lead">Every agent starts where the last one stopped.</p>
         <div class="actions">
           <a class="btn btn--primary" href="#install">Install it, free</a>
-          <a class="btn" href="#again">See what changes</a>
+          <a class="btn" href="#context">See what it does</a>
         </div>
       </div>
+      <nav class="seven rise" aria-label="What it does for you"><ul>
+        <li><a href="#context">Context in your repo</a></li>
+        <li><a href="#commits">Commit rules, enforced</a></li>
+        <li><a href="#personas">Persona binding</a></li>
+        <li><a href="#claims">Task assignment by claim</a></li>
+        <li><a href="#doctrine">One doctrine</a></li>
+        <li><a href="#sticks">Rules it learns</a></li>
+        <li><a href="#tree">A graph of your goals</a></li>
+      </ul></nav>
     </div>
   </section>
 
-  <section class="sec sec--tree" id="tree" aria-labelledby="h-tree">
+  <section class="sec sec--context" id="context" aria-labelledby="h-context">
+    <div class="container proof">
+      <div class="say rise">
+        <h2 id="h-context">Context lives in your repo.</h2>
+        <p class="was">Goals, progress and rules are plain files next to your code. A chat can end. The next one reads them before its first answer, on any machine.</p>
+      </div>
+      <figure class="pic pic--term rise">
+        <div class="win"><picture><source media="(max-width: 40rem)" srcset="shots/newchat-phone.webp" width="412" height="442"><img style="--w:772px" src="shots/newchat.webp" width="772" height="333" loading="lazy" decoding="async" alt="A terminal in a demo shop repo. The plan prints its current state: step one, the Google callback, is built and tested. Next action: build the login button."></picture></div>
+        <figcaption>What a new chat reads before its first answer. A demo repo, 6 November 2026.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="sec sec--commits tone" id="commits" aria-labelledby="h-commits">
+    <div class="container proof">
+      <div class="say rise">
+        <h2 id="h-commits">Commits follow your rules.</h2>
+        <p class="was">Hooks in every repo flag a commit that names no step and block a plan that breaks the rules. Each finished turn is pushed, so every machine sees it.</p>
+      </div>
+      <figure class="pic pic--term rise">
+        <div class="win"><picture><source media="(max-width: 40rem)" srcset="shots/commits-phone.webp" width="466" height="376"><img style="--w:844px" src="shots/commits.webp" width="844" height="245" loading="lazy" decoding="async" alt="A terminal in the demo shop repo. A commit called fix the button gets a warning that it names no step. Amended to E1-S2, the login button calls Google, it goes through, and git log shows it."></picture></div>
+        <figcaption>A commit with no step is flagged. Named, it goes through.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="sec sec--personas" id="personas" aria-labelledby="h-personas">
+    <div class="container proof">
+      <div class="say rise">
+        <h2 id="h-personas">Every agent binds a persona.</h2>
+        <p class="was">Before it acts, an agent binds its role. A persona file says what it is for, what it reads and writes, and which model and machine run it.</p>
+      </div>
+      <figure class="pic pic--term rise">
+        <div class="win"><picture><source media="(max-width: 40rem)" srcset="shots/persona-phone.webp" width="466" height="442"><img style="--w:520px" src="shots/persona.webp" width="637" height="420" loading="lazy" decoding="async" alt="The demo repo’s tester persona file: model haiku, host laptop. Remit: tries every finished step as a customer would, before you see it. Reads the plan, the finished row and the live shop. Writes a pass or a fail with what it saw."></picture></div>
+        <figcaption>The tester persona, one short file in the demo repo.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="sec sec--claims tone" id="claims" aria-labelledby="h-claims">
+    <div class="container proof">
+      <div class="say rise">
+        <h2 id="h-claims">One step, one agent.</h2>
+        <p class="was">Each step names who works it. An agent claims it with one pushed commit, and a second agent is refused with the holder’s name, even from another machine.</p>
+      </div>
+      <figure class="pic pic--term rise">
+        <div class="win"><picture><source media="(max-width: 40rem)" srcset="shots/claim-phone.webp" width="466" height="223"><img style="--w:844px" src="shots/claim.webp" width="844" height="180" loading="lazy" decoding="async" alt="In the demo repo the builder claims step E1-S2 for two hours. When the tester tries to claim the same step, it is refused: the row is claimed by builder."></picture></div>
+        <figcaption>Two agents reach for the same step. The second is told who has it.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="sec sec--doctrine" id="doctrine" aria-labelledby="h-doctrine">
+    <div class="container proof">
+      <div class="say rise">
+        <h2 id="h-doctrine">One doctrine for every agent.</h2>
+        <p class="was">EpicSpine ships its doctrine: what every plan must say, how to use git, how to ask you a question. The commit gate checks it, so a plan with no goal or finish line never lands.</p>
+      </div>
+      <figure class="pic pic--term rise">
+        <div class="win"><picture><source media="(max-width: 40rem)" srcset="shots/doctrine-phone.webp" width="466" height="486"><img style="--w:844px" src="shots/doctrine.webp" width="844" height="333" loading="lazy" decoding="async" alt="A new plan file that holds only a title and one line. Committing it is blocked: the plan is missing its goal, what it serves, what done means and its status."></picture></div>
+        <figcaption>A plan with no goal and no finish line, stopped at commit.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="sec sec--sticks" id="sticks" aria-labelledby="h-sticks">
+    <div class="container proof">
+      <div class="say rise">
+        <h2 id="h-sticks">Say it once. It sticks.</h2>
+        <p class="was">Correct an agent once and it writes the rule into the plan. Every later agent reads it before it starts.</p>
+      </div>
+      <figure class="pic pic--term rise">
+        <div class="win"><picture><source media="(max-width: 40rem)" srcset="shots/rule-phone.webp" width="412" height="202"><img style="--w:826px" src="shots/rule.webp" width="826" height="136" loading="lazy" decoding="async" alt="The same terminal after one correction. The plan's learnings now hold L-1: before a merge, run the tests, you asked on Monday, confirmed."></picture></div>
+        <figcaption>The rule as the next agent reads it. A demo repo, 6 November 2026.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="sec sec--tree tone" id="tree" aria-labelledby="h-tree">
     <div class="container proof proof--wide">
       <div class="say rise">
-        <h2 id="h-tree">The plan is a tree of goals.</h2>
-        <p class="was">Bigger goals sit above the steps that finish them. Before: the plan scrolls away with the chat.</p>
+        <h2 id="h-tree">Your goals, as a graph.</h2>
+        <p class="was">Every plan hangs from the one it serves, so goals, steps and their status read as one tree.</p>
       </div>
       <figure class="pic pic--tree rise">
         <div class="gt-wrap">
@@ -79,31 +168,6 @@
       </figure>
     </div>
   </section>
-  <section class="sec sec--again" id="again" aria-labelledby="h-again">
-    <div class="container proof">
-      <div class="say rise">
-        <h2 id="h-again">No more explaining it again.</h2>
-        <p class="was">Before: every new chat asks what you are working on.</p>
-      </div>
-      <figure class="pic pic--term rise">
-        <div class="win"><picture><source media="(max-width: 40rem)" srcset="shots/newchat-phone.webp" width="412" height="442"><img style="--w:772px" src="shots/newchat.webp" width="772" height="333" loading="lazy" decoding="async" alt="A terminal in a demo shop repo. The plan prints its current state: step one, the Google callback, is built and tested. Next action: build the login button."></picture></div>
-        <figcaption>What a new chat reads before its first answer. A demo repo, 6 November 2026.</figcaption>
-      </figure>
-    </div>
-  </section>
-
-  <section class="sec sec--sticks" id="sticks" aria-labelledby="h-sticks">
-    <div class="container proof">
-      <div class="say rise">
-        <h2 id="h-sticks">Say it once. It sticks.</h2>
-        <p class="was">Before: you correct each agent, every time.</p>
-      </div>
-      <figure class="pic pic--term rise">
-        <div class="win"><picture><source media="(max-width: 40rem)" srcset="shots/rule-phone.webp" width="412" height="202"><img style="--w:826px" src="shots/rule.webp" width="826" height="136" loading="lazy" decoding="async" alt="The same terminal after one correction. The plan's learnings now hold L-1: before a merge, run the tests, you asked on Monday, confirmed."></picture></div>
-        <figcaption>One correction, kept in the plan. Every next agent reads it.</figcaption>
-      </figure>
-    </div>
-  </section>
 
   <section class="sec sec--together" id="together" aria-labelledby="h-together">
     <div class="container proof">
@@ -114,26 +178,6 @@
       <figure class="pic pic--card rise">
         <div class="win"><picture><source media="(max-width: 40rem)" srcset="shots/ask-phone.webp" width="390" height="1056"><img style="--w:934px" src="shots/ask.webp" width="934" height="564" loading="lazy" decoding="async" alt="A question from the team in the EpicTeam console: do you approve these five lines as the benefits of EpicSocial? It comes with context, impact, risk and a recommendation, and two buttons, Approve and Deny."></picture></div>
         <figcaption>A real question from our own team, 5 November 2026.</figcaption>
-      </figure>
-    </div>
-  </section>
-
-  <section class="sec sec--repo" id="repo" aria-labelledby="h-repo">
-    <figure class="plate rise">
-      <picture>
-        <source media="(max-width: 700px)" srcset="img/volumes-960.webp">
-        <img src="img/volumes.webp" width="1920" height="1288" loading="lazy" decoding="async" alt="Seven matching volumes of one long work on a library shelf, numbered X to XIII, navy cloth with gold lettering.">
-      </picture>
-      <figcaption class="container">One long work in many volumes, each picking up where the last stopped. Finnish National Library.</figcaption>
-    </figure>
-    <div class="container proof">
-      <div class="say rise">
-        <h2 id="h-repo">The plan lives in your repo.</h2>
-        <p class="was">It needs no server or account, and works with Claude Code and Codex.</p>
-      </div>
-      <figure class="pic pic--term rise">
-        <div class="win"><picture><source media="(max-width: 40rem)" srcset="shots/repo-phone.webp" width="412" height="333"><img style="--w:691px" src="shots/repo.webp" width="691" height="245" loading="lazy" decoding="async" alt="The demo repo in a terminal: the plan is one file, docs/spines/sign-in.md, next to the code, and git log shows its history: plan created from chat, step one built, rule learned."></picture></div>
-        <figcaption>The plan is one file next to your code, with its history in git.</figcaption>
       </figure>
     </div>
   </section>
@@ -166,6 +210,7 @@
           <li>Python 3.10 or newer, no packages.</li>
           <li>Then, in each repo: <code>agents_block.py install</code>.</li>
           <li>Then talk to your agent as usual.</li>
+          <li>Works with Claude Code and Codex. No server or account.</li>
         </ul>
         <p class="more">How it works inside, from the file to the roles: <a href="book/">read the Book</a>.</p>
       </div>
@@ -202,7 +247,7 @@
       </ul></div>
     </div>
     <p class="giant" aria-hidden="true">EpicSpine</p>
-    <p class="fine">Photograph: <a href="https://commons.wikimedia.org/wiki/File:Suomen_kansan_vanhat_runot_vols_X-2_to_XIII-4_on_shelf_247_north_reading_room_of_Finnish_national_library.jpg">Suomen kansan vanhat runot on shelf 247</a> by Alarichall, <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>, via Wikimedia Commons. Set in Funnel Display, Funnel Sans and Martian Mono (SIL OFL 1.1).</p> <!-- taste-skill-ignore: the font credit names the code face -->
+    <p class="fine">Set in Funnel Display, Funnel Sans and Martian Mono (SIL OFL 1.1).</p> <!-- taste-skill-ignore: the font credit names the code face -->
   </div>
 </footer>
 

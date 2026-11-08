@@ -3,6 +3,7 @@
  * axes: dark/grotesk-sans/cool · posture: committed · contrast: pass · fold: pass · v2.0.0 */
 /* Hallmark · pre-emit critique: P4 H4 E4 S5 R4 V5 · weakest: H on /, a type-only hero; the first real screen starts inside the first fold at 1440 */
 /* Hallmark · E43-S8 and E43-S9 round 2 (Jordi 2026-11-08: "very difficult to read", "not clear which headline goes with which screenshot", the voice diagram "too tall for the screen") · every benefit is one unit: its headline first, its one screen beside it in a window capped at min(480px, 60vh), so no screen is taller than its section; drawings take the width under a one-row headline; the tree shows three goals at a glance and the rest behind "Show more of the tree"; the voice note is one slide sized by the screen's height, played once as it enters */
+/* Hallmark · E43-S6 round 3 of 2026-11-08 (Jordi: "missing key description of key things it does for you ... Those aren't popping to me!") · the seven things it does, in his order, lead the page: their names under the head as links, then one unit each (headline, one sentence, one real terminal screen of the demo repo, made by agent_team console/scripts/e43-term-shot.py with the hooks and scripts the skill ships) · units alternate ground and tone · the #repo section and its photograph went: its claim is the first of the seven */
 /* Hallmark · waive 77 · "Say it once. It sticks." · its real screen is a two-line terminal answer; a taller frame would be empty ground */
 /* Hallmark · dismissed 59 · the negative gap is the closed "Show more of the tree" drawing, measured while hidden; nothing overlaps on screen */
 /* Hallmark · waive 72 · figure.pic captions at left 0 · each caption sits flush with the left edge of its own window, as every caption on the page */
@@ -117,6 +118,13 @@ code, pre { font-family: var(--font-mono); font-size: var(--text-sm); }
 .hero h1 { font-size: var(--text-display); line-height: 0.94; max-width: none; letter-spacing: var(--tracking-display); }
 .hero-foot { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-lg) var(--space-xl); margin-top: var(--space-xl); }
 .hero-foot .lead { font-size: var(--text-lead); max-width: 46ch; }
+/* E43-S6 round 3 of 2026-11-08 (Jordi: the key things it does "aren't popping"): the seven, named under the head, each a link to its own section */
+.seven { margin-top: var(--space-2xl); }
+.seven ul { display: flex; flex-wrap: wrap; gap: var(--space-sm) var(--space-xl); list-style: none; margin: 0; padding: 0; max-width: 72rem; }
+.seven a { font: 400 var(--text-lead)/1.3 var(--font-display); letter-spacing: -0.01em; color: var(--color-ink); text-decoration: underline; text-decoration-color: var(--color-accent); text-decoration-thickness: 2px; text-underline-offset: 0.3em; display: inline-block; padding-block: var(--space-2xs, 4px); }
+.seven a:hover { color: var(--color-accent); }
+.seven a:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
+@media (max-width: 40rem) { .seven ul { gap: var(--space-xs) var(--space-lg); } }
 .actions { display: flex; flex-wrap: wrap; gap: var(--space-sm); }
 
 /* a benefit, shown (EPIC-43 L-1), one unit per section (E43-S8 round 2, Jordi 2026-11-08: "not clear which headline
@@ -132,9 +140,9 @@ code, pre { font-family: var(--font-mono); font-size: var(--text-sm); }
 .win { max-height: min(480px, 60vh); display: grid; grid-template-columns: minmax(0, 1fr); place-items: start center; overflow: hidden; background: var(--color-paper-2); padding: var(--space-lg); }
 .win picture { display: contents; }
 .win img { display: block; width: min(100%, var(--w, 100%)); height: auto; }
-.band.alt .win, .sec--sticks .win { background: var(--color-paper); color: var(--color-ink); }
+.band.alt .win, .sec.tone .win { background: var(--color-paper); color: var(--color-ink); }
 .pic--term .win { background: var(--color-paper-3); }
-.sec--sticks .pic--term .win { background: var(--color-paper); }
+.sec.tone .pic--term .win { background: var(--color-paper); }
 /* a drawing needs the width: its headline sits on one line above it, the drawing right under it */
 .proof--wide { grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); }
 .proof--wide .say { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--space-sm) var(--gap-columns); align-items: end; }
@@ -144,17 +152,12 @@ code, pre { font-family: var(--font-mono); font-size: var(--text-sm); }
   .proof { gap: var(--space-lg); }
   .win { max-height: min(460px, 58svh); padding: var(--space-md); }
 }
-.sec--sticks { background: var(--color-paper-3); }
-.sec--sticks .pic--term { background: var(--color-paper); }
+.sec.tone { background: var(--color-paper-3); }
 .sec--together { background: var(--color-field-ice); color: var(--color-accent-2-ink); }
 .sec--together h2, .sec--together .was, .sec--together figcaption { color: var(--color-accent-2-ink); }
 .sec--together .pic { background: var(--color-field-ice-2); }
 
 /* the plan lives in your repo: one photograph, then the file */
-.sec--repo { padding-top: 0; }
-.plate { margin: 0 0 var(--space-3xl); }
-.plate img { width: 100%; height: clamp(320px, 78vh, 860px); object-fit: cover; object-position: 50% 12%; filter: saturate(0.9) contrast(1.05); }
-.plate figcaption { margin-top: var(--space-sm); font-size: var(--text-sm); color: var(--color-muted); }
 .arg { color: var(--color-accent); }
 
 /* the family: each product shown by its own real screen, on a flat field */
@@ -341,8 +344,8 @@ code, pre { font-family: var(--font-mono); font-size: var(--text-sm); }
 .gt-dot { stroke-width: 1.5; }
 .gt-done, .gt-key .gt-done { fill: var(--color-accent-2); stroke: var(--color-accent-2); background: var(--color-accent-2); }
 .gt-review, .gt-key .gt-review { fill: var(--color-accent); stroke: var(--color-accent); background: var(--color-accent); }
-.gt-active, .gt-key .gt-active { fill: transparent; stroke: var(--color-ink); box-shadow: inset 0 0 0 2px var(--color-ink); }
-.gt-planned, .gt-key .gt-planned { fill: transparent; stroke: var(--color-muted-2); stroke-dasharray: 2 2; box-shadow: inset 0 0 0 1px var(--color-muted-2); }
+.gt-active, .gt-key .gt-active { fill: transparent; stroke: var(--color-ink); border: 2px solid var(--color-ink); box-sizing: border-box; }
+.gt-planned, .gt-key .gt-planned { fill: transparent; stroke: var(--color-muted-2); stroke-dasharray: 2 2; border: 1px solid var(--color-muted-2); box-sizing: border-box; } /* taste-skill-ignore: the 11px legend dot for a planned goal, the same ring the tree draws */
 .gt-key { display: flex; flex-wrap: wrap; gap: var(--space-xs) var(--space-lg); margin: 0; padding: 0; list-style: none; font-size: var(--text-sm); color: var(--color-ink-2); justify-self: start; }
 .gt-key li { display: inline-flex; align-items: center; gap: var(--space-xs); }
 .gt-key i { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
