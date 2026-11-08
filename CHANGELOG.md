@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.11.08.8 — Social pack: product at two levels, one read order
+
+- **Added:** each campaign's own product deck, `docs/campaigns/<epic-n>/product.md` (schema `product.campaign_file`, `campaign_parts`: What we push, Who it is for, What they get, The offer, How they get it, What we say and never say): what that campaign pushes, narrowing the project's `data/product.md`. `product.read_order` puts "Read first, in this order" at the top of every role's wake text (`pack.py social --wake-text --role R`): the project's product deck, the campaign's, then `data/metrics.md` (the targets and the role's line).
+- Why: agent_team E78-S1 round 2 (Jordi 2026-11-08: "product at highest level of the repo, and then inside the campaign, be able to specifically go to town about whatever we're promoting").
+
 ## 2026.11.08.7 — spines.py scan: one git log for the stale check
 
 - **Changed:** the scan's stale check runs one `git log` for all goals (`scripts/git_stamps.py`) instead of one per goal, and remembers link resolves; an agent_team scan on VPS1 went from 10.4–12.4 s and 55 git processes to 5.7–6.5 s and 4, with identical output on five repos.
