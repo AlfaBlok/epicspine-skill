@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.11.08.9 — Social pack: product at two levels, one read order
+
+- **Added:** each campaign's own product deck, `docs/campaigns/<epic-n>/product.md` (schema `product.campaign_file`, `campaign_parts`: What we push, Who it is for, What they get, The offer, How they get it, What we say and never say): what that campaign pushes, narrowing the project's `data/product.md`. `product.read_order` puts "Read first, in this order" at the top of every role's wake text (`pack.py social --wake-text --role R`): the project's product deck, the campaign's, then `data/metrics.md` (the targets and the role's line).
+- Why: agent_team E78-S1 round 2 (Jordi 2026-11-08: "product at highest level of the repo, and then inside the campaign, be able to specifically go to town about whatever we're promoting").
+
 ## 2026.11.08.8 — Social pack: post links carry the post id; pages count the source
 
 - **Added:** social pack rule `source_tag`: a link to our own public pages in a post, reply or outreach ends with `?s=<the row's Id>` (`https://epicspine.dev/testers/?s=P-0042`), so the host's counter knows which post brought each visit and each application. The epicspine.dev home, testers and social pages pass that id and the referring site's host name to the counter (no cookie, nothing about the visitor), keep `?s=` on links to our other pages, and add both to the sign-up form.

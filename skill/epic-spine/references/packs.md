@@ -14,7 +14,7 @@ Base EpicSpine knows goals, state, ledgers, asks, learnings and the Team table; 
 | `pack.py init <name>` (`scripts/pack_init.py`) | creates the files with the right headings and columns | E34-S2 |
 | `pack.py <name> --json` (`scripts/pack_export.py`) | exports the repo's typed data for the console, with computed back-links ("JSON export" below) | E34-S3 |
 | `pack.py <name> --wake-text` (`scripts/pack_intake.py`) | the desk intake rule a desk persona's prompt carries ("Desk intake" below) | E34-S10 |
-| `pack.py <name> --wake-text --role <Role>` (`pack_role.py`, `role_text`) | one persona's duties from the schema: what it may write, its status moves and checks, the rules that bind it ("Persona wake text" below) | E9-S4 |
+| `pack.py <name> --wake-text --role <Role>` (`pack_role.py`, `role_text`) | one persona's duties from the schema: what it reads first (`product.read_order`: the project's product deck, its campaign's, the targets), what it may write, its status moves and checks, the rules that bind it ("Persona wake text" below) | E9-S4 |
 
 ## Opt in
 

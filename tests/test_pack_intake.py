@@ -122,6 +122,16 @@ class RoleText(unittest.TestCase):
         del s["benefits"]
         self.assertNotIn("Benefits home", pack_intake.role_text(s, "Writer"))  # a pack with none says nothing
 
+    def test_every_role_reads_the_two_product_decks_then_the_targets_first(self) -> None:
+        # agent_team E78-S1 round 2: the project's product deck, the campaign's own, then the targets and the role's line.
+        for role in SOCIAL["roles"]:
+            text = pack_intake.role_text(SOCIAL, role)
+            at = [text.index(x) for x in ("Read first, in this order", "1. `data/product.md`", "2. `docs/campaigns/<epic-n>/product.md`", "3. `data/metrics.md`", "You may write")]
+            self.assertEqual(at, sorted(at), role)
+        s = copy.deepcopy(SOCIAL)
+        del s["product"]
+        self.assertNotIn("Read first", pack_intake.role_text(s, "Writer"))  # a pack with no product deck says nothing
+
     def test_a_role_is_told_only_its_own_moves(self) -> None:
         self.assertNotIn("`scheduled → posted`", pack_intake.role_text(SOCIAL, "Writer"))
         self.assertNotIn("`draft → scheduled`", pack_intake.role_text(SOCIAL, "Publisher"))

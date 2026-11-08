@@ -51,11 +51,18 @@ def _benefits(schema: dict) -> list[str]:
             f"- Posts: {b['post_rule']}", f"- Ideas: {b['idea_rule']}", "- Writing a benefit (the recipe):"] + [f"  {i}. {x}" for i, x in enumerate(b["recipe"], 1)] + [f"- Discovery: {b['discovery']}"]
 
 
+def _reads(schema: dict) -> list[str]:
+    """What every role reads first, in order (agent_team E78-S1 round 2): the project's product deck, its campaign's own,
+    then the targets and its role's line. Empty for a pack with no `product` or no `read_order`."""
+    order = (schema.get("product") or {}).get("read_order")
+    return ["", "Read first, in this order, at every wake:"] + [f"{i}. `{x.split(' (')[0]}`" + (f" ({x.split(' (', 1)[1]}" if " (" in x else "") for i, x in enumerate(order, 1)] if order else []
+
+
 def role_text(schema: dict, role: str) -> str:
     """What one persona may do, from the schema alone, as Markdown for its wake prompt: duty, writable targets, status
     moves with their checks, the hold / approval rules that bind it, the commit signature. `role` is a key of `roles`."""
     owner = schema.get("owner")
-    out = [f"## Pack {schema['pack']}: you are the {role}", schema["roles"][role].rstrip(".") + ".", "", "You may write (everything else in the pack files is read-only for you):"]
+    out = [f"## Pack {schema['pack']}: you are the {role}", schema["roles"][role].rstrip(".") + "."] + _reads(schema) + ["", "You may write (everything else in the pack files is read-only for you):"]
     out += _writes(schema, role) or ["- nothing in the pack files"]
     used: dict[str, dict] = {}
     moves: list[str] = []
