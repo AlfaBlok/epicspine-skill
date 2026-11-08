@@ -55,6 +55,15 @@ class BindTests(unittest.TestCase):
             self.assertNotIn("EPIC-10", out, code)
         self.assertIn("no spine found", bind(self.repo, "7"))
 
+    def test_deck_link_per_epic_when_the_repo_declares_one(self):
+        self.assertNotIn("Deck", bind(self.repo, "EPIC-1"))
+        (self.repo / "AGENTS.md").write_text("Root spine: docs/EPIC-0-ROOT.md. Read x.\nEpic deck: `https://team.example/deck/r/{code}`\n")
+        out = bind(self.repo, "EPIC-1").splitlines()
+        self.assertEqual(out[1], "Deck (read it first): https://team.example/deck/r/EPIC-1")
+        self.assertIn("Deck (read it first): https://team.example/deck/r/EPIC-0", out)
+        (self.repo / "docs/plain.md").write_text("# A plain spine\n\n" + STATE.format(n="p") + "Parent spine: [root](EPIC-0-ROOT.md)\n")
+        self.assertIn("Deck (read it first): https://team.example/deck/r/plain", bind(self.repo, "docs/plain.md"))
+
     def test_no_spine_says_so(self):
         empty = Path(self.tmp.name) / "none"
         empty.mkdir()
