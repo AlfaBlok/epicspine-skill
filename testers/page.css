@@ -17,7 +17,7 @@
 .nav .container { display: flex; align-items: center; justify-content: space-between; min-height: var(--nav-h); }
 .wordmark { font-family: var(--font-display); font-weight: 600; font-size: var(--text-lg); letter-spacing: -0.01em; text-decoration: none; color: var(--color-ink); }
 .wordmark:hover { color: var(--color-ink-2); }
-.wordmark { display: inline-flex; align-items: center; gap: 10px; }
+.wordmark { display: inline-flex; align-items: center; gap: var(--space-sm); }
 .wordmark svg { width: 26px; height: 26px; flex: none; } /* agent_team E65-S5: logo C, the S for EpicSocial */
 .wordmark:active { color: var(--color-ink); }
 

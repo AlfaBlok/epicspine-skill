@@ -3,46 +3,83 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>EpicSocial testers: the terms</title>
-<!-- agent_team E46-S18 (Jordi E73-A6, 8 Nov 2026: "Let's start with 5 testers first"): the terms of the free tester program at one URL, from the
-     round 3 draft he approved (agent_team docs/proposals/e73-strategy-r3/terms), 20 teams set to 5. The five-day rule leads (his E73-A1 words). -->
+<title>EpicSocial testers: the contract</title>
+<!-- agent_team E46-S18 (Jordi E73-A6, 8 Nov 2026: "Let's start with 5 testers first"): the terms of the free tester program at one URL.
+     Iteration 2 (his voice note vn_27afac4e, 8 Nov 16:36Z): the terms as a visual contract, "we're going to give you this, and then in exchange we
+     expect you to provide that. And then these are the rules"; voice first, one voice note a week through the feedback link (E46-S20), no calls. -->
 <link rel="icon" href="/favicon-social.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32-social.png" type="image/png" sizes="32x32">
 <link rel="icon" href="/favicon-16-social.png" type="image/png" sizes="16x16">
 <link rel="apple-touch-icon" href="/apple-touch-icon-social.png">
-<meta name="description" content="EpicSocial is free for 5 teams. If you're not using it within your first five days, your seat goes to the next team. What you get, the usage limits, what we ask and how we pick.">
-<meta property="og:title" content="EpicSocial testers: the terms">
-<meta property="og:description" content="Free for 5 teams. Use it in your first five days, or your seat goes to the next team.">
+<meta name="description" content="The EpicSocial tester contract: free for 5 teams. What we give, what we ask in return, and the rules: set up within five days, one voice note a week, no calls.">
+<meta property="og:title" content="EpicSocial testers: the contract">
+<meta property="og:description" content="Free for 5 teams. Set up within five days, leave one voice note a week. No calls.">
 <meta property="og:image" content="https://epicspine.dev/testers/shots/pipeline.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://epicspine.dev/testers/terms/">
 <link rel="preload" href="../fonts/instrument-sans-600.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../page.css">
 <style>
-/* Hallmark · shape: letter, one page of terms · theme: the testers page's brand (page.css) · signature: the five-day rule as the headline and the first block */
+/* Hallmark · redesign of the terms as a visual contract (E46-S18 iteration 2) · theme: the testers page's brand (page.css tokens) · signature: the two sides of the deal, side by side, then the four rules as numbered tiles
+ * critique: P4 H4 E4 S4 R4 V4 · weakest: E, a contract page has little to show; the colour split of the two sides and the rule numbers carry it */
 .terms { padding-block: var(--space-2xl) 0; }
-.terms .container { max-width: 880px; }
-.terms h1 { font-size: var(--text-display-s); max-width: 20ch; }
-.terms .lead { margin-top: var(--space-lg); color: var(--color-ink-2); max-width: 52ch; font-size: var(--text-lead); }
-.rule { margin-top: var(--space-xl); background: var(--color-accent); color: var(--color-accent-ink); border-radius: var(--radius-card); padding: var(--space-lg) var(--space-xl); }
-.rule p { font-size: var(--text-lead); line-height: 1.5; color: inherit; }
-.rule p + p { margin-top: var(--space-sm); font-size: var(--text-md); }
-.blk { border-top: var(--rule-hair) solid var(--color-ink); padding-top: var(--space-lg); margin-top: var(--space-2xl); }
-.blk h2 { font-size: var(--text-2xl); margin-bottom: var(--space-md); }
-.blk p, .blk li { font-size: var(--text-lg); line-height: 1.5; color: var(--color-ink-2); }
-.blk p + p, .blk ul + p, .blk .lim + p { margin-top: var(--space-md); }
-.blk ul { margin: 0; padding-left: var(--space-lg); }
-.blk p + ul { margin-top: var(--space-sm); }
-.blk li + li { margin-top: var(--space-xs); }
-.lim { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-sm); margin-top: var(--space-md); }
-.lim div { border: var(--rule-hair) solid var(--color-rule); background: var(--color-paper-2); border-radius: var(--radius-card); padding: var(--space-md) var(--space-lg); }
-.lim b { display: block; font: 600 var(--text-3xl)/1 var(--font-display); color: var(--color-ink); font-variant-numeric: tabular-nums; }
-.lim span { display: block; margin-top: var(--space-xs); font-size: var(--text-md); line-height: 1.4; color: var(--color-ink-2); }
+.terms .container { max-width: 1040px; }
+.terms h1 { font-size: var(--text-display-s); max-width: 18ch; overflow-wrap: break-word; min-width: 0; }
+.terms .lead { margin-top: var(--space-md); color: var(--color-ink-2); max-width: 46ch; font-size: var(--text-lead); }
+.hero-act { margin-top: var(--space-lg); display: flex; align-items: center; gap: var(--space-lg); flex-wrap: wrap; }
+
+/* the two sides */
+.sides { margin-top: var(--space-2xl); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-md); }
+.side { border-radius: var(--radius-card); padding: var(--space-lg) var(--space-xl) var(--space-xl); }
+.side--we { background: var(--color-accent); color: var(--color-accent-ink); }
+.side--you { background: var(--color-paper-2); border: var(--rule-hair) solid var(--color-rule); color: var(--color-ink); }
+.side h2 { font-size: var(--text-2xl); color: inherit; overflow-wrap: break-word; min-width: 0; }
+.side .who { margin-top: var(--space-2xs); font-size: var(--text-md); opacity: 0.85; }
+.side ul { list-style: none; margin: var(--space-lg) 0 0; padding: 0; }
+.side li { position: relative; padding: var(--space-sm) 0 var(--space-sm) var(--space-lg); font-size: var(--text-lg); line-height: 1.4; border-top: var(--rule-hair) solid color-mix(in oklab, currentColor 22%, transparent); }
+.side li::before { content: ""; position: absolute; left: 0; top: calc(var(--space-sm) + 0.45em); width: 10px; height: 10px; border-radius: 3px; background: currentColor; }
+.side--you li::before { background: var(--color-accent); }
+
+/* the rules */
+.rules-h { margin-top: var(--space-3xl); font-size: var(--text-section); overflow-wrap: break-word; min-width: 0; }
+.rules { list-style: none; margin: var(--space-lg) 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-md); }
+.rule { border: var(--rule-hair) solid var(--color-rule); border-radius: var(--radius-card); padding: var(--space-lg) var(--space-xl) var(--space-xl); background: var(--color-paper); }
+.rule--lead { border-color: var(--color-accent); background: var(--color-accent-wash); }
+.rule .n { display: block; font: 600 var(--text-3xl)/1 var(--font-display); color: var(--color-accent); font-variant-numeric: tabular-nums; }
+.rule h3 { margin-top: var(--space-sm); font-size: var(--text-title); }
+.rule p { margin-top: var(--space-xs); font-size: var(--text-md); line-height: 1.5; color: var(--color-ink-2); }
+.lim { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-xs); margin-top: var(--space-md); }
+.lim div { background: var(--color-paper-2); border-radius: var(--radius-input); padding: var(--space-sm); }
+.lim b { display: block; font: 600 var(--text-2xl)/1 var(--font-display); color: var(--color-ink); font-variant-numeric: tabular-nums; }
+.lim span { display: block; margin-top: var(--space-2xs); font-size: var(--text-sm); line-height: 1.35; color: var(--color-ink-2); }
+
+/* voice first */
+.voice { margin-top: var(--space-3xl); display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-xl); align-items: start; border-top: var(--rule-hair) solid var(--color-ink); padding-top: var(--space-xl); }
+.voice h2 { font-size: var(--text-section); overflow-wrap: break-word; min-width: 0; }
+.voice p { font-size: var(--text-lead); line-height: 1.5; color: var(--color-ink-2); }
+.voice p + p { margin-top: var(--space-md); }
+.voice b { color: var(--color-ink); }
+
+/* applying */
+.apply-well { margin-top: var(--space-3xl); display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-xl); border-top: var(--rule-hair) solid var(--color-ink); padding-top: var(--space-xl); }
+.apply-well h2 { font-size: var(--text-2xl); overflow-wrap: break-word; min-width: 0; }
+.apply-well ul { margin: 0; padding-left: var(--space-lg); }
+.apply-well li { font-size: var(--text-lg); line-height: 1.5; color: var(--color-ink-2); }
+.apply-well li + li { margin-top: var(--space-xs); }
+.apply-well p { margin-top: var(--space-md); color: var(--color-ink-2); }
 .cta { margin-top: var(--space-2xl); display: flex; align-items: center; gap: var(--space-lg); flex-wrap: wrap; }
+
+@media (max-width: 60rem) {
+  .sides, .rules, .voice, .apply-well { grid-template-columns: minmax(0, 1fr); }
+  .voice, .apply-well { gap: var(--space-md); }
+}
 @media (max-width: 40rem) {
+  .side, .rule { padding: var(--space-lg); }
+  .side li { font-size: var(--text-md); }
+  .voice p { font-size: var(--text-md); }
   .lim { grid-template-columns: minmax(0, 1fr); }
-  .rule { padding: var(--space-lg); }
-  .blk p, .blk li { font-size: var(--text-md); }
+  .lim div { display: flex; align-items: baseline; gap: var(--space-sm); }
+  .lim span { margin-top: 0; }
 }
 </style>
 </head>
@@ -56,74 +93,97 @@
 
 <main class="terms">
   <div class="container">
-    <h1>Free for 5 teams. Use it in your first five days, or your seat goes to the next team.</h1>
-    <p class="lead">EpicSocial gives you a social team of agents for your Reddit and X. We want 5 teams who will really use it, and we will see everything they do.</p>
-
-    <div class="rule">
-      <p><b>The five-day rule.</b> If you're not using the product within your first five days, we give your seat to someone else.</p>
-      <p>Your five days start when we send your login. By day five your team should be running: your brief written, a few ideas in, and your first draft approved or sent back with a note. If it isn't, we email you once. On day six your seat goes to the next team on the list.</p>
-    </div>
-
-    <section class="blk">
-      <h2>What you get</h2>
-      <ul>
-        <li>Your own team of six personas: the Scout, the Writer, the Publisher, the Responder, the Engager and the Reporter.</li>
-        <li>A private space that only you log into, for your Reddit, your X, or both.</li>
-        <li>Your brief, written with us on a short call.</li>
-        <li>A direct line to Jordi while things are rough.</li>
-        <li>Four weeks at no cost. You give no card, and nothing renews.</li>
-      </ul>
-    </section>
-
-    <section class="blk">
-      <h2>What you can use</h2>
-      <p>Your personas run on their own schedule, and that never counts against you. What you ask for on top, chatting with your team or asking for an extra run, comes from an allowance that refills every five hours.</p>
-      <div class="lim">
-        <div><b>40</b><span>messages to your team in each five-hour window</span></div>
-        <div><b>10</b><span>extra runs you ask for in each five-hour window</span></div>
-        <div><b>3</b><span>posts a day on each channel, inside each community's own rules</span></div>
-      </div>
-      <p>When you reach a limit, your team waits for the next window. Nothing is charged and nothing is lost.</p>
-    </section>
-
-    <section class="blk">
-      <h2>What we ask of you</h2>
-      <ul>
-        <li>Let us see everything your team does: its runs, its drafts and your feedback. That is how we learn.</li>
-        <li>Send a few ideas a week. A sentence or a voice note is enough.</li>
-        <li>Approve or comment on drafts, ideally within a day.</li>
-        <li>Send a few lines of feedback each week, or take a 15-minute call.</li>
-      </ul>
-    </section>
-
-    <section class="blk">
-      <h2>How to apply well</h2>
-      <p>We pick the 5 strongest applications, not the first 5. These are the things we look for:</p>
-      <ul>
-        <li>You already post on Reddit or X, and you can show us where.</li>
-        <li>You have a product or project with real users or a launch date.</li>
-        <li>One person on your team will approve drafts every day.</li>
-        <li>You can say in three lines what you want your team to post about.</li>
-      </ul>
-      <p>A one-line application goes to the bottom of the list. Jordi reads every application and emails you either way.</p>
-    </section>
-
-    <section class="blk">
-      <h2>When the 5 places are taken</h2>
-      <p>The form stays open and the waitlist starts. A seat that isn't used in its first five days goes to the next team on the list, so a strong application on the waitlist can still get in this month.</p>
-    </section>
-
-    <div class="cta">
+    <h1>The tester contract</h1>
+    <p class="lead">EpicSocial is free for 5 teams. Here is what we give, what we ask back, and four rules.</p>
+    <div class="hero-act">
       <a class="btn" href="../#signup">Apply to test it</a>
       <a class="textlink" href="../">What EpicSocial does</a>
     </div>
+
+    <div class="sides">
+      <section class="side side--we" aria-labelledby="we-h">
+        <h2 id="we-h">We give you</h2>
+        <p class="who">EpicSocial and Jordi</p>
+        <ul>
+          <li>Your own agent team for your Reddit, your X, or both.</li>
+          <li>A private space that only you log into.</li>
+          <li>Your brief, drafted from your application. You correct it in the app.</li>
+          <li>Four weeks at no cost. No card, and nothing renews.</li>
+          <li>Every voice note you send gets read and acted on.</li>
+        </ul>
+      </section>
+      <section class="side side--you" aria-labelledby="you-h">
+        <h2 id="you-h">You give us</h2>
+        <p class="who">Your team, for four weeks</p>
+        <ul>
+          <li>Your team set up within your first five days.</li>
+          <li>One voice note a week, from the app, while you use it.</li>
+          <li>Ideas when you have them. A sentence or a voice note is enough.</li>
+          <li>A yes or a note on each draft, ideally within a day.</li>
+          <li>A look at what your team does, so we can learn from it.</li>
+        </ul>
+      </section>
+    </div>
+
+    <h2 class="rules-h">The rules</h2>
+    <ol class="rules">
+      <li class="rule rule--lead">
+        <span class="n">1</span>
+        <h3>Set up within five days</h3>
+        <p>Your five days start when we send your login. By day five, your brief is done, a few ideas are in, and your first draft is judged. If not, we email you once. On day six your seat goes to the next team.</p>
+      </li>
+      <li class="rule">
+        <span class="n">2</span>
+        <h3>One voice note a week</h3>
+        <p>Your login comes with a voice note link. Once a week, talk for a minute about what worked and what got in your way. We only transcribe it.</p>
+      </li>
+      <li class="rule">
+        <span class="n">3</span>
+        <h3>Stay inside the limits</h3>
+        <p>Your team’s own schedule never counts. What you ask for on top refills every five hours.</p>
+        <div class="lim">
+          <div><b>40</b><span>messages to your team per window</span></div>
+          <div><b>10</b><span>extra runs you ask for per window</span></div>
+          <div><b>3</b><span>posts a day on each channel</span></div>
+        </div>
+      </li>
+      <li class="rule">
+        <span class="n">4</span>
+        <h3>Five places, picked on quality</h3>
+        <p>We pick the 5 strongest applications, not the first 5. After that the form stays open as a waitlist, and a freed seat goes to the next team on it.</p>
+      </li>
+    </ol>
+
+    <section class="voice" aria-labelledby="voice-h">
+      <h2 id="voice-h">Voice first. No calls.</h2>
+      <div>
+        <p>You never have to book a call with us. Whenever you have feedback, leave a voice note.</p>
+        <p><b>Nobody listens to your voice.</b> The recording is transcribed, and your team’s agents read the text and sum it up for Jordi.</p>
+      </div>
+    </section>
+
+    <section class="apply-well" aria-labelledby="apply-h">
+      <h2 id="apply-h">How to apply well</h2>
+      <div>
+        <ul>
+          <li>You already post on Reddit or X, and you can show us where.</li>
+          <li>You have real users or a launch date.</li>
+          <li>One person on your team will judge drafts every day.</li>
+          <li>You can say in three lines what you want your team to post about.</li>
+        </ul>
+        <p>A one-line application goes to the bottom of the list. Jordi reads every application and emails you either way.</p>
+        <div class="cta">
+          <a class="btn" href="../#signup">Apply to test it</a>
+        </div>
+      </div>
+    </section>
   </div>
 </main>
 
 <footer class="foot">
   <div class="container">
     <p>EpicSocial is the social side of <a class="textlink" href="https://epicspine.dev/">EpicSpine</a>. Built by Jordi.</p>
-    <p>Terms for the first tester program, 8 November 2026.</p>
+    <p>The contract for the first tester program, 8 November 2026.</p>
   </div>
 </footer>
 <!-- page view counter (agent_team E46-S17, E80-S2), as on the testers page: no cookie, nothing about the visitor kept; keeps ?s= on links to our other pages. --><script>(function(){var q=new URLSearchParams(location.search),s=(q.get("s")||"").slice(0,40),r="";try{r=document.referrer?new URL(document.referrer).hostname.replace(/^www\./,""):""}catch(e){}var i=new Image(1,1);i.referrerPolicy="no-referrer";i.src="https://signup.alpha9.io/api/public/pv?p=/testers/terms/"+(s?"&s="+encodeURIComponent(s):"")+(r?"&r="+encodeURIComponent(r):"");if(s)document.querySelectorAll("a[href]").forEach(function(a){var v=a.getAttribute("href");if(v.charAt(0)==="#")return;try{var h=new URL(v,location.href);if(h.hostname!==location.hostname||h.searchParams.has("s"))return;h.searchParams.set("s",s);a.setAttribute("href",h.pathname+h.search+h.hash)}catch(e){}})})();</script>
