@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.11.08.4 — Social pack: the weekly community cap is Reddit's only
+
+- **Fixed: `per_community_per_week`** in the `caps` check now applies only on the platforms in the new param `per_community_per_week_platforms` (default `["reddit"]`, where a community is a subreddit). X rows carry the account handle (@ZenodAgent) in Community, so X was held to 1 post a week despite `threads_per_day_by_platform: {x: 3}`; X now takes its 3 a day every day. A pack can list other community platforms.
+- Why: agent_team E78-S5 (zenod-social's desk note, agent_team fbdc4de). Tests: `test_caps_community_week_only_on_community_platforms`.
 ## 2026.11.08.3 — Social pack: product deck, metrics catalog, X 3 posts a day
 
 - **Added: `threads_per_day_by_platform`** in the `caps` check, X 3 a day (Reddit keeps 1 a day and 1 a week per community); the pack's product deck and metrics blocks (`pack_init.py`, README).
