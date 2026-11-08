@@ -158,7 +158,9 @@ class WebMCPTests(unittest.TestCase):
         # Round 3 (EPIC-43 L-1): each benefit is one real screen, so the roles and night mocks went.
         # Round 3 of 2026-11-08 (Jordi): the seven things it does for you, in his order, right under the hero.
         seven = ["context", "commits", "personas", "claims", "doctrine", "sticks", "tree"]
-        self.assertEqual(ids[1:8], seven)
+        # Round 6 of 2026-11-08 (E43-A2, the deck paper): the seven are listed first, as one screen, then each gets its own.
+        self.assertEqual(ids[1], "seven")
+        self.assertEqual(ids[2:9], seven)
         for i in ("top", "together", "family", "install"):
             self.assertIn(i, ids)
         listed = out["calls"]["list"]["sections"]
