@@ -66,7 +66,8 @@ def docs(repo: Path) -> list[Path]:
     for top, dirs, files in os.walk(repo):
         vendored = "SKILL.md" in files
         dirs[:] = [] if vendored else sorted(d for d in dirs if d not in SKIP and not d.startswith("."))
-        found += [] if vendored else [Path(top, n).resolve() for n in sorted(files) if n.endswith(".md")]
+        base = Path(top).resolve()  # one resolve per folder, a file's own only when it is a link (E72-S4)
+        found += [] if vendored else [p.resolve() if (p := base / n).is_symlink() else p for n in sorted(files) if n.endswith(".md")]
     return found
 
 

@@ -57,7 +57,7 @@ def link(path: Path, value: str, cache: dict) -> Path | None:
 
 
 def meta(path: Path, cache: dict) -> dict | None:
-    path = path.resolve()
+    path = path if path in cache else path.resolve()  # keys are resolved: a hit needs no resolve (1170 a scan, E72-S4)
     if path not in cache:
         text = read(path) if path.is_file() else None
         fields, sections = v.parse_fields(text or ""), v.parse_sections(text or "")
