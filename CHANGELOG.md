@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.11.08.8 — Social pack: post links carry the post id; pages count the source
+
+- **Added:** social pack rule `source_tag`: a link to our own public pages in a post, reply or outreach ends with `?s=<the row's Id>` (`https://epicspine.dev/testers/?s=P-0042`), so the host's counter knows which post brought each visit and each application. The epicspine.dev home, testers and social pages pass that id and the referring site's host name to the counter (no cookie, nothing about the visitor), keep `?s=` on links to our other pages, and add both to the sign-up form.
+- Why: agent_team E80-S2 (Jordi approved E80-A2, 2026-11-08: count each visit in the console's database and write one summary line per day to the repo).
+
 ## 2026.11.08.7 — spines.py scan: one git log for the stale check
 
 - **Changed:** the scan's stale check runs one `git log` for all goals (`scripts/git_stamps.py`) instead of one per goal, and remembers link resolves; an agent_team scan on VPS1 went from 10.4–12.4 s and 55 git processes to 5.7–6.5 s and 4, with identical output on five repos.
