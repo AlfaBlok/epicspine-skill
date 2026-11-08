@@ -594,3 +594,19 @@ class InitAndHook(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class HoldRulePerCampaign(unittest.TestCase):
+    def test_hold_rule_per_campaign_e74_s5(self) -> None:
+        """agent_team E74-S5: `Kind: post, Campaign: <code>` holds one campaign's posts; `none` = the repo level."""
+        from pack_checks import holds
+        post = {"kind": "post", "campaign": "EPIC-7", "title": "t", "text": "x"}
+        assert holds("Kind: post", post)
+        assert holds("Kind: post, Campaign: EPIC-7", post)
+        assert holds("kind=post, campaign=epic-7", post)
+        assert not holds("Kind: post, Campaign: EPIC-8", post)
+        assert not holds("Kind: post, Campaign: none", post)
+        assert holds("Kind: post, Campaign: none", {"kind": "post", "campaign": ""})
+        assert holds("Kind: post, Campaign: none", {"kind": "post"})
+        assert not holds("Kind: reply, Campaign: EPIC-7", post)
+        assert holds('"foo, bar"', {"title": "foo, bar", "text": ""})

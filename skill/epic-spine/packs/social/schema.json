@@ -72,7 +72,7 @@
         }},
         "hold_rules": {"heading": "Hold for me", "shape": "table", "add_rows": ["Jordi"], "writers": ["Jordi"], "default": "none", "fields": {
           "id": {"column": "Id", "type": "id", "pattern": "^R[0-9]+$"},
-          "match": {"column": "Hold a post when", "type": "text"},
+          "match": {"column": "Hold a post when", "type": "text", "doc": "a quoted phrase, or `field: value` (several joined by commas must all match; `none` = empty). `Kind: post` holds every post of the repo; `Kind: post, Campaign: EPIC-7` holds one campaign's posts (its Force review, auto-approve off), `Campaign: none` the repo level's (agent_team E74-S5)"},
           "why": {"column": "Why", "type": "text"}
         }}
       }

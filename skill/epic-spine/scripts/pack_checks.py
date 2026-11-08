@@ -1,7 +1,7 @@
 """The content checks a pack's `checks` name, run on one row at the transitions it passed (pack_validate.py).
 
 link_rule (max links, none on line n), disclosure (a phrase in the first lines), never_say (the brief's list),
-hold_rules (a quoted phrase, or `field: value`, from the brief's hold table: matched means held, not scheduled), caps
+hold_rules (a quoted phrase, or `field: value` (several joined by commas all match; `none` = empty), from the brief's hold table: matched means held, not scheduled), caps
 (per platform: posts a day, posts per community a week, replies a day, counting rows in the live states), link_present,
 approved (a phrase in a field only the owner writes: a held post goes out with Jordi's `Approved` note in its Feedback; a DM
 reply with it in the message's Feedback), filled (a field is not empty: a sent DM reply records its send in Result)."""
@@ -36,8 +36,18 @@ def holds(rule: str, rec: dict) -> bool:
     quoted = re.findall(r'["“]([^"”]+)["”]', rule)
     if quoted:
         return any(q.lower() in hay for q in quoted)
-    m = re.fullmatch(r"\s*([\w ]+?)\s*[:=]\s*(.+?)\s*", rule)
-    return bool(m and m.group(1).lower() in rec and rec[m.group(1).lower()].lower() == m.group(2).lower())
+    # `field: value`, or several joined by commas, all of which must match (agent_team E74-S5: `Kind: post, Campaign: EPIC-7`
+    # holds one campaign's posts; the value `none` matches an empty or missing field, `Campaign: none` = the repo level).
+    pairs = [re.fullmatch(r"\s*([\w ]+?)\s*[:=]\s*(.+?)\s*", part) for part in rule.split(",")]
+    if not all(pairs):
+        pairs = [re.fullmatch(r"\s*([\w ]+?)\s*[:=]\s*(.+?)\s*", rule)]
+    def one(m: re.Match | None) -> bool:
+        if not m:
+            return False
+        key, want = m.group(1).lower(), m.group(2).lower()
+        have = str(rec.get(key) or "").strip().lower()
+        return have == "" if want == "none" else key in rec and have == want
+    return all(one(m) for m in pairs)
 
 
 def run_check(key: str, c: dict, rec: dict, ctx: dict) -> list[str]:
