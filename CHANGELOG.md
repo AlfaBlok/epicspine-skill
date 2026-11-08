@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.11.08.10 — A note after a status word no longer makes the status invalid
+
+- **Fixed:** `validate_spine.py` read a whole Status cell as the status, so `done (folded into E47-S4)` (one deliverable, one card), `done (fed E80-A2)` (a step that fed an ask), `done (approved by Jordi 2026-11-08)` and `review — backlog since: …` all failed as "invalid Status". It now reads the status word and drops a note in brackets or after a dash (`status_true.ledger_status`); an unknown word still fails. `operating-model.md` names `done (folded into <row>)`.
+- Why: agent_team E48-S32 (the console's review list kept a folded row as a second card, and the validator flagged rows closed the way root L-43 and L-51 say).
+
 ## 2026.11.08.9 — Social pack: product at two levels, one read order
 
 - **Added:** each campaign's own product deck, `docs/campaigns/<epic-n>/product.md` (schema `product.campaign_file`, `campaign_parts`: What we push, Who it is for, What they get, The offer, How they get it, What we say and never say): what that campaign pushes, narrowing the project's `data/product.md`. `product.read_order` puts "Read first, in this order" at the top of every role's wake text (`pack.py social --wake-text --role R`): the project's product deck, the campaign's, then `data/metrics.md` (the targets and the role's line).

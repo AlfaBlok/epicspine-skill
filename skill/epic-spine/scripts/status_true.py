@@ -4,7 +4,8 @@
 1. Jordi named with no coded ask: a `## Waiting on` line or Current State `Waiting on:`, or an open ledger row he owns.
 2. `Status: done` (spine, or a ledger row citing a criterion ID) while a Done-means box is unticked.
 3. `Waiting on:` says nothing is open for him while a coded ask is open in the same spine.
-Also `closed-rows:` (advisory, never strict-promoted): a finished epic with open ledger rows (sweep: `spine_fix.py --close`)."""
+Also `closed-rows:` (advisory, never strict-promoted): a finished epic with open ledger rows (sweep: `spine_fix.py --close`).
+`ledger_status` (agent_team E48-S32): the status word of a Status cell, so a note after it never makes the status invalid."""
 from __future__ import annotations
 
 import re
@@ -14,6 +15,8 @@ import personas
 
 NAME = re.compile(rf"(?i)(?<![\w-]){personas.HUMAN}\b")
 UNTICKED = re.compile(r"(?m)^\s*- \[ \]\s*([A-Z][A-Z0-9]*-\d+)?")
+# A note after the word: `done (folded into E47-S4)` (root L-51, one card), `done (fed E80-A2)` (L-43), `review — backlog since: …`.
+NOTED = re.compile(r"([a-z]+)(?:\s*\(.*\)|\s+[—–:-]\s.*)", re.S)
 ASK = "`[ask <CODE>: decide|approve|provide|do @Jordi since <date> row <id>]`"
 
 
@@ -52,3 +55,10 @@ def issues(text: str, sections: dict[str, str], status: str, header: list[str], 
     if NO_HUMAN.match(said) and any(a["code"] for a in open_asks):
         out.append("status-true: `Waiting on:` says nothing is open but ask " + ", ".join(a["code"] for a in open_asks if a["code"]) + " is open: list it, or answer it")
     return out
+
+
+def ledger_status(value: str, statuses: set[str]) -> str:
+    """The Status cell lower-cased with any note after a valid status word dropped; anything else unchanged (so it still fails)."""
+    status = re.sub(r"\s+", " ", value.strip().strip("`")).lower()
+    m = NOTED.fullmatch(status)
+    return m.group(1) if m and m.group(1) in statuses else status

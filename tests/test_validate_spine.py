@@ -373,6 +373,16 @@ class LedgerValidationTests(unittest.TestCase):
                 self.assertEqual([], self.document(status=status).errors)
         self.assertEqual([], self.document(status="ACTIVE").errors)
 
+    def test_status_with_a_note_after_its_word_is_valid(self):
+        # agent_team E48-S32: root L-51 folds a sibling row, L-43 closes a step that fed an ask, the console writes Jordi's press
+        for status in ("done (folded into E47-S4)", "done (fed E80-A2)", "done (approved by Jordi 2026-11-08)",
+                       "done (no confirm: plumbing)", "review — backlog since: 2026-11-02", "deferred (parked by Jordi 2026-11-08: \"later\")"):
+            with self.subTest(status=status):
+                self.assertEqual([], self.document(status=status).errors)
+        for status in ("closed (folded into E47-S4)", "done-ish", "done folded into E47-S4", "(done)"):
+            with self.subTest(status=status):
+                self.assertTrue(any("has invalid Status:" in error for error in self.document(status=status).errors))
+
     def test_bare_markdown_and_enterprise_issue_urls(self):
         for issue in (
             self.issue,
