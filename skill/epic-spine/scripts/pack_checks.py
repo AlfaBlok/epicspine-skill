@@ -2,7 +2,7 @@
 
 link_rule (max links, none on line n), disclosure (a phrase in the first lines), never_say (the brief's list),
 hold_rules (a quoted phrase, or `field: value`, from the brief's hold table: matched means held, not scheduled), caps
-(per platform: posts a day, posts per community a week, replies a day, counting rows in the live states), link_present,
+(per platform: posts a day (threads_per_day, or threads_per_day_by_platform for that platform), posts per community a week, replies a day, counting rows in the live states), link_present,
 approved (a phrase in a field only the owner writes: a held post goes out with Jordi's `Approved` note in its Feedback; a DM
 reply with it in the message's Feedback), filled (a field is not empty: a sent DM reply records its send in Result)."""
 from __future__ import annotations
@@ -81,8 +81,9 @@ def run_check(key: str, c: dict, rec: dict, ctx: dict) -> list[str]:
         plat, kind, out = rec.get("platform", "").lower(), rec.get("kind", "").lower(), []
         live = [r for r in ctx["rows"] if r.get(ctx["status"], "").lower() in ctx["live"] and r.get("platform", "").lower() == plat]
         posts = [r for r in live if r.get("kind", "").lower() == "post"]
-        if kind == "post" and len(n := [r for r in posts if day(r) == day(rec)]) > p.get("threads_per_day", 1e9):
-            out.append(f"{len(n)} posts on {rec.get('platform')} on {day(rec)} (cap {p['threads_per_day']} a day)")
+        cap = (p.get("threads_per_day_by_platform") or {}).get(plat, p.get("threads_per_day", 1e9))
+        if kind == "post" and len(n := [r for r in posts if day(r) == day(rec)]) > cap:
+            out.append(f"{len(n)} posts on {rec.get('platform')} on {day(rec)} (cap {cap} a day)")
         try:
             week = dt.date.fromisoformat(day(rec)).isocalendar()[:2]
             same = [r for r in posts if r.get("community") and r.get("community") == rec.get("community")
