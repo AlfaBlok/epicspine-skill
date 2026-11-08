@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.11.08.6 — Social pack: a hold rule can name a campaign
+
+- **Added:** a hold rule's `field: value` may join several pairs with commas, all of which must match (`Kind: post, Campaign: EPIC-7`), and `none` matches an empty field, so one repo's campaigns can each have their own review rule.
+- Why: agent_team E74-S5 (Jordi, E73-A1 D1: auto-approve per campaign, off by default), merged as E74-S6 on Jordi's close of E74-S5.
+
 ## 2026.11.08.5 — Social pack: Jordi's own lines are the floor, not the deliverable
 
 - **Added: a seventh step to the benefits recipe** (`benefits.recipe`, in every persona's wake text) and a Benefits home rule in the pack README: when Jordi hands over his own lines ("here is an example, WDYT?"), write for the end user, show his version beside ours with each change named, add what his lines miss and one bolder option, read them to a cold reader first, and after his approve ask for his verdict on the result. The benefits row in the README no longer says "Jordi's own words, in his order".
