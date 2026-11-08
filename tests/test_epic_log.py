@@ -16,6 +16,7 @@ from test_validate_spine import VALIDATOR_PATH, validate_spine as v
 SCRIPTS = VALIDATOR_PATH.parent
 sys.path.insert(0, str(SCRIPTS))
 import epic_log  # noqa: E402
+import git_stamps  # noqa: E402
 import spines  # noqa: E402
 
 ROOT = """# EPIC-0: Root
@@ -268,8 +269,35 @@ class StaleTests(unittest.TestCase):
     def test_git_timeout_or_oserror_skips_the_node_and_the_scan_returns(self) -> None:
         nodes = [{"path": "docs/a.md", "title": "A", "status": "active"}, {"path": "docs/b.md", "title": "B", "status": "blocked"}]
         for error in (subprocess.TimeoutExpired("git", 5), OSError("no git")):
-            with mock.patch.object(epic_log.subprocess, "run", side_effect=error):
+            with mock.patch.object(git_stamps.subprocess, "Popen", side_effect=error):
                 self.assertEqual([], epic_log.stale(Path("."), nodes))
+
+    def test_one_git_for_every_goal_reads_each_files_newest_commit(self) -> None:
+        """E72-S4: one `git log` for all goals (it was one per goal), the same days as `git log -1 -- <file>`."""
+        with tempfile.TemporaryDirectory() as tmp:
+            repo, now = Path(tmp), 1_800_000_000
+
+            def commit(name: str, days_ago: int) -> None:
+                (repo / name).write_text(f"{name} {days_ago}\n", encoding="utf-8")
+                when = f"@{now - days_ago * 86400} +0000"
+                env = {"GIT_COMMITTER_DATE": when, "GIT_AUTHOR_DATE": when, "GIT_AUTHOR_NAME": "t", "GIT_AUTHOR_EMAIL": "t@t",
+                       "GIT_COMMITTER_NAME": "t", "GIT_COMMITTER_EMAIL": "t@t", "PATH": "/usr/bin:/bin"}
+                subprocess.run(["git", "add", name], cwd=repo, check=True, env=env)
+                subprocess.run(["git", "commit", "-q", "-m", name], cwd=repo, check=True, env=env)
+
+            subprocess.run(["git", "init", "-q"], cwd=repo, check=True)
+            commit("old.md", 40)
+            commit("both.md", 30)
+            commit("both.md", 2)
+            commit("fresh.md", 1)
+            (repo / "untracked.md").write_text("x\n", encoding="utf-8")
+            nodes = [{"path": p, "title": p, "status": "active"} for p in ("old.md", "both.md", "fresh.md", "untracked.md")]
+            nodes.append({"path": "done.md", "title": "done", "status": "done"})
+            real = subprocess.Popen
+            with mock.patch.object(git_stamps.subprocess, "Popen", side_effect=real) as popen:
+                self.assertEqual([{"path": "old.md", "title": "old.md", "days": 40}], epic_log.stale(repo, nodes, now=now))
+            self.assertEqual(1, popen.call_count)
+            self.assertEqual({"old.md": now - 40 * 86400, "both.md": now - 2 * 86400}, git_stamps.last_commits(repo, ["old.md", "both.md"]))
 
 
 class PreCommitTreeTests(EpicLogCase):

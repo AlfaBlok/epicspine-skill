@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.11.08.7 — spines.py scan: one git log for the stale check
+
+- **Changed:** the scan's stale check runs one `git log` for all goals (`scripts/git_stamps.py`) instead of one per goal, and remembers link resolves; an agent_team scan on VPS1 went from 10.4–12.4 s and 55 git processes to 5.7–6.5 s and 4, with identical output on five repos.
+- Why: agent_team E72-S4 (infra-vps S15, Jordi 2026-11-08: VPS1 is for production; buttons must answer).
+
 ## 2026.11.08.6 — Social pack: a hold rule can name a campaign
 
 - **Added:** a hold rule's `field: value` may join several pairs with commas, all of which must match (`Kind: post, Campaign: EPIC-7`), and `none` matches an empty field, so one repo's campaigns can each have their own review rule.
