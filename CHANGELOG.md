@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.11.08.5 — Social pack: Jordi's own lines are the floor, not the deliverable
+
+- **Added: a seventh step to the benefits recipe** (`benefits.recipe`, in every persona's wake text) and a Benefits home rule in the pack README: when Jordi hands over his own lines ("here is an example, WDYT?"), write for the end user, show his version beside ours with each change named, add what his lines miss and one bolder option, read them to a cold reader first, and after his approve ask for his verdict on the result. The benefits row in the README no longer says "Jordi's own words, in his order".
+- Why: agent_team E71-S5 carries EPIC-71 L-2 (finding `docs/status/e71-s3-learnings.md`: his seven lines came back unchanged, were approved, and added nothing). Iteration 2's lessons (what it does in plain words beside its benefit, this product only) were already in the recipe (2026.11.08.1).
+
 ## 2026.11.08.4 — Social pack: the weekly community cap is Reddit's only
 
 - **Fixed: `per_community_per_week`** in the `caps` check now applies only on the platforms in the new param `per_community_per_week_platforms` (default `["reddit"]`, where a community is a subreddit). X rows carry the account handle (@ZenodAgent) in Community, so X was held to 1 post a week despite `threads_per_day_by_platform: {x: 3}`; X now takes its 3 a day every day. A pack can list other community platforms.

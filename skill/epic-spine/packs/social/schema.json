@@ -510,7 +510,8 @@
       "Walk the product in the order the user meets it, one thing per line, five lines or fewer.",
       "Each line pairs What it does (plain words: it writes, it holds, it answers) with the Benefit it brings (what the user gets, in their terms).",
       "Plain words a user would say; no slogans, abstract nouns or method names; only this product, never another one the team posts for.",
-      "Mark each line works today, half built or not built, with a real screen."
+      "Mark each line works today, half built or not built, with a real screen.",
+      "When Jordi hands over his own lines (\"here is an example, WDYT?\"), they are the floor and the voice sample, never the deliverable (agent_team EPIC-71 L-2): write for the end user, not for him; show his version beside ours line by line, naming each change in a few words; add what his lines miss and one bolder alternative, so he picks from more than one option; read the lines to a cold reader first; after he approves, ask for his verdict on the result (did we add anything over his words?), since an approve alone is not one. Returning his words unchanged is not a draft."
     ],
     "discovery": "What people say they want (a comment, a reply, a desk note) is noted with its link as an Observations line `L-<n> | … | proposed for the brief (Benefits): \"<the line to add or change>\"` when two notes agree; Jordi adds it to the Benefits table or says not now. Nobody but Jordi edits the table."
   },
