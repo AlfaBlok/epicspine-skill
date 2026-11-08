@@ -44,6 +44,8 @@ figcaption { margin-top: var(--space-sm); font-size: var(--text-sm); color: var(
 .hero .container { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--space-3xl); align-items: center; }
 .hero h1 { max-width: 13ch; font-size: var(--text-display-s); }
 .hero .lead { margin-top: var(--space-lg); color: var(--color-ink-2); max-width: 34ch; }
+.places { margin-top: var(--space-md); font-size: var(--text-md); font-weight: 600; color: var(--color-accent-2); max-width: 40ch; } /* agent_team E46-S18: the 5 places, from the console's count */
+.places--full { color: var(--color-ink); }
 .hero .actions { margin-top: var(--space-xl); display: flex; align-items: center; gap: var(--space-lg); flex-wrap: wrap; }
 .hero .shot { margin-right: calc(var(--gutter) * -1); }
 

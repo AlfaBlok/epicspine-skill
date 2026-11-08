@@ -9,9 +9,9 @@
 <link rel="icon" href="/favicon-32-social.png" type="image/png" sizes="32x32">
 <link rel="icon" href="/favicon-16-social.png" type="image/png" sizes="16x16">
 <link rel="apple-touch-icon" href="/apple-touch-icon-social.png">
-<meta name="description" content="An agent team that runs your Reddit and X, and you approve every post. I'm picking a few testers for November: $10 once for the month, only to keep out abuse. A two-minute application.">
+<meta name="description" content="An agent team that runs your Reddit and X, and you approve every post. Free for 5 teams this November: use it in your first five days, or your seat goes to the next team. A two-minute application.">
 <meta property="og:title" content="EpicSocial: apply to test it">
-<meta property="og:description" content="An agent team that runs your Reddit and X. You approve every post. $10 once, for the month.">
+<meta property="og:description" content="An agent team that runs your Reddit and X. You approve every post. Free for 5 teams.">
 <meta property="og:image" content="https://epicspine.dev/testers/shots/pipeline.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="fonts/instrument-sans-600.woff2" as="font" type="font/woff2" crossorigin>
@@ -30,7 +30,8 @@
     <div class="container">
       <div>
         <h1>Agents draft. You approve every post.</h1>
-        <p class="lead">I’m picking a few testers for November. $10 once, for the month.</p>
+        <p class="lead">Free for 5 teams this November. Use it in your first five days, or your seat goes to the next team. <a class="textlink" href="terms/">Read the terms</a></p>
+        <p class="places" data-places hidden></p>
         <div class="actions">
           <a class="btn" href="#signup">Apply to test it</a>
           <a class="textlink" href="#made">See how a post is made</a>
@@ -92,11 +93,12 @@
     <div class="container">
       <div class="head">
         <h2>The deal, plainly</h2>
-        <p class="lead">It is early and rough. I’d rather have five people who really use it than fifty who sign up.</p>
+        <p class="lead">It is early and rough. I’d rather have five teams who really use it than fifty who sign up.</p>
       </div>
       <table class="deal">
+        <tr><th scope="row">The five-day rule</th><td>If you’re not using it within your first five days, I give your seat to the next team. Your five days start when I send your login.</td></tr>
         <tr><th scope="row">What you get</th><td>Your own team for your Reddit and/or X, in a private space only you log into. We write your brief together on a short call, and you talk to me directly while it is rough.</td></tr>
-        <tr><th scope="row">What I’d ask of you</th><td><ul><li>A few ideas a week.</li><li>Approve or comment on drafts, ideally within a day.</li><li>A few lines of feedback every week, or a 15-minute call.</li><li>About four weeks: the launch window, November 2026.</li></ul></td></tr>
+        <tr><th scope="row">What I’d ask of you</th><td><ul><li>A few ideas a week.</li><li>Approve or comment on drafts, ideally within a day.</li><li>A few lines of feedback every week, or a 15-minute call.</li><li>About four weeks: the launch window, November 2026.</li></ul> <a class="textlink" href="terms/">The full terms, with the usage limits</a></td></tr>
         <tr><th scope="row">What to be comfortable with</th><td><ul><li>Agents drafting in your name from your ideas. You approve every post.</li><li>Logging into your X and/or Reddit once in a private browser only your team uses, so it can post what you approved. Log it out any time; until then you still get the drafts.</li><li>Rough edges. Things will break; I fix them fast and tell you.</li></ul></td></tr>
         <tr><th scope="row">A case study, if you like</th><td>During the launch I’d like to show one or two real teams at work. You read and OK every line first, and saying no has no effect on your application.</td></tr>
       </table>
@@ -105,10 +107,10 @@
 
   <section class="band" aria-labelledby="price-h">
     <div class="container">
-      <h2 id="price-h" class="price">$10, once<span class="price-unit">for your month of testing</span></h2>
+      <h2 id="price-h" class="price">Free<span class="price-unit">for 5 teams, four weeks</span></h2>
       <div>
-        <p>It is not a subscription and nothing renews. The fee is there only to keep out abuse: each tester’s team costs me about $50 in compute.</p>
-        <p>Nothing to pay now. If you’re picked, the payment link comes when your team is ready to run.</p>
+        <p>No card, nothing to pay, nothing renews. What you ask of your team on top of its schedule comes from an allowance that refills every five hours.</p>
+        <p>I pick the 5 strongest applications, not the first 5. <a class="textlink" href="terms/">Read the terms</a></p>
       </div>
     </div>
   </section>
@@ -118,6 +120,7 @@
       <div class="aside">
         <h2>Apply in two minutes</h2>
         <p>Yes or no to each requirement, a few lines on how you’d use it, and whether you’d be part of a case study. I read every application myself and email you either way.</p>
+        <p class="places" data-places hidden></p>
         <h3>What happens next</h3>
         <p>I set up your team, send your login, and we write your brief on a short call.</p>
       </div>
@@ -128,8 +131,9 @@
           <ol>
             <li>Your answers are saved and I get a note about them straight away.</li>
             <li>I read every application myself and email you either way, to the address you gave.</li>
-            <li>If you’re picked, I set up your team and send your login. The $10 payment, once for the month, comes only when your team is ready to run. Nothing to pay now.</li>
+            <li>If you’re picked, I set up your team and send your login. Your five days start then. Nothing to pay.</li>
           </ol>
+          <p id="ok-waitlist" class="small" hidden>All 5 places are applied for, so you’re on the waitlist. A seat that isn’t used in its first five days goes to the next team on the list.</p>
           <p class="small">Typo in your email, or changed an answer? Send the form again with the same email: the newest answers replace the old ones.</p>
         </div>
         <div id="err" class="msg err">That didn’t go through. Check the email address and try again.</div>
@@ -148,7 +152,7 @@
             <div class="q"><p>Are you comfortable logging into your X and/or Reddit once in a private browser your team uses, so it can post what you approved?</p><span class="yn"><label><input type="radio" name="req_login" value="yes" required><span>Yes</span></label><label><input type="radio" name="req_login" value="no"><span>No</span></label></span></div>
             <div class="q"><p>Will you give feedback every week (a few lines or a short call)?</p><span class="yn"><label><input type="radio" name="req_feedback" value="yes" required><span>Yes</span></label><label><input type="radio" name="req_feedback" value="no"><span>No</span></label></span></div>
             <div class="q"><p>Are you available during the launch window (November 2026, about four weeks)?</p><span class="yn"><label><input type="radio" name="req_window" value="yes" required><span>Yes</span></label><label><input type="radio" name="req_window" value="no"><span>No</span></label></span></div>
-            <div class="q"><p>Are you OK paying $10 once for your month of testing (only if you’re picked, when your team is ready)?</p><span class="yn"><label><input type="radio" name="req_pay" value="yes" required><span>Yes</span></label><label><input type="radio" name="req_pay" value="no"><span>No</span></label></span></div>
+            <div class="q"><p>Will your team be running in your first five days (your brief, a few ideas, a first draft judged)?</p><span class="yn"><label><input type="radio" name="req_fivedays" value="yes" required><span>Yes</span></label><label><input type="radio" name="req_fivedays" value="no"><span>No</span></label></span></div>
           </fieldset>
 
           <label for="useCase">How would you use it? A campaign, a goal, a launch: a few lines is plenty.</label>
@@ -158,7 +162,7 @@
             <div class="q"><p>Would you be part of a real-life case study during the launch (you OK every line first)?</p><span class="yn"><label><input type="radio" name="caseStudy" value="yes" required><span>Yes</span></label><label><input type="radio" name="caseStudy" value="no"><span>No</span></label></span></div>
           </fieldset>
 
-          <input type="hidden" name="plan" value="tester-10">
+          <input type="hidden" name="plan" value="tester-free-5">
           <input type="hidden" name="source" value="epicspine.dev/testers">
           <div class="hp" aria-hidden="true"><label for="website">Leave this empty</label><input id="website" name="website" tabindex="-1" autocomplete="off"></div>
           <button class="btn submit" type="submit">Send my application</button>
@@ -182,6 +186,7 @@
       // E46-S4 r2: the confirmation replaces the form, so nobody wonders whether pressing send did anything.
       var ok = document.getElementById("ok");
       ok.style.display = "block";
+      if (q.get("waitlist")) document.getElementById("ok-waitlist").hidden = false;
       document.querySelector("form").style.display = "none";
       ok.scrollIntoView({ block: "center" });
       ok.focus({ preventScroll: true });
@@ -190,6 +195,20 @@
     else if (q.get("error")) document.getElementById("err").style.display = "block";
     var src = q.get("utm_source") || q.get("src");
     if (src) document.querySelector('input[name="source"]').value = "epicspine.dev/testers?" + src.slice(0, 40);
+    // agent_team E46-S18: free for 5 teams. The console's count of applications says whether the 5 places are applied for;
+    // the form stays open either way (past 5 it is the waitlist). If the count can't be read, the page simply says nothing more.
+    var spots = document.querySelectorAll("[data-places]");
+    if (!spots.length || !window.fetch) return;
+    fetch("https://signup.alpha9.io/api/public/testers", { method: "POST", body: new URLSearchParams({ places: "1" }), redirect: "error", cache: "no-store" })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (p) {
+        if (!p || typeof p.taken !== "number" || typeof p.cap !== "number") return;
+        var t = p.open
+          ? p.cap + " places. " + (p.taken === 0 ? "Applications are open." : p.taken + (p.taken === 1 ? " application" : " applications") + " so far.")
+          : "All " + p.cap + " places are applied for. The waitlist is open: apply, and a seat that isn’t used in its first five days goes to the next team on the list.";
+        spots.forEach(function (el) { el.textContent = t; el.hidden = false; if (!p.open) el.classList.add("places--full"); });
+      })
+      .catch(function () {});
   })();
 </script>
 <!-- page view counter (agent_team E46-S17, E80-S2): our own, no cookie, nothing about the visitor kept. It sends the post id of a link's ?s= and only the host name of the site the visitor came from, keeps ?s= on links to our other pages, and adds both to the sign-up form so an application keeps its source. --><script>(function(){var q=new URLSearchParams(location.search),s=(q.get("s")||"").slice(0,40),r="";try{r=document.referrer?new URL(document.referrer).hostname.replace(/^www\./,""):""}catch(e){}var i=new Image(1,1);i.referrerPolicy="no-referrer";i.src="https://signup.alpha9.io/api/public/pv?p=/testers/"+(s?"&s="+encodeURIComponent(s):"")+(r?"&r="+encodeURIComponent(r):"");if(s)document.querySelectorAll("a[href]").forEach(function(a){var v=a.getAttribute("href");if(v.charAt(0)==="#")return;try{var h=new URL(v,location.href);if(h.hostname!==location.hostname||h.searchParams.has("s"))return;h.searchParams.set("s",s);a.setAttribute("href",h.pathname+h.search+h.hash)}catch(e){}});document.querySelectorAll("form[action*='signup.alpha9.io']").forEach(function(f){[["s",s],["ref",r]].forEach(function(p){if(!p[1])return;var x=document.createElement("input");x.type="hidden";x.name=p[0];x.value=p[1];f.appendChild(x)})})})();</script><noscript><img src="https://signup.alpha9.io/api/public/pv?p=/testers/" alt="" width="1" height="1" style="position:absolute;left:-9999px" referrerpolicy="no-referrer" loading="eager"></noscript>
