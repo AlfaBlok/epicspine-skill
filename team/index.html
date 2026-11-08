@@ -18,6 +18,17 @@
 <link rel="preload" href="../fonts/funnel-display-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="../fonts/funnel-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../epic.css">
+<style>
+/* agent_team E43-S7 round 2: the inbox niceties, drawn from EpicTeam's one feature list by tools/feature_list.py */
+.nice { display: grid; gap: var(--space-xl); }
+.nice .say { display: grid; gap: var(--space-md); }
+.nice h2 { font-size: clamp(2rem, 2.2vw + 0.8rem, 3.25rem); max-width: 24ch; }
+.nice .was { max-width: 52ch; }
+.nice-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-md); grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr)); }
+.nice-list li { display: grid; align-content: start; gap: var(--space-xs); padding: var(--space-md); border: 1px solid var(--color-rule); border-radius: var(--radius-card); background: var(--color-paper); }
+.nice-list h3 { font-size: var(--text-md); }
+.nice-list p { color: var(--color-ink-2); font-size: var(--text-sm); }
+</style>
 </head>
 <body>
 <header class="top">
@@ -28,6 +39,7 @@
       <li class="hide-s"><a href="#voice">Voice to inbox</a></li>
       <li class="hide-s"><a href="#tree">The tree</a></li>
       <li class="hide-s"><a href="#review">Finished work</a></li>
+      <li class="hide-s"><a href="#inbox-focus">Focus</a></li>
       <li class="hide-s"><a href="#signins">Sign-ins</a></li>
       <li class="hide-s"><a href="#seats">Seats</a></li>
       <li><a href="../book/">Book</a></li>
@@ -118,7 +130,28 @@
     </div>
   </section>
 
-  <section class="band" id="signins" aria-labelledby="h-signins">
+  <!-- features:team begin (tools/feature_list.py writes this) -->
+  <section class="band" id="inbox-focus" aria-labelledby="h-inbox-focus">
+    <div class="container nice">
+      <div class="say">
+        <h2 id="h-inbox-focus">Keeps your inbox focused, no context overload.</h2>
+        <p class="was">Small things the team does so your list holds only what needs you, once, in words you can judge.</p>
+      </div>
+      <ul class="nice-list">
+        <li><h3>One page, one card</h3><p>When several tasks change the same page, you get one card for it, never one per task.</p></li>
+        <li><h3>Folded tasks close themselves</h3><p>A task folded into another task's card closes on its own, so it never asks you twice.</p></li>
+        <li><h3>Answered questions leave your list</h3><p>Answer a question once, in the inbox or in the repo, and it drops off for good.</p></li>
+        <li><h3>Snooze what can wait</h3><p>Hide anything for three days, a week or a month. It comes back by itself, and a count shows what is snoozed.</p></li>
+        <li><h3>Vague work never reaches you</h3><p>Finished work reaches you only as a clear card with a live link to check. Anything vaguer goes back to the agent first.</p></li>
+        <li><h3>The Gap finder skips what already shipped</h3><p>Each day it lists what you asked for more than once and still lack, after checking what was delivered since its last run.</p></li>
+        <li><h3>Proposals never repeat</h3><p>The two personas that suggest new goals check what exists and each other first, and never suggest a turned-down idea again.</p></li>
+        <li><h3>Every button answers at once</h3><p>A press is saved within a second and the slow repo write runs after, so you never wait or press twice.</p></li>
+      </ul>
+    </div>
+  </section>
+<!-- features:team end -->
+
+  <section class="band alt" id="signins" aria-labelledby="h-signins">
     <div class="container proof">
       <div class="say">
         <h2 id="h-signins">Sign in once. Every agent can use it.</h2>
@@ -131,7 +164,7 @@
     </div>
   </section>
 
-  <section class="band alt" id="seats" aria-labelledby="h-seats">
+  <section class="band" id="seats" aria-labelledby="h-seats">
     <div class="container proof">
       <div class="say">
         <h2 id="h-seats">One usage limit never stops the work.</h2>
@@ -144,7 +177,7 @@
     </div>
   </section>
 
-  <section class="band" id="spine" aria-labelledby="h-spine">
+  <section class="band alt" id="spine" aria-labelledby="h-spine">
     <div class="container proof">
       <div class="say">
         <h2 id="h-spine">Its memory is your repo.</h2>
