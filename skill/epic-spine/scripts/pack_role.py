@@ -47,7 +47,7 @@ def _benefits(schema: dict) -> list[str]:
         return []
     fkey, skey = b["home"].split(".")
     f, s = schema["files"][fkey], schema["files"][fkey]["sections"][skey]
-    return ["", f"Benefits home (a key element: read it first, with the brief): {_where(f, s)}. " + "Jordi's own lines on what the user gets, each with its status and screen; only he edits them.",
+    return ["", f"Benefits home (a key element: read it first, with the brief): {_where(f, s)}. " + "What the product does for the user, each line paired with the benefit it brings, its status and screen; only Jordi edits them.",
             f"- Posts: {b['post_rule']}", f"- Ideas: {b['idea_rule']}", "- Writing a benefit (the recipe):"] + [f"  {i}. {x}" for i, x in enumerate(b["recipe"], 1)] + [f"- Discovery: {b['discovery']}"]
 
 

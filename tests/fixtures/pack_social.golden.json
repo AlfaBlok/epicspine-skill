@@ -57,6 +57,7 @@
     "benefits": [
       {
         "id": "1",
+        "does": null,
         "benefit": "You drop in loose ideas, and a writer turns them into posts for you.",
         "status": "works today",
         "screen": "https://acme.example/pipeline.png",
@@ -65,6 +66,7 @@
       },
       {
         "id": "2",
+        "does": null,
         "benefit": "A researcher reads your competitors for new ideas.",
         "status": "half built",
         "screen": null,

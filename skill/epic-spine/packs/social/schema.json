@@ -28,9 +28,10 @@
       "sections": {
         "objective": {"path": "docs/spines/root.md", "heading": "Goal", "shape": "text", "writers": ["Jordi"]},
         "targets": {"path": "docs/spines/root.md", "heading": "Targets", "shape": "text", "writers": ["Jordi"]},
-        "benefits": {"path": "data/brief.md", "heading": "Benefits", "shape": "table", "optional": true, "add_rows": ["Jordi"], "writers": ["Jordi"], "doc": "The benefits home (agent_team E71-S2, approved under E71-A4): what the user gets from the product, as Jordi's own lines in his order and words, each with its status and the real screen that shows it. It is the first section of the brief and every persona reads it as a key element; only Jordi edits it, and a change the team sees reason for comes as an Observations line `proposed for the brief (Benefits)`. A repo with no benefits home leaves the section out.", "fields": {
+        "benefits": {"path": "data/brief.md", "heading": "Benefits", "shape": "table", "optional": true, "add_rows": ["Jordi"], "writers": ["Jordi"], "doc": "The benefits home (agent_team E71-S2, approved under E71-A4): what the product does for the user, each line paired with the benefit it brings, its status and the real screen that shows it (Jordi's seven lines of 7 Nov, rewritten into What it does and Benefit on his 8 Nov feedback). It is the first section of the brief and every persona reads it as a key element; only Jordi edits it, and a change the team sees reason for comes as an Observations line `proposed for the brief (Benefits)`. A repo with no benefits home leaves the section out.", "fields": {
           "id": {"column": "#", "type": "id", "pattern": "^[1-9][0-9]*$"},
-          "benefit": {"column": "Benefit", "type": "text", "doc": "one line a user would say, someone acting in it (a writer, a researcher, the team, you)"},
+          "does": {"column": "What it does", "type": "text", "optional": true, "doc": "what the product does for the user, in plain words a non-engineer gets at once (it writes, it holds, it answers); the Benefit beside it is what the user gets from it (agent_team E71-S2 iteration 2, Jordi 2026-11-08: features stated plainly, each connected to its benefit)"},
+          "benefit": {"column": "Benefit", "type": "text", "doc": "what the user gets from the line's What it does, in their terms (you, your time, your name); one line a user would say"},
           "status": {"column": "Status", "type": "enum", "values": ["works today", "half built", "not built"], "doc": "a post or page promises only a line that works today; the others read `coming soon`"},
           "screen": {"column": "Screen", "type": "text", "doc": "the real screen that shows the line: a link to a screenshot or the live page (EPIC-43 L-1: shown, not told)"},
           "carried_by": {"column": "Carried by", "type": "refs", "computed": {"from": "posts.rows.benefit"}}
@@ -501,14 +502,14 @@
   "benefits": {
     "doc": "The benefits home (agent_team E71-S2, Jordi's E71-A4 approval 2026-11-07): the first section of data/brief.md, `## Benefits`. Every persona is handed it with the brief, reads it as a key element and writes from it; the rule for writing a benefit is the recipe below (agent_team EPIC-71 L-1).",
     "home": "brief.benefits",
-    "post_rule": "A new post shows ONE benefit from the Benefits table, names its number in Benefit, opens on that benefit (what the user gets, shown with the real screen, someone acting) and may ask a question after it. The benefit must be `works today`; a `half built` or `not built` line is never promised as working, only called coming soon. A post already approved or scheduled is not rewritten to fit this rule.",
+    "post_rule": "A new post shows ONE benefit from the Benefits table, names its number in Benefit, opens on that benefit (what the user gets) and shows its What it does with the real screen and may ask a question after it. The benefit must be `works today`; a `half built` or `not built` line is never promised as working, only called coming soon. A post already approved or scheduled is not rewritten to fit this rule.",
     "idea_rule": "An idea may come without a benefit; the Writer names the one it demonstrates when it takes the idea. One benefit fans out into many posts across ideas and platforms.",
     "recipe": [
-      "Draft first: seven lines or fewer on one screen, before any research.",
+      "Draft first: five lines or fewer on one screen, before any research.",
       "If the voice matters and there is no example, ask for one or write one and say so.",
-      "Walk the product in the order the user meets it, one thing per line.",
-      "Someone acts in every line: a writer, a researcher, the team, you.",
-      "Plain words a user would say; no slogans, abstract nouns or method names.",
+      "Walk the product in the order the user meets it, one thing per line, five lines or fewer.",
+      "Each line pairs What it does (plain words: it writes, it holds, it answers) with the Benefit it brings (what the user gets, in their terms).",
+      "Plain words a user would say; no slogans, abstract nouns or method names; only this product, never another one the team posts for.",
       "Mark each line works today, half built or not built, with a real screen."
     ],
     "discovery": "What people say they want (a comment, a reply, a desk note) is noted with its link as an Observations line `L-<n> | … | proposed for the brief (Benefits): \"<the line to add or change>\"` when two notes agree; Jordi adds it to the Benefits table or says not now. Nobody but Jordi edits the table."

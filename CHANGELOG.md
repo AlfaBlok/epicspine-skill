@@ -4,6 +4,20 @@
 
 - **Fixed: `per_community_per_week`** in the `caps` check now applies only on the platforms in the new param `per_community_per_week_platforms` (default `["reddit"]`, where a community is a subreddit). X rows carry the account handle (@ZenodAgent) in Community, so X was held to 1 post a week despite `threads_per_day_by_platform: {x: 3}`; X now takes its 3 a day every day. A pack can list other community platforms.
 - Why: agent_team E78-S5 (zenod-social's desk note, agent_team fbdc4de). Tests: `test_caps_community_week_only_on_community_platforms`.
+## 2026.11.08.3 — Social pack: product deck, metrics catalog, X 3 posts a day
+
+- **Added: `threads_per_day_by_platform`** in the `caps` check, X 3 a day (Reddit keeps 1 a day and 1 a week per community); the pack's product deck and metrics blocks (`pack_init.py`, README).
+- Why: agent_team E78-S1 for Jordi's E78-5 ("A 15-day hard push: more than one post a day"); merged on zenod-social's desk note (agent_team fbdc4de). Every post stays held for Jordi's approval.
+
+## 2026.11.08.2 — Dispatcher: no console fallback, a refused pick is queued
+
+- **Removed: `fallback: "console"`** from the dispatcher contract (`references/machine-dispatcher.md`). A `pick` with a null id is retried in the turn when `retryable`, else the rows are recorded as queued; a worker is never launched on another host or handed to a console.
+- Why: agent_team E6-S63 (infra-vps S15, Jordi 2026-11-08: "We should do all the dispatching on VPS3"); the agent_team console now refuses that launch (409 `vps1_workers_off`).
+
+## 2026.11.08.1 — Social pack: benefits say what it does and what you get
+
+- **Added: optional `What it does` column** in `## Benefits` (`brief.benefits.does`): what the product does for the user in plain words, beside the `Benefit` it brings (what the user gets). A table without the column still validates. The post rule now opens on the benefit and shows its What it does with the real screen; the recipe asks for five lines or fewer, each pairing the two, about this product only.
+- Why: agent_team E71-S2 iteration 2 (Jordi, 2026-11-08: "what specifically does it do for you … connected to the benefit"; the benefits had mixed in another product). Tests: the export golden.
 
 ## 2026.11.07.3 — Social pack: Force review holds posts scheduled without review
 
