@@ -156,11 +156,13 @@ class DefaultBehaviorsTest(unittest.TestCase):
         self.assertIn("machine dispatcher", read("skill/epic-spine/references/roles-and-dispatch.md").lower())
 
     def test_machine_dispatcher_null_pick_retries_in_turn(self) -> None:
-        # agent_team E6-S54: a refused in-turn pick is retried in the same turn, can hand off to the console, and ends
-        # with a near retryAt; "the next scheduled wake" left a worker unstarted for 2 h (Zenod E9-2h, 2026-11-02)
+        # agent_team E6-S54: a refused in-turn pick is retried in the same turn and ends with a near retryAt; "the next
+        # scheduled wake" left a worker unstarted for 2 h (Zenod E9-2h, 2026-11-02). E6-S63: no console fallback (VPS3 only).
         ref = read("skill/epic-spine/references/machine-dispatcher.md")
-        for word in ("retryable", "retry_after_s", 'fallback: "console"', "same turn", "retryAt", "Monitor"):
+        for word in ("retryable", "retry_after_s", "same turn", "retryAt", "Monitor"):
             self.assertIn(word, ref)
+        self.assertNotIn('fallback: "console"', ref)
+        self.assertNotIn("/workers", ref)
         self.assertIn("never \"the next scheduled wake\"", read("skill/epic-spine/SKILL.md"))
 
 

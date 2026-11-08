@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.11.08.2 — Dispatcher: no console fallback, a refused pick is queued
+
+- **Removed: `fallback: "console"`** from the dispatcher contract (`references/machine-dispatcher.md`). A `pick` with a null id is retried in the turn when `retryable`, else the rows are recorded as queued; a worker is never launched on another host or handed to a console.
+- Why: agent_team E6-S63 (infra-vps S15, Jordi 2026-11-08: "We should do all the dispatching on VPS3"); the agent_team console now refuses that launch (409 `vps1_workers_off`).
+
 ## 2026.11.08.1 — Social pack: benefits say what it does and what you get
 
 - **Added: optional `What it does` column** in `## Benefits` (`brief.benefits.does`): what the product does for the user in plain words, beside the `Benefit` it brings (what the user gets). A table without the column still validates. The post rule now opens on the benefit and shows its What it does with the real screen; the recipe asks for five lines or fewer, each pairing the two, about this product only.
