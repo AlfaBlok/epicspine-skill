@@ -610,5 +610,6 @@
         "reply": "Feedback on {id}: \"{line}\" ({link}), logged in the Feedback log. The Writer reads it in the digest; a repeat becomes a Style rule. Undo: revert {commit}."
       }
     }
-  }
+  },
+  "daily_log": {"doc": "A campaign's daily log (agent_team E82-S1): opted into by a `Daily log: <link>` line in its `## Campaign plan`; one table, one row per day with no gap, plus one line per decision (D-<n>) or tone change (T-<n>). The Reporter fills the day's row from the Team Browser's read tools; a failed read leaves the cell empty with the reason in Note.", "file": "docs/campaigns/<epic-n>/daily-log.md", "plan_line": "Daily log:", "columns": ["Day", "Date", "Posts (with links)", "Replies sent", "Decisions", "Tone changes", "Followers", "Impressions", "Likes", "Replies received", "Note"], "writers": {"Reporter": "the day's row and its numbers", "Writer": "post ids with links", "Publisher": "live links", "Responder": "replies sent", "any": "decision and tone-change lines"}}
 }
