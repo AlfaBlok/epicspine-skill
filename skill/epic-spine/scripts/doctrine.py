@@ -24,6 +24,7 @@ MAX_LINES, MAX_CELL = 150, 200
 
 
 _reads: dict[Path, str] | None = None  # set by ``remembering()``: one read per file for the length of a scan
+_found: dict[tuple[Path, Path, str], Path | None] | None = None  # set by ``remembering()``: one resolve per link target and folder
 
 
 def read(path: Path) -> str:
@@ -41,12 +42,12 @@ def read(path: Path) -> str:
 @contextlib.contextmanager
 def remembering():
     """Within the block each file is read once (a repo scan reads every doc up to four times, slow on a loaded host); files must not change meanwhile."""
-    global _reads
-    _reads = {}
+    global _reads, _found
+    _reads, _found = {}, {}
     try:
         yield
     finally:
-        _reads = None
+        _reads = _found = None
 
 
 def is_epic(text: str) -> bool:
@@ -111,7 +112,13 @@ def links(repo: Path, path: Path, text: str) -> list[Path]:
     out = []
     for name in LINK.findall(text):
         if name.endswith(".md") and "://" not in name and not name.startswith("/"):
-            found = next((c for base in (path.parent, repo) if (c := (base / name).resolve()).is_file() and c.is_relative_to(repo)), None)
+            key = (repo, path.parent, name)
+            if _found is not None and key in _found:
+                found = _found[key]
+            else:
+                found = next((c for base in (path.parent, repo) if (c := (base / name).resolve()).is_file() and c.is_relative_to(repo)), None)
+                if _found is not None:
+                    _found[key] = found
             out += [found] if found and found not in out else []
     return out
 

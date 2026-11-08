@@ -5,11 +5,11 @@ from __future__ import annotations
 
 import datetime
 import re
-import subprocess
 import time
 from pathlib import Path
 
 import validate_spine as v
+from git_stamps import last_commits
 from ask_refs import ASK_CODE, MENTION, ask_context, asks, repo_root, unknown, waits  # noqa: F401 (re-exported)
 
 OPEN = ("draft", "ready", "active", "blocked")
@@ -52,17 +52,16 @@ def link_problems(child: dict, parent: dict) -> list[str]:
         ([] if child["id"] in rows else ["Spine Map Spine ID differs"] if rows else ["not in the parent's Spine Map"])
 
 
-def stale(repo: Path, nodes: list[dict], now: float | None = None) -> list[dict]:
-    """Active/blocked goals whose file's last commit is 14+ days old (one git call each; untracked files and git timeouts are skipped)."""
+def stale(repo: Path, nodes: list[dict], now: float | None = None, budget: float = 10) -> list[dict]:
+    """Active/blocked goals whose file's last commit is 14+ days old. One `git log` for all of them, read until each file's
+    newest commit is seen (it was one git per goal: 53 a scan on agent_team, slow on a loaded host, E72-S4); untracked
+    files and a git failure or timeout are skipped."""
     out, now = [], now or time.time()
-    for n in nodes:
-        if n["status"] in ("active", "blocked"):
-            try:
-                r = subprocess.run(["git", "log", "-1", "--format=%ct", "--", n["path"]], cwd=repo, capture_output=True, text=True, timeout=5)
-            except (subprocess.TimeoutExpired, OSError):  # a loaded host must not crash the scan: this node is unknown, not stale
-                continue
-            if r.stdout.strip().isdigit() and (days := int((now - int(r.stdout)) // 86400)) >= STALE_DAYS:
-                out.append({"path": n["path"], "title": n["title"], "days": days})
+    goals = {n["path"]: n for n in nodes if n["status"] in ("active", "blocked")}
+    last = last_commits(repo, list(goals), budget)
+    for path, n in goals.items():
+        if path in last and (days := int((now - last[path]) // 86400)) >= STALE_DAYS:
+            out.append({"path": n["path"], "title": n["title"], "days": days})
     return out
 
 
