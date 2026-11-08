@@ -1,0 +1,57 @@
+/* E78 explainer round 3: live scenes page, paper-deck tokens (video/library/brands/paper.json deck.tokens,
+   the block between tokens:begin and tokens:end is written by build_page.mjs, E53-S9). */
+@font-face { font-family: "Newsreader"; font-weight: 400; font-display: swap; src: url("fonts/newsreader-400.ttf") format("truetype"); }
+@font-face { font-family: "Newsreader"; font-weight: 500; font-display: swap; src: url("fonts/newsreader-500.ttf") format("truetype"); }
+@font-face { font-family: "Instrument Sans"; font-weight: 400; font-display: swap; src: url("fonts/instrument-sans-400.ttf") format("truetype"); }
+@font-face { font-family: "Instrument Sans"; font-weight: 500; font-display: swap; src: url("fonts/instrument-sans-500.ttf") format("truetype"); }
+@font-face { font-family: "Instrument Sans"; font-weight: 600; font-display: swap; src: url("fonts/instrument-sans-600.ttf") format("truetype"); }
+:root {
+  /* tokens:begin paper */
+  --bg: #f6f2e9;
+  --stage: #e9e3d5;
+  --stage-2: #ded6c4;
+  --ink: #18211c;
+  --muted: #4a554e;
+  --faint: #8d948c;
+  --line: #c9c1ae;
+  --accent: #1f4d3a;
+  --accent-soft: #cfe0d4;
+  --accent-ink: #f6f2e9;
+  --warn: #8a4b1c;
+  --serif: "Newsreader", Georgia, "Times New Roman", serif;
+  --sans: "Instrument Sans", system-ui, sans-serif;
+  /* tokens:end */
+  --edge: clamp(1.25rem, 4vw, 3rem);
+}
+html, body { margin: 0; background: var(--bg); color: var(--ink); overflow-x: clip; }
+body { font: 400 1.1875rem/1.55 var(--serif); -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+.slide { box-sizing: border-box; padding: 3.5rem var(--edge) 3rem; border-bottom: 1px solid var(--line); }
+.in { max-width: 72rem; margin: 0 auto; }
+.num { font: 500 0.95rem/1.4 var(--sans); color: var(--faint); margin: 0 0 0.6rem; }
+h1, h2 { font-weight: 400; letter-spacing: -0.015em; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(2.5rem, 6.4vw, 5rem); line-height: 1.04; max-width: 15ch; }
+h2 { font-size: clamp(2.1rem, 3.8vw, 3.2rem); line-height: 1.08; max-width: 16ch; }
+.lede { font-size: clamp(1.2rem, 1.8vw, 1.45rem); color: var(--muted); max-width: 36ch; margin: 1rem 0 0; }
+.meta, .voice, .foot p { font: 400 0.98rem/1.55 var(--sans); color: var(--muted); max-width: 46ch; }
+.meta { margin-top: 1.5rem; }
+.voice { margin: 1rem 0 0; }
+.voice b { font-weight: 600; color: var(--ink); }
+.stage { background: var(--stage); border-radius: 6px; padding: clamp(0.75rem, 2.5vw, 1.75rem); margin-top: 1.5rem; }
+.stage > div { background: var(--bg); border-radius: 4px; padding: 3%; }
+.grid { display: grid; gap: 1rem 4rem; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); align-items: center; }
+.grid .stage { margin-top: 0; }
+video { display: block; width: 100%; max-width: 360px; aspect-ratio: 9 / 16; background: var(--stage); border-radius: 4px; }
+.band { background: var(--accent); color: var(--accent-ink); }
+.band .lede, .band .meta, .band .num { color: var(--accent-soft); }
+.band a { color: var(--accent-ink); }
+.band ul.plain { color: var(--accent-soft); }
+.band ul.plain li { border-top-color: rgba(246, 242, 233, 0.25); }
+ul.plain { padding: 0; margin: 1rem 0 0; list-style: none; font: 400 0.98rem/1.55 var(--sans); color: var(--muted); max-width: 52ch; }
+ul.plain li { padding: 0.55rem 0; border-top: 1px solid var(--line); }
+.foot p { margin: 0.4rem 0; }
+@media (max-width: 900px) {
+  .grid { grid-template-columns: minmax(0, 1fr); }
+  .grid .stage { margin-top: 0.5rem; padding: 0.4rem; }
+  .stage > div { padding: 1%; }
+}

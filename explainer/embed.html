@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EpicTeam: one step of the explainer</title>
+<link rel="canonical" href="https://epicspine.dev/explainer/">
+<link rel="stylesheet" href="page.css">
+</head>
+<body style="background:var(--bg)">
+<div id="one" style="max-width:640px;margin:0 auto;padding:16px"></div>
+<script src="paper.js"></script>
+<script src="scenes.js"></script>
+<script>
+  var id = (/[?&]s=([a-z]+)/.exec(location.search) || [])[1] || "readwrite";
+  document.getElementById("one").setAttribute("data-scene", id);
+</script>
+<script src="live.js"></script>
+</body>
+</html>
