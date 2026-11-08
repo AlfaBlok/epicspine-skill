@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.11.08.1 — Social pack: benefits say what it does and what you get
+
+- **Added: optional `What it does` column** in `## Benefits` (`brief.benefits.does`): what the product does for the user in plain words, beside the `Benefit` it brings (what the user gets). A table without the column still validates. The post rule now opens on the benefit and shows its What it does with the real screen; the recipe asks for five lines or fewer, each pairing the two, about this product only.
+- Why: agent_team E71-S2 iteration 2 (Jordi, 2026-11-08: "what specifically does it do for you … connected to the benefit"; the benefits had mixed in another product). Tests: the export golden.
+
 ## 2026.11.07.3 — Social pack: Force review holds posts scheduled without review
 
 - **Changed: the pack's wording for the two "scheduled to held" moves** now says a campaign's Force review switch (its hold rule `Kind: post`) moves posts that were scheduled without Jordi's review back to held, and the Publisher holds them while it is on. The validator already allowed both moves; no rule changed.
