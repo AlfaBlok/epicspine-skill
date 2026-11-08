@@ -1,3 +1,4 @@
+Albert Sans (albert-sans-latin.woff2): Copyright 2021 The Albert Sans Project Authors (https://github.com/usted/Albert-Sans)
 Copyright 2021 The Martian Mono Project Authors (https://github.com/evilmartians/mono)
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1.

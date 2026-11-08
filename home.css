@@ -1,0 +1,254 @@
+/* Hallmark · theme: custom · idea: "the plan your agents keep is a well-kept board: every thing EpicSpine does is one tile, fitted edge to edge" · vibe: "a tidy desk seen from above, calm, exact" · direction: tasteskill dense-tiles "The well-kept board" (seed 1094853076, Frost and slate, Albert Sans), picked over Hallmark's dealt Lumen (3/3, seed free-skill-developers-who-5a64·a4e10ff5·2026-11-08·r0) · redesign: full (/) · job: try · E43-S6 round 4
+ * paper: frost oklch(98% 0.003 220) · ink: slate · accent: teal oklch(43% 0.08 205), the action and a kept state only · stop red for a refused state only · faces: Albert Sans 400 to 600, one family, self-hosted · axes: light/grotesk-sans/cool · posture: restrained
+ * hero: a board: the name band cropped by its tile, six link tiles, the claim tile beside the action tile and one small scene of the handover (agent one stops, agent two picks up) · nav: link tiles · footer: the E mark built large from its own blocks, the links beside it · imagery: small scenes built in HTML from the product's own words, the real goal tree, three real screens of EpicTeam and EpicSocial shown small, one short shell block at the end · signature: the handover scene in the hero, then the seven tiles on the second screen */
+/* Hallmark · pre-emit critique: P4 H4 E4 S5 R4 V4 · weakest: H, a type hero; the handover scene beside the claim carries it */
+/* Hallmark · waive 26b · no control on the page is ever disabled, no aria-disabled anywhere · the page has links and one copy button that always works, so a disabled state would never show */
+/* Hallmark · waive 23 · the accent fills only the action tile and the install tile, both actions · the board direction gives the one action its own tile in the accent colour, so the colour marks where to act */
+/* Hallmark · waive 59 · sections are rows of one board, 8px apart by design · the direction is a continuous board of tiles fitted edge to edge, with no bands and no section gaps */
+/* Hallmark · waive 77 · the install tile carries the shell block and its notes across eight columns · it is the board's closing action row, flanked by two cropped tiles as the direction draws it */
+/* Hallmark · waive 78 · the 26px heads are tile titles, items on the board · the page's real section heads (the tree, decisions, the family, install) render at 44px */
+/* tasteskill · defended card-rows · the seven tiles are the direction's board, each holding a different scene; defended no-footage · there is no honest clip of a plan kept in files, the handover scene and the tiles move instead */
+/* Hallmark · dismissed F4 · .cta is the install tile, a filled region, not a button; .btn is the one filled button */
+/* Hallmark · dismissed 3 · the footer's three columns are link lists, not icon tiles */
+/* Hallmark · answered F15 · one radius per nesting level: tiles 8px, scenes inside them 6px, chips round */
+
+@font-face { font-family: "Albert Sans"; src: url("fonts/albert-sans-latin.woff2") format("woff2"); font-weight: 400 600; font-display: swap; }
+
+:root {
+  color-scheme: light;
+  --color-paper: oklch(98% 0.003 220);
+  --color-tile: oklch(94.6% 0.007 220);
+  --color-tile-2: oklch(91.5% 0.011 220);
+  --color-scene: oklch(99.2% 0.002 220);
+  --color-ink: oklch(30% 0.03 225);
+  --color-ink-2: oklch(40% 0.02 225);
+  --color-deep: oklch(30% 0.03 225);
+  --color-on-deep: oklch(98% 0.003 220);
+  --color-accent: oklch(43% 0.08 205);
+  --color-accent-hover: oklch(38% 0.08 205);
+  --color-accent-ink: oklch(99% 0 0);
+  --color-accent-soft: oklch(90% 0.04 205);
+  --color-stop: oklch(48% 0.14 32);
+  --color-focus: oklch(50% 0.13 250);
+  --font-body: "Albert Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-code: ui-monospace, "SFMono-Regular", Menlo, monospace; /* taste-skill-ignore: only the one shell block of install lines, literal code */
+  --step-small: 0.875rem;
+  --step-body: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+  --step-lead: clamp(1.25rem, 1.1rem + 0.6vw, 1.625rem);
+  --step-head: clamp(2.25rem, 1.4rem + 3.4vw, 4.75rem);
+  --step-name: clamp(4.5rem, 10.5vw, 9.5rem);
+  --gap: 8px;
+  --pad: clamp(18px, 1.6vw, 26px);
+  --radius: 8px;
+  --radius-in: 6px;
+  --dur: 180ms;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { overflow-x: clip; }
+html { scroll-padding-top: 16px; scroll-behavior: smooth; scrollbar-color: var(--color-ink-2) var(--color-paper); }
+::selection { background: var(--color-accent-soft); color: var(--color-ink); }
+body { margin: 0; background: var(--color-paper); color: var(--color-ink); font: 400 var(--step-body)/1.5 var(--font-body); -webkit-font-smoothing: antialiased; }
+h1, h2, h3, p, ul, figure { margin: 0; }
+h1, h2, h3 { font-weight: 600; letter-spacing: -0.02em; overflow-wrap: break-word; min-width: 0; text-wrap: balance; }
+img, svg { display: block; max-width: 100%; height: auto; }
+a { color: inherit; }
+a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 2px; transition: none; }
+.act :focus-visible, .cta :focus-visible, .name:focus-visible, .shell :focus-visible { outline-color: var(--color-accent-ink); }
+.name:focus-visible { outline-offset: -6px; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* The board: one 12-column grid, 8px gaps, capped and centred. */
+.board { max-width: 1440px; margin: 0 auto; padding: var(--gap); display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gap); }
+.board + .board { padding-top: 0; }
+.t { background: var(--color-tile); border-radius: var(--radius); padding: var(--pad); min-width: 0; }
+
+/* Hero */
+.name { grid-column: 1 / -1; padding: 0.06em 0 0.1em; font-size: var(--step-name); overflow: hidden; display: flex; align-items: center; justify-content: center; background: var(--color-deep); color: var(--color-on-deep); text-decoration: none; }
+.name span { font-weight: 600; line-height: 1; letter-spacing: -0.045em; white-space: nowrap; }
+.row-nav { display: contents; }
+.go { grid-column: span 2; white-space: nowrap; display: flex; align-items: center; min-height: 56px; padding: 0 var(--pad); text-decoration: none; transition: background-color var(--dur) var(--ease); }
+.go:hover { background: var(--color-tile-2); }
+.go[aria-current] { background: var(--color-tile-2); }
+.claim { grid-column: 1 / 8; grid-row: span 2; display: flex; flex-direction: column; justify-content: space-between; gap: 40px; min-height: clamp(300px, 34vw, 430px); }
+.claim h1 { font-size: var(--step-head); line-height: 1; letter-spacing: -0.035em; max-width: 12ch; }
+.said-top { display: grid; gap: 20px; }
+.claim p { font-size: var(--step-lead); max-width: 28ch; }
+.seven ul { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; max-width: 34rem; }
+.seven a { white-space: nowrap; display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border-radius: 999px; background: var(--color-scene); text-decoration: none; font-size: var(--step-body); transition: background-color var(--dur) var(--ease); }
+.seven a:hover { background: var(--color-accent-soft); }
+.act { grid-column: 8 / -1; background: var(--color-accent); color: var(--color-accent-ink); display: flex; flex-direction: column; justify-content: space-between; gap: 24px; }
+.act p { font-size: var(--step-body); }
+.btn { display: inline-flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 52px; padding: 0 20px; border-radius: var(--radius-in); background: var(--color-accent-ink); color: var(--color-accent); font-size: var(--step-lead); font-weight: 600; text-decoration: none; transition: background-color var(--dur) var(--ease), transform var(--dur) var(--ease); }
+.btn:hover { background: var(--color-accent-soft); }
+.btn:active { transform: translateY(1px); }
+.act .more { color: var(--color-accent-ink); }
+
+/* The handover scene: agent one stops at step three, agent two reads the plan and goes on. */
+.hand { grid-column: 8 / -1; display: flex; flex-direction: column; gap: 12px; }
+.hand h2 { font-size: var(--step-body); font-weight: 600; letter-spacing: 0; }
+.steps { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; list-style: none; padding: 0; }
+.steps li { height: 30px; border-radius: 4px; background: var(--color-tile-2); }
+.steps li.a { background: var(--color-ink-2); }
+.steps li.b { background: var(--color-accent); }
+.who { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; font-size: var(--step-small); }
+.who p { background: var(--color-scene); border-radius: var(--radius-in); padding: 8px 12px; }
+.who b { display: block; font-weight: 600; }
+
+/* The problem, said once. */
+.why { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--pad); align-items: end; background: var(--color-tile-2); }
+.why h2 { font-size: var(--step-lead); line-height: 1.2; }
+.why p { font-size: var(--step-lead); line-height: 1.35; max-width: 40ch; }
+
+/* The seven tiles */
+.k { grid-column: span 3; display: flex; flex-direction: column; gap: 8px; min-height: 290px; }
+.k.wide { grid-column: span 6; }
+.k h2 { font-size: var(--step-lead); line-height: 1.15; }
+.k > p { color: var(--color-ink); font-size: var(--step-body); max-width: 34ch; }
+.scene { margin-top: auto; background: var(--color-scene); border-radius: var(--radius-in); padding: 12px 16px; font-size: var(--step-small); }
+.row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 4px 0; }
+.no { color: var(--color-stop); font-weight: 600; white-space: nowrap; }
+.yes { color: var(--color-accent); font-weight: 600; white-space: nowrap; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+.chip { padding: 4px 12px; border-radius: 999px; background: var(--color-tile); }
+.chip.on { background: var(--color-accent); color: var(--color-accent-ink); }
+.said { font-size: var(--step-body); font-weight: 500; margin-bottom: 8px; }
+.rules { list-style: none; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 4px 16px; }
+.rules li { padding: 4px 0; }
+
+/* The tree: the real goal tree, drawn from EpicSpine's own repo. */
+.tree { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 9fr); gap: var(--pad); min-height: 0; }
+.tree-copy { display: flex; flex-direction: column; gap: 12px; }
+.tree-copy h2 { font-size: clamp(1.75rem, 1.2rem + 1.8vw, 2.75rem); line-height: 1.05; letter-spacing: -0.03em; }
+.tree-copy p { color: var(--color-ink); max-width: 30ch; }
+.tree figure { background: var(--color-scene); border-radius: var(--radius-in); padding: 16px; display: grid; gap: 12px; }
+.tree figcaption { font-size: var(--step-small); color: var(--color-ink-2); }
+.gt-wrap { width: 100%; }
+.gt { display: block; width: 100%; height: auto; font-family: var(--font-body); }
+.gt--phone { display: none; max-width: 30rem; margin-inline: auto; }
+.gt-line { fill: none; stroke: var(--color-ink-2); stroke-width: 1.25; }
+.gt-box rect { fill: var(--color-tile); stroke: none; }
+.gt-name { fill: var(--color-ink); font-weight: 500; }
+.gt-sub { fill: var(--color-ink-2); }
+.gt-l0 rect { fill: var(--color-deep); }
+.gt-l0 .gt-name { fill: var(--color-on-deep); font-weight: 600; }
+.gt-l0 .gt-sub { fill: var(--color-on-deep); }
+.gt-l1 .gt-name { font-weight: 600; }
+.gt-more rect { fill: none; stroke: var(--color-ink-2); stroke-dasharray: 4 3; }
+.gt-more .gt-name { fill: var(--color-ink-2); font-weight: 400; }
+.gt-focus rect { fill: var(--color-accent-soft); }
+.gt-focus .gt-note { fill: var(--color-accent); }
+.gt-dot { stroke-width: 1.5; }
+.gt-done, .gt-key .gt-done { fill: var(--color-accent); stroke: var(--color-accent); background: var(--color-accent); }
+.gt-review, .gt-key .gt-review { fill: var(--color-stop); stroke: var(--color-stop); background: var(--color-stop); }
+.gt-active, .gt-key .gt-active { fill: transparent; stroke: var(--color-ink); border: 2px solid var(--color-ink); }
+.gt-planned, .gt-key .gt-planned { fill: transparent; stroke: var(--color-ink-2); stroke-dasharray: 2 2; border: 1px dashed var(--color-ink-2); }
+.gt-key { display: flex; flex-wrap: wrap; gap: 8px 20px; padding: 0; list-style: none; font-size: var(--step-small); color: var(--color-ink-2); }
+.gt-key li { display: inline-flex; align-items: center; gap: 8px; }
+.gt-key i { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+.gt-all summary { display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border-radius: var(--radius-in); background: var(--color-tile); cursor: pointer; list-style: none; transition: background-color var(--dur) var(--ease); }
+.gt-all summary::-webkit-details-marker { display: none; }
+.gt-all summary:hover { background: var(--color-tile-2); }
+.gt-all[open] summary { margin-bottom: 12px; }
+
+/* Only real decisions reach you: a real question from our team, shown small. */
+.ask-copy { grid-column: span 4; display: flex; flex-direction: column; gap: 12px; }
+.ask-copy h2, .fam-head h2, .cta h2 { font-size: clamp(1.75rem, 1.2rem + 1.8vw, 2.75rem); line-height: 1.05; letter-spacing: -0.03em; }
+.ask-copy p { color: var(--color-ink); max-width: 32ch; }
+.shot { grid-column: span 8; padding: 0; overflow: hidden; background: var(--color-tile-2); display: grid; place-items: center; }
+.shot picture { display: contents; }
+.shot img { width: min(100% - 48px, 760px); margin: 28px auto; border-radius: var(--radius-in); }
+.cap { font-size: var(--step-small); color: var(--color-ink-2); }
+
+/* One line that travels */
+.band { grid-column: 1 / -1; background: var(--color-deep); color: var(--color-on-deep); overflow: hidden; padding: 24px var(--pad); }
+.band .track { display: flex; width: max-content; animation: drift 38s linear infinite; }
+.band span { font-size: clamp(2rem, 1.2rem + 3vw, 4rem); font-weight: 600; letter-spacing: -0.03em; white-space: nowrap; padding-left: 0.9em; }
+.band:hover .track { animation-play-state: paused; }
+@keyframes drift { to { transform: translateX(-50%); } }
+
+/* The family */
+.fam-head { grid-column: span 4; display: flex; flex-direction: column; gap: 12px; background: var(--color-tile-2); }
+.fam { grid-column: span 4; display: flex; flex-direction: column; gap: 12px; text-decoration: none; transition: background-color var(--dur) var(--ease); }
+.fam:hover { background: var(--color-tile-2); }
+.fam .pic { border-radius: var(--radius-in); overflow: hidden; background: var(--color-scene); aspect-ratio: 16 / 10; }
+.fam .pic img { width: 100%; height: 100%; object-fit: cover; object-position: top left; }
+.fam h3 { font-size: var(--step-lead); }
+.fam p { color: var(--color-ink); }
+
+/* Install: the one shell block on the page */
+.flank { grid-column: span 2; background: var(--color-tile-2); }
+.flank.dark { background: var(--color-deep); color: var(--color-on-deep); }
+.cta { grid-column: span 8; background: var(--color-accent); color: var(--color-accent-ink); display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--pad); padding: clamp(24px, 3vw, 40px); }
+.cta .notes { list-style: none; padding: 0; display: grid; gap: 8px; margin-top: 16px; }
+.cta .more a { color: var(--color-accent-ink); }
+.shell { background: var(--color-deep); color: var(--color-on-deep); border-radius: var(--radius-in); padding: 16px; min-width: 0; align-self: center; }
+.shell-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: var(--step-small); }
+.copy { font: 600 var(--step-small) var(--font-body); min-height: 44px; padding: 0 16px; border: 0; border-radius: var(--radius-in); background: var(--color-on-deep); color: var(--color-deep); cursor: pointer; transition: background-color var(--dur) var(--ease); }
+.copy:hover, .copy[data-done] { background: var(--color-accent-soft); }
+pre { margin: 0; font: 400 0.8125rem/1.65 var(--font-code); white-space: pre; overflow-x: auto; }
+pre .p { opacity: 0.55; user-select: none; }
+
+/* Footer: the mark, built large */
+.foot { max-width: 1440px; margin: 0 auto; padding: var(--gap); display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gap); }
+.foot .mark-big { grid-column: span 4; background: var(--color-deep); border-radius: var(--radius); padding: clamp(20px, 3vw, 44px); display: grid; place-items: center; }
+.foot .mark-big svg { width: min(100%, 120px); }
+.foot .mark-big rect { fill: var(--color-on-deep); }
+.foot .mark-big rect.c { fill: var(--color-accent-soft); }
+.foot .links { grid-column: span 8; background: var(--color-tile); border-radius: var(--radius); padding: var(--pad); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--pad); align-content: space-between; }
+.foot h2 { font-size: var(--step-body); margin-bottom: 8px; }
+.foot ul { list-style: none; padding: 0; display: grid; gap: 8px; }
+.foot a { text-decoration: none; white-space: nowrap; }
+.foot a:hover { text-decoration: underline; }
+.foot .fine { grid-column: 1 / -1; padding: 4px var(--pad) 16px; font-size: var(--step-small); color: var(--color-ink-2); }
+
+/* Entrances: every tile rises once as it enters; without script it is simply there. */
+.js .rise { opacity: 0; transform: translateY(18px); transition: opacity 520ms var(--ease), transform 520ms var(--ease); }
+.js .rise.in { opacity: 1; transform: none; }
+.js .k.rise:nth-child(4n + 2) { transition-delay: 70ms; }
+.js .k.rise:nth-child(4n + 3) { transition-delay: 140ms; }
+.js .k.rise:nth-child(4n + 4) { transition-delay: 210ms; }
+.js .steps li { animation: fill 4.8s var(--ease) infinite; }
+.js .steps li:nth-child(2) { animation-delay: 0.25s; } .js .steps li:nth-child(3) { animation-delay: 0.5s; }
+.js .steps li:nth-child(4) { animation-delay: 1.4s; } .js .steps li:nth-child(5) { animation-delay: 1.65s; }
+.js .steps li:nth-child(6) { animation-delay: 1.9s; } .js .steps li:nth-child(7) { animation-delay: 2.15s; }
+@keyframes fill { 0% { opacity: 0.25; transform: scaleY(0.6); } 12%, 88% { opacity: 1; transform: none; } 100% { opacity: 0.25; transform: scaleY(0.6); } }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .js .rise { opacity: 1; transform: none; transition: none; }
+  .js .steps li, .band .track { animation: none; }
+}
+
+/* Laptop and tablet */
+@media (max-width: 1100px) {
+  .k { grid-column: span 6; }
+  .go { grid-column: span 4; }
+  .k.wide { grid-column: span 6; }
+  .tree { grid-template-columns: minmax(0, 1fr); }
+  .ask-copy, .fam-head { grid-column: 1 / -1; }
+  .shot { grid-column: 1 / -1; }
+  .fam { grid-column: span 6; }
+  .flank { display: none; }
+  .cta { grid-column: 1 / -1; }
+}
+
+/* Phone: its own board, two columns */
+@media (max-width: 640px) {
+  :root { --gap: 8px; }
+  .board, .foot { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .name { font-size: 21vw; }
+  .go { grid-column: span 1; min-height: 48px; }
+  .claim, .act, .hand, .why, .k, .k.wide, .tree, .fam, .cta, .foot .mark-big, .foot .links { grid-column: 1 / -1; }
+  .claim { grid-row: auto; min-height: 0; gap: 20px; }
+  .claim h1 { font-size: clamp(2.5rem, 11vw, 3.25rem); }
+  .why { grid-template-columns: minmax(0, 1fr); }
+  .k { min-height: 0; }
+  .rules { grid-template-columns: minmax(0, 1fr); }
+  .gt--wide { display: none; }
+  .gt--phone { display: block; }
+  .cta { grid-template-columns: minmax(0, 1fr); }
+  .foot .links { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .foot .mark-big svg { width: 120px; }
+}
