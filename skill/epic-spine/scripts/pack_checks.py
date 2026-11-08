@@ -2,7 +2,7 @@
 
 link_rule (max links, none on line n), disclosure (a phrase in the first lines), never_say (the brief's list),
 hold_rules (a quoted phrase, or `field: value`, from the brief's hold table: matched means held, not scheduled), caps
-(per platform: posts a day (threads_per_day, or threads_per_day_by_platform for that platform), posts per community a week, replies a day, counting rows in the live states), link_present,
+(per platform: posts a day (threads_per_day, or threads_per_day_by_platform for that platform), posts per community a week (only on per_community_per_week_platforms, default Reddit), replies a day, counting rows in the live states), link_present,
 approved (a phrase in a field only the owner writes: a held post goes out with Jordi's `Approved` note in its Feedback; a DM
 reply with it in the message's Feedback), filled (a field is not empty: a sent DM reply records its send in Result)."""
 from __future__ import annotations
@@ -90,7 +90,10 @@ def run_check(key: str, c: dict, rec: dict, ctx: dict) -> list[str]:
                     and day(r) and dt.date.fromisoformat(day(r)).isocalendar()[:2] == week]
         except ValueError:
             same = []
-        if kind == "post" and len(same) > p.get("per_community_per_week", 1e9):
+        # a weekly cap per community only where communities exist (Reddit's subreddits), never on an account
+        # handle like X's @ZenodAgent (agent_team E78-S5); a pack lists its community platforms
+        community_platforms = [x.lower() for x in p.get("per_community_per_week_platforms", ["reddit"])]
+        if kind == "post" and plat in community_platforms and len(same) > p.get("per_community_per_week", 1e9):
             out.append(f"{len(same)} posts in {rec.get('community')} that week (cap {p['per_community_per_week']} a week)")
         if kind != "post" and len(n := [r for r in live if r.get("kind", "").lower() != "post" and day(r) == day(rec)]) > p.get("replies_per_day", 1e9):
             out.append(f"{len(n)} replies on {rec.get('platform')} on {day(rec)} (cap {p['replies_per_day']} a day)")

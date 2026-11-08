@@ -215,6 +215,16 @@ class Validate(unittest.TestCase):
         four = self.after("Writer", *[{**x, "id": f"P-001{i}", "slot": f"2026-10-30 1{i}:00"} for i in range(4)])
         self.assertIn("caps: 4 posts on X on 2026-10-30 (cap 3 a day)", four)
 
+    def test_caps_community_week_only_on_community_platforms(self) -> None:
+        # agent_team E78-S5: X rows carry the account (@ZenodAgent) as their community; the weekly cap per
+        # community is Reddit's (subreddits), so X takes 3 a day all week; a Reddit community stays at 1 a week.
+        x = {"platform": "X", "status": "scheduled", "community": "@ZenodAgent"}
+        rows = [{**x, "id": f"P-002{i}", "slot": f"2026-10-{27 + i // 3} 1{i % 3}:00"} for i in range(6)]
+        self.assertNotIn("caps:", self.after("Writer", *rows))
+        self.assertNotIn("caps:", self.after("Writer", *rows[:3]))
+        self.assertIn("caps: 2 posts in r/other that week (cap 1 a week)",
+                      self.after("Writer", {"status": "scheduled", "slot": "2026-10-27 09:00", "community": "r/other"}))
+
     def test_hold_rules(self) -> None:
         text = GOOD + "<br>Our pricing is fair"
         self.assertIn("hold_rules: matches hold rule R1", self.after("Writer", {"status": "scheduled", "text": text}))

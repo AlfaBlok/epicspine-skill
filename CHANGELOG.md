@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.11.08.4 — Social pack: the weekly community cap is Reddit's only
+
+- **Fixed: `per_community_per_week`** in the `caps` check now applies only on the platforms in the new param `per_community_per_week_platforms` (default `["reddit"]`, where a community is a subreddit). X rows carry the account handle (@ZenodAgent) in Community, so X was held to 1 post a week despite `threads_per_day_by_platform: {x: 3}`; X now takes its 3 a day every day. A pack can list other community platforms.
+- Why: agent_team E78-S5 (zenod-social's desk note, agent_team fbdc4de). Tests: `test_caps_community_week_only_on_community_platforms`.
+
 ## 2026.11.07.3 — Social pack: Force review holds posts scheduled without review
 
 - **Changed: the pack's wording for the two "scheduled to held" moves** now says a campaign's Force review switch (its hold rule `Kind: post`) moves posts that were scheduled without Jordi's review back to held, and the Publisher holds them while it is on. The validator already allowed both moves; no rule changed.
