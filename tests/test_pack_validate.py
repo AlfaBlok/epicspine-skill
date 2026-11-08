@@ -207,6 +207,14 @@ class Validate(unittest.TestCase):
         self.assertIn("caps: 2 posts on Reddit on 2026-10-29 (cap 1 a day)", out)
         self.assertIn("caps: 2 posts in r/other that week", self.after("Writer", {"status": "scheduled", "community": "r/other"}))
 
+    def test_caps_x_takes_three_posts_a_day(self) -> None:
+        # agent_team E78-S1 (the 15-day push): X has its own cap of 3 posts a day; Reddit keeps 1.
+        x = {"platform": "X", "status": "scheduled", "slot": "2026-10-30 09:00", "community": ""}
+        two = self.after("Writer", {**x, "id": "P-0010"}, {**x, "id": "P-0011", "slot": "2026-10-30 12:00"})
+        self.assertNotIn("caps:", two)
+        four = self.after("Writer", *[{**x, "id": f"P-001{i}", "slot": f"2026-10-30 1{i}:00"} for i in range(4)])
+        self.assertIn("caps: 4 posts on X on 2026-10-30 (cap 3 a day)", four)
+
     def test_hold_rules(self) -> None:
         text = GOOD + "<br>Our pricing is fair"
         self.assertIn("hold_rules: matches hold rule R1", self.after("Writer", {"status": "scheduled", "text": text}))
@@ -499,6 +507,14 @@ class InitAndHook(unittest.TestCase):
         tmp = tempfile.TemporaryDirectory(prefix="epicspine-pack-")
         self.addCleanup(tmp.cleanup)
         self.root = Path(tmp.name)
+
+    def test_init_writes_the_product_deck_with_its_eight_parts(self) -> None:
+        # agent_team E78-S1: a deterministic place for the product in every campaign repo.
+        (self.root / "AGENTS.md").write_text("# AGENTS\n")
+        pack_init.init(self.root, "social")
+        deck = (self.root / "data/product.md").read_text()
+        for h in ("Why it exists", "Who it is for", "How it works", "What it does for you", "What is included", "How much it costs", "How you get it", "How it differs"):
+            self.assertIn(f"## {h}\n", deck)
 
     def test_init_twice_is_a_no_op_and_never_overwrites(self) -> None:
         (self.root / "data").mkdir()

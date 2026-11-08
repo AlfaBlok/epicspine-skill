@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.11.08.3 — Social pack: product deck, metrics catalog, X 3 posts a day
+
+- **Added: `threads_per_day_by_platform`** in the `caps` check, X 3 a day (Reddit keeps 1 a day and 1 a week per community); the pack's product deck and metrics blocks (`pack_init.py`, README).
+- Why: agent_team E78-S1 for Jordi's E78-5 ("A 15-day hard push: more than one post a day"); merged on zenod-social's desk note (agent_team fbdc4de). Every post stays held for Jordi's approval.
+
 ## 2026.11.08.2 — Dispatcher: no console fallback, a refused pick is queued
 
 - **Removed: `fallback: "console"`** from the dispatcher contract (`references/machine-dispatcher.md`). A `pick` with a null id is retried in the turn when `retryable`, else the rows are recorded as queued; a worker is never launched on another host or handed to a console.

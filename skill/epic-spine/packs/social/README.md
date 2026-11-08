@@ -29,6 +29,13 @@ The brief opens with `## Benefits`: what the product does for the user (`What it
 - **Writing a benefit** (the recipe, EPIC-71 L-1): draft first, five lines or fewer on one screen, before any research; if the voice matters and there is no example, ask for one or write one and say so; walk the product in the order the user meets it, one thing per line; each line pairs What it does (plain words: it writes, it holds, it answers) with the Benefit it brings (what the user gets, in their terms); only this product, never another one the team posts for; no slogans, abstract nouns or method names; mark each line works today, half built or not built, with a real screen.
 - **Discovery.** What people say they want is noted with its link as an Observations line ending `proposed for the brief (Benefits): "<line>"` once two notes agree; Jordi adds it to the table or says not now. Only Jordi edits the table.
 
+## Product deck and metrics (agent_team E78-S1, Jordi's voice note 2026-11-08)
+
+- **Product deck, `data/product.md`**: what we sell, one `## ` part per slide in Jordi's order: Why it exists, Who it is for, How it works, What it does for you, What is included, How much it costs, How you get it, How it differs (schema `product`; `pack.py init` writes the file with these headings when it is missing). It is the landing page as a deck, separate from each campaign's deck (its spine's Brief). It links, never copies: benefit lines stay in `data/brief.md` Benefits. Jordi and the Delivery manager write it; every persona reads it at each wake and never promises more than it says.
+- **Metrics catalog** (schema `metrics`): one list of numbers a campaign may target: testers, signups, site_visitors, code_views, x_followers, reddit_followers, posts_out, replies_received, and backlinks, mcp_listings and customers (no source yet). A campaign names its target in its spine's `## Campaign plan` with one line `Metric: <id> <target> by <YYYY-MM-DD>` (`from <date>` optional, else the `Period:` start; a line Jordi has not set ends `(proposed: Jordi sets it)`).
+- **`data/metrics.md`**: written by the host (the agent_team console) at its hourly check, only when a number changed: each campaign's target and where it stands, the catalog with today's values, and one row per role (the number it wakes to move, how, and the files it reads). Never edited by hand; every persona reads it at each wake.
+- **Caps**: X takes up to 3 posts a day (`threads_per_day_by_platform`), Reddit keeps 1 a day and 1 a week per community.
+
 ## Post statuses
 
 `idea → draft → scheduled → posted → measured`, plus `held`, `pulled`, `expired`. `idea` is the ideas.md row; the ledger row is written at `draft`.

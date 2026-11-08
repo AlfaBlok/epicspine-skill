@@ -3,7 +3,7 @@
 Never overwrites. A missing file is written from its sections' headings and columns (heading null = the file's one
 table; computed columns are left out: the export derives them); a file that exists only gains the sections it lacks,
 appended at its end; a missing spine (`docs/spines/`) is never created, only noted; a `dir` gets a `.gitkeep`; per-item
-files (`many`) are not pre-made. AGENTS.md gains `Pack: NAME` if absent. Idempotent: a second run changes nothing."""
+files (`many`) are not pre-made. AGENTS.md gains `Pack: NAME` if absent; a pack with a `product` deck gets its file with one heading per part. Idempotent: a second run changes nothing."""
 from __future__ import annotations
 
 import argparse
@@ -52,6 +52,11 @@ def init(repo: Path, name: str, notes: list[str] | None = None) -> list[str]:
             path.write_text(text.rstrip("\n") + "\n\n" + chunks, encoding="utf-8")
         what = ", ".join(f"## {s['heading']}" if s["heading"] else "its table" for s in add)
         done.append(f"{'created' if text is None else 'added to'} {rel}: {what}")
+    deck = schema.get("product")  # agent_team E78-S1: the product deck's fixed place, its parts as headings
+    if deck and not (repo / deck["file"]).is_file():
+        (repo / deck["file"]).parent.mkdir(parents=True, exist_ok=True)
+        (repo / deck["file"]).write_text("# Product deck\n\n" + "".join(f"## {h}\n\n" for h in deck["parts"]), encoding="utf-8")
+        done.append(f"created {deck['file']}: " + ", ".join(f"## {h}" for h in deck["parts"]))
     if name not in pack.enabled(repo):
         agents = repo / "AGENTS.md"
         old = agents.read_text(encoding="utf-8").rstrip("\n") + "\n\n" if agents.is_file() else "# AGENTS.md\n\n"
