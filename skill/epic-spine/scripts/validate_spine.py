@@ -249,7 +249,7 @@ def read_state(text: str, *, compact: bool = False) -> tuple[dict[str, str], dic
                 value = state[key]
                 if is_empty(value) and not (key in {"waiting_on", "approved_work"} and value.lower() in {"none", "nothing", "n/a", "-"}):
                     errors.append(f"Current State unresolved field: {label}")
-        if state.get("status") and state["status"] not in LEDGER_STATUSES:
+        if state.get("status") and status_true.ledger_status(state["status"], LEDGER_STATUSES) not in LEDGER_STATUSES:
             errors.append(f"Current State invalid Status: {state['status']}")
     return state, sources, errors
 
@@ -411,7 +411,7 @@ def read_tickets(path: Path, fields: dict[str, str], sections: dict[str, str]) -
         for number, row in enumerate(rows, 1):
             values = dict(zip(header, row))
             issue = values.get("Issue", "")
-            status = values.get("Status", "").lower()
+            status = status_true.ledger_status(values.get("Status", ""), LEDGER_STATUSES)
             template_status = issue.lower() == "draft" and re.fullmatch(r"<[^<>]+>", status)
             if status not in LEDGER_STATUSES and not template_status:
                 errors.append(f"ledger row {number} has invalid Status: {status or '(empty)'}")
@@ -511,7 +511,7 @@ def read_tickets(path: Path, fields: dict[str, str], sections: dict[str, str]) -
             identity = ticket_fields.get("Ticket ID", "")
             if not re.fullmatch(r"[A-Za-z][A-Za-z0-9_.-]*", identity):
                 ticket_errors.append(f"local ticket {reference} has invalid Ticket ID: {identity or '(empty)'}")
-            status = ticket_fields.get("Status", "").lower()
+            status = status_true.ledger_status(ticket_fields.get("Status", ""), LEDGER_STATUSES)
             if status not in LEDGER_STATUSES:
                 ticket_errors.append(f"local ticket {reference} has invalid Status: {status or '(empty)'}")
             if ticket_errors:
@@ -888,7 +888,7 @@ def validate_local(path: Path, *, dialect: str = "auto", ticket_source: Path | N
 
         for row_number, row in enumerate(rows, start=1):
             values = dict(zip(header, row))
-            status = values.get("Status", "").lower()
+            status = status_true.ledger_status(values.get("Status", ""), LEDGER_STATUSES)
             issue = values.get("Issue", "")
             # Only a deliberately unassigned draft may carry a status placeholder.
             # Placeholders elsewhere never exempt a real row from status/URL checks.
