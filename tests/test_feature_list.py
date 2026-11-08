@@ -62,3 +62,11 @@ class FeatureListTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class SocialListTest(unittest.TestCase):
+    def test_the_social_page_carries_its_markers_and_its_sections_use_the_page_class(self):
+        text = (ROOT / "social" / "index.html").read_text(encoding="utf-8")
+        self.assertIn("<!-- features:social begin (tools/feature_list.py writes this) -->", text)
+        self.assertEqual(fl.LISTS["social"]["file"], "docs/features/epicsocial.json")
+        self.assertIn('<section class="section" id="inbox-focus"', fl.render(LIST, "section"))

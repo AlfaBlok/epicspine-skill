@@ -161,6 +161,14 @@ button, input, textarea { font: inherit; color: inherit; }
 /* Sections */
 .section { padding-block: var(--section-gap-s); }
 .section--paper2 { background: var(--color-paper-2); }
+/* agent_team feature list (EpicSocial, 2026-11-08): what EpicSocial does for you, drawn from its one list by tools/feature_list.py */
+.nice { display: grid; gap: var(--space-xl); }
+.nice .say { display: grid; gap: var(--space-md); }
+.nice .was { color: var(--color-ink-2); max-width: 52ch; }
+.nice-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-md); grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr)); }
+.nice-list li { display: grid; align-content: start; gap: var(--space-xs); padding: var(--space-md); border: 1px solid var(--color-rule); border-radius: var(--radius-card); background: var(--color-paper); }
+.nice-list h3 { font-size: var(--text-md); }
+.nice-list p { color: var(--color-ink-2); font-size: var(--text-sm); }
 .head { display: grid; gap: var(--space-md); margin-bottom: var(--space-2xl); max-width: 60ch; }
 .head p { color: var(--color-ink-2); font-size: var(--text-lead); line-height: 1.45; max-width: 52ch; }
 
@@ -480,6 +488,45 @@ button, input, textarea { font: inherit; color: inherit; }
 <figcaption>Jordi’s Reddit account, the week to 6 November 2026.</figcaption>
 </figure>
 </div></section>
+<!-- features:social begin (tools/feature_list.py writes this) -->
+  <section class="section" id="campaign-at-a-glance" aria-labelledby="h-campaign-at-a-glance">
+    <div class="container nice">
+      <div class="say">
+        <h2 id="h-campaign-at-a-glance">Your campaign at a glance.</h2>
+        <p class="was">See every post, every number and why the campaign exists, each in one screen.</p>
+      </div>
+      <ul class="nice-list">
+        <li><h3>One pipeline for every post</h3><p>Every post sits in a column by its stage, as cards or as rows, full width. Open one to read it full screen.</p></li>
+        <li><h3>A Performance page</h3><p>Daily lines of posts, replies, followers, impressions, page views and sign-ups, with the best post on each platform.</p></li>
+        <li><h3>What it does for you, in the Brief</h3><p>The campaign Brief opens with the benefits the product gives, and every idea and post names the one it shows.</p></li>
+      </ul>
+    </div>
+  </section>
+  <section class="section" id="posts-go-out-safely" aria-labelledby="h-posts-go-out-safely">
+    <div class="container nice">
+      <div class="say">
+        <h2 id="h-posts-go-out-safely">Posts go out safely.</h2>
+        <p class="was">The team posts like a careful person would, from a real browser, never in a burst.</p>
+      </div>
+      <ul class="nice-list">
+        <li><h3>X posts from a real browser</h3><p>The team posts on X through its own signed-in browser, the way you would, with no paid API.</p></li>
+        <li><h3>Writes wait while your Mac is offline</h3><p>Replies written while your Mac is off wait in an outbox and go out one at a time when it is back.</p></li>
+        <li><h3>Every tester team can post</h3><p>Each tester team's own agents can post and reply on X from their own browser, kept apart from ours.</p></li>
+      </ul>
+    </div>
+  </section>
+  <section class="section" id="testers" aria-labelledby="h-testers">
+    <div class="container nice">
+      <div class="say">
+        <h2 id="h-testers">Free for testers.</h2>
+      </div>
+      <ul class="nice-list">
+        <li><h3>A free tester program with a clear contract</h3><p>Five teams can use EpicSocial free. One page shows what we give, what you give and four simple rules.</p></li>
+      </ul>
+    </div>
+  </section>
+<!-- features:social end -->
+
 <section class="section" id="alpha"><div class="container alpha">
   <div>
     <div class="head" style="margin-bottom: 0">
