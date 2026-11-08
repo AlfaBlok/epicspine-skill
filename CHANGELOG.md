@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.11.07.3 — Social pack: Force review holds posts scheduled without review
+
+- **Changed: the pack's wording for the two "scheduled to held" moves** now says a campaign's Force review switch (its hold rule `Kind: post`) moves posts that were scheduled without Jordi's review back to held, and the Publisher holds them while it is on. The validator already allowed both moves; no rule changed.
+- Why: agent_team EPIC-74 E74-S3 (Jordi's 7 Nov voice note: "Do I force the review? Yes or no?").
+
 ## 2026.11.07.2 — Social pack: the Benefit column goes last
 
 - The posts ledger's optional `Benefit` column moved from after Messages to the end (after Status), so a ledger or fixture written by position (the console's test ledgers) keeps reading its Status; a ledger without the column reads as empty either way. Found by agent_team's console tests (E71-S2), which refused every feedback write with "no Status" on the 2026.11.07.1 order.
