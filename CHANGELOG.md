@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026.11.08.12 — Agents read the epic deck first
+
+- **Changed:** `spines.py --bind` and the always-on rule point agents at the milestone's and the epic's deck first, so work inside a milestone starts from its deck, not only the screen (agent_team E47-S4 round 4, Jordi 2026-11-08: "when people work on inside this milestone, they get a reference to that deck immediately"); merged as E47-S5 on his close of E47-S4.
+
+## Unreleased — Agents open the epic deck first
+
+- **Added:** a repo value `Epic deck: <URL with {code}>`; `spines.py --bind` prints `Deck (read it first): <url>` under each epic it shows, and the always-on rule says a worker brief opens with its goal's deck link (agent_team E47-S4 round 4, Jordi: "when people work on inside this milestone, they get a reference to that deck immediately").
+
 ## 2026.11.08.11 — Epic deck in the always-on rule; product decks keep what Jordi said; campaign daily log
 
 - **Changed:** the always-on rule and spine model name the epic deck where they named the Epic Book (agent_team E75-S3, Jordi's D5: the deck replaces the Book).
