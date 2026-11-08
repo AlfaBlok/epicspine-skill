@@ -55,8 +55,10 @@ def init(repo: Path, name: str, notes: list[str] | None = None) -> list[str]:
     deck = schema.get("product")  # agent_team E78-S1: the product deck's fixed place, its parts as headings
     if deck and not (repo / deck["file"]).is_file():
         (repo / deck["file"]).parent.mkdir(parents=True, exist_ok=True)
-        (repo / deck["file"]).write_text("# Product deck\n\n" + "".join(f"## {h}\n\n" for h in deck["parts"]), encoding="utf-8")
-        done.append(f"created {deck['file']}: " + ", ".join(f"## {h}" for h in deck["parts"]))
+        # agent_team EPIC-81: the deck ends with the part his voice-note lines land in
+        said = [deck["jordi_part"]["heading"]] if deck.get("jordi_part") else []
+        (repo / deck["file"]).write_text("# Product deck\n\n" + "".join(f"## {h}\n\n" for h in deck["parts"] + said), encoding="utf-8")
+        done.append(f"created {deck['file']}: " + ", ".join(f"## {h}" for h in deck["parts"] + said))
     if name not in pack.enabled(repo):
         agents = repo / "AGENTS.md"
         old = agents.read_text(encoding="utf-8").rstrip("\n") + "\n\n" if agents.is_file() else "# AGENTS.md\n\n"

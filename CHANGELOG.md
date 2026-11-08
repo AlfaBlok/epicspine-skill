@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026.11.08.11 — Epic deck in the always-on rule; product decks keep what Jordi said; campaign daily log
+
+- **Changed:** the always-on rule and spine model name the epic deck where they named the Epic Book (agent_team E75-S3, Jordi's D5: the deck replaces the Book).
+- **Added:** social pack product decks end with a "What Jordi said" part (`product.jordi_part`, written by pack_init) that personas read first (agent_team E81-S1, EPIC-81 switched on by Jordi).
+- **Added:** social pack daily log, one row per day plus decision and tone-change lines (agent_team E82-S1, EPIC-82 switched on by Jordi).
+
 ## 2026.11.08.10 — A note after a status word no longer makes the status invalid
 
 - **Fixed:** `validate_spine.py` read a whole Status cell as the status, so `done (folded into E47-S4)` (one deliverable, one card), `done (fed E80-A2)` (a step that fed an ask), `done (approved by Jordi 2026-11-08)` and `review — backlog since: …` all failed as "invalid Status". It now reads the status word and drops a note in brackets or after a dash (`status_true.ledger_status`); an unknown word still fails. `operating-model.md` names `done (folded into <row>)`.

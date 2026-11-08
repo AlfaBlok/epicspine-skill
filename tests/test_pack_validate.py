@@ -525,6 +525,8 @@ class InitAndHook(unittest.TestCase):
         deck = (self.root / "data/product.md").read_text()
         for h in ("Why it exists", "Who it is for", "How it works", "What it does for you", "What is included", "How much it costs", "How you get it", "How it differs"):
             self.assertIn(f"## {h}\n", deck)
+        # agent_team EPIC-81: it ends with the part his voice-note lines land in
+        self.assertTrue(deck.rstrip().endswith("## What Jordi said"))
 
     def test_init_twice_is_a_no_op_and_never_overwrites(self) -> None:
         (self.root / "data").mkdir()

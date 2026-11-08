@@ -41,7 +41,7 @@ A spine is a snapshot of intent, facts and learnings, plus behaviours for mainte
 
 ## Book-Facing Fields
 
-Some repos generate a human page per goal from its spine, the **Epic Book** (agent_team: `https://team.alpha9.io/book/<milestone>`, built by its console from `spines.py --json` plus git). The spine is for agents; the book is for the user. The book quotes spine fields as written (first paragraph only, cut near 200 characters at a sentence end; links, run ids and shas stripped), so those fields are written for the user first:
+Some repos generate a human page per goal from its spine, the **Epic deck** (agent_team: `https://team.alpha9.io/deck/<repo>/<code>`, numbered slides built by its console from `spines.py --json` plus git; it replaced the earlier Epic Book page in agent_team E75-S3, and old `/book/<milestone>` links open the deck). The spine is for agents; the deck is for the user. "Book" below means this page. The book quotes spine fields as written (first paragraph only, cut near 200 characters at a sentence end; links, run ids and shas stripped), so those fields are written for the user first:
 
 | Field the book quotes | Write it as |
 |---|---|

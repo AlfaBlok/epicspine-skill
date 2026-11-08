@@ -83,8 +83,8 @@ class DefaultBehaviorsTest(unittest.TestCase):
     def test_epic_book_fields_are_written_for_the_user_in_the_same_session(self) -> None:
         """agent_team EPIC-47 E47-2: after progress the agent updates the book (the spine fields it quotes) in the same session."""
         block = self.agents_block()
-        line = next(l for l in block.splitlines() if l.startswith("Epic Book:"))
-        for needle in ("same session", "Goal's first paragraph", "Last attempted", "Next action", "plain sentence", "check the book renders", "Book-Facing Fields"):
+        line = next(l for l in block.splitlines() if l.startswith("Epic deck (was Epic Book):"))
+        for needle in ("same session", "Goal's first paragraph", "Last attempted", "Next action", "plain sentence", "check the deck renders", "Book-Facing Fields"):
             self.assertIn(needle, line)
         ref = read("skill/epic-spine/references/spine-model.md")
         self.assertIn("## Book-Facing Fields", ref)
@@ -93,7 +93,7 @@ class DefaultBehaviorsTest(unittest.TestCase):
 
     def test_every_deliverable_url_goes_into_the_spine_for_the_book(self) -> None:
         """agent_team EPIC-47 E47-4: each book section lists everything made for its epic, read from the spine, kept as the work goes."""
-        line = next(l for l in self.agents_block().splitlines() if l.startswith("Epic Book:"))
+        line = next(l for l in self.agents_block().splitlines() if l.startswith("Epic deck (was Epic Book):"))
         for needle in ("Every URL made for the goal", "the moment it exists", "Everything made for this", "stays in the spine", "Deliverable Links"):
             self.assertIn(needle, line)
         ref = read("skill/epic-spine/references/spine-model.md")
