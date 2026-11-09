@@ -399,3 +399,13 @@ code, pre { font-family: var(--font-mono); font-size: var(--text-sm); }
   .pic--fan { padding: var(--space-sm); }
   .proof--slide .was { font-size: var(--text-md); }
 }
+
+/* EpicTeam page, E43-S10: the personas roster (who wakes, what for, how often) */
+.roster-win { place-items: stretch; max-height: none; }
+.roster { list-style: none; margin: 0; padding: 0; display: grid; font-size: var(--text-md); }
+.roster li { display: grid; grid-template-columns: minmax(0, 11rem) minmax(0, 1fr) auto; gap: var(--space-sm, 0.75rem); align-items: baseline; padding: 0.85rem 0; border-top: 1px solid var(--color-rule); }
+.roster li:last-child { border-bottom: 1px solid var(--color-rule); }
+.roster b { color: var(--color-ink); font-weight: 500; }
+.roster span { color: var(--color-ink-2); }
+.roster em { font-style: normal; color: var(--color-accent); font-size: var(--text-sm); white-space: nowrap; }
+@media (max-width: 560px) { .roster li { grid-template-columns: minmax(0, 1fr); gap: 0.2rem; } }

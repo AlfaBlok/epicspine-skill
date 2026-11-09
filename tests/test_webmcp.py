@@ -159,8 +159,10 @@ class WebMCPTests(unittest.TestCase):
         # Round 3 of 2026-11-08 (Jordi): the seven things it does for you, in his order, right under the hero.
         seven = ["context", "commits", "personas", "claims", "doctrine", "sticks", "tree"]
         # Round 6 of 2026-11-08 (E43-A2, the deck paper): the seven are listed first, as one screen, then each gets its own.
-        self.assertEqual(ids[1], "seven")
-        self.assertEqual(ids[2:9], seven)
+        # E43-S10 round 3 of 2026-11-09 (Jordi's voice notes): his lines lead (agents come and go, the ticket map, never
+        # repeat, the spine of facts), so #sticks and #tree come before the seven list and the other five follow it.
+        self.assertEqual(ids[1:6], ["same", "graph", "sticks", "tree", "seven"])
+        self.assertEqual(ids[6:11], seven[:5])
         for i in ("top", "together", "family", "install"):
             self.assertIn(i, ids)
         listed = out["calls"]["list"]["sections"]
