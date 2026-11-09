@@ -33,7 +33,8 @@ ALLOWLIST: dict[str, str] = {"epic_log.py": "helper module of spines.py (rollup,
                              "standing.py": "helper module of validate_spine.py / spines.py (standing spines: Targets, scoreboard); documented in standing-spines.md",
                              "status_true.py": "helper module of validate_spine.py (status-true advisories); documented in spine-model.md",
                              "run_state.py": "helper module of spines.py / validate_spine.py (run_state, runnable, has_children, advisories); documented in spine-model.md",
-                             "grants.py": "helper module of spines.py / validate_spine.py (standing approvals: grant lines, inheritance, uses); documented with spines.py"}
+                             "grants.py": "helper module of spines.py / validate_spine.py (standing approvals: grant lines, inheritance, uses); documented with spines.py",
+                             "people.py": "helper module of spines.py (the root `## People` list, many humans, E90-S3); documented in human-asks.md"}
 
 SKILL_FOLDERS = ("references", "scripts", "assets")
 

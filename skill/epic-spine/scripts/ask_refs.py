@@ -19,16 +19,27 @@ DATE = r"\d{4}-\d\d-\d\d"
 SNOOZE_UNTIL = DATE + r"(?:T\d\d:\d\dZ)?"  # `snoozed until:` a day, or a UTC minute (`2026-11-02T18:30Z`, a 3 hour snooze)
 KINDS = ("decide", "approve", "provide", "do")
 TAG = re.compile(r"[-*]\s+\[([^\]]*)\]\s*(.*)")
-OPEN_TAG = re.compile(r"ask(?:\s+" + ASK_CODE + r")?:\s*(\w+)\s+@(\S+)\s+since\s+(" + DATE + r")(?:\s+row\s+(\S+))?")
+HANDLE = r"@([^\s,;·\]]+)"
+HANDLES = r"(@[^\s,;·\]]+(?:\s*,\s*@[^\s,;·\]]+)*)"
+# E90-S3 (agent_team EPIC-90, many humans): after `@<who>` an open tag may name who approves the answer, who is made
+# aware and who passed it up: `[ask E91-A2: decide @Leo approve by @Marta aware @Jordi, @Sofia escalated by @Ana since …]`.
+OPEN_TAG = re.compile(r"ask(?:\s+" + ASK_CODE + r")?:\s*(\w+)\s+@(\S+)(?:\s+approve\s+by\s+" + HANDLE + r")?(?:\s+aware\s+" + HANDLES + r")?"
+                      r"(?:\s+escalated\s+by\s+" + HANDLE + r")?\s+since\s+(" + DATE + r")(?:\s+row\s+(\S+))?")
+# E90-S3: an answered tag may say the answer waits on its approver, was approved, and who is made aware:
+# `[answered E91-A2 2026-11-10 @Leo · awaits @Marta · aware @Jordi]`, `… @Leo · approved @Marta 2026-11-11 · aware @Jordi]`.
+AWAITS = re.compile(r"\s*·\s*awaits\s+" + HANDLE)
+APPROVED = re.compile(r"\s*·\s*approved\s+" + HANDLE + r"(?:\s+(" + DATE + r"))?")
+AWARE = re.compile(r"\s*·\s*aware\s+" + HANDLES)
 ANSWERED_TAG = re.compile(r"answered(?:\s+" + ASK_CODE + r")?\s+" + DATE + r"\s+@([^\s:,;·]+)[:,;]?(.*)")
 # Feedback (changes wanted, never an approval): the human answered, the work it names is reopened and owed a new round.
 FEEDBACK_TAG = re.compile(r"feedback(?:\s+" + ASK_CODE + r")?\s+" + DATE + r"\s+@([^\s:,;·]+)[:,;]?(.*)")
 SUPERSEDED_TAG = re.compile(r"superseded\s+" + ASK_CODE + r"\s+" + DATE + r"\s+by\s+((?:[\w.-]+/)?" + ASK_ID + ")")
 SUPERSEDED_BY = re.compile(r"\s*superseded by\s+((?:[\w.-]+/)?" + ASK_ID + ")")
 DONE = re.compile(r"\s*·\s*done\s+" + DATE + r"\b.*$")  # consumed answer, with an optional sha and note
-CANONICAL = ("`[ask <code>: <type> @<who> since <date> row <id>]`, `[answered <code> <date> @<who>]` or `[feedback <code> <date> @<who>]` (then ` · done <date> <sha>`), "
+CANONICAL = ("`[ask <code>: <type> @<who> [approve by @<who>] [aware @<who>, …] [escalated by @<who>] since <date> row <id>]`, "
+             "`[answered <code> <date> @<who> [· awaits @<who> | · approved @<who> <date>] [· aware @<who>, …]]` or `[feedback <code> <date> @<who>]` (then ` · done <date> <sha>`), "
              "`[superseded <code> <date> by <code>]` or `[waits on [<repo>/]<code> row <id>]`")
-ASK_FIELD = re.compile(r"(steps|options|recommend|unblocks|effort|context|impact|risk|why(?:\s+@?[\w.-]+)?|snoozed(?:\s+until)?|answer|feedback):\s*(.*)", re.S)  # `why <who>:` is `why`, `snoozed until:` is `snoozed`
+ASK_FIELD = re.compile(r"(steps|options|recommend|unblocks|effort|context|impact|risk|why(?:\s+@?[\w.-]+)?|snoozed(?:\s+until)?|escalated|sent back|answer|feedback):\s*(.*)", re.S)  # `why <who>:` is `why`, `snoozed until:` is `snoozed`
 
 
 def ref(r: str | None, c: str, row: str | None, via: str) -> dict:
@@ -104,12 +115,22 @@ def asks(text: str, path: Path, repo: Path, problems: list[str] | None = None) -
             if problems is not None:
                 problems.append(f"## Waiting on line '{line[:50]}' is not a form the tools read: write {CANONICAL}")
             continue
-        code, kind, who, since, row = opened.groups() if opened else (None,) * 5
+        code, kind, who, approve_by, aware, escalated_by, since, row = opened.groups() if opened else (None,) * 8
+        people: dict = {}
+        if approve_by:
+            people["approve_by"] = approve_by
+        if escalated_by:
+            people["escalated_by"] = escalated_by
         extra, by = "", None
         if answered:
             code, who, extra = answered.groups()
             by = (b := SUPERSEDED_BY.search(extra)) and b.group(1)
-            left = DONE.sub("", SUPERSEDED_BY.sub("", extra)).strip()
+            if w := AWAITS.search(extra):
+                people["awaits"] = w.group(1)
+            if ok := APPROVED.search(extra):
+                people.update({"approved_by": ok.group(1), **({"approved_at": ok.group(2)} if ok.group(2) else {})})
+            aware = (a := AWARE.search(extra)) and a.group(1)
+            left = DONE.sub("", AWARE.sub("", APPROVED.sub("", AWAITS.sub("", SUPERSEDED_BY.sub("", extra))))).strip()
             if left and problems is not None:
                 problems.append(f"ask {code or who}: tag carries '{left[:40]}': write `[{'feedback' if feedback else 'answered'} <code> <date> @<who>]`, the {'words after ` — feedback:`' if feedback else 'answer after ` — answer:`'}, then ` · done <date> <sha>`")
         if superseded:
@@ -122,7 +143,7 @@ def asks(text: str, path: Path, repo: Path, problems: list[str] | None = None) -
         for part in parts:
             f = ASK_FIELD.fullmatch(part.strip())
             if f:
-                fields[last := f.group(1).split()[0]] = f.group(2).strip()
+                fields[last := "sent_back" if f.group(1).startswith("sent") else f.group(1).split()[0]] = f.group(2).strip()
             elif fields:  # a dash inside the previous field's text
                 fields[last] += " — " + part
             else:
@@ -140,7 +161,11 @@ def asks(text: str, path: Path, repo: Path, problems: list[str] | None = None) -
                     "risk": fields.get("risk") or None, "why": fields.get("why") or None, "since": since, "row": row,
                     "state": "open" if opened else "superseded" if superseded else "done" if done else "feedback" if feedback else "answered",
                     "answer": answer or None, "outcome": outcome, "superseded_by": by,
-                    **({"snoozed_until": d.group(0)} if (d := re.match(SNOOZE_UNTIL, fields.get("snoozed", ""))) else {})})
+                    **({"snoozed_until": d.group(0)} if (d := re.match(SNOOZE_UNTIL, fields.get("snoozed", ""))) else {}),
+                    # E90-S3 many humans: present only when the line names them
+                    **people, **({"aware": [h.strip().lstrip("@") for h in aware.split(",")]} if aware else {}),
+                    **({"escalated": fields["escalated"]} if fields.get("escalated") else {}),
+                    **({"sent_back": fields["sent_back"]} if fields.get("sent_back") else {})})
     return out
 
 

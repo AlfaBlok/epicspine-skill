@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased — Many humans: a People list, and asks that name who approves and who is made aware
+
+- **Added:** `## People` in a root spine (one line a human: owner, expert, analyst or made aware, area, escalates to with a time limit, alerts), read by `scripts/people.py`; `spines.py --json` gains `people` and `people_problems` (a line it cannot read, no owner, an ask naming someone off the list) (agent_team E90-S3, Jordi's E90-A1 "A yes to all four").
+- **Added:** the ask tag may name `approve by @x`, `aware @x, @y` and `escalated by @x`; an answered tag `· awaits @x`, `· approved @x <date>` and `· aware …`; fields `escalated:` and `sent back:`. Each is a key in `waiting_on` only when the line names it, so one-human spines read as before.
+
 ## 2026.11.09.2 — Steps a person does by hand go out as a steps page
 
 - **Changed:** the spine model and the human-asks doctrine say steps a human does by hand go out as a steps page on the agent_team step kit (a Done switch, Stuck and a note per step), never a block of text (agent_team E87-S3, root L-52, Jordi's E83-A6 "proper url with all steps not this text blob").
