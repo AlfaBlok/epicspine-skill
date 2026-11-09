@@ -1,0 +1,26 @@
+/* EpicTeam page, agent_team E43-S12: the phone app as a feature in three steps (install, the notification, answer).
+   Every screen is real: the console at 390 px wide and the team's own notification words. Kept in its own file so the
+   other parts of the page can change beside it. */
+.phone { display: grid; gap: var(--space-xl); }
+.phone .say { display: grid; gap: var(--space-md); }
+.phone h2 { font-size: clamp(2rem, 2.2vw + 0.8rem, 3.25rem); max-width: 20ch; }
+.phone .was { max-width: 52ch; }
+.phone-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-xl) var(--space-lg); grid-template-columns: repeat(3, minmax(0, 1fr)); counter-reset: step; }
+.phone-steps > li { display: grid; grid-row: span 3; grid-template-rows: subgrid; gap: var(--space-sm); align-content: start; counter-increment: step; min-width: 0; }
+.phone-steps h3 { font-size: 1.25rem; display: flex; gap: var(--space-xs); align-items: baseline; }
+.phone-steps h3::before { content: counter(step); flex: none; display: inline-grid; place-items: center; width: 1.6em; height: 1.6em; font-size: var(--text-sm); color: var(--color-accent-ink); background: var(--color-accent); }
+.phone-steps p { color: var(--color-ink-2); font-size: var(--text-md); max-width: 36ch; }
+.phone-steps figure { margin: var(--space-xs) 0 0; display: grid; gap: var(--space-sm); align-content: start; }
+.phone-steps figcaption { font-size: var(--text-sm); color: var(--color-ink-2); }
+/* a phone-sized screen: one column, a thin rule, the real screen inside at its own width */
+.ph { display: grid; gap: 0; width: min(100%, 300px); background: #fff; border: 1px solid var(--color-rule); overflow: hidden; }
+.ph img { display: block; width: 100%; height: auto; }
+.ph--lock { background: #111; }
+.ph-icon { display: flex; gap: var(--space-sm); align-items: center; padding: var(--space-sm) var(--space-md); background: var(--color-paper-3); color: var(--color-ink); font-size: var(--text-sm); }
+.ph-icon img { width: 44px; height: 44px; border-radius: 10px; }
+.phone-steps .ph-fold { margin: 0; padding: 0.4rem 0.75rem; font-size: var(--text-sm); color: #6b6f7a; background: #f3f4f6; border-block: 1px dashed #c9ccd3; text-align: center; }
+@media (max-width: 60rem) {
+  .phone-steps { grid-template-columns: minmax(0, 1fr); }
+  .phone-steps > li { grid-row: auto; grid-template-rows: none; }
+  .ph { width: min(100%, 320px); }
+}

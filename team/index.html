@@ -18,6 +18,7 @@
 <link rel="preload" href="../fonts/funnel-display-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="../fonts/funnel-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../epic.css">
+<link rel="stylesheet" href="phone.css">
 <style>
 /* agent_team E43-S7 round 2: the inbox niceties, drawn from EpicTeam's one feature list by tools/feature_list.py */
 .nice { display: grid; gap: var(--space-xl); }
@@ -53,6 +54,7 @@
       <li class="hide-s"><a href="#voice">Voice to inbox</a></li>
       <li class="hide-s"><a href="#tree">The tree</a></li>
       <li class="hide-s"><a href="#review">Finished work</a></li>
+      <li class="hide-s"><a href="#phone">Phone</a></li>
       <li class="hide-s"><a href="#inbox-focus">Focus</a></li>
       <li class="hide-s"><a href="#signins">Sign-ins</a></li>
       <li class="hide-s"><a href="#seats">Seats</a></li>
@@ -166,6 +168,51 @@
         </div>
         <figcaption>Real. Five of the personas on our own team, 9 November 2026.</figcaption>
       </figure>
+    </div>
+  </section>
+
+  <!-- agent_team E43-S12, Jordi's follow-up on E43-S10 (2026-11-09): the phone app as a feature. Builds on E84-S9's part
+       (its lock screen still). The phone screens are real, taken read-only at 390 px by agent_team
+       console/scripts/e43s12-phone-shots.mjs; the question's middle (context, impact, risk) is left out on purpose. -->
+  <section class="band alt" id="phone" aria-labelledby="h-phone">
+    <div class="container phone">
+      <div class="say">
+        <h2 id="h-phone">EpicTeam on your phone.</h2>
+        <p class="was">Add it to your home screen once. From then on your phone tells you when the team needs you, and you answer right there.</p>
+      </div>
+      <ol class="phone-steps">
+        <li>
+          <h3>Install it from the browser</h3>
+          <p>Open your EpicTeam address on the phone and add it to the home screen. It opens full screen with its own icon, like any app.</p>
+          <figure>
+            <div class="ph">
+              <div class="ph-icon"><img src="apple-touch-icon.png" width="180" height="180" alt="">EpicTeam on the home screen</div>
+              <img src="shots/phone-home.webp" width="780" height="752" loading="lazy" alt="EpicTeam open on a phone: the Team page, 15 questions waiting, and the first list, Blocked, waiting on you.">
+            </div>
+            <figcaption>The app as it opens on a phone, 9 November 2026.</figcaption>
+          </figure>
+        </li>
+        <li>
+          <h3>Your phone tells you</h3>
+          <p>When a task is done or a question waits on you, a notification lands on the lock screen. One tap opens that card.</p>
+          <figure>
+            <div class="ph ph--lock"><img src="shots/phone-notifications.webp" width="780" height="1120" loading="lazy" alt="A phone lock screen with two EpicTeam notifications. Done, waiting for your review: phone notifications were added to the installed app. Waiting on you: record four short videos, one per product."></div>
+            <figcaption>Our team's real notification words, shown on a drawn lock screen.</figcaption>
+          </figure>
+        </li>
+        <li>
+          <h3>Answer from your phone</h3>
+          <p>Each question comes with its choices as buttons. Tap one, or speak or type your own answer, and the work that waited on you starts again.</p>
+          <figure>
+            <div class="ph">
+              <img src="shots/phone-ask-top.webp" width="648" height="406" loading="lazy" alt="A question in the inbox on a phone: may the team open the two product sites to the internet, so strangers can sign up?">
+              <p class="ph-fold">The middle of the card is left out here</p>
+              <img src="shots/phone-ask-answer.webp" width="648" height="490" loading="lazy" alt="The bottom of the same question: two buttons, A yes and B not yet, a box to write your own answer, a microphone, and the line Your words go to the team and close the question.">
+            </div>
+            <figcaption>A real question from our own inbox, 9 November 2026.</figcaption>
+          </figure>
+        </li>
+      </ol>
     </div>
   </section>
 
