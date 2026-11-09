@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.11.09.1 — Social pack: a post goes out only from its project's own account
+
+- **Added:** rule `own_account` in the social pack: a project's brief names its accounts on an `Accounts:` line (X, Reddit), and the Publisher refuses a post from an account the project does not list; the pack README says so (agent_team E69-S3, Jordi's E46-A25 "Epic social should be posting" and his E69-A1 option A).
+
 ## 2026.11.08.13 — Social pack: each metric names its source
 
 - **Changed:** the pack's metric docs and schema say each metric reads a source per world (root spine `Metric sources:`) or per campaign (`source <id>` on the Metric line), with a `ledger` source for a world's own data file and `none` until a source exists; free sources named for backlinks, customers and MCP listings (agent_team E78-S9, from zenod-social's report that their testers count read our form; E78-S8, the follow-up Jordi started when closing E78-S1).
