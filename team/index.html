@@ -9,7 +9,7 @@
 <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
 <link rel="icon" href="favicon-16.png" type="image/png" sizes="16x16">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<meta name="description" content="EpicTeam is an AI team that works on your goals. Personas with one job each, shared skills and sign-ins, several AI subscriptions, and one inbox for what needs you.">
+<meta name="description" content="EpicTeam is an AI team that works on your goals. Personas with one job each, shared skills and sign-ins, several AI subscriptions, and one inbox for what needs you. One plan, €49 a month, with your own AI key and server.">
 <meta property="og:title" content="EpicTeam: an AI team that works on your goals">
 <meta property="og:description" content="You only see what needs you, in one inbox. Real screens of the tool.">
 <meta name="theme-color" content="#0d1a33">
@@ -28,6 +28,20 @@
 .nice-list li { display: grid; align-content: start; gap: var(--space-xs); padding: var(--space-md); border: 1px solid var(--color-rule); border-radius: var(--radius-card); background: var(--color-paper); }
 .nice-list h3 { font-size: var(--text-md); }
 .nice-list p { color: var(--color-ink-2); font-size: var(--text-sm); }
+/* agent_team E81-S5: one plan, one price (Jordi's E81-A3 answer: €49 a month, the customer's own API key by default) */
+.plan { display: grid; gap: var(--space-xl); grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); align-items: start; }
+.plan .say { display: grid; gap: var(--space-md); }
+.plan h2 { font-size: clamp(2rem, 2.2vw + 0.8rem, 3.25rem); max-width: 18ch; }
+.plan .was { max-width: 44ch; }
+.plan-card { display: grid; gap: var(--space-md); padding: var(--space-xl); border: 1px solid var(--color-rule); border-radius: var(--radius-card); background: var(--color-paper); }
+.plan-card .amt { font: var(--display-weight) clamp(3rem, 4vw + 1rem, 4.5rem)/1 var(--font-display); letter-spacing: var(--tracking-display); }
+.plan-card .amt small { font: 400 var(--text-md)/1.3 var(--font-body); letter-spacing: 0; color: var(--color-muted); }
+.plan-card h3 { font-size: var(--text-md); }
+.plan-card ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-xs); color: var(--color-ink-2); font-size: var(--text-md); }
+.plan-card li { display: flex; gap: var(--space-xs); }
+.plan-card li svg { flex: none; width: 18px; height: 18px; margin-top: 0.25em; color: var(--color-accent); }
+.plan-card .fine-print { color: var(--color-muted); font-size: var(--text-sm); }
+@media (max-width: 40rem) { .plan-card { padding: var(--space-lg) var(--space-md); } }
 </style>
 </head>
 <body>
@@ -42,6 +56,7 @@
       <li class="hide-s"><a href="#inbox-focus">Focus</a></li>
       <li class="hide-s"><a href="#signins">Sign-ins</a></li>
       <li class="hide-s"><a href="#seats">Seats</a></li>
+      <li><a href="#price">Price</a></li>
       <li><a href="../book/">Book</a></li>
     </ul>
     <a class="btn btn--primary btn--sm" href="#try">Try it</a>
@@ -190,11 +205,33 @@
     </div>
   </section>
 
+  <section class="band" id="price" aria-labelledby="h-price">
+    <div class="container plan">
+      <div class="say">
+        <h2 id="h-price">One plan. €49 a month.</h2>
+        <p class="was">You bring your own AI and your own server. We run the console that runs your team on them.</p>
+        <p class="was">Your agents use your own AI key by default, billed to you by Anthropic or OpenAI. The server is yours too, in your own Hetzner account, about €6 to €11 a month for most teams. If you leave, it stays with you.</p>
+      </div>
+      <div class="plan-card">
+        <div class="amt">€49 <small>a month, one plan</small></div>
+        <h3>What the €49 covers</h3>
+        <ul>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Your own team page, inbox, goals and review cards, on phone and laptop</li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Every persona, on its own schedule</li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>We set up your server and keep it running</li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>As many AI seats as your server holds, in one pool</li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Your keys and sign-ins kept for your team only</li>
+        </ul>
+        <p class="fine-print">You pay your AI and your server yourself, so a busy month never costs you more here. You may sign in with your own Claude subscription on your server, but that sign-in is yours: we never see it or store it. Prices before VAT.</p>
+      </div>
+    </div>
+  </section>
+
   <section class="band alt" id="try" aria-labelledby="h-try">
     <div class="container split">
       <div class="say">
         <h2 id="h-try">Want it for your team?</h2>
-        <p class="lead">EpicTeam runs our own work every day. The first way in is the EpicSocial alpha, built on it.</p>
+        <p class="lead">EpicTeam runs our own work every day. Until it opens at €49 a month, the way in is the EpicSocial alpha, built on it.</p>
         <div class="actions">
           <a class="btn btn--primary" href="../testers/">Apply to test</a>
           <a class="btn" href="../social/">See EpicSocial</a>
@@ -214,6 +251,7 @@
         <li><a href="#review">Finished work</a></li>
         <li><a href="#signins">Shared sign-ins</a></li>
         <li><a href="#seats">One pool of seats</a></li>
+        <li><a href="#price">One plan, €49 a month</a></li>
       </ul></div>
       <div><h2>The family</h2><ul>
         <li><a href="../">EpicSpine</a></li>
