@@ -1,3 +1,6 @@
 __pycache__/
 *.pyc
 wt/
+.taste-skill/
+team/.hallmark/
+social/.hallmark/

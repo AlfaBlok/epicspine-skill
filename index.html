@@ -3,543 +3,347 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>EpicSpine: talk to your agents, get a plan kept in git</title>
+<title>EpicSpine: your AI agents keep the plan</title>
 <!-- agent_team E65-S5: one letter per product on logo C (E for EpicSpine, S for EpicSocial), made by agent_team console/scripts/gen-brand.mjs -->
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
 <link rel="icon" href="/favicon-16.png" type="image/png" sizes="16x16">
 <link rel="icon" href="/favicon.ico" sizes="48x48">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<meta name="description" content="EpicSpine is an agent skill that turns chat into a goal tree kept as plain files in git, so every agent starts where the last one stopped.">
-<meta property="og:title" content="EpicSpine: talk, and it becomes a plan">
-<meta property="og:description" content="An agent skill that turns chat into a goal tree in git.">
-<meta name="theme-color" content="#0b120d">
+<meta name="description" content="EpicSpine is a free agent skill. Your goals, progress and rules live as plain files in your repo, so every AI agent starts where the last one stopped.">
+<meta property="og:title" content="EpicSpine: your agents keep the plan">
+<meta property="og:description" content="Every agent starts where the last one stopped. A free skill for Claude Code and Codex.">
+<meta name="theme-color" content="#f6f2e9">
 <meta http-equiv="origin-trial" content="AtDrsViSr8mDLBvm0KVKUeVmmJMrXiGoIy8qNZ86ZvC5hEOThzKxAElBvvn+8cUhqJ/Mnpqy/F0sJlp8VBLKVwYAAABNeyJvcmlnaW4iOiJodHRwczovL2VwaWNzcGluZS5kZXY6NDQzIiwiZmVhdHVyZSI6IldlYk1DUCIsImV4cGlyeSI6MTgwNjM2NDgwMH0=">
 <script>
-  // Old Book deep links (epicspine.dev/#9) moved with the Book to /book/ (agent_team E43-S1).
-  if (/^#\d+$/.test(location.hash)) { location.replace("book/" + location.hash); }
-  document.documentElement.classList.add("js");
+  // Old Book deep links (epicspine.dev/#9) moved with the Book to /book/ (agent_team E43-S1); three intuition slides follow
+  // its cover (E43-S5). The technical screens of E43-S5 (#technical, #why, #plan, #memory, #loop, #roles) moved back into
+  // the Book in E43-S6, so those links open it.
+  if (/^#\d+$/.test(location.hash)) { var n = +location.hash.slice(1); location.replace("book/#" + (n > 1 ? n + 3 : n)); }
+  else if (/^#(technical|why|plan|memory|loop|roles)$/.test(location.hash)) { location.replace("book/"); }
+  // E43-S6 round 3 of 2026-11-08: the seven things it does lead the page; #again and #repo became #context (rounds 4 and 6 keep the ids).
+  else if (/^#(again|repo)$/.test(location.hash)) { location.replace("#context"); }
 </script>
-<link rel="preload" href="fonts/martian-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
-<style>
-/* Hallmark · shape: Slides (one idea a screen, scroll flips) · genre: atmospheric · theme: Terminal (by request) · redesign: full
- * hero: Split (head on 1 to 5, the bind session on 7 to 12) · nav: edge-aligned numbered stops, the family line above · footer: a reference list, the family, the licence · imagery: the product (real spines.py output) · signature: a cold agent binding in one command, typed in the hero
- * axes: dark/mono/chromatic-green · posture: committed · contrast: pass · fold: pass · job: install · v2.0.0 */
-/* Hallmark · pre-emit critique: P4 H4 E4 S5 R4 V4 · weakest: P, the old deck explained everything at once; each screen now argues one thing and the Book holds the rest */
-/* Hallmark · waive 47b · one well per screen holds a real session, the skill's own commands and output · the terminal is where EpicSpine runs */
-/* Hallmark · waive 77 · memory holds two wells, roles a four-row table, each beside its head · every slide must fit one snapped screen, so a slide carries one object, not a tall one */
-/* Hallmark · waive 79 · the hero head and the bind session are centred in a 100svh slide · the snap gives every slide equal air above and below; the bind session stays its real length */
-/* Hallmark · dismissed 29 · the header blur is the one glass licence the atmospheric genre gives the nav; nothing else is glass */
-/* Hallmark · answered F8 · the one scroll pattern is the slide snap Jordi asked for; no other scroll motion */
-@font-face {
-  font-family: "Martian Mono";
-  font-style: normal;
-  font-weight: 400 700;
-  font-stretch: 75% 112.5%;
-  font-display: swap;
-  src: url("fonts/martian-mono-latin.woff2") format("woff2");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-:root {
-  color-scheme: dark;
-  --space-3xs: 2px; --space-2xs: 4px; --space-xs: 8px; --space-sm: 12px; --space-md: 16px; --space-lg: 24px; --space-xl: 40px; --space-2xl: 64px; --space-3xl: 96px; --space-4xl: 144px;
-  --text-xs: 0.8125rem; --text-sm: 0.875rem; --text-md: 1rem; --text-lg: 1.25rem; --text-xl: 1.5625rem; --text-2xl: 1.953rem; --text-3xl: 2.441rem;
-  --text-display-s: clamp(2rem, 3.2vw + 0.5rem, 3.25rem); --text-display: clamp(2.25rem, 3.6vw + 1rem, 3.75rem);
-  --text-section: clamp(1.75rem, 2.2vw + 0.75rem, 2.75rem); --text-title: clamp(1.125rem, 0.6vw + 0.875rem, 1.5rem); --text-lead: clamp(1rem, 0.35vw + 0.9rem, 1.25rem);
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1); --ease-in: cubic-bezier(0.7, 0, 0.84, 0); --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
-  --dur-micro: 120ms; --dur-short: 220ms; --dur-long: 420ms;
-  --container: 1440px; --gutter: 64px; --gap-columns: 32px;
-  --z-base: 1; --z-raised: 10; --z-sticky: 200; --z-sticky-nav: 300;
-  --color-paper: oklch(12.5% 0.012 150); --color-paper-2: oklch(16% 0.016 150); --color-paper-3: oklch(20.5% 0.022 150);
-  --color-ink: oklch(94% 0.03 140); --color-ink-2: oklch(82% 0.05 142); --color-muted: oklch(68% 0.06 145);
-  --color-rule: oklch(27% 0.028 148); --color-rule-2: oklch(38% 0.045 146);
-  --color-accent: oklch(87% 0.2 142); --color-accent-ink: oklch(14% 0.02 150); --color-focus: oklch(87% 0.2 142);
-  --color-accent-wash: oklch(23% 0.06 145);
-  --color-header: oklch(12.5% 0.012 150 / 0.92);
-  --font-display: "Martian Mono", ui-monospace, monospace; --font-body: var(--font-display);
-  --rule-hair: 1px;
-  --tracking-display: -0.02em; --display-weight: 500; --stretch-display: 112.5%; --stretch-body: 87.5%;
-  --header-h: 92px;
-}
-*, *::before, *::after { box-sizing: border-box; }
-html, body { overflow-x: clip; }
-html {
-  scrollbar-color: var(--color-muted) var(--color-paper);
-  scroll-snap-type: y mandatory;
-  scroll-behavior: smooth;
-}
-body {
-  margin: 0; background: var(--color-paper); color: var(--color-ink);
-  font-family: var(--font-body); font-size: var(--text-md); line-height: 1.6;
-  font-stretch: var(--stretch-body); font-variant-numeric: tabular-nums; font-synthesis: none;
-  -webkit-font-smoothing: antialiased; caret-color: var(--color-accent);
-}
-::selection { background: var(--color-accent-wash); color: var(--color-ink); }
-:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
-a { color: var(--color-ink-2); text-decoration: underline dotted; text-decoration-thickness: 1px; text-underline-offset: 0.2em; transition: color var(--dur-micro) steps(1); }
-a:hover { color: var(--color-accent); }
-a:active { color: var(--color-ink); }
-h1, h2, h3 {
-  margin: 0; font-family: var(--font-display); font-weight: var(--display-weight); font-stretch: var(--stretch-display);
-  letter-spacing: var(--tracking-display); line-height: 1.12; overflow-wrap: break-word; min-width: 0; text-wrap: balance;
-}
-h1 { font-size: var(--text-display); max-width: 14ch; }
-h2 { font-size: var(--text-section); max-width: 24ch; }
-h3 { font-size: var(--text-title); }
-p { margin: 0; text-wrap: pretty; }
-.lead { font-size: var(--text-lead); line-height: 1.55; color: var(--color-ink-2); max-width: 46ch; }
-.muted { color: var(--color-muted); }
-.container { width: 100%; max-width: var(--container); margin-inline: auto; padding-inline: var(--gutter); }
-.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-
-/* Header: the family line (E43-S2), then the numbered stops */
-.top { position: fixed; inset: 0 0 auto 0; z-index: var(--z-sticky-nav); background: var(--color-header); border-bottom: var(--rule-hair) solid var(--color-rule); backdrop-filter: blur(6px); }
-.family { border-bottom: var(--rule-hair) solid var(--color-rule); font-size: var(--text-xs); color: var(--color-muted); }
-.family .container { display: flex; gap: var(--space-lg); align-items: center; min-height: 32px; }
-.family b { color: var(--color-ink); font-weight: 700; }
-.family a { color: var(--color-muted); }
-.family a:hover { color: var(--color-accent); }
-.nav .container { display: flex; align-items: stretch; min-height: 60px; gap: var(--space-lg); }
-.mark { display: inline-flex; align-items: center; padding-inline: var(--space-md); background: var(--color-accent); color: var(--color-accent-ink); font-weight: 700; font-size: var(--text-sm); text-decoration: none; white-space: nowrap; }
-.mark:hover { color: var(--color-accent-ink); background: var(--color-ink); }
-.mark .logo { width: 18px; height: 18px; margin-right: var(--space-xs); flex: none; } /* agent_team E65-S5: logo C, the E for EpicSpine */
-.stops { display: flex; gap: var(--space-2xs); margin: 0; padding: 0; list-style: none; align-items: stretch; overflow-x: auto; scrollbar-width: none; }
-.stops li { display: flex; }
-.stops a { display: flex; align-items: center; gap: var(--space-xs); padding-inline: var(--space-sm); font-size: var(--text-sm); color: var(--color-ink-2); text-decoration: none; white-space: nowrap; border-bottom: 2px solid transparent; }
-.stops a span { color: var(--color-muted); }
-.stops a:hover { color: var(--color-ink); background: var(--color-paper-2); }
-.stops a[aria-current="true"] { color: var(--color-ink); background: var(--color-accent-wash); border-bottom-color: var(--color-accent); }
-.nav-end { margin-left: auto; display: flex; align-items: center; gap: var(--space-lg); font-size: var(--text-md); }
-.nav-end a { white-space: nowrap; }
-
-/* Slides: each one screen, snapped */
-.slide {
-  min-height: 100svh;
-  scroll-snap-align: start; scroll-snap-stop: always;
-  display: flex; align-items: center;
-  padding-block: calc(var(--header-h) + var(--space-xl)) var(--space-2xl);
-  border-bottom: var(--rule-hair) solid var(--color-rule);
-}
-.slide > .container { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gap-columns); row-gap: var(--space-xl); align-items: center; }
-.slide-head { grid-column: 1 / span 5; display: grid; gap: var(--space-lg); align-content: center; }
-.slide-body { grid-column: 7 / span 6; min-width: 0; }
-#top .slide-head { grid-column: 1 / span 5; }
-#top .slide-body { grid-column: 6 / span 7; }
-#top .well pre { font-size: var(--text-md); padding-block: var(--space-xl); }
-#top .out { color: var(--color-muted); }
-#top .out b { color: var(--color-ink-2); }
-#memory .well pre, #install .well pre { font-size: var(--text-lg); }
-#plan .well pre, #plan .said { font-size: var(--text-lg); }
-.roles { font-size: var(--text-lg); }
-.rows dd { font-size: var(--text-lg); }
-.stack .slide-head { grid-column: 1 / span 8; }
-.stack .slide-body { grid-column: 1 / -1; }
-.alt { background: var(--color-paper-2); }
-.alt .well { background: var(--color-paper); }
-
-/* Controls */
-.actions { display: flex; flex-wrap: wrap; gap: var(--space-sm); }
-.btn {
-  display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding-inline: var(--space-lg);
-  font: inherit; font-size: var(--text-sm); font-weight: 700; text-decoration: none; white-space: nowrap; cursor: pointer;
-  border: var(--rule-hair) solid var(--color-ink-2); background: transparent; color: var(--color-ink);
-  transition: background-color var(--dur-micro) steps(1), color var(--dur-micro) steps(1);
-}
-.btn:hover { background: var(--color-paper-3); color: var(--color-ink); }
-.btn:active { background: var(--color-accent-wash); }
-.btn--primary { background: var(--color-accent); color: var(--color-accent-ink); border-color: var(--color-accent); }
-.btn--primary:hover { background: var(--color-ink); color: var(--color-accent-ink); border-color: var(--color-ink); }
-.btn--primary:active { background: var(--color-ink-2); color: var(--color-accent-ink); }
-.btn:disabled { opacity: 0.55; cursor: not-allowed; }
-
-/* Wells: a session, a file, a diff */
-.well { background: var(--color-paper-2); border: var(--rule-hair) solid var(--color-rule); min-width: 0; }
-.well-head { display: flex; justify-content: space-between; gap: var(--space-md); padding: var(--space-sm) var(--space-lg); border-bottom: var(--rule-hair) solid var(--color-rule-2); font-size: var(--text-sm); color: var(--color-muted); }
-.well pre { margin: 0; padding: var(--space-lg); font: inherit; font-size: var(--text-sm); line-height: 1.7; white-space: pre-wrap; overflow-wrap: anywhere; color: var(--color-ink-2); }
-.well pre b { color: var(--color-ink); font-weight: 500; }
-.p { color: var(--color-muted); }
-.arg { color: var(--color-accent); }
-.out { color: var(--color-ink-2); }
-.dim { color: var(--color-muted); }
-
-/* The hero session types itself once */
-.js .typed .ln { opacity: 0; }
-.js .typed.on .ln { animation: line-in var(--dur-short) steps(1) forwards; animation-delay: calc(var(--i) * 140ms); }
-@keyframes line-in { to { opacity: 1; } }
-.caret { display: inline-block; width: 0.6em; height: 1.1em; vertical-align: text-bottom; background: var(--color-accent); animation: blink 1s steps(1) 5 both; }
-@keyframes blink { 50% { opacity: 0; } }
-
-/* Diff */
-.diff { font-size: var(--text-md); }
-.diff ol { list-style: none; margin: 0; padding: var(--space-sm) 0; counter-reset: ln; }
-.diff li { display: grid; grid-template-columns: 3.5ch 2ch minmax(0, 1fr); gap: var(--space-sm); padding: var(--space-xs) var(--space-lg); counter-increment: ln; }
-.diff li::before { content: counter(ln); color: var(--color-rule-2); text-align: right; }
-.diff .hunk { color: var(--color-muted); }
-.diff .del { color: var(--color-muted); }
-.diff .add { background: var(--color-accent-wash); color: var(--color-ink); }
-.diff .sign { color: var(--color-muted); }
-.diff .add .sign { color: var(--color-accent); }
-
-/* Talk to plan */
-.pair { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--gap-columns); align-items: start; }
-.said { display: grid; gap: var(--space-sm); margin: 0; padding: var(--space-lg); list-style: none; font-size: var(--text-md); }
-.said time { display: block; font-size: var(--text-xs); color: var(--color-muted); }
-
-/* Reference rows */
-.rows { display: grid; margin: 0; }
-.rows > div { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--gap-columns); padding-block: var(--space-md); border-top: var(--rule-hair) solid var(--color-rule); align-items: baseline; }
-.rows > div:last-child { border-bottom: var(--rule-hair) solid var(--color-rule); }
-.rows dt { font-size: var(--text-title); font-stretch: var(--stretch-display); font-weight: 500; color: var(--color-accent); }
-.rows dd { margin: 0; color: var(--color-ink-2); max-width: 60ch; }
-
-/* Roles table */
-.roles { width: 100%; border-collapse: collapse; font-size: var(--text-md); }
-.roles th, .roles td { text-align: left; padding: var(--space-md) var(--space-lg) var(--space-md) 0; border-top: var(--rule-hair) solid var(--color-rule); vertical-align: baseline; }
-.roles thead th { font-size: var(--text-sm); font-weight: 400; color: var(--color-muted); border-top: 0; border-bottom: var(--rule-hair) solid var(--color-rule-2); }
-.roles tbody th { font-weight: 700; color: var(--color-ink); white-space: nowrap; font-stretch: var(--stretch-display); }
-.roles td { color: var(--color-ink-2); }
-
-/* Install */
-.copy { font: inherit; font-size: var(--text-sm); min-height: 44px; padding-inline: var(--space-md); border: var(--rule-hair) solid var(--color-rule-2); background: transparent; color: var(--color-ink-2); cursor: pointer; transition: background-color var(--dur-micro) steps(1), color var(--dur-micro) steps(1); }
-.copy:hover { background: var(--color-paper-3); color: var(--color-ink); }
-.copy:active { background: var(--color-accent-wash); }
-.copy[data-done] { color: var(--color-accent); border-color: var(--color-accent); }
-.install .well-head { align-items: center; }
-.install pre { font-size: var(--text-md); }
-.notes { display: grid; gap: var(--space-sm); margin: 0; padding: 0; list-style: none; color: var(--color-ink-2); }
-
-/* Next */
-.links { display: grid; margin: 0; }
-.links > div { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--gap-columns); padding-block: var(--space-md); border-top: var(--rule-hair) solid var(--color-rule); align-items: baseline; }
-.links dt a { white-space: nowrap; font-size: var(--text-lg); font-stretch: var(--stretch-display); }
-.links dd { margin: 0; color: var(--color-muted); }
-.foot { grid-column: 1 / -1; display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-md); padding-top: var(--space-lg); border-top: var(--rule-hair) solid var(--color-rule-2); font-size: var(--text-sm); color: var(--color-muted); }
-.foot p { max-width: none; }
-
-@media (max-width: 60rem) {
-  :root { --gutter: 24px; --header-h: 84px; }
-  .slide-head, .stack .slide-head { grid-column: 1 / -1; }
-  .slide-body, #top .slide-head, #top .slide-body { grid-column: 1 / -1; }
-  .pair { grid-template-columns: minmax(0, 1fr); }
-  .nav-end .gh { display: none; }
-  .stops a span { display: none; }
-}
-@media (max-width: 40rem) {
-  :root { --gutter: 16px; --gap-columns: 16px; }
-  .slide { padding-block: calc(var(--header-h) + var(--space-lg)) var(--space-xl); align-items: flex-start; }
-  .slide > .container { row-gap: var(--space-lg); }
-  .stops { display: none; }
-  .family .container { gap: var(--space-md); }
-  .rows > div, .links > div { grid-template-columns: minmax(0, 1fr); gap: var(--space-2xs); }
-  .diff { font-size: var(--text-sm); }
-  .diff li { padding-inline: var(--space-sm); }
-  .well pre { padding: var(--space-md); }
-  .install pre { font-size: var(--text-sm); }
-  .nav .container { min-height: 48px; }
-  #top .well pre { font-size: var(--text-xs); padding-block: var(--space-md); }
-
-  #memory .well pre, #install .well pre, #plan .well pre, #plan .said, .roles, .rows dd { font-size: var(--text-sm); }
-  #plan .well pre { font-size: var(--text-xs); }
-  .said time { display: none; }
-  .said { gap: var(--space-2xs); padding: var(--space-md); }
-  #plan .pair { gap: var(--space-sm); }
-  .roles th, .roles td { padding-right: var(--space-sm); font-size: var(--text-sm); }
-  .hide-s { display: none; }
-}
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after { animation-duration: 0.01ms !important; animation-delay: 0ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
-  .js .typed .ln { opacity: 1; }
-}
-</style>
+<!-- E43-S6 round 6 of 2026-11-08: Jordi picked the team's deck paper (E43-A2, look 1). paper/ is the paper-deck kit as is
+     (agent_team skill paper-deck: paper.css, scenes.js, self-hosted fonts); home.css holds only this page's own patterns. -->
+<link rel="preload" href="paper/fonts/newsreader-400.ttf" as="font" type="font/ttf" crossorigin>
+<link rel="preload" href="paper/fonts/instrument-sans-400.ttf" as="font" type="font/ttf" crossorigin>
+<link rel="stylesheet" href="paper/paper.css">
+<link rel="stylesheet" href="home.css">
 </head>
 <body>
 <header class="top">
-  <!-- E43-S2 (agent_team EPIC-43): the brand family's shared header line, also on /social/, team.alpha9.io and social.alpha9.io -->
-  <div class="family" aria-label="The Epic family"><div class="container"><b>EpicSpine</b><span>EpicTeam</span><a href="social/">EpicSocial</a></div></div>
-  <nav class="nav" aria-label="Sections"><div class="container">
-    <a class="mark" href="#top" aria-label="EpicSpine, back to the start"><svg class="logo" viewBox="0 0 32 32" aria-hidden="true"><g fill="currentColor"><rect width="32" height="32" rx="7"/></g><g fill="var(--color-accent)"><g transform="translate(3.40 0) skewX(-12)"><path d="M8 6H24V10H14V14H22V18H14V22H24V26H8Z"/></g></g></svg>epicspine</a>
-    <ul class="stops">
-      <li><a href="#why"><span>1</span>why</a></li>
-      <li><a href="#plan"><span>2</span>plan</a></li>
-      <li><a href="#memory"><span>3</span>memory</a></li>
-      <li><a href="#loop"><span>4</span>loop</a></li>
-      <li><a href="#roles"><span>5</span>roles</a></li>
-      <li><a href="#install"><span>6</span>install</a></li>
-      <li><a href="#next"><span>7</span>read</a></li>
-    </ul>
-    <div class="nav-end"><a href="book/">book</a><a class="gh" href="https://github.com/AlfaBlok/epicspine-skill">source</a></div>
-  </div></nav>
+  <div class="in">
+    <a class="word" href="#top" aria-label="EpicSpine, back to the start"><svg class="mark" viewBox="7 5 18 22" width="18" height="22" aria-hidden="true"><rect x="8" y="6" width="5.4" height="20"/><rect x="14" y="6" width="10" height="4"/><rect class="c" x="14" y="14" width="8" height="4"/><rect x="14" y="22" width="10" height="4"/></svg>EpicSpine</a>
+    <nav aria-label="Main">
+      <a href="#seven">What it does</a>
+      <a href="#tree">The tree</a>
+      <a href="book/">The Book</a>
+      <a href="team/">EpicTeam</a>
+      <a href="social/">EpicSocial</a>
+      <a class="go" href="#install">Install</a>
+    </nav>
+  </div>
 </header>
 
 <main>
-  <section class="slide" id="top" aria-labelledby="h-top">
-    <div class="container">
-      <div class="slide-head">
-        <h1 id="h-top">Talk. It becomes a plan.</h1>
-        <p class="lead">An agent skill that turns chat into a goal tree in git.</p>
-        <div class="actions">
-          <a class="btn btn--primary" href="#install">Install it</a>
-          <a class="btn" href="book/">Read the Book</a>
+  <section class="slide cover" id="top" aria-labelledby="h-top">
+    <div class="in split">
+      <div>
+        <h1 id="h-top">Your agents keep the plan.</h1>
+        <p class="lede">Every new agent starts where the last one stopped.</p>
+        <div class="act">
+          <a class="btn" href="#install">Install it, free</a>
+          <span class="small">A skill for Claude Code and Codex. No server, no account.</span>
         </div>
       </div>
-      <figure class="slide-body well typed" style="margin:0" aria-label="A new agent binds to a spine and reads it in one command">
-        <figcaption class="well-head"><span>a new agent, first command</span><span class="hide-s">real output, trimmed</span></figcaption>
-<pre><span class="ln" style="--i:0"><span class="p">$</span> python3 spines.py <span class="arg">--bind examples/EPIC-0-CLI-EXAMPLE.md</span></span>
-<span class="ln out" style="--i:1"><b>== # EPIC: Local CLI validation example</b></span>
-<span class="ln out" style="--i:2">## Current State</span>
-<span class="ln out" style="--i:3">Status: ready</span>
-<span class="ln out hide-s" style="--i:3">Phase: planning</span>
-<span class="ln out" style="--i:4">Next action: Run the first documented CLI command.</span>
-<span class="ln out hide-s" style="--i:5">Blockers: none</span>
-<span class="ln out" style="--i:6">## Operating Learnings</span>
-<span class="ln out" style="--i:7">- L-1 | any change | run the tests before handoff</span>
-<span class="ln out hide-s" style="--i:8">- L-2 | every commit | end with the Co-Authored-By trailer</span>
-<span class="ln" style="--i:9"><span class="p">$</span> <span class="caret" aria-hidden="true"></span></span></pre>
+      <figure class="shot scene" data-len="11000" aria-label="Agent one finishes step three and its chat ends. The plan in the repo still says step four is next. Agent two, in a new chat, reads it and starts at step four.">
+        <div class="screen handoff">
+          <p class="who st" data-at="200">Agent one</p>
+          <div class="b them st" data-at="500">Step three is done. I wrote it into the plan.</div>
+          <p class="ended st" data-at="1700">The chat ended</p>
+          <div class="plan st" data-at="2600">
+            <b>The plan, in your repo</b>
+            <ol><li class="done">Build the sign in page</li><li class="done">Add the password reset</li><li class="done">Fix the phone layout</li><li class="next">Test it on a real phone</li></ol>
+          </div>
+          <p class="who st" data-at="4400">Agent two, a new chat</p>
+          <div class="b me st" data-at="5000">I read the plan. Starting at step four.</div>
+        </div>
+        <figcaption>A demo hand-off. The plan is a plain file next to your code.</figcaption>
       </figure>
     </div>
   </section>
 
-  <section class="slide alt" id="why" aria-labelledby="h-why">
-    <div class="container">
-      <div class="slide-head">
-        <h2 id="h-why">Agents lose the plot between chats.</h2>
-        <p class="lead">EpicSpine moves the plan out of the chat and into a file.</p>
+  <section class="slide" id="seven" aria-labelledby="h-seven">
+    <div class="in">
+      <h2 id="h-seven">Seven things your agents do with it.</h2>
+      <p class="lede why">For anyone who runs AI agents on a real project. Without a plan they can read, every new chat starts from zero. You explain the goal again, two agents take the same task, and yesterday’s correction is gone.</p>
+      <ol class="cols4 seven">
+        <li><span class="k">1</span><b><a href="#context">Context lives in your repo</a></b>Goals, progress and rules are plain files, so nothing ends with the chat.</li>
+        <li><span class="k">2</span><b><a href="#commits">Commits follow the rules</a></b>A check at every commit stops a plan with no goal or no finish line.</li>
+        <li><span class="k">3</span><b><a href="#personas">Every agent knows its role</a></b>Before it acts, an agent says which role it plays and keeps its rules.</li>
+        <li><span class="k">4</span><b><a href="#claims">One task, one agent</a></b>An agent claims a task first, so two agents never do the same work.</li>
+        <li><span class="k">5</span><b><a href="#doctrine">One doctrine</a></b>Every agent plans, commits and asks you questions by the same rules.</li>
+        <li><span class="k">6</span><b><a href="#sticks">Say it once, it sticks</a></b>Correct an agent once and every later agent reads the rule first.</li>
+        <li><span class="k">7</span><b><a href="#tree">Your goals, as a graph</a></b>Every plan hangs from the goal it serves, so status reads as one tree.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="slide" id="context" aria-labelledby="h-context">
+    <div class="in split">
+      <div>
+        <h2 id="h-context">Context lives in your repo.</h2>
+        <p class="lede">Goals, progress and rules are plain files next to your code, so nothing ends with the chat.</p>
       </div>
-      <figure class="slide-body well diff" style="margin:0" aria-label="What changes, as a diff">
-        <figcaption class="well-head"><span>--- a/chat-only</span><span>+++ b/epicspine</span></figcaption>
-        <ol>
-          <li class="hunk"><span></span><span>@@ where the plan lives @@</span></li>
-          <li class="del"><span class="sign">-</span><span>intent in a transcript no one rereads</span></li>
-          <li class="del"><span class="sign">-</span><span>a ticket too narrow for the whole story</span></li>
-          <li class="del"><span class="sign">-</span><span>workers planning, reviewers rewriting</span></li>
-          <li class="add"><span class="sign">+</span><span>one spine file: goal, done means, state</span></li>
-          <li class="add"><span class="sign">+</span><span>every decision kept with its why</span></li>
-          <li class="add"><span class="sign">+</span><span>one job per role, each in fresh context</span></li>
-        </ol>
+      <figure class="shot scene" data-len="10000" aria-label="A chat with agent one ends. In the repo, next to the code, the plan file still holds the goal, what is done and what is next.">
+        <div class="screen pane">
+          <div class="pane-row st" data-at="300"><span>The chat with agent one</span><span class="off">ended</span></div>
+          <div class="files">
+            <p class="cap">Your repo</p>
+            <ul>
+              <li>src</li>
+              <li>tests</li>
+              <li class="st on-file" data-at="1300">docs / the plan for sign in</li>
+            </ul>
+          </div>
+          <div class="note st" data-at="2300">
+            <b>Sign in with Google</b>
+            <p>Goal: live before Friday.</p>
+            <p>Done: the Google button, the callback.</p>
+            <p class="hl">Next: test it on a real phone.</p>
+          </div>
+          <div class="pane-row st" data-at="3600"><span>The plan in your repo</span><span class="yes">still there</span></div>
+        </div>
+        <figcaption>A demo repo. The plan is a file you can read and change yourself.</figcaption>
       </figure>
     </div>
   </section>
 
-  <section class="slide" id="plan" aria-labelledby="h-plan">
-    <div class="container stack">
-      <div class="slide-head">
-        <h2 id="h-plan">Say it loosely. Get a goal tree.</h2>
-        <p class="lead hide-s">Each goal has done means, steps with an owner, and a state you can read.</p>
+  <section class="slide" id="commits" aria-labelledby="h-commits">
+    <div class="in split rev">
+      <figure class="shot scene" data-len="10000" aria-label="An agent tries to commit a plan with no goal and the check stops it. It adds a goal and a finish line and the commit lands.">
+        <div class="screen pane">
+          <div class="try st" data-at="300">
+            <b>A plan for the new checkout</b>
+            <p>Goal: none. Finish line: none.</p>
+          </div>
+          <div class="pane-row st" data-at="1400"><span>The check at commit</span><span class="off">stopped</span></div>
+          <div class="try st" data-at="3000">
+            <b>A plan for the new checkout</b>
+            <p>Goal: pay in one step.</p>
+            <p>Done when: a test order goes through.</p>
+          </div>
+          <div class="pane-row st" data-at="4300"><span>The check at commit</span><span class="yes">lands</span></div>
+        </div>
+        <figcaption>A demo commit. The check runs on every commit, for agents and people alike.</figcaption>
+      </figure>
+      <div>
+        <h2 id="h-commits">Commits follow the rules.</h2>
+        <p class="lede">A check runs at every commit and stops a plan with no goal or no finish line.</p>
       </div>
-      <div class="slide-body pair">
-        <figure class="well" style="margin:0">
-          <figcaption class="well-head"><span>what you say</span></figcaption>
-          <ul class="said">
-            <li><time>09:02</time>users keep asking for Google sign-in</li>
-            <li><time>09:03</time>don’t break the email login though</li>
-            <li><time>09:05</time>can it be live before Friday’s launch?</li>
-            <li><time>09:06</time>and always run the e2e tests before merging</li>
+    </div>
+  </section>
+
+  <section class="slide" id="personas" aria-labelledby="h-personas">
+    <div class="in split">
+      <div>
+        <h2 id="h-personas">Every agent knows its role.</h2>
+        <p class="lede">Before it acts, an agent says which role it plays, then keeps that role’s rules.</p>
+      </div>
+      <figure class="shot scene" data-len="9000" aria-label="Three roles: Delivery manager, Tester, Writer. The Tester is chosen and the agent says: I am the Tester. I check the work and never ship it.">
+        <div class="screen pane">
+          <p class="cap">The roles in this repo</p>
+          <div class="chips"><span class="chip">Delivery manager</span><span class="chip st pick" data-at="900">Tester</span><span class="chip">Writer</span></div>
+          <div class="chat-col">
+            <div class="b them st" data-at="1800">Please check the new sign in page.</div>
+            <div class="b me st" data-at="3000">I am the Tester. I check the work and never ship it.</div>
+          </div>
+        </div>
+        <figcaption>A demo agent. Each role is a short file with its own rules.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="slide" id="claims" aria-labelledby="h-claims">
+    <div class="in split rev">
+      <figure class="shot scene" data-len="10000" aria-label="A task list. Agent two has claimed Fix the sign in page. Agent three sees the claim and takes the next task instead.">
+        <div class="screen pane">
+          <p class="cap">Tasks in the plan</p>
+          <ul class="tasks">
+            <li><span>Fix the sign in page</span><span class="st yes" data-at="600">agent two has it</span></li>
+            <li><span>Write the reset email</span><span class="st yes" data-at="3200">agent three has it</span></li>
+            <li><span>Test it on a real phone</span><span class="free">free</span></li>
           </ul>
-        </figure>
-        <figure class="well" style="margin:0">
-          <figcaption class="well-head"><span>docs/EPIC-4-google-sign-in.md</span><span class="hide-s">in progress</span></figcaption>
-<pre><b>Goal</b>  Sign in with Google, live before Friday;
-      email login keeps working.
-<b>Done means</b>
-  [ ] Google button on the login page
-  [ ] Email login still passes its tests
-  [ ] You check it live
-<b>Steps</b>
-  S1  OAuth app     worker  <span class="arg">done</span>
-  S2  Login button  worker  running
-  S3  Live check    you     waiting
-<b>L-2</b>   always run e2e before merging</pre>
-        </figure>
+          <div class="chat-col">
+            <div class="b them st" data-at="1800">Agent three: the sign in page is taken. I take the next task.</div>
+          </div>
+        </div>
+        <figcaption>A demo plan. A claim is one line in the repo, so every agent sees it.</figcaption>
+      </figure>
+      <div>
+        <h2 id="h-claims">One task, one agent.</h2>
+        <p class="lede">An agent claims a task before it starts, so two agents never do the same work.</p>
       </div>
     </div>
   </section>
 
-  <section class="slide alt" id="memory" aria-labelledby="h-memory">
-    <div class="container">
-      <div class="slide-head">
-        <h2 id="h-memory">The memory is the repo.</h2>
-        <p class="lead">Goals, state, decisions and lessons are plain files, committed next to the code.</p>
+  <section class="slide" id="doctrine" aria-labelledby="h-doctrine">
+    <div class="in split">
+      <div>
+        <h2 id="h-doctrine">One doctrine for every agent.</h2>
+        <p class="lede">Every agent works from the same rules for planning, for git and for asking you a question.</p>
+        <ul class="facts">
+          <li>Every plan has a goal and a finish line.</li>
+          <li>Every commit names its task.</li>
+          <li>Ask the person only what only they can decide.</li>
+          <li><b>Done means you can open it and see it.</b></li>
+        </ul>
       </div>
-      <div class="slide-body" style="display:grid;gap:var(--space-lg)">
-        <figure class="well" style="margin:0" aria-label="A repository with its memory in docs">
-          <figcaption class="well-head"><span>acme-app/</span></figcaption>
-<pre>|-- src/                         <span class="dim"># the code</span>
-`-- docs/                        <span class="dim"># the memory</span>
-    |-- EPIC-0-root.md
-    `-- EPIC-4-google-sign-in.md</pre>
-        </figure>
-        <figure class="well" style="margin:0" aria-label="The git log of that memory">
-          <figcaption class="well-head"><span><span class="p">$</span> git log --oneline docs/</span></figcaption>
-<pre><span class="arg">a41c9e2</span> EPIC-4 S1 OAuth app verified
-<span class="arg">7be03d1</span> L-2 learned: e2e before merge
-<span class="arg">19f0c55</span> EPIC-4 created from chat</pre>
-        </figure>
+      <figure class="shot small-shot">
+        <picture><source media="(max-width: 40rem)" srcset="team/shots/review-card-phone.webp"><img src="team/shots/review-card.webp" width="934" height="920" loading="lazy" decoding="async" alt="A finished task card: what was delivered, with three ticks and one cross, a screenshot of the evidence, where it sits in the tree of goals, and the buttons to mark it complete or send it back."></picture>
+        <figcaption>Real. A finished task from our own team: what was done, the proof, and one button to accept it.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="slide" id="sticks" aria-labelledby="h-sticks">
+    <div class="in split rev">
+      <figure class="shot scene" data-len="12000" aria-label="You tell an agent: never deploy on a Friday. The rule is written into the plan as rule 12. A week later a new agent reads rule 12 and ships on Monday instead.">
+        <div class="screen pane">
+          <div class="chat-col">
+            <div class="b me st" data-at="300">Never deploy on a Friday.</div>
+          </div>
+          <div class="rule st" data-at="1500"><span class="n">Rule 12</span>Never deploy on a Friday.<small>written into the plan</small></div>
+          <p class="ended st" data-at="3200">A week later, a new agent</p>
+          <div class="chat-col">
+            <div class="b them st" data-at="4300">It is Friday and rule 12 says no deploys. I will ship on Monday.</div>
+          </div>
+        </div>
+        <figcaption>A demo rule. Every later agent reads the rules before it starts.</figcaption>
+      </figure>
+      <div>
+        <h2 id="h-sticks">Say it once. It sticks.</h2>
+        <p class="lede">Correct an agent once and the rule goes into the plan. Every later agent reads it before it starts.</p>
       </div>
     </div>
   </section>
 
-  <section class="slide" id="loop" aria-labelledby="h-loop">
-    <div class="container stack">
-      <div class="slide-head">
-        <h2 id="h-loop">Bind, dispatch, verify, merge, learn.</h2>
-      </div>
-      <dl class="slide-body rows">
-        <div><dt>bind</dt><dd>Every agent reads the goal, its state and the learnings before it acts.</dd></div>
-        <div><dt>dispatch</dt><dd>Each step goes to a fresh worker in its own worktree, <code>wt/&lt;task&gt;</code>.</dd></div>
-        <div><dt>verify</dt><dd>On two axes before anything merges. Tests run in main; red is reverted.</dd></div>
-        <div><dt>merge</dt><dd>Verified work only, with its history. Never squashed.</dd></div>
-        <div><dt>learn</dt><dd>A correction you make once becomes a rule, <code>L-&lt;n&gt;</code>, at the depth where it applies.</dd></div>
-      </dl>
+  <section class="slide" id="tree" aria-labelledby="h-tree">
+    <div class="in">
+      <h2 id="h-tree">Your goals, as a graph.</h2>
+      <p class="lede">Every plan hangs from the goal it serves, so goals, steps and their status read as one tree.</p>
+      <figure class="shot tree-shot">
+        <div class="gt-wrap">
+<!-- goal-tree:spine begin (tools/goal_tree.py writes this) -->
+<svg class="gt gt--wide" viewBox="0 0 980 411" width="980" height="411" style="--ar:2.385" role="img" aria-labelledby="gt-spine-wide-title gt-spine-wide-desc"><title id="gt-spine-wide-title">EpicSpine&#x27;s own plan as a tree of goals</title><desc id="gt-spine-wide-desc">EpicSpine: your agents keep the plan, 10 goals and 61 steps in its repo. Under it: Every repo keeps one tree of goals (done), with its steps: Start a goal with one command; Every new ask finds its place; The console reads the tree. Each goal says what done means (done). Status you can trust (waiting for review).</desc><path class="gt-line" d="M490 116V148 M130 148H850 M130 148V180 M370 148V180 M610 148V180 M850 148V180"/><path class="gt-line" d="M130 273V305 M114 305H798 M114 305V337 M342 305V337 M570 305V337 M798 305V337"/><g class="gt-box gt-l0"><rect x="290" y="8" width="400" height="108" rx="2"/><text class="gt-name" x="306" y="44.0" font-size="26">EpicSpine: your agents</text><text class="gt-name" x="306" y="75.7" font-size="26">keep the plan</text><text class="gt-sub" x="306" y="110.4" font-size="16">10 goals and 61 steps in its repo</text></g><g class="gt-box gt-l1 gt-focus"><rect x="18" y="180" width="224" height="92" rx="2"/><circle class="gt-dot gt-done" cx="36" cy="202.6" r="5"><title>done</title></circle><text class="gt-name" x="52" y="210.2" font-size="20">Every repo keeps</text><text class="gt-name" x="52" y="234.6" font-size="20">one tree of goals</text><text class="gt-sub" x="52" y="262.0" font-size="15">9 steps</text></g><g class="gt-box gt-l2"><rect x="8" y="337" width="212" height="66" rx="2"/><circle class="gt-dot gt-done" cx="26" cy="358.3" r="5"><title>done</title></circle><text class="gt-name" x="42" y="365.5" font-size="19">Start a goal</text><text class="gt-name" x="42" y="388.7" font-size="19">with one command</text></g><g class="gt-box gt-l2"><rect x="236" y="337" width="212" height="66" rx="2"/><circle class="gt-dot gt-done" cx="254" cy="358.3" r="5"><title>done</title></circle><text class="gt-name" x="270" y="365.5" font-size="19">Every new ask</text><text class="gt-name" x="270" y="388.7" font-size="19">finds its place</text></g><g class="gt-box gt-l2"><rect x="464" y="337" width="212" height="66" rx="2"/><circle class="gt-dot gt-done" cx="482" cy="358.3" r="5"><title>done</title></circle><text class="gt-name" x="498" y="365.5" font-size="19">The console</text><text class="gt-name" x="498" y="388.7" font-size="19">reads the tree</text></g><g class="gt-box gt-l2 gt-more"><rect x="692" y="337" width="212" height="66" rx="2"/><text class="gt-name" x="708" y="365.5" font-size="19">+6 more steps</text></g><g class="gt-box gt-l1"><rect x="258" y="180" width="224" height="92" rx="2"/><circle class="gt-dot gt-done" cx="276" cy="202.6" r="5"><title>done</title></circle><text class="gt-name" x="292" y="210.2" font-size="20">Each goal says</text><text class="gt-name" x="292" y="234.6" font-size="20">what done means</text><text class="gt-sub" x="292" y="262.0" font-size="15">21 steps</text></g><g class="gt-box gt-l1"><rect x="498" y="180" width="224" height="92" rx="2"/><circle class="gt-dot gt-review" cx="516" cy="202.6" r="5"><title>waiting for review</title></circle><text class="gt-name" x="532" y="210.2" font-size="20">Status you can</text><text class="gt-name" x="532" y="234.6" font-size="20">trust</text><text class="gt-sub" x="532" y="262.0" font-size="15">1 step</text></g><g class="gt-box gt-l1 gt-more"><rect x="738" y="180" width="224" height="92" rx="2"/><text class="gt-name" x="754" y="210.2" font-size="20">+7 more goals</text></g></svg>
+<svg class="gt gt--phone" viewBox="0 0 360 673" width="360" height="673" style="--ar:0.535" role="img" aria-labelledby="gt-spine-phone-title gt-spine-phone-desc"><title id="gt-spine-phone-title">EpicSpine&#x27;s own plan as a tree of goals</title><desc id="gt-spine-phone-desc">EpicSpine: your agents keep the plan, 10 goals and 61 steps in its repo. Under it: Every repo keeps one tree of goals (done), with its steps: Start a goal with one command; Every new ask finds its place; The console reads the tree. Each goal says what done means (done). Status you can trust (waiting for review).</desc><path class="gt-line" d="M15 97V639 M15 150H26 M15 498H26 M15 583H26 M15 639Q15 647 23 647H26"/><path class="gt-line" d="M37 194V415 M37 234H48 M37 306H48 M37 369H48 M37 415Q37 423 45 423H48"/><g class="gt-box gt-l0"><rect x="4" y="4" width="352" height="93" rx="2"/><text class="gt-name" x="20" y="35.0" font-size="21">EpicSpine: your agents keep</text><text class="gt-name" x="20" y="60.6" font-size="21">the plan</text><text class="gt-sub" x="20" y="89.2" font-size="14">10 goals and 61 steps in its repo</text></g><g class="gt-box gt-l1 gt-focus"><rect x="26" y="107" width="330" height="86" rx="2"/><circle class="gt-dot gt-done" cx="44" cy="128.6" r="5"><title>done</title></circle><text class="gt-name" x="60" y="135.4" font-size="18">Every repo keeps one tree of</text><text class="gt-name" x="60" y="157.4" font-size="18">goals</text><text class="gt-sub" x="60" y="182.4" font-size="14">9 steps</text></g><g class="gt-box gt-l2"><rect x="48" y="204" width="308" height="61" rx="2"/><circle class="gt-dot gt-done" cx="66" cy="224.1" r="5"><title>done</title></circle><text class="gt-name" x="82" y="230.6" font-size="17">Start a goal with one</text><text class="gt-name" x="82" y="251.3" font-size="17">command</text></g><g class="gt-box gt-l2"><rect x="48" y="275" width="308" height="61" rx="2"/><circle class="gt-dot gt-done" cx="66" cy="295.6" r="5"><title>done</title></circle><text class="gt-name" x="82" y="302.0" font-size="17">Every new ask finds its</text><text class="gt-name" x="82" y="322.8" font-size="17">place</text></g><g class="gt-box gt-l2"><rect x="48" y="347" width="308" height="44" rx="2"/><circle class="gt-dot gt-done" cx="66" cy="367.1" r="5"><title>done</title></circle><text class="gt-name" x="82" y="373.5" font-size="17">The console reads the tree</text></g><g class="gt-box gt-l2 gt-more"><rect x="48" y="401" width="308" height="44" rx="2"/><text class="gt-name" x="64" y="427.5" font-size="17">+6 more steps</text></g><g class="gt-box gt-l1"><rect x="26" y="455" width="330" height="86" rx="2"/><circle class="gt-dot gt-done" cx="44" cy="475.7" r="5"><title>done</title></circle><text class="gt-name" x="60" y="482.5" font-size="18">Each goal says what done</text><text class="gt-name" x="60" y="504.5" font-size="18">means</text><text class="gt-sub" x="60" y="529.4" font-size="14">21 steps</text></g><g class="gt-box gt-l1"><rect x="26" y="551" width="330" height="64" rx="2"/><circle class="gt-dot gt-review" cx="44" cy="571.8" r="5"><title>waiting for review</title></circle><text class="gt-name" x="60" y="578.6" font-size="18">Status you can trust</text><text class="gt-sub" x="60" y="603.6" font-size="14">1 step</text></g><g class="gt-box gt-l1 gt-more"><rect x="26" y="625" width="330" height="44" rx="2"/><text class="gt-name" x="42" y="652.8" font-size="18">+7 more goals</text></g></svg>
+<details class="gt-all"><summary>Show more of the tree</summary>
+<svg class="gt gt--wide" viewBox="0 0 1200 376" width="1200" height="376" style="--ar:3.188" role="img" aria-labelledby="gt-spine-all-wide-title gt-spine-all-wide-desc"><title id="gt-spine-all-wide-title">EpicSpine&#x27;s own plan as a tree of goals</title><desc id="gt-spine-all-wide-desc">EpicSpine: your agents keep the plan, 10 goals and 61 steps in its repo. Under it: Every repo keeps one tree of goals (done), with its steps: Start a goal with one command; Every new ask finds its place; Each new goal gets its code; Older repos moved into the tree; The console reads the tree. Each goal says what done means (done). A file for each team role (in progress). Status you can trust (waiting for review). Browser agents can install it (waiting for review).</desc><path class="gt-line" d="M600 104V136 M100 136H1100 M100 136V168 M300 136V168 M500 136V168 M700 136V168 M900 136V168 M1100 136V168"/><path class="gt-line" d="M100 248V280 M96 280H1056 M96 280V312 M288 280V312 M480 280V312 M672 280V312 M864 280V312 M1056 280V312"/><g class="gt-box gt-l0"><rect x="420" y="8" width="360" height="96" rx="2"/><text class="gt-name" x="436" y="40.0" font-size="22">EpicSpine: your agents keep</text><text class="gt-name" x="436" y="66.8" font-size="22">the plan</text><text class="gt-sub" x="436" y="96.7" font-size="14">10 goals and 61 steps in its repo</text></g><g class="gt-box gt-l1 gt-focus"><rect x="8" y="168" width="184" height="80" rx="2"/><circle class="gt-dot gt-done" cx="26" cy="187.8" r="5"><title>done</title></circle><text class="gt-name" x="42" y="193.9" font-size="16">Every repo keeps</text><text class="gt-name" x="42" y="213.4" font-size="16">one tree of goals</text><text class="gt-sub" x="42" y="235.9" font-size="13">9 steps</text></g><g class="gt-box gt-l2"><rect x="8" y="312" width="176" height="57" rx="2"/><circle class="gt-dot gt-done" cx="26" cy="331.1" r="5"><title>done</title></circle><text class="gt-name" x="42" y="336.8" font-size="15">Start a goal</text><text class="gt-name" x="42" y="355.1" font-size="15">with one command</text></g><g class="gt-box gt-l2"><rect x="200" y="312" width="176" height="57" rx="2"/><circle class="gt-dot gt-done" cx="218" cy="331.1" r="5"><title>done</title></circle><text class="gt-name" x="234" y="336.8" font-size="15">Every new ask</text><text class="gt-name" x="234" y="355.1" font-size="15">finds its place</text></g><g class="gt-box gt-l2"><rect x="392" y="312" width="176" height="57" rx="2"/><circle class="gt-dot gt-done" cx="410" cy="331.1" r="5"><title>done</title></circle><text class="gt-name" x="426" y="336.8" font-size="15">Each new goal</text><text class="gt-name" x="426" y="355.1" font-size="15">gets its code</text></g><g class="gt-box gt-l2"><rect x="584" y="312" width="176" height="57" rx="2"/><circle class="gt-dot gt-done" cx="602" cy="331.1" r="5"><title>done</title></circle><text class="gt-name" x="618" y="336.8" font-size="15">Older repos</text><text class="gt-name" x="618" y="355.1" font-size="15">moved into the tree</text></g><g class="gt-box gt-l2"><rect x="776" y="312" width="176" height="57" rx="2"/><circle class="gt-dot gt-done" cx="794" cy="331.1" r="5"><title>done</title></circle><text class="gt-name" x="810" y="336.8" font-size="15">The console</text><text class="gt-name" x="810" y="355.1" font-size="15">reads the tree</text></g><g class="gt-box gt-l2 gt-more"><rect x="968" y="312" width="176" height="57" rx="2"/><text class="gt-name" x="984" y="336.8" font-size="15">+4 more steps</text></g><g class="gt-box gt-l1"><rect x="208" y="168" width="184" height="80" rx="2"/><circle class="gt-dot gt-done" cx="226" cy="187.8" r="5"><title>done</title></circle><text class="gt-name" x="242" y="193.9" font-size="16">Each goal says</text><text class="gt-name" x="242" y="213.4" font-size="16">what done means</text><text class="gt-sub" x="242" y="235.9" font-size="13">21 steps</text></g><g class="gt-box gt-l1"><rect x="408" y="168" width="184" height="80" rx="2"/><circle class="gt-dot gt-active" cx="426" cy="187.8" r="5"><title>in progress</title></circle><text class="gt-name" x="442" y="193.9" font-size="16">A file for each</text><text class="gt-name" x="442" y="213.4" font-size="16">team role</text><text class="gt-sub" x="442" y="235.9" font-size="13">7 steps</text></g><g class="gt-box gt-l1"><rect x="608" y="168" width="184" height="80" rx="2"/><circle class="gt-dot gt-review" cx="626" cy="187.8" r="5"><title>waiting for review</title></circle><text class="gt-name" x="642" y="193.9" font-size="16">Status you can</text><text class="gt-name" x="642" y="213.4" font-size="16">trust</text><text class="gt-sub" x="642" y="235.9" font-size="13">1 step</text></g><g class="gt-box gt-l1"><rect x="808" y="168" width="184" height="80" rx="2"/><circle class="gt-dot gt-review" cx="826" cy="187.8" r="5"><title>waiting for review</title></circle><text class="gt-name" x="842" y="193.9" font-size="16">Browser agents</text><text class="gt-name" x="842" y="213.4" font-size="16">can install it</text><text class="gt-sub" x="842" y="235.9" font-size="13">2 steps</text></g><g class="gt-box gt-l1 gt-more"><rect x="1008" y="168" width="184" height="80" rx="2"/><text class="gt-name" x="1024" y="193.9" font-size="16">+5 more goals</text></g></svg>
+<svg class="gt gt--phone" viewBox="0 0 360 845" width="360" height="845" style="--ar:0.426" role="img" aria-labelledby="gt-spine-all-phone-title gt-spine-all-phone-desc"><title id="gt-spine-all-phone-title">EpicSpine&#x27;s own plan as a tree of goals</title><desc id="gt-spine-all-phone-desc">EpicSpine: your agents keep the plan, 10 goals and 61 steps in its repo. Under it: Every repo keeps one tree of goals (done), with its steps: Start a goal with one command; Every new ask finds its place; Each new goal gets its code; Older repos moved into the tree; The console reads the tree. Each goal says what done means (done). A file for each team role (in progress). Status you can trust (waiting for review). Browser agents can install it (waiting for review).</desc><path class="gt-line" d="M15 91V811 M15 141H26 M15 545H26 M15 616H26 M15 686H26 M15 757H26 M15 811Q15 819 23 819H26"/><path class="gt-line" d="M37 181V475 M37 213H48 M37 267H48 M37 321H48 M37 375H48 M37 429H48 M37 475Q37 483 45 483H48"/><g class="gt-box gt-l0"><rect x="4" y="4" width="352" height="87" rx="2"/><text class="gt-name" x="20" y="33.0" font-size="19">EpicSpine: your agents keep the</text><text class="gt-name" x="20" y="56.2" font-size="19">plan</text><text class="gt-sub" x="20" y="82.4" font-size="13">10 goals and 61 steps in its repo</text></g><g class="gt-box gt-l1 gt-focus"><rect x="26" y="101" width="330" height="80" rx="2"/><circle class="gt-dot gt-done" cx="44" cy="121.2" r="5"><title>done</title></circle><text class="gt-name" x="60" y="127.3" font-size="16">Every repo keeps one tree of</text><text class="gt-name" x="60" y="146.8" font-size="16">goals</text><text class="gt-sub" x="60" y="169.3" font-size="13">9 steps</text></g><g class="gt-box gt-l2"><rect x="48" y="191" width="308" height="44" rx="2"/><circle class="gt-dot gt-done" cx="66" cy="210.5" r="5"><title>done</title></circle><text class="gt-name" x="82" y="216.2" font-size="15">Start a goal with one command</text></g><g class="gt-box gt-l2"><rect x="48" y="245" width="308" height="44" rx="2"/><circle class="gt-dot gt-done" cx="66" cy="264.5" r="5"><title>done</title></circle><text class="gt-name" x="82" y="270.2" font-size="15">Every new ask finds its place</text></g><g class="gt-box gt-l2"><rect x="48" y="299" width="308" height="44" rx="2"/><circle class="gt-dot gt-done" cx="66" cy="318.5" r="5"><title>done</title></circle><text class="gt-name" x="82" y="324.2" font-size="15">Each new goal gets its code</text></g><g class="gt-box gt-l2"><rect x="48" y="353" width="308" height="44" rx="2"/><circle class="gt-dot gt-done" cx="66" cy="372.5" r="5"><title>done</title></circle><text class="gt-name" x="82" y="378.2" font-size="15">Older repos moved into the tree</text></g><g class="gt-box gt-l2"><rect x="48" y="407" width="308" height="44" rx="2"/><circle class="gt-dot gt-done" cx="66" cy="426.5" r="5"><title>done</title></circle><text class="gt-name" x="82" y="432.2" font-size="15">The console reads the tree</text></g><g class="gt-box gt-l2 gt-more"><rect x="48" y="461" width="308" height="44" rx="2"/><text class="gt-name" x="64" y="486.2" font-size="15">+4 more steps</text></g><g class="gt-box gt-l1"><rect x="26" y="515" width="330" height="60" rx="2"/><circle class="gt-dot gt-done" cx="44" cy="535.1" r="5"><title>done</title></circle><text class="gt-name" x="60" y="541.2" font-size="16">Each goal says what done means</text><text class="gt-sub" x="60" y="563.7" font-size="13">21 steps</text></g><g class="gt-box gt-l1"><rect x="26" y="586" width="330" height="60" rx="2"/><circle class="gt-dot gt-active" cx="44" cy="605.5" r="5"><title>in progress</title></circle><text class="gt-name" x="60" y="611.6" font-size="16">A file for each team role</text><text class="gt-sub" x="60" y="634.1" font-size="13">7 steps</text></g><g class="gt-box gt-l1"><rect x="26" y="656" width="330" height="60" rx="2"/><circle class="gt-dot gt-review" cx="44" cy="676.0" r="5"><title>waiting for review</title></circle><text class="gt-name" x="60" y="682.0" font-size="16">Status you can trust</text><text class="gt-sub" x="60" y="704.6" font-size="13">1 step</text></g><g class="gt-box gt-l1"><rect x="26" y="726" width="330" height="60" rx="2"/><circle class="gt-dot gt-review" cx="44" cy="746.4" r="5"><title>waiting for review</title></circle><text class="gt-name" x="60" y="752.5" font-size="16">Browser agents can install it</text><text class="gt-sub" x="60" y="775.0" font-size="13">2 steps</text></g><g class="gt-box gt-l1 gt-more"><rect x="26" y="797" width="330" height="44" rx="2"/><text class="gt-name" x="42" y="822.9" font-size="16">+5 more goals</text></g></svg>
+</details>
+<!-- goal-tree:spine end -->
+        </div>
+        <ul class="gt-key" aria-label="What the dots mean"><li><i class="gt-done"></i>Done</li><li><i class="gt-review"></i>Waiting for review</li><li><i class="gt-active"></i>In progress</li><li><i class="gt-planned"></i>Planned</li></ul>
+        <figcaption>Real. EpicSpine’s own plan, drawn from its repo on 8 November 2026.</figcaption>
+      </figure>
     </div>
   </section>
 
-  <section class="slide alt" id="roles" aria-labelledby="h-roles">
-    <div class="container">
-      <div class="slide-head">
-        <h2 id="h-roles">The manager never implements.</h2>
-        <p class="lead">It dispatches and verifies. Workers build. You decide.</p>
+  <section class="slide" id="together" aria-labelledby="h-together">
+    <div class="in split">
+      <div>
+        <h2 id="h-together">Only real decisions reach you.</h2>
+        <p class="lede">Agents settle what they can by the rules. A question reaches you only when it is yours to answer, with what, why and their advice first.</p>
       </div>
-      <div class="slide-body">
-        <table class="roles">
-          <thead><tr><th scope="col">role</th><th scope="col">writes to the spine</th></tr></thead>
-          <tbody>
-            <tr><th scope="row">manager</th><td>the goal, the steps, the current state</td></tr>
-            <tr><th scope="row">worker</th><td>done, with evidence, and the outcome</td></tr>
-            <tr><th scope="row">reviewer</th><td>a decision and its why</td></tr>
-            <tr><th scope="row">you</th><td>a correction, once; it stays as a rule</td></tr>
-          </tbody>
-        </table>
+      <figure class="shot">
+        <picture><source media="(max-width: 40rem)" srcset="team/shots/ask-e73-phone.webp"><img src="team/shots/ask-e73.webp" width="934" height="426" loading="lazy" decoding="async" alt="A question card: pay the 8 dollars to verify our X account, with its context, impact, risk, a recommendation of yes, and Done and Deny buttons."></picture>
+        <figcaption>Real. A question from our own team, 7 November 2026.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="slide" id="family" aria-labelledby="h-family">
+    <div class="in">
+      <h2 id="h-family">Want the team without the setup?</h2>
+      <p class="lede">Two products run on EpicSpine every day.</p>
+      <div class="two">
+        <a class="fam" href="team/">
+          <span class="shot fill"><img src="team/shots/feed.webp" width="1024" height="898" loading="lazy" decoding="async" alt="The EpicTeam home: every goal, and what waits on you, in one feed."></span>
+          <h3>EpicTeam</h3>
+          <span class="small">An AI team that works on your goals. Everything that needs you lands in one inbox.</span>
+        </a>
+        <a class="fam" href="social/">
+          <span class="shot"><img src="social/shots/everyday.webp" width="960" height="290" loading="lazy" decoding="async" alt="EpicSocial’s numbers for the last seven days: posts, replies received, replies sent, followers and views."></span>
+          <h3>EpicSocial</h3>
+          <span class="small">AI agents that find ideas, write your posts and answer replies. You approve every post.</span>
+        </a>
       </div>
     </div>
   </section>
 
-  <section class="slide" id="install" aria-labelledby="h-install">
-    <div class="container">
-      <div class="slide-head">
+  <section class="slide close" id="install" aria-labelledby="h-install">
+    <div class="in split">
+      <div>
         <h2 id="h-install">Install once per machine.</h2>
         <ul class="notes">
           <li>Python 3.10 or newer, no packages.</li>
-          <li>Then, in each repo: <code>agents_block.py install</code>.</li>
-          <li>Then talk to your agent. It binds on its first reply.</li>
+          <li>Then talk to your agent as usual.</li>
+          <li>Each repo gets its block with one more line, in the README.</li>
         </ul>
+        <p class="more">How it works inside: <a href="book/">read the Book</a>.</p>
       </div>
-      <figure class="slide-body well install" style="margin:0">
-        <figcaption class="well-head"><span>shell</span><button class="copy" type="button" data-copy="install-cmd">Copy</button></figcaption>
+      <figure class="box shell">
+        <div class="shell-bar"><span>Shell</span><button class="copy" type="button" data-copy="install-cmd">Copy</button></div>
 <pre id="install-cmd"><span class="p">$</span> git clone https://github.com/AlfaBlok/epicspine-skill
 <span class="p">$</span> cd epicspine-skill
 <span class="p">$</span> mkdir -p ~/.agents/skills
 <span class="p">$</span> cp -R skill/epic-spine ~/.agents/skills/
 <span class="p">$</span> cd ~/.agents/skills/epic-spine
-<span class="p">$</span> python3 scripts/agents_block.py <span class="arg">install-global</span></pre>
+<span class="p">$</span> python3 scripts/agents_block.py install-global</pre>
         <p class="visually-hidden" role="status" id="copy-status"></p>
       </figure>
     </div>
   </section>
-
-  <section class="slide alt" id="next" aria-labelledby="h-next">
-    <div class="container">
-      <div class="slide-head">
-        <h2 id="h-next">Read the source, not the summary.</h2>
-        <p class="lead">The Book explains every part in 32 slides.</p>
-      </div>
-      <dl class="slide-body links">
-        <div><dt><a href="book/">The Book</a></dt><dd>Spines, roles, dispatch, git lanes, learnings</dd></div>
-        <div><dt><a href="https://github.com/AlfaBlok/epicspine-skill#readme">README</a></dt><dd>Install, upgrade, every harness</dd></div>
-        <div><dt><a href="https://github.com/AlfaBlok/epicspine-skill/blob/main/examples/EPIC-0-CLI-EXAMPLE.md">An example spine</a></dt><dd>Populated, and it validates locally</dd></div>
-        <div><dt><a href="social/">EpicSocial</a></dt><dd>Agents that write and answer your posts</dd></div>
-        <div><dt><a href="testers/">Test EpicSocial</a></dt><dd>Apply for the alpha</dd></div>
-      </dl>
-      <footer class="foot">
-        <p>EpicSpine, AGPL-3.0, <a href="https://github.com/AlfaBlok/epicspine-skill">github.com/AlfaBlok/epicspine-skill</a></p>
-        <p>Set in Martian Mono (SIL OFL 1.1)</p>
-      </footer>
-    </div>
-  </section>
 </main>
 
+<footer class="foot" id="next">
+  <div class="links">
+    <div><h2>EpicSpine</h2><ul>
+      <li><a href="book/">The Book</a></li>
+      <li><a href="https://github.com/AlfaBlok/epicspine-skill#readme">README</a></li>
+      <li><a href="https://github.com/AlfaBlok/epicspine-skill/blob/main/examples/EPIC-0-CLI-EXAMPLE.md">An example spine</a></li>
+    </ul></div>
+    <div><h2>Built on it</h2><ul>
+      <li><a href="team/">EpicTeam</a></li>
+      <li><a href="social/">EpicSocial</a></li>
+      <li><a href="testers/">Test EpicSocial</a></li>
+    </ul></div>
+    <div><h2>Source</h2><ul>
+      <li><a href="https://github.com/AlfaBlok/epicspine-skill">On GitHub</a></li>
+      <li>AGPL-3.0</li>
+    </ul></div>
+  </div>
+  <p class="fine">The moving scenes use demo data. The finished task, the question, the tree and the product screens are real, from our own team. Set in Newsreader and Instrument Sans (SIL OFL 1.1).</p>
+</footer>
+<script src="paper/scenes.js"></script>
 <script>
-(function () {
-  var slides = Array.prototype.slice.call(document.querySelectorAll(".slide"));
-  var stops = Array.prototype.slice.call(document.querySelectorAll(".stops a"));
-  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
-  var current = 0, lockUntil = 0, lastWheel = 0;
-
-  function nearest() {
-    var y = window.scrollY + window.innerHeight * 0.4, best = 0;
-    slides.forEach(function (s, i) { if (s.offsetTop <= y) { best = i; } });
-    return best;
-  }
-  function go(i) {
-    i = Math.max(0, Math.min(slides.length - 1, i));
-    current = i;
-    lockUntil = Date.now() + (reduce.matches ? 250 : 750);
-    window.scrollTo({ top: slides[i].offsetTop, behavior: reduce.matches ? "auto" : "smooth" });
-  }
-  // A slide taller than the screen (a phone in landscape) scrolls inside first, then flips.
-  function canFlip(dir) {
-    var s = slides[current], top = s.offsetTop, bottom = top + s.offsetHeight, vb = window.scrollY + window.innerHeight;
-    return dir > 0 ? vb >= bottom - 4 : window.scrollY <= top + 4;
-  }
-  window.addEventListener("wheel", function (e) {
-    if (e.ctrlKey || Math.abs(e.deltaY) < Math.abs(e.deltaX)) { return; }
-    var now = Date.now(), fresh = now - lastWheel > 180;
-    lastWheel = now;
-    current = now < lockUntil ? current : nearest();
-    var dir = e.deltaY > 0 ? 1 : -1;
-    if (!canFlip(dir)) { return; }
-    e.preventDefault();
-    if (now < lockUntil || !fresh && Math.abs(e.deltaY) < 40) { return; }
-    if (slides[current + dir]) { go(current + dir); }
-  }, { passive: false });
-
-  window.addEventListener("keydown", function (e) {
-    var t = e.target, tag = t && t.tagName;
-    if (e.altKey || e.ctrlKey || e.metaKey || tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || (t && t.isContentEditable)) { return; }
-    var k = e.key, dir = 0;
-    if (k === "ArrowDown" || k === "PageDown" || (k === " " && !e.shiftKey)) { dir = 1; }
-    else if (k === "ArrowUp" || k === "PageUp" || (k === " " && e.shiftKey)) { dir = -1; }
-    else if (k === "Home") { e.preventDefault(); go(0); return; }
-    else if (k === "End") { e.preventDefault(); go(slides.length - 1); return; }
-    if (!dir || (k === " " && tag === "BUTTON")) { return; }
-    current = Date.now() < lockUntil ? current : nearest();
-    if (!canFlip(dir)) { return; }
-    e.preventDefault();
-    go(current + dir);
+// Copy the install lines, without the prompts.
+document.querySelectorAll("[data-copy]").forEach(function (b) {
+  b.addEventListener("click", function () {
+    var src = document.getElementById(b.getAttribute("data-copy"));
+    var text = src.textContent.split("\n").map(function (l) { return l.replace(/^\$ /, ""); }).join("\n");
+    var status = document.getElementById("copy-status");
+    function done(ok) {
+      b.textContent = ok ? "Copied" : "Select and copy";
+      status.textContent = ok ? "Install lines copied" : "Copy failed, select the lines instead";
+      setTimeout(function () { b.textContent = "Copy"; }, 1400);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(false); });
+    } else { done(false); }
   });
-
-  // Mark the stop for the slide in view; start the hero session once.
-  var hero = document.querySelector(".typed");
-  if ("IntersectionObserver" in window) {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        if (!en.isIntersecting) { return; }
-        var id = en.target.id;
-        stops.forEach(function (a) { a.setAttribute("aria-current", a.getAttribute("href") === "#" + id ? "true" : "false"); });
-        if (en.target.contains(hero)) { hero.classList.add("on"); }
-      });
-    }, { threshold: 0.55 });
-    slides.forEach(function (s) { io.observe(s); });
-  } else if (hero) { hero.classList.add("on"); }
-
-  // Copy the install lines, without the prompts.
-  document.querySelectorAll("[data-copy]").forEach(function (b) {
-    b.addEventListener("click", function () {
-      var src = document.getElementById(b.getAttribute("data-copy"));
-      var text = src.textContent.split("\n").map(function (l) { return l.replace(/^\$ /, ""); }).join("\n");
-      var status = document.getElementById("copy-status");
-      function done(ok) {
-        b.textContent = ok ? "Copied" : "Select and copy";
-        if (ok) { b.setAttribute("data-done", ""); }
-        status.textContent = ok ? "Install lines copied" : "Copy failed; select the lines instead";
-        setTimeout(function () { b.textContent = "Copy"; b.removeAttribute("data-done"); }, 1400);
-      }
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(false); });
-      } else { done(false); }
-    });
-  });
-})();
+});
 </script>
 <script>
 // WebMCP (EPIC-10): read-only tools for an agent in the visitor's browser. Everything is read

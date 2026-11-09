@@ -22,9 +22,15 @@
  * axes: light/grotesk-sans/cool · posture: restrained · contrast: pass · fold: pass · draw: b45a7a · v2.0.0 */
 /* Hallmark · pre-emit critique: P4 H5 E4 S4 R4 V4 · weakest: S, a waitlist page could be anyone's; led with the real post flow (idea, research, draft, your OK, replies) playing in the hero instead of claims */
 /* Hallmark · waive 47c · the approval inbox built as a sample inside the hero figure · the inbox is private to each customer, no public screen to capture */
+/* Hallmark · E43-S8 round 2 (agent_team, Jordi 2026-11-08) · each benefit is one unit as on EpicSpine and EpicTeam: the headline first, its screen beside it in a window capped at min(480px, 60vh); the campaign tree shows three steps at a glance, the rest behind "Show more of the tree" */
+/* Hallmark · waive 77 · "On Reddit and X, every day." · its real screen is a wide strip of daily numbers, shown whole */
+/* Hallmark · E43-S7 round 3 (EPIC-43 L-1) · the five benefit lines of EPIC-71 (draft) each shown by one real social.alpha9.io screen, taken read-only (agent_team console/scripts/e43-benefit-shots.mjs), the benefit named after it; the hero keeps its built sample */
+/* Hallmark · waive 83 · every picture below the hero is the product's own screen, one per benefit · EPIC-43 L-1, Jordi 2026-11-06: show each benefit with its real screen, first and largest */
+/* Hallmark · dropped #real, #flow, #team, #week, #get and the sample week script · round 3: explanation the real screens make unnecessary */
 /* Hallmark · reworded "Idea persona" to "Ideas agent", "four AI personas" to "four AI agents" · Jordi: not too techy, AI agents */
-/* Hallmark · waive 79 · the water stage runs to y 860 at 1440 x 900; only the head column ends at 726, the hero's lit panel fills the screen */
-/* Hallmark · waive 44c · Stage visual bleeding off the outer edge; the water light runs to the right edge of the window by design of the hero */
+/* Hallmark · waive 79 · the water stage runs to y 860 at 1440 x 900 · only the head column ends at 726, the hero's lit panel fills the screen */
+/* Hallmark · waive 44c · Stage visual bleeding off the outer edge · the water light runs to the right edge of the window by design of the hero */
+/* Hallmark · dismissed 59 · ten blocks: the hero, the five benefit lines of EPIC-71 (each needs its own screen), alpha, questions, the waitlist and the footer */
 /* Hallmark · dismissed 70 · the thanks shows only on ?signed=1, after the console at team.alpha9.io/api/public/testers stored the email and answered 303 */
 /* Hallmark · answered F7 · avatars, status chips and the day picker are round like the controls they sit with, by the theme's soft-pill language */
 /* Hallmark · dropped #how (five setup steps), the repo tree and "Under the hood: two ideas" · Jordi: minimalist, not too techy; ownership kept as one plain section, setup kept in the alpha list */
@@ -155,6 +161,14 @@ button, input, textarea { font: inherit; color: inherit; }
 /* Sections */
 .section { padding-block: var(--section-gap-s); }
 .section--paper2 { background: var(--color-paper-2); }
+/* agent_team feature list (EpicSocial, 2026-11-08): what EpicSocial does for you, drawn from its one list by tools/feature_list.py */
+.nice { display: grid; gap: var(--space-xl); }
+.nice .say { display: grid; gap: var(--space-md); }
+.nice .was { color: var(--color-ink-2); max-width: 52ch; }
+.nice-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-md); grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr)); }
+.nice-list li { display: grid; align-content: start; gap: var(--space-xs); padding: var(--space-md); border: 1px solid var(--color-rule); border-radius: var(--radius-card); background: var(--color-paper); }
+.nice-list h3 { font-size: var(--text-md); }
+.nice-list p { color: var(--color-ink-2); font-size: var(--text-sm); }
 .head { display: grid; gap: var(--space-md); margin-bottom: var(--space-2xl); max-width: 60ch; }
 .head p { color: var(--color-ink-2); font-size: var(--text-lead); line-height: 1.45; max-width: 52ch; }
 
@@ -253,6 +267,66 @@ button, input, textarea { font: inherit; color: inherit; }
 .foot nav { display: flex; gap: var(--space-md); flex-wrap: wrap; }
 .foot p { max-width: 62ch; }
 
+.real-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-lg); margin-top: var(--space-lg); }
+.shot { margin: 0; display: grid; gap: var(--space-sm); align-content: start; }
+.shot .frame { border-radius: var(--radius-inner); overflow: hidden; background: var(--color-paper); box-shadow: inset 0 0 0 1px var(--color-rule), var(--shadow-card); }
+.shot .frame img { display: block; width: 100%; height: auto; }
+.shot figcaption { font-size: var(--text-sm); color: var(--color-muted); }
+.shot--big { margin-top: var(--space-xl); }
+/* a benefit, shown (EPIC-43 L-1), one unit per section, as on EpicSpine and EpicTeam (agent_team E43-S8 round 2): the
+   headline first, its one screen beside it in a window of fixed height, so a screen is never taller than its section */
+.section:has(> .proof) { padding-block: clamp(var(--space-2xl), 11vh, var(--space-3xl)); }
+.proof { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-xl) var(--space-2xl); align-items: center; }
+.proof .say { display: grid; gap: var(--space-md); align-content: center; }
+.proof h2 { font-size: clamp(2rem, 2.2vw + 0.8rem, 3.25rem); max-width: none; overflow-wrap: break-word; min-width: 0; }
+.was { font-size: var(--text-lead); line-height: 1.45; color: var(--color-ink-2); max-width: 30ch; }
+.pic { min-width: 0; }
+.win { max-height: min(480px, 60vh); display: grid; grid-template-columns: minmax(0, 1fr); place-items: start center; overflow: hidden; padding: var(--space-lg); }
+.win picture { display: contents; }
+.shot .win img { width: min(100%, var(--w, 100%)); height: auto; }
+.proof--wide { grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); }
+.proof--wide .say { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--space-sm) var(--gap-columns); align-items: end; }
+.proof--wide h2 { max-width: 22ch; }
+@media (max-width: 48rem) {
+  .proof, .proof--wide .say { grid-template-columns: minmax(0, 1fr); }
+  .proof { gap: var(--space-lg); }
+  .win { max-height: min(460px, 58svh); padding: var(--space-md); }
+}
+/* a campaign's tree of goals (agent_team E43-S8): drawn by tools/goal_tree.py from the campaign's repo; the goal on
+   top, its steps, then the posts; the focus step in the accent; under 64rem the same tree reads as an outline */
+.pic--tree { justify-items: stretch; }
+.pic--tree .frame { width: 100%; padding: var(--space-xl) var(--space-lg); }
+.gt { display: block; width: 100%; height: auto; font-family: var(--font-body); }
+.gt--phone { display: none; max-width: 30rem; margin-inline: auto; }
+@media (max-width: 64rem) { .gt--wide { display: none; } .gt--phone { display: block; } }
+@media (max-width: 40rem) { .pic--tree .frame { padding: var(--space-md) var(--space-sm); } }
+.gt-line { fill: none; stroke: var(--color-rule-2); stroke-width: 1.25; }
+.gt-box rect { fill: var(--color-paper-2); stroke: var(--color-rule-2); stroke-width: 1; }
+.gt-name { fill: var(--color-ink); font-weight: 500; }
+.gt-sub { fill: var(--color-muted); }
+.gt-l0 rect { fill: var(--color-ink); stroke: none; }
+.gt-l0 .gt-name { fill: var(--color-paper); font-family: var(--font-display); font-weight: 400; }
+.gt-l0 .gt-sub { fill: var(--color-paper); opacity: 0.8; }
+.gt-l1 .gt-name { font-family: var(--font-display); font-weight: 400; }
+.gt-more rect { fill: none; stroke-dasharray: 4 3; }
+.gt-focus rect { fill: var(--color-accent-soft); stroke: var(--color-accent); stroke-width: 2; }
+.gt-dot { stroke-width: 1.5; }
+.gt-done { fill: var(--color-ok); stroke: var(--color-ok); background: var(--color-ok); }
+.gt-review { fill: var(--color-accent); stroke: var(--color-accent); background: var(--color-accent); }
+.gt-active { fill: transparent; stroke: var(--color-ink); box-shadow: inset 0 0 0 2px var(--color-ink); }
+.gt-planned { fill: transparent; stroke: var(--color-muted); stroke-dasharray: 2 2; box-shadow: inset 0 0 0 1px var(--color-muted); }
+.gt-key { display: flex; flex-wrap: wrap; gap: var(--space-xs) var(--space-lg); margin: 0; padding: 0; list-style: none; font-size: var(--text-sm); color: var(--color-ink-2); justify-self: start; }
+.gt-key li { display: inline-flex; align-items: center; gap: var(--space-xs); }
+.gt-key i { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+.gt.gt--wide { width: min(100%, 980px, calc((100svh - 400px) * var(--ar, 2.2))); margin-inline: auto; }
+.gt-all { margin-top: var(--space-md); }
+.gt-all summary { display: inline-flex; align-items: center; min-height: 44px; padding: 0 var(--space-md); border-radius: var(--radius-pill); background: var(--color-paper-2); color: var(--color-ink); cursor: pointer; list-style: none; transition: background-color var(--dur-short) var(--ease-out); }
+.gt-all summary::-webkit-details-marker { display: none; }
+.gt-all summary:hover { background: var(--color-accent-soft); }
+.gt-all summary:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+.gt-all[open] summary { margin-bottom: var(--space-lg); }
+.gt-all .gt.gt--wide { width: 100%; }
+
 @media (max-width: 68rem) {
   .nav .links { display: none; }
   .hero .container { grid-template-columns: minmax(0, 1fr); min-height: 0; gap: var(--space-xl); padding-block: var(--space-xl) var(--space-2xl); }
@@ -268,7 +342,7 @@ button, input, textarea { font: inherit; color: inherit; }
   .figures { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: var(--space-xl); }
   .price { position: static; }
 }
-@media (max-width: 60rem) { :root { --gutter: 24px; --section-gap-s: 88px; --section-gap: 104px; } }
+@media (max-width: 60rem) { .real-grid { grid-template-columns: minmax(0, 1fr); } :root { --gutter: 24px; --section-gap-s: 88px; --section-gap: 104px; } }
 @media (max-width: 40rem) {
   :root { --gutter: 16px; --section-gap-s: 72px; --section-gap: 88px; --gap-columns: 16px; }
   .head { margin-bottom: var(--space-xl); }
@@ -289,14 +363,14 @@ button, input, textarea { font: inherit; color: inherit; }
 <body>
 
 <!-- E43-S2 (EPIC-43): the brand family's shared header line, as on epicspine.dev, team.alpha9.io and social.alpha9.io -->
-<div class="family" aria-label="The Epic family"><div class="container"><a href="https://epicspine.dev/">EpicSpine</a><span>EpicTeam</span><b>EpicSocial</b></div></div>
+<div class="family" aria-label="The Epic family"><div class="container"><a href="https://epicspine.dev/">EpicSpine</a><a href="https://epicspine.dev/team/">EpicTeam</a><b>EpicSocial</b></div></div>
 
 <header class="nav"><div class="container">
   <a class="wordmark" href="#top" aria-label="EpicSocial, back to top"><svg viewBox="0 0 32 32" aria-hidden="true"><g fill="#7c3bed"><path d="M6 0h20a6 6 0 0 1 6 6v16a6 6 0 0 1-6 6H15l-8 4v-4H6a6 6 0 0 1-6-6V6a6 6 0 0 1 6-6z"/></g><g fill="#fff"><g transform="translate(2.98 0) skewX(-12)"><path d="M8 8A4 4 0 0 1 12 4L24 4L24 8L14 8L14 12L20 12A4 4 0 0 1 24 16L24 20A4 4 0 0 1 20 24L8 24L8 20L18 20L18 16L12 16A4 4 0 0 1 8 12Z"/></g></g></svg>EpicSocial</a>
   <nav class="links" aria-label="Sections">
-    <a href="#flow">How a post is made</a>
-    <a href="#team">The team</a>
-    <a href="#week">A week</a>
+    <a href="#everyday">Every day</a>
+    <a href="#yes">Your yes</a>
+    <a href="#threads">Threads</a>
     <a href="#alpha">Alpha</a>
     <a href="#pricing">Pricing</a>
     <a href="#faq">FAQ</a>
@@ -344,73 +418,114 @@ button, input, textarea { font: inherit; color: inherit; }
   </div>
 </div></section>
 
-<section class="section" id="flow"><div class="container">
-  <div class="head">
-    <h2>Every post starts with an idea and ends with your OK.</h2>
-    <p>Nothing random. Each idea is researched before anyone writes a word.</p>
-  </div>
-  <ol class="lane">
-    <li><span class="n">1</span><h3>An idea</h3><p>Yours, from a topic list, a voice note or a line in chat. Or one the Ideas agent spots in your space.</p></li>
-    <li><span class="n">2</span><h3>Research</h3><p>The Researcher finds what has been said, sources, numbers and the question to open with.</p></li>
-    <li><span class="n">3</span><h3>A draft</h3><p>The Writer turns it into a post in your voice, with one diagram.</p></li>
-    <li class="you"><span class="n">4</span><h3>Your OK</h3><p>Approve it, or approve it with feedback. The Writer learns from every note.</p></li>
-    <li><span class="n">5</span><h3>Posted</h3><p>On Reddit and X. The Responder answers the replies, and what worked feeds the next ideas.</p></li>
-  </ol>
-  <p class="lane-note">This is how our own team posts today, for Zenod and for EpicSocial itself.</p>
+<section class="section" id="tree" aria-labelledby="h-tree"><div class="container proof proof--wide">
+<div class="say">
+<h2 id="h-tree">Each campaign is a tree you can see.</h2>
+<p class="was">The goal on top, then its steps, then the posts. Before: “I lose track of what each post is for.”</p>
+</div>
+<figure class="shot pic pic--tree">
+<div class="frame gt-wrap">
+<!-- goal-tree:social begin (tools/goal_tree.py writes this) -->
+<svg class="gt gt--wide" viewBox="0 0 980 502" width="980" height="502" style="--ar:1.951" role="img" aria-labelledby="gt-social-wide-title gt-social-wide-desc"><title id="gt-social-wide-title">One campaign&#x27;s tree: goal, steps and posts</title><desc id="gt-social-wide-desc">Make the Epic family known, 1 goal and 10 steps in its repo. Under it: Campaign: get testers (planned), with its steps: A one-page plan for the campaign; The call for testers; Answer every reply within 3 hours.</desc><path class="gt-line" d="M490 85V117 M490 117H490 M490 117V149"/><path class="gt-line" d="M490 241V273 M148 273H832 M148 273V305 M376 273V305 M604 273V305 M832 273V305"/><path class="gt-line" d="M376 371V403 M148 403H604 M148 403V435 M376 403V435 M604 403V435"/><g class="gt-box gt-l0"><rect x="290" y="8" width="400" height="77" rx="2"/><text class="gt-name" x="306" y="44.0" font-size="26">Make the Epic family known</text><text class="gt-sub" x="306" y="78.7" font-size="16">1 goal and 10 steps in its repo</text></g><g class="gt-box gt-l1"><rect x="378" y="149" width="224" height="92" rx="2"/><circle class="gt-dot gt-planned" cx="396" cy="170.9" r="5"><title>planned</title></circle><text class="gt-name" x="412" y="178.5" font-size="20">Campaign: get</text><text class="gt-name" x="412" y="202.9" font-size="20">testers</text><text class="gt-sub" x="412" y="230.3" font-size="15">5 steps</text></g><g class="gt-box gt-l2"><rect x="42" y="305" width="212" height="66" rx="2"/><circle class="gt-dot gt-review" cx="60" cy="326.6" r="5"><title>waiting for review</title></circle><text class="gt-name" x="76" y="333.8" font-size="19">A one-page plan</text><text class="gt-name" x="76" y="357.0" font-size="19">for the campaign</text></g><g class="gt-box gt-l2 gt-focus"><rect x="270" y="305" width="212" height="66" rx="2"/><circle class="gt-dot gt-active" cx="288" cy="326.6" r="5"><title>in progress</title></circle><text class="gt-name" x="304" y="333.8" font-size="19">The call for</text><text class="gt-name" x="304" y="357.0" font-size="19">testers</text></g><g class="gt-box gt-l3"><rect x="42" y="435" width="212" height="59" rx="2"/><circle class="gt-dot gt-review" cx="60" cy="455.1" r="5"><title>waiting for review</title></circle><text class="gt-name" x="76" y="461.2" font-size="16">Post on X</text></g><g class="gt-box gt-l3"><rect x="270" y="435" width="212" height="59" rx="2"/><circle class="gt-dot gt-review" cx="288" cy="455.1" r="5"><title>waiting for review</title></circle><text class="gt-name" x="304" y="461.2" font-size="16">Post on</text><text class="gt-name" x="304" y="480.7" font-size="16">r/SideProject</text></g><g class="gt-box gt-l3"><rect x="498" y="435" width="212" height="59" rx="2"/><circle class="gt-dot gt-review" cx="516" cy="455.1" r="5"><title>waiting for review</title></circle><text class="gt-name" x="532" y="461.2" font-size="16">Post on</text><text class="gt-name" x="532" y="480.7" font-size="16">r/alphaandbetausers</text></g><g class="gt-box gt-l2"><rect x="498" y="305" width="212" height="66" rx="2"/><circle class="gt-dot gt-planned" cx="516" cy="326.6" r="5"><title>planned</title></circle><text class="gt-name" x="532" y="333.8" font-size="19">Answer every</text><text class="gt-name" x="532" y="357.0" font-size="19">reply within 3 hours</text></g><g class="gt-box gt-l2 gt-more"><rect x="726" y="305" width="212" height="66" rx="2"/><text class="gt-name" x="742" y="333.8" font-size="19">+2 more steps</text></g></svg>
+<svg class="gt gt--phone" viewBox="0 0 360 563" width="360" height="563" style="--ar:0.639" role="img" aria-labelledby="gt-social-phone-title gt-social-phone-desc"><title id="gt-social-phone-title">One campaign&#x27;s tree: goal, steps and posts</title><desc id="gt-social-phone-desc">Make the Epic family known, 1 goal and 10 steps in its repo. Under it: Campaign: get testers (planned), with its steps: A one-page plan for the campaign; The call for testers; Answer every reply within 3 hours.</desc><path class="gt-line" d="M15 72V106 M15 106Q15 114 23 114H26"/><path class="gt-line" d="M37 146V529 M37 187H48 M37 249H48 M37 474H48 M37 529Q37 537 45 537H48"/><path class="gt-line" d="M59 271V403 M59 303H70 M59 357H70 M59 403Q59 411 67 411H70"/><g class="gt-box gt-l0"><rect x="4" y="4" width="352" height="68" rx="2"/><text class="gt-name" x="20" y="35.0" font-size="21">Make the Epic family known</text><text class="gt-sub" x="20" y="63.6" font-size="14">1 goal and 10 steps in its repo</text></g><g class="gt-box gt-l1"><rect x="26" y="82" width="330" height="64" rx="2"/><circle class="gt-dot gt-planned" cx="44" cy="103.0" r="5"><title>planned</title></circle><text class="gt-name" x="60" y="109.8" font-size="18">Campaign: get testers</text><text class="gt-sub" x="60" y="134.8" font-size="14">5 steps</text></g><g class="gt-box gt-l2"><rect x="48" y="156" width="308" height="61" rx="2"/><circle class="gt-dot gt-review" cx="66" cy="176.5" r="5"><title>waiting for review</title></circle><text class="gt-name" x="82" y="183.0" font-size="17">A one-page plan for the</text><text class="gt-name" x="82" y="203.7" font-size="17">campaign</text></g><g class="gt-box gt-l2 gt-focus"><rect x="48" y="227" width="308" height="44" rx="2"/><circle class="gt-dot gt-active" cx="66" cy="248.0" r="5"><title>in progress</title></circle><text class="gt-name" x="82" y="254.5" font-size="17">The call for testers</text></g><g class="gt-box gt-l3"><rect x="70" y="281" width="286" height="44" rx="2"/><circle class="gt-dot gt-review" cx="88" cy="301.4" r="5"><title>waiting for review</title></circle><text class="gt-name" x="104" y="307.5" font-size="16">Post on X</text></g><g class="gt-box gt-l3"><rect x="70" y="335" width="286" height="44" rx="2"/><circle class="gt-dot gt-review" cx="88" cy="355.4" r="5"><title>waiting for review</title></circle><text class="gt-name" x="104" y="361.5" font-size="16">Post on r/SideProject</text></g><g class="gt-box gt-l3"><rect x="70" y="389" width="286" height="44" rx="2"/><circle class="gt-dot gt-review" cx="88" cy="409.4" r="5"><title>waiting for review</title></circle><text class="gt-name" x="104" y="415.5" font-size="16">Post on r/alphaandbetausers</text></g><g class="gt-box gt-l2"><rect x="48" y="443" width="308" height="61" rx="2"/><circle class="gt-dot gt-planned" cx="66" cy="464.0" r="5"><title>planned</title></circle><text class="gt-name" x="82" y="470.5" font-size="17">Answer every reply within 3</text><text class="gt-name" x="82" y="491.2" font-size="17">hours</text></g><g class="gt-box gt-l2 gt-more"><rect x="48" y="515" width="308" height="44" rx="2"/><text class="gt-name" x="64" y="541.9" font-size="17">+2 more steps</text></g></svg>
+<details class="gt-all"><summary>Show more of the tree</summary>
+<svg class="gt gt--wide" viewBox="0 0 1200 468" width="1200" height="468" style="--ar:2.566" role="img" aria-labelledby="gt-social-all-wide-title gt-social-all-wide-desc"><title id="gt-social-all-wide-title">One campaign&#x27;s tree: goal, steps and posts</title><desc id="gt-social-all-wide-desc">Make the Epic family known, 1 goal and 10 steps in its repo. Under it: Campaign: get testers (planned), with its steps: A one-page plan for the campaign; The call for testers; Answer every reply within 3 hours; Count the applications daily; A diagram for each post.</desc><path class="gt-line" d="M600 77V109 M600 109H600 M600 109V141"/><path class="gt-line" d="M600 221V253 M216 253H984 M216 253V285 M408 253V285 M600 253V285 M792 253V285 M984 253V285"/><path class="gt-line" d="M408 342V374 M216 374H600 M216 374V406 M408 374V406 M600 374V406"/><g class="gt-box gt-l0"><rect x="420" y="8" width="360" height="69" rx="2"/><text class="gt-name" x="436" y="40.0" font-size="22">Make the Epic family known</text><text class="gt-sub" x="436" y="69.8" font-size="14">1 goal and 10 steps in its repo</text></g><g class="gt-box gt-l1"><rect x="508" y="141" width="184" height="80" rx="2"/><circle class="gt-dot gt-planned" cx="526" cy="161.0" r="5"><title>planned</title></circle><text class="gt-name" x="542" y="167.0" font-size="16">Campaign: get</text><text class="gt-name" x="542" y="186.6" font-size="16">testers</text><text class="gt-sub" x="542" y="209.1" font-size="13">5 steps</text></g><g class="gt-box gt-l2"><rect x="128" y="285" width="176" height="57" rx="2"/><circle class="gt-dot gt-review" cx="146" cy="304.3" r="5"><title>waiting for review</title></circle><text class="gt-name" x="162" y="310.0" font-size="15">A one-page plan</text><text class="gt-name" x="162" y="328.3" font-size="15">for the campaign</text></g><g class="gt-box gt-l2 gt-focus"><rect x="320" y="285" width="176" height="57" rx="2"/><circle class="gt-dot gt-active" cx="338" cy="304.3" r="5"><title>in progress</title></circle><text class="gt-name" x="354" y="310.0" font-size="15">The call for</text><text class="gt-name" x="354" y="328.3" font-size="15">testers</text></g><g class="gt-box gt-l3"><rect x="128" y="406" width="176" height="54" rx="2"/><circle class="gt-dot gt-review" cx="146" cy="424.3" r="5"><title>waiting for review</title></circle><text class="gt-name" x="162" y="429.6" font-size="14">Post on X</text></g><g class="gt-box gt-l3"><rect x="320" y="406" width="176" height="54" rx="2"/><circle class="gt-dot gt-review" cx="338" cy="424.3" r="5"><title>waiting for review</title></circle><text class="gt-name" x="354" y="429.6" font-size="14">Post on</text><text class="gt-name" x="354" y="446.7" font-size="14">r/SideProject</text></g><g class="gt-box gt-l3"><rect x="512" y="406" width="176" height="54" rx="2"/><circle class="gt-dot gt-review" cx="530" cy="424.3" r="5"><title>waiting for review</title></circle><text class="gt-name" x="546" y="429.6" font-size="14">Post on</text><text class="gt-name" x="546" y="446.7" font-size="14">r/alphaandbetausers</text></g><g class="gt-box gt-l2"><rect x="512" y="285" width="176" height="57" rx="2"/><circle class="gt-dot gt-planned" cx="530" cy="304.3" r="5"><title>planned</title></circle><text class="gt-name" x="546" y="310.0" font-size="15">Answer every</text><text class="gt-name" x="546" y="328.3" font-size="15">reply within 3 hours</text></g><g class="gt-box gt-l2"><rect x="704" y="285" width="176" height="57" rx="2"/><circle class="gt-dot gt-planned" cx="722" cy="304.3" r="5"><title>planned</title></circle><text class="gt-name" x="738" y="310.0" font-size="15">Count the</text><text class="gt-name" x="738" y="328.3" font-size="15">applications daily</text></g><g class="gt-box gt-l2"><rect x="896" y="285" width="176" height="57" rx="2"/><circle class="gt-dot gt-planned" cx="914" cy="304.3" r="5"><title>planned</title></circle><text class="gt-name" x="930" y="310.0" font-size="15">A diagram for</text><text class="gt-name" x="930" y="328.3" font-size="15">each post</text></g></svg>
+<svg class="gt gt--phone" viewBox="0 0 360 587" width="360" height="587" style="--ar:0.613" role="img" aria-labelledby="gt-social-all-phone-title gt-social-all-phone-desc"><title id="gt-social-all-phone-title">One campaign&#x27;s tree: goal, steps and posts</title><desc id="gt-social-all-phone-desc">Make the Epic family known, 1 goal and 10 steps in its repo. Under it: Campaign: get testers (planned), with its steps: A one-page plan for the campaign; The call for testers; Answer every reply within 3 hours; Count the applications daily; A diagram for each post.</desc><path class="gt-line" d="M15 68V100 M15 100Q15 108 23 108H26"/><path class="gt-line" d="M37 138V553 M37 170H48 M37 224H48 M37 447H48 M37 507H48 M37 553Q37 561 45 561H48"/><path class="gt-line" d="M59 246V378 M59 278H70 M59 332H70 M59 378Q59 386 67 386H70"/><g class="gt-box gt-l0"><rect x="4" y="4" width="352" height="64" rx="2"/><text class="gt-name" x="20" y="33.0" font-size="19">Make the Epic family known</text><text class="gt-sub" x="20" y="59.2" font-size="13">1 goal and 10 steps in its repo</text></g><g class="gt-box gt-l1"><rect x="26" y="78" width="330" height="60" rx="2"/><circle class="gt-dot gt-planned" cx="44" cy="98.0" r="5"><title>planned</title></circle><text class="gt-name" x="60" y="104.1" font-size="16">Campaign: get testers</text><text class="gt-sub" x="60" y="126.6" font-size="13">5 steps</text></g><g class="gt-box gt-l2"><rect x="48" y="148" width="308" height="44" rx="2"/><circle class="gt-dot gt-review" cx="66" cy="167.8" r="5"><title>waiting for review</title></circle><text class="gt-name" x="82" y="173.5" font-size="15">A one-page plan for the campaign</text></g><g class="gt-box gt-l2 gt-focus"><rect x="48" y="202" width="308" height="44" rx="2"/><circle class="gt-dot gt-active" cx="66" cy="221.8" r="5"><title>in progress</title></circle><text class="gt-name" x="82" y="227.5" font-size="15">The call for testers</text></g><g class="gt-box gt-l3"><rect x="70" y="256" width="286" height="44" rx="2"/><circle class="gt-dot gt-review" cx="88" cy="275.2" r="5"><title>waiting for review</title></circle><text class="gt-name" x="104" y="280.5" font-size="14">Post on X</text></g><g class="gt-box gt-l3"><rect x="70" y="310" width="286" height="44" rx="2"/><circle class="gt-dot gt-review" cx="88" cy="329.2" r="5"><title>waiting for review</title></circle><text class="gt-name" x="104" y="334.5" font-size="14">Post on r/SideProject</text></g><g class="gt-box gt-l3"><rect x="70" y="364" width="286" height="44" rx="2"/><circle class="gt-dot gt-review" cx="88" cy="383.2" r="5"><title>waiting for review</title></circle><text class="gt-name" x="104" y="388.5" font-size="14">Post on r/alphaandbetausers</text></g><g class="gt-box gt-l2"><rect x="48" y="418" width="308" height="57" rx="2"/><circle class="gt-dot gt-planned" cx="66" cy="437.8" r="5"><title>planned</title></circle><text class="gt-name" x="82" y="443.5" font-size="15">Answer every reply within 3</text><text class="gt-name" x="82" y="461.8" font-size="15">hours</text></g><g class="gt-box gt-l2"><rect x="48" y="485" width="308" height="44" rx="2"/><circle class="gt-dot gt-planned" cx="66" cy="504.4" r="5"><title>planned</title></circle><text class="gt-name" x="82" y="510.1" font-size="15">Count the applications daily</text></g><g class="gt-box gt-l2"><rect x="48" y="539" width="308" height="44" rx="2"/><circle class="gt-dot gt-planned" cx="66" cy="558.4" r="5"><title>planned</title></circle><text class="gt-name" x="82" y="564.1" font-size="15">A diagram for each post</text></g></svg>
+</details>
+<!-- goal-tree:social end -->
+</div>
+<ul class="gt-key" aria-label="What the dots mean"><li><i class="gt-done"></i>Done</li><li><i class="gt-review"></i>Waiting for you</li><li><i class="gt-active"></i>In progress</li><li><i class="gt-planned"></i>Planned</li></ul>
+<figcaption>Our own campaign to find testers, drawn from its repo on 8 November 2026.</figcaption>
+</figure>
 </div></section>
-
-<section class="section section--paper2" id="team"><div class="container">
-  <div class="head">
-    <h2>Four AI agents, one brand: yours.</h2>
-    <p>Each one works on a schedule, does its job and hands the work to the next.</p>
-  </div>
-  <ul class="team">
-    <li><h3 class="who" data-initial="I">Ideas agent</h3><p>Keeps your idea list, adds its own from trends and a few competitors you choose, and picks the week’s three.</p><span class="when">Every Monday</span></li>
-    <li><h3 class="who" data-initial="Re">Researcher</h3><p>Researches each idea before it is written, and sends a weekly report: what worked, what competitors did.</p><span class="when">Before each post, and weekly</span></li>
-    <li><h3 class="who" data-initial="W">Writer</h3><p>Writes every post, text and diagram, in your voice, puts it in your inbox and applies your feedback.</p><span class="when">3 times a week</span></li>
-    <li><h3 class="who" data-initial="R">Responder</h3><p>Answers replies and mentions on your posts. Anything sensitive comes to you instead.</p><span class="when">Every 12 hours</span></li>
-  </ul>
+<section class="section section--paper2" id="everyday" aria-labelledby="h-everyday"><div class="container proof">
+<div class="say">
+<h2 id="h-everyday">On Reddit and X, every day.</h2>
+<p class="was">You only say yes or no. Before: “I post when I find the time.”</p>
+</div>
+<figure class="shot pic">
+  <div class="frame win"><picture><source media="(max-width: 40rem)" srcset="shots/everyday-phone.webp" width="374" height="660"><img style="--w:960px" src="shots/everyday.webp" width="960" height="290" loading="lazy" alt="EpicSocial's numbers for our own X account, @ZenodAgent, over the last 7 days: 4 posts, 9 replies received, 23 replies sent, 3 followers, 29 impressions, each with a bar per day."></picture></div>
+<figcaption>Our own X account in EpicSocial, the week to 6 November 2026.</figcaption>
+</figure>
 </div></section>
-
-<section class="section" id="week"><div class="container">
-  <div class="head">
-    <h2>Tap a day.</h2>
-    <p>A week for Forno Lume, a made-up bakery. Wednesday’s post is waiting for you.</p>
-  </div>
-  <div class="week">
-    <div>
-      <div class="days" role="tablist" id="days" aria-label="Days of the week"></div>
-      <div class="log" id="log" role="tabpanel" aria-live="polite"></div>
-    </div>
-    <div class="sample" id="post">
-      <div class="post-by"><span class="av">W</span><b>Writer</b><span class="where">for Wed 10:00, Reddit and X</span></div>
-      <div class="diagram">Sourdough: 36 hours, 30 minutes of work.</div>
-      <div id="ptext">How long do you think good bread takes? Ours takes 36 hours, and we touch it for about 30 minutes. The rest is the dough working on its own: slow fermentation builds flavour no shortcut can. Fresh loaves from 7:00, Tuesday to Saturday.</div>
-      <div class="acts" id="pact">
-        <button class="btn btn--sm" type="button" id="approve">Approve</button>
-        <button class="btn btn--clear btn--sm" type="button" id="editb">Approve with feedback</button>
+<section class="section" id="yes" aria-labelledby="h-yes"><div class="container proof">
+<div class="say">
+<h2 id="h-yes">Nothing goes out unless you said yes.</h2>
+<p class="was">Before: “I’m scared of what a bot might say in my name.”</p>
+</div>
+<figure class="shot pic">
+  <div class="frame win"><picture><source media="(max-width: 40rem)" srcset="shots/yes-phone.webp" width="378" height="882"><img style="--w:788px" src="shots/yes.webp" width="788" height="536" loading="lazy" alt="A held X post in EpicSocial: waiting for your approval, its slot has passed and it is not posted. Four buttons: schedule for Sunday 15 November, pick a new time, give feedback, don't post."></picture></div>
+<figcaption>A post that missed its slot waits for you. 6 November 2026.</figcaption>
+</figure>
+</div></section>
+<section class="section section--paper2" id="threads" aria-labelledby="h-threads"><div class="container proof">
+<div class="say">
+<h2 id="h-threads">The right threads come to you, reply drafted.</h2>
+<p class="was">Before: “I miss the threads that matter.”</p>
+</div>
+<figure class="shot pic">
+  <div class="frame win"><picture><source media="(max-width: 40rem)" srcset="shots/reply-phone.webp" width="340" height="1083"><img style="--w:926px" src="shots/reply.webp" width="926" height="459" loading="lazy" alt="A reply waiting in EpicSocial: where it goes, a Reddit thread in r/AI_Agents about agents handling stale state, and what it says, four short paragraphs drafted by the team. Buttons: schedule this reply, new iteration with feedback, deny."></picture></div>
+<figcaption>A thread the team found, with its reply drafted. 6 November 2026.</figcaption>
+</figure>
+</div></section>
+<section class="section" id="rules" aria-labelledby="h-rules"><div class="container proof">
+<div class="say">
+<h2 id="h-rules">Say it once. Every next post follows it.</h2>
+<p class="was">Before: “I explain the same thing to every tool, every time.”</p>
+</div>
+<figure class="shot pic">
+  <div class="frame win"><picture><source media="(max-width: 40rem)" srcset="shots/rules-phone.webp" width="378" height="411"><img style="--w:788px" src="shots/rules.webp" width="788" height="367" loading="lazy" alt="The checks on one post: waiting for your approval because every post is held, then ticks for X brand voice, one idea per post, each post 280 characters or fewer, ends on the question, no hype words or exclamation marks, and more."></picture></div>
+<figcaption>Every post is checked against your rules before it reaches you.</figcaption>
+</figure>
+</div></section>
+<section class="section section--paper2" id="answered" aria-labelledby="h-answered"><div class="container proof">
+<div class="say">
+<h2 id="h-answered">See what people answered.</h2>
+<p class="was">Before: “I post and guess what worked.” What readers ask for comes next.</p>
+</div>
+<figure class="shot pic">
+  <div class="frame win"><picture><source media="(max-width: 40rem)" srcset="shots/answered-phone.webp" width="374" height="681"><img style="--w:960px" src="shots/answered.webp" width="960" height="365" loading="lazy" alt="EpicSocial's Reddit numbers for u/jordimr over 7 days: 3 posts, 7 replies received, 19 replies sent, 1 follower. The best Reddit post, P-0019 in r/AI_Agents, has 50 comments, score 6 and 13 replies from us."></picture></div>
+<figcaption>Jordi’s Reddit account, the week to 6 November 2026.</figcaption>
+</figure>
+</div></section>
+<!-- features:social begin (tools/feature_list.py writes this) -->
+  <section class="section" id="campaign-at-a-glance" aria-labelledby="h-campaign-at-a-glance">
+    <div class="container nice">
+      <div class="say">
+        <h2 id="h-campaign-at-a-glance">Your campaign at a glance.</h2>
+        <p class="was">See every post, every number and why the campaign exists, each in one screen.</p>
       </div>
-      <span class="state wait" id="pstate">Waiting for you</span>
-      <p class="caption">In the real app this is your approval inbox. Your feedback is saved to your brand voice, so the Writer learns it.</p>
+      <ul class="nice-list">
+        <li><h3>One pipeline for every post</h3><p>Every post sits in a column by its stage, as cards or as rows, full width. Open one to read it full screen.</p></li>
+        <li><h3>A Performance page</h3><p>Daily lines of posts, replies, followers, impressions, page views and sign-ups, with the best post on each platform.</p></li>
+        <li><h3>What it does for you, in the Brief</h3><p>The campaign Brief opens with the benefits the product gives, and every idea and post names the one it shows.</p></li>
+      </ul>
     </div>
-  </div>
-</div></section>
-
-<section class="section section--paper2" id="get"><div class="container">
-  <div class="head">
-    <h2>Steady presence, without the hours.</h2>
-  </div>
-  <ul class="figures">
-    <li><span class="fig">3</span><h3>posts a week</h3><p>Each from a researched idea, with a diagram, on Reddit and X.</p></li>
-    <li><span class="fig">12 h</span><h3>reply time</h3><p>Everyone who comments on or mentions your posts hears back within 12 hours.</p></li>
-    <li><span class="fig">1</span><h3>weekly report</h3><p>What worked, what didn’t and what competitors did, with numbers.</p></li>
-    <li><span class="fig"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h3>approval inbox</h3><p>See every draft. Approve, or approve with feedback, in one tap.</p></li>
-  </ul>
-  <div class="own">
-    <h3 style="font-size: var(--text-2xl)">Everything your team learns stays yours.</h3>
-    <p>Your brand voice, your idea list, every post, every reply and every lesson are kept in files you own. Cancel any time and they stay with you. The engine behind the team is open source, and posts go out from your own accounts through each platform’s official tools.</p>
-  </div>
-</div></section>
+  </section>
+  <section class="section" id="posts-go-out-safely" aria-labelledby="h-posts-go-out-safely">
+    <div class="container nice">
+      <div class="say">
+        <h2 id="h-posts-go-out-safely">Posts go out safely.</h2>
+        <p class="was">The team posts like a careful person would, from a real browser, never in a burst.</p>
+      </div>
+      <ul class="nice-list">
+        <li><h3>X posts from a real browser</h3><p>The team posts on X through its own signed-in browser, the way you would, with no paid API.</p></li>
+        <li><h3>Writes wait while your Mac is offline</h3><p>Replies written while your Mac is off wait in an outbox and go out one at a time when it is back.</p></li>
+        <li><h3>Every tester team can post</h3><p>Each tester team's own agents can post and reply on X from their own browser, kept apart from ours.</p></li>
+      </ul>
+    </div>
+  </section>
+  <section class="section" id="testers" aria-labelledby="h-testers">
+    <div class="container nice">
+      <div class="say">
+        <h2 id="h-testers">Free for testers.</h2>
+      </div>
+      <ul class="nice-list">
+        <li><h3>A free tester program with a clear contract</h3><p>Five teams can use EpicSocial free. One page shows what we give, what you give and four simple rules.</p></li>
+      </ul>
+    </div>
+  </section>
+<!-- features:social end -->
 
 <section class="section" id="alpha"><div class="container alpha">
   <div>
@@ -485,7 +600,7 @@ button, input, textarea { font: inherit; color: inherit; }
 </main>
 
 <footer class="foot"><div class="container">
-  <div class="brand"><b>EpicSocial</b><nav aria-label="The Epic family"><a href="https://epicspine.dev/">EpicSpine</a><span>EpicTeam</span><span>EpicSocial</span></nav></div>
+  <div class="brand"><b>EpicSocial</b><nav aria-label="The Epic family"><a href="https://epicspine.dev/">EpicSpine</a><a href="https://epicspine.dev/team/">EpicTeam</a><span>EpicSocial</span></nav></div>
   <p>Alpha release. EpicSocial runs on EpicTeam and EpicSpine, both open source. Our first team, running on our own product, posts for Zenod; EpicSocial opens right after the Zenod launch. No cookies, no trackers.</p>
 </div></footer>
 
@@ -567,56 +682,6 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)');
   fig.addEventListener('focusout', () => { hover = false; stop(); tick(); });
   tick();
 })();
-
-// ---- A week with your team (demo data, fictional bakery)
-const P = { I: 'Ideas agent', Re: 'Researcher', W: 'Writer', R: 'Responder', Y: 'You' };
-const WEEK = [
-  ['Mon', [['I','08:00','Added 2 ideas to your list (autumn menu, why slow dough tastes better) and picked the week: Wed sourdough story, Fri weekend menu, Sun behind the scenes.'],['R','08:00','Answered 3 weekend comments on Sunday’s post.'],['R','20:00','Nothing new to answer. Back at 08:00.']]],
-  ['Tue', [['R','08:00','Answered a question about gluten-free options; flagged a complaint about a late order to you instead of replying.'],['Re','11:00','Researched Wednesday’s idea: 3 sources on slow fermentation, "slow food" posts up this week, opening question: how long does good bread take?'],['W','15:00','Drafted Wednesday’s post with a diagram from the research. It’s in your inbox.'],['R','20:00','Answered 2 replies.']]],
-  ['Wed', [['Y','09:12','You approve Wednesday’s post, or approve it with feedback (try it beside this list).'],['W','10:00','Posted to Reddit and X; added the links to your post history.'],['R','20:00','Answered 4 replies on today’s post.']]],
-  ['Thu', [['R','08:00','Answered 5 overnight replies.'],['Re','11:00','Researched Friday’s weekend menu: what nearby bakeries posted, which dishes people ask about.'],['W','15:00','Drafted Friday’s weekend menu post.'],['R','20:00','Answered 1 mention.']]],
-  ['Fri', [['Re','09:00','Weekly report: Wednesday’s post got 3 times your usual replies. Competitors posted 9 times, mostly prices. Suggestion: more process stories.'],['W','10:00','Posted the weekend menu (approved with your feedback Thursday night: "mention the vegan loaf").'],['R','20:00','Answered 3 replies.']]],
-  ['Sat', [['R','08:00','Answered 2 replies.'],['R','20:00','Nothing new.']]],
-  ['Sun', [['W','10:00','Posted behind the scenes: shaping loaves at 5 am.'],['R','20:00','Answered 4 replies.'],['I','20:30','Read the Researcher’s report: next week’s ideas lean into process stories.']]]
-];
-const daysEl = document.getElementById('days'), logEl = document.getElementById('log');
-function show(i, focus) {
-  [...daysEl.children].forEach((b, j) => { b.setAttribute('aria-selected', j === i); b.tabIndex = j === i ? 0 : -1; });
-  if (focus) daysEl.children[i].focus();
-  logEl.innerHTML = '';
-  WEEK[i][1].forEach(([k, t, txt]) => {
-    const ev = document.createElement('div'); ev.className = 'ev';
-    const a = document.createElement('span'); a.className = 'av' + (k === 'Y' ? ' av--you' : ''); a.textContent = k === 'Y' ? 'You' : k;
-    const body = document.createElement('div'); const meta = document.createElement('span'); meta.className = 't'; meta.textContent = P[k] + ', ' + t;
-    const p = document.createElement('p'); p.textContent = txt; body.append(meta, p); ev.append(a, body); logEl.append(ev);
-  });
-}
-WEEK.forEach(([d], i) => {
-  const b = document.createElement('button'); b.type = 'button'; b.className = 'day'; b.setAttribute('role', 'tab'); b.textContent = d;
-  b.addEventListener('click', () => show(i));
-  b.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); show((i + (e.key === 'ArrowRight' ? 1 : 6)) % 7, true); } });
-  daysEl.append(b);
-});
-show(2);
-
-// ---- Approve / Approve with feedback on the sample post
-const st = document.getElementById('pstate'), txt = document.getElementById('ptext'), act = document.getElementById('pact');
-function setPState(cls, label) { st.className = 'state ' + cls; st.textContent = label; }
-function mk(cls, id, label) { const b = document.createElement('button'); b.type = 'button'; b.className = cls; b.id = id; b.textContent = label; return b; }
-function reset(keep) { if (typeof keep === 'string') txt.textContent = keep; setPState('wait', 'Waiting for you'); act.replaceChildren(mk('btn btn--sm', 'approve', 'Approve'), mk('btn btn--clear btn--sm', 'editb', 'Approve with feedback')); bindActions(); }
-function bindActions() {
-  document.getElementById('approve').onclick = () => { setPState('ok', 'Approved, goes out Wed 10:00'); const u = mk('btn btn--clear btn--sm', 'undo', 'Undo'); act.replaceChildren(u); u.onclick = reset; u.focus(); };
-  document.getElementById('editb').onclick = () => {
-    const cur = txt.textContent; setPState('wait', 'Your feedback');
-    const ta = document.createElement('textarea'); ta.id = 'ta'; ta.setAttribute('aria-label', 'Your feedback'); ta.placeholder = 'e.g. mention the vegan loaf';
-    txt.append(ta); ta.focus();
-    const save = mk('btn btn--sm', 'save', 'Approve with feedback'), cancel = mk('btn btn--clear btn--sm', 'cancel', 'Cancel');
-    act.replaceChildren(save, cancel);
-    save.onclick = () => { const f = ta.value.trim(); txt.textContent = cur; setPState('ok', f ? 'Approved with feedback' : 'Approved, goes out Wed 10:00'); const n = document.createElement('span'); n.className = 'caption'; n.textContent = f ? 'The Writer applies your feedback, then it goes out.' : 'Approved.'; const u = mk('btn btn--clear btn--sm', 'undo', 'Undo'); act.replaceChildren(n, u); u.onclick = () => reset(cur); u.focus(); };
-    cancel.onclick = () => reset(cur);
-  };
-}
-bindActions();
 
 // ---- Waitlist (E10-S6, EPIC-10-A2): a plain form post to the console's sign-up list (offer waitlist-alpha, email only, no payment).
 // The console answers 303 back to this page with ?signed=1 or ?error=<code>#join.

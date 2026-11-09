@@ -154,13 +154,20 @@ class WebMCPTests(unittest.TestCase):
         self.assertTrue(out["calls"]["install"]["does"])
 
         ids = [s["id"] for s in self.page.sections]
-        for i in ("why", "plan", "memory", "loop", "roles", "install", "next"):
+        # agent_team E43-S6: the page leads with benefits; the technical screens moved into the Book.
+        # Round 3 (EPIC-43 L-1): each benefit is one real screen, so the roles and night mocks went.
+        # Round 3 of 2026-11-08 (Jordi): the seven things it does for you, in his order, right under the hero.
+        seven = ["context", "commits", "personas", "claims", "doctrine", "sticks", "tree"]
+        # Round 6 of 2026-11-08 (E43-A2, the deck paper): the seven are listed first, as one screen, then each gets its own.
+        self.assertEqual(ids[1], "seven")
+        self.assertEqual(ids[2:9], seven)
+        for i in ("top", "together", "family", "install"):
             self.assertIn(i, ids)
         listed = out["calls"]["list"]["sections"]
         self.assertEqual([s["id"] for s in listed], ids)
-        why = next(s for s in listed if s["id"] == "why")
-        self.assertEqual(why["heading"], "Agents lose the plot between chats.")
-        self.assertEqual(why["firstParagraph"], "EpicSpine moves the plan out of the chat and into a file.")
+        context = next(s for s in listed if s["id"] == "context")
+        self.assertEqual(context["heading"], "Context lives in your repo.")
+        self.assertTrue(context["firstParagraph"].startswith("Goals, progress and rules are plain files"), context)
 
         self.assertEqual(out["tools"]["go_to_section"]["inputSchema"]["properties"]["id"]["enum"], ids)
         self.assertEqual(out["tools"]["go_to_section"]["inputSchema"]["required"], ["id"])

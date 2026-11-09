@@ -1,0 +1,401 @@
+/* Hallmark · shape: Feature Stack (swapped from the draw's Conversational FAQ: every benefit needs its one picture) · genre: modern-minimal · theme: Rim, station colourway, the family's own faces (Funnel Display and Funnel Sans, self-hosted, kept as the brand) (deal 1/3, seed free-agent-skill-keeps-044b·8886203a·2026-11-04·r0) · redesign: full · draw: b5fdeb · job: try (/), try (/team/) · E43-S6 iteration 2, E43-S7
+ * hero: Banner (/), Stage (/team/, the before and after of Jordi's example) · nav: banner over a bar (the family line scrolls away, the bar stays) · footer: mast, the wordmark across the width · imagery: one real screen per benefit (EPIC-43 L-1, round 3): real terminal captures of a demo repo (agent_team console/scripts/e43-term-shot.py), the real waiting-on-you card, real EpicTeam and EpicSocial screens (e43-benefit-shots.mjs, read-only), one photograph (a many-volume work on a shelf) · signature: each benefit is its real screen first, named after in a few words; on /team/ three projects with items waiting, then the one Team feed
+ * axes: dark/grotesk-sans/cool · posture: committed · contrast: pass · fold: pass · v2.0.0 */
+/* Hallmark · pre-emit critique: P4 H4 E4 S5 R4 V5 · weakest: H on /, a type-only hero; the first real screen starts inside the first fold at 1440 */
+/* Hallmark · E43-S8 and E43-S9 round 2 (Jordi 2026-11-08: "very difficult to read", "not clear which headline goes with which screenshot", the voice diagram "too tall for the screen") · every benefit is one unit: its headline first, its one screen beside it in a window capped at min(480px, 60vh), so no screen is taller than its section; drawings take the width under a one-row headline; the tree shows three goals at a glance and the rest behind "Show more of the tree"; the voice note is one slide sized by the screen's height, played once as it enters */
+/* Hallmark · E43-S6 round 3 of 2026-11-08 (Jordi: "missing key description of key things it does for you ... Those aren't popping to me!") · the seven things it does, in his order, lead the page: their names under the head as links, then one unit each (headline, one sentence, one real terminal screen of the demo repo, made by agent_team console/scripts/e43-term-shot.py with the hooks and scripts the skill ships) · units alternate ground and tone · the #repo section and its photograph went: its claim is the first of the seven */
+/* Hallmark · waive 77 · "Say it once. It sticks." · its real screen is a two-line terminal answer; a taller frame would be empty ground */
+/* Hallmark · dismissed 59 · the negative gap is the closed "Show more of the tree" drawing, measured while hidden; nothing overlaps on screen */
+/* Hallmark · waive 72 · figure.pic captions at left 0 · each caption sits flush with the left edge of its own window, as every caption on the page */
+/* Hallmark · waive 44a · /team/ hero 64px above, 54px below at 1440 · the hero is unchanged in this round: its before and after stage fills the screen under the head */
+/* Hallmark · waive 64 · mono only inside pre and code · the rule line, the file list and the install lines are literal text an agent reads */
+/* Hallmark · dropped #clear, #relentless, the new-chat switch, the roles list and the night clock · round 3 (Jordi 2026-11-06, EPIC-43 L-1): a built mock is not a real screen; each benefit now shows a real one */
+/* Hallmark · dropped /team/ #inbox, #personas, #skills and the memory well · round 3: the hero before and after shows the feed; personas, skills and connections had no benefit line of their own */
+/* Hallmark · dropped 09:04, 09:06, 08:02, 08:03 · the hero log of three chats over two days; the new chat switch right under the hero tells the same story */
+/* Hallmark · waive 83 · every picture below the hero is the product's own screen, one per benefit · EPIC-43 L-1, Jordi 2026-11-06: show each benefit with its real screen, first and largest */
+/* Hallmark · dismissed F4 · on /team/ the #try band is a gold field, so its two buttons invert to stay visible there; elsewhere one gold primary */
+/* Hallmark · answered F8 · one reveal: the parts of each section rise once as it enters (taste house style asks for an entrance layer); visible without script and under reduced motion */
+/* Hallmark · waive 79 · the /team/ hero carries the before and after of Jordi's example (three projects, then the one feed), cropped to the frame · it is the page's signature */
+@import url("./tokens.css");
+@import url("./base.css");
+@font-face {
+  font-family: "Martian Mono"; /* taste-skill-ignore: the code face, used only inside pre and code */
+  font-style: normal;
+  font-weight: 400 700;
+  font-stretch: 75% 112.5%;
+  font-display: swap;
+  src: url("fonts/martian-mono-latin.woff2") format("woff2");
+}
+@font-face { font-family: "Funnel Display"; src: url("fonts/funnel-display-latin.woff2") format("woff2"); font-weight: 300 500; font-display: swap; }
+@font-face { font-family: "Funnel Sans"; src: url("fonts/funnel-sans-latin.woff2") format("woff2"); font-weight: 400 500; font-display: swap; }
+
+/* Rim, station colourway: the navy and gold of a cloth-bound spine; ice is the second signal */
+:root {
+  --color-paper: oklch(19% 0.055 262); --color-paper-2: oklch(23.5% 0.062 262); --color-paper-3: oklch(15.5% 0.048 262);
+  --color-ink: oklch(96.5% 0.004 250); --color-ink-2: oklch(88% 0.012 250); --color-muted: oklch(76% 0.03 250); --color-muted-2: oklch(62% 0.04 255);
+  --color-rule: oklch(32% 0.06 262); --color-rule-2: oklch(27% 0.058 262);
+  --color-accent: oklch(83% 0.13 82); --color-accent-hi: oklch(88% 0.12 85); --color-accent-ink: oklch(19% 0.055 262);
+  --color-accent-2: oklch(84% 0.1 200); --color-accent-2-ink: oklch(19% 0.055 262);
+  --color-focus-on-dark: oklch(88% 0.12 85); --color-focus: var(--color-focus-on-dark);
+  --color-field-gold: oklch(83% 0.13 82); --color-field-ice: oklch(84% 0.1 200); --color-field-ice-2: oklch(78% 0.1 200);
+  --color-tile: oklch(98% 0.005 286); --color-tile-ink: oklch(21% 0.006 286);
+  --color-social: oklch(66% 0.2 300); --color-social-ink: oklch(21% 0.006 286);
+  --font-display: "Funnel Display", ui-sans-serif, system-ui, sans-serif; --font-body: "Funnel Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Martian Mono", ui-monospace, monospace; /* taste-skill-ignore: the code face, used only inside pre and code */
+  --text-display: clamp(2.75rem, 8.6vw, 8.75rem);
+  --text-section: clamp(2.125rem, 3.4vw + 0.6rem, 4rem);
+  --text-lead: clamp(1.1875rem, 0.4vw + 1rem, 1.4375rem);
+  --text-md: 1.0625rem; --text-sm: 0.875rem;
+  --radius-card: 0; --radius-pill: 0;
+  --tracking-display: -0.035em; --display-weight: 400;
+  --nav-h: 72px;
+}
+
+html { scroll-padding-top: calc(var(--nav-h) + var(--space-md)); }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+body { font-size: var(--text-md); line-height: 1.55; font-variant-numeric: tabular-nums; }
+a { color: inherit; text-decoration-color: var(--color-muted-2); transition: color var(--dur-micro) var(--ease-out), text-decoration-color var(--dur-micro) var(--ease-out); }
+a:hover { color: var(--color-accent); text-decoration-color: var(--color-accent); }
+a:active { color: var(--color-accent-hi); }
+h1, h2, h3 { color: var(--color-ink); }
+h2 { letter-spacing: -0.03em; line-height: 1.02; max-width: 16ch; }
+.lead { color: var(--color-ink-2); max-width: 40ch; }
+code, pre { font-family: var(--font-mono); font-size: var(--text-sm); }
+@media (max-width: 40rem) { .hide-s { display: none; } }
+@media (max-width: 30rem) { .hide-xs { display: none; } }
+
+/* controls: one square shape; gold fill for the action, a tone step for the second */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; min-height: 52px; padding: 0 var(--space-lg);
+  border: 0; border-radius: 0; background: var(--color-paper-2); color: var(--color-ink);
+  font: 500 var(--text-md)/1 var(--font-body); text-decoration: none; white-space: nowrap; cursor: pointer;
+  transition: background-color var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out), transform var(--dur-micro) var(--ease-out);
+}
+.btn:hover { background: var(--color-rule); color: var(--color-ink); }
+.btn:active { transform: translateY(1px); }
+.btn:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
+.btn--primary { background: var(--color-accent); color: var(--color-accent-ink); }
+.btn--primary:hover { background: var(--color-accent-hi); color: var(--color-accent-ink); }
+.btn--sm { min-height: 44px; padding: 0 var(--space-md); }
+.btn[aria-disabled="true"] { opacity: 0.5; pointer-events: none; }
+
+/* marks: logo C with each product's letter (E65-S5) */
+.mark { width: 32px; height: 32px; flex: none; }
+.mark .tile { fill: var(--color-tile); }
+.mark .g { fill: var(--color-tile-ink); }
+.mark.social .tile { fill: var(--color-social); }
+.mark.social .g { fill: var(--color-social-ink); }
+
+/* chrome */
+.family { background: var(--color-paper-3); font-size: var(--text-sm); }
+.family .container { display: flex; gap: var(--space-lg); min-height: 36px; align-items: center; }
+.family a { color: var(--color-muted); text-decoration: none; }
+.family a:hover { color: var(--color-ink); }
+.family a[aria-current] { color: var(--color-ink); }
+.nav { position: sticky; top: 0; z-index: var(--z-sticky-nav); background: var(--color-paper); }
+.nav .container { display: flex; align-items: center; gap: var(--space-lg); min-height: var(--nav-h); }
+.wordmark { display: inline-flex; align-items: center; gap: var(--space-sm); font-weight: 500; font-size: var(--text-lead); letter-spacing: -0.02em; color: var(--color-ink); text-decoration: none; margin-right: auto; }
+.wordmark:hover { color: var(--color-ink); }
+.links { display: flex; gap: var(--space-lg); list-style: none; margin: 0; padding: 0; }
+.links a { color: var(--color-ink-2); text-decoration: none; padding: var(--space-xs) 0; white-space: nowrap; }
+@media (max-width: 60rem) { .links li.hide-s { display: none; } }
+.links a:hover { color: var(--color-accent); }
+
+/* entrances: one reveal, parts of a section in turn; visible without script and under reduced motion */
+@media (prefers-reduced-motion: no-preference) {
+  .js .rise { transition: opacity 640ms var(--ease-out), transform 640ms var(--ease-out); }
+  .js .rise:not(.in) { opacity: 0; transform: translateY(28px); }
+  .js .rise + .rise, .js .calls li + li { transition-delay: 90ms; }
+  .js .calls li + li + li, .js .products .rise + .rise { transition-delay: 180ms; }
+}
+
+/* sections */
+.sec { padding-block: var(--section-gap-s); }
+.head { display: grid; gap: var(--space-lg); align-content: start; }
+
+/* hero: Banner, the head at poster size across the width */
+.hero { padding-block: var(--space-xl); }
+.hero h1 { font-size: var(--text-display); line-height: 0.94; max-width: none; letter-spacing: var(--tracking-display); }
+.hero-foot { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-lg) var(--space-xl); margin-top: var(--space-xl); }
+.hero-foot .lead { font-size: var(--text-lead); max-width: 46ch; }
+/* E43-S6 round 3 of 2026-11-08 (Jordi: the key things it does "aren't popping"): the seven, named under the head, each a link to its own section */
+.seven { margin-top: var(--space-2xl); }
+.seven ul { display: flex; flex-wrap: wrap; gap: var(--space-sm) var(--space-xl); list-style: none; margin: 0; padding: 0; max-width: 72rem; }
+.seven a { font: 400 var(--text-lead)/1.3 var(--font-display); letter-spacing: -0.01em; color: var(--color-ink); text-decoration: underline; text-decoration-color: var(--color-accent); text-decoration-thickness: 2px; text-underline-offset: 0.3em; display: inline-block; padding-block: var(--space-2xs, 4px); }
+.seven a:hover { color: var(--color-accent); }
+.seven a:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
+@media (max-width: 40rem) { .seven ul { gap: var(--space-xs) var(--space-lg); } }
+.actions { display: flex; flex-wrap: wrap; gap: var(--space-sm); }
+
+/* a benefit, shown (EPIC-43 L-1), one unit per section (E43-S8 round 2, Jordi 2026-11-08: "not clear which headline
+   goes with which screenshot", "screenshots way taller than the section"): the headline first, its one screen beside
+   it in a window of fixed height, so a screen is never taller than its section; a long screen shows its top */
+.sec:has(> .proof), .band:has(> .proof) { padding-block: clamp(var(--space-2xl), 11vh, var(--space-3xl)); }
+.proof { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-xl) var(--space-2xl); align-items: center; }
+.proof .say { display: grid; gap: var(--space-md); align-content: center; }
+.proof h2 { font-size: clamp(2rem, 2.2vw + 0.8rem, 3.25rem); max-width: none; overflow-wrap: break-word; min-width: 0; }
+.was { color: var(--color-ink-2); font-size: var(--text-lead); max-width: 30ch; }
+.pic { margin: 0; display: grid; gap: var(--space-sm); min-width: 0; }
+.pic figcaption { font-size: var(--text-md); color: var(--color-ink-2); }
+.win { max-height: min(480px, 60vh); display: grid; grid-template-columns: minmax(0, 1fr); place-items: start center; overflow: hidden; background: var(--color-paper-2); padding: var(--space-lg); }
+.win picture { display: contents; }
+.win img { display: block; width: min(100%, var(--w, 100%)); height: auto; }
+.band.alt .win, .sec.tone .win { background: var(--color-paper); color: var(--color-ink); }
+.pic--term .win { background: var(--color-paper-3); }
+.sec.tone .pic--term .win { background: var(--color-paper); }
+/* a drawing needs the width: its headline sits on one line above it, the drawing right under it */
+.proof--wide { grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); }
+.proof--wide .say { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--space-sm) var(--gap-columns); align-items: end; }
+.proof--wide h2 { max-width: 22ch; }
+@media (max-width: 48rem) {
+  .proof, .proof--wide .say { grid-template-columns: minmax(0, 1fr); }
+  .proof { gap: var(--space-lg); }
+  .win { max-height: min(460px, 58svh); padding: var(--space-md); }
+}
+.sec.tone { background: var(--color-paper-3); }
+.sec--together { background: var(--color-field-ice); color: var(--color-accent-2-ink); }
+.sec--together h2, .sec--together .was, .sec--together figcaption { color: var(--color-accent-2-ink); }
+.sec--together .pic { background: var(--color-field-ice-2); }
+
+/* the plan lives in your repo: one photograph, then the file */
+.arg { color: var(--color-accent); }
+
+/* the family: each product shown by its own real screen, on a flat field */
+.family-wrap { display: grid; gap: var(--space-2xl); }
+.products { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--gap-columns); align-items: start; }
+.product { display: grid; gap: var(--space-md); align-content: start; justify-items: start; }
+.shotlink { display: block; width: 100%; height: clamp(240px, 26vw, 380px); background: var(--color-paper-2); padding: var(--space-xl) 0 0 var(--space-xl); overflow: hidden; transition: background-color var(--dur-short) var(--ease-out); }
+.shotlink img { width: 150%; max-width: none; height: auto; }
+.product--social .shotlink img { width: 190%; }
+.shotlink:hover { background: var(--color-rule); }
+.product h3 { display: flex; align-items: center; gap: var(--space-sm); font-size: var(--text-lead); margin-top: var(--space-sm); }
+.product h3 a { text-decoration: none; }
+.product p { color: var(--color-ink-2); max-width: 48ch; }
+
+/* install: the close, on a field of gold */
+.sec--install { background: var(--color-field-gold); color: var(--color-accent-ink); --color-focus: var(--color-accent-ink); }
+.shell { --color-focus: var(--color-focus-on-dark); }
+.sec--install h2, .sec--install a, .sec--install .more { color: var(--color-accent-ink); }
+.sec--install a { text-decoration-color: var(--color-accent-ink); }
+.install { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--space-2xl) var(--gap-columns); align-items: center; }
+.install .head { grid-column: 1 / 6; }
+.notes { margin: 0; padding-left: 1.1em; display: grid; gap: var(--space-xs); font-size: var(--text-lead); }
+.notes code { font-size: var(--text-sm); }
+.shell { grid-column: 6 / 13; margin: 0; background: var(--color-paper); color: var(--color-ink); }
+.shell-bar { display: flex; justify-content: space-between; align-items: center; padding: var(--space-sm) var(--space-sm) var(--space-sm) var(--space-lg); background: var(--color-paper-3); color: var(--color-muted); }
+.shell pre { margin: 0; padding: var(--space-xl) var(--space-lg); overflow-x: auto; line-height: 2.1; font-size: var(--text-sm); white-space: pre; }
+.shell .p { color: var(--color-muted); user-select: none; }
+.copy { min-height: 44px; padding: 0 var(--space-md); border: 0; border-radius: 0; background: var(--color-paper-2); color: var(--color-ink); font: 500 var(--text-sm)/1 var(--font-body); cursor: pointer; transition: background-color var(--dur-micro) var(--ease-out); }
+.copy:hover { background: var(--color-rule); }
+.copy:active { background: var(--color-accent); color: var(--color-accent-ink); }
+.copy:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+.copy[data-done] { background: var(--color-accent-2); color: var(--color-accent-2-ink); }
+
+/* footer: a mast, the name across the width */
+.foot { background: var(--color-paper-3); padding-block: var(--space-3xl) var(--space-xl); color: var(--color-ink-2); overflow: hidden; }
+.foot .cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--gap-columns); }
+.foot h2 { font-size: var(--text-md); letter-spacing: 0; color: var(--color-ink); margin-bottom: var(--space-sm); }
+.foot ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-xs); }
+.foot a { text-decoration: none; }
+.foot a:hover { text-decoration: underline; }
+.giant { margin: var(--space-3xl) 0 var(--space-xl); padding-bottom: 0.12em; font-family: var(--font-display); font-size: clamp(4rem, 21vw, 19rem); font-weight: 400; letter-spacing: -0.055em; line-height: 0.86; color: var(--color-ink); white-space: nowrap; transform-origin: 0 100%; }
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .giant { animation: settle linear both; animation-timeline: view(); animation-range: entry 0% entry 100%; }
+    @keyframes settle { from { transform: scale(0.94); opacity: 0.6; } to { transform: scale(1); opacity: 1; } }
+  }
+}
+.fine { font-size: var(--text-sm); color: var(--color-muted); max-width: 72ch; }
+.foot li { overflow-wrap: anywhere; }
+@media (max-width: 60rem) { .foot .cols { grid-template-columns: repeat(2, minmax(0, 1fr)); } .foot .cols > :last-child { grid-column: 1 / -1; } }
+.fine a { text-decoration: underline; text-decoration-color: var(--color-muted-2); }
+
+/* /team/ (E43-S7): the same system; its real screens sit on flat fields */
+.band { padding-block: var(--section-gap-s); }
+.band.alt { background: var(--color-paper-3); color: var(--color-ink); }
+.band.hero { padding-block: var(--space-2xl) var(--space-xl); }
+.band.hero h1 { font-size: clamp(2.5rem, 5.2vw, 5.25rem); line-height: 0.98; max-width: none; }
+.band.hero .split { grid-template-columns: minmax(0, 1fr); gap: var(--space-2xl); }
+.band.hero .say { grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--space-xl) var(--space-xl); }
+.band.hero .say h1 { grid-column: 1 / -1; }
+.band.hero .say .lead { max-width: 46ch; }
+.band#try { background: var(--color-field-gold); color: var(--color-accent-ink); --color-focus: var(--color-accent-ink); }
+.band#try h2, .band#try .lead { color: var(--color-accent-ink); }
+.band#try .split { grid-template-columns: minmax(0, 1fr); }
+.band#try .say { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); align-items: end; gap: var(--space-lg) var(--gap-columns); }
+.band#try .say h2 { grid-row: span 2; }
+.band#try .btn:not(.btn--primary) { background: var(--color-accent-ink); color: var(--color-ink); }
+.band#try .btn--primary { background: var(--color-paper); color: var(--color-ink); }
+.foot .cols + .fine { margin-top: var(--space-2xl); }
+.split { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-3xl); align-items: center; }
+.stack { display: grid; gap: var(--space-2xl); }
+.say { display: grid; gap: var(--space-lg); align-content: start; }
+.band .stack .say { grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); align-items: end; gap: var(--gap-columns); }
+.band h2 { max-width: none; }
+.show { margin: 0; min-width: 0; }
+.shot { margin: 0; display: grid; gap: var(--space-sm); }
+.shot .frame { background: var(--color-paper-2); padding: var(--space-xl); }
+.band.hero .shot .frame { background: var(--color-field-ice); padding: var(--space-2xl) 0 0 var(--space-2xl); overflow: hidden; height: clamp(280px, 26vw, 400px); }
+.band.hero .shot img { width: 118%; max-width: none; }
+.band.alt .shot .frame { background: var(--color-paper); color: var(--color-ink); }
+.shot img { width: 100%; height: auto; }
+.shot figcaption { font-size: var(--text-sm); color: var(--color-muted); }
+.pair { display: grid; grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); gap: var(--gap-columns); align-items: start; }
+.pair .shot + .shot .frame { padding: var(--space-lg); }
+.pair.even { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.shot--narrow { max-width: 760px; }
+.band:has(.shot--narrow) .stack { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); align-items: center; }
+.band:has(.shot--narrow) .stack .say { grid-template-columns: minmax(0, 1fr); align-items: start; }
+.well { margin: 0; background: var(--color-paper-2); padding: var(--space-xl); display: grid; gap: var(--space-md); }
+.well-head { display: flex; justify-content: space-between; color: var(--color-muted); font-size: var(--text-sm); }
+.rows { margin: 0; display: grid; gap: var(--space-2xs); }
+.rows div { display: grid; grid-template-columns: 7em minmax(0, 1fr); gap: var(--space-md); padding: var(--space-sm) var(--space-md); background: var(--color-paper-3); }
+.rows dt { color: var(--color-accent); }
+.rows dd { margin: 0; }
+.more { color: var(--color-ink-2); }
+
+/* /team/ hero: three projects, each with its own items waiting, then the one Team feed (Jordi's example, EPIC-43 L-1) */
+.ba { margin: 0; display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--gap-columns); align-items: stretch; }
+.ba-side { display: grid; grid-template-rows: auto 1fr; gap: var(--space-sm); min-width: 0; }
+.ba-label { color: var(--color-ink-2); font-size: var(--text-lead); }
+.ba-after .ba-label { color: var(--color-accent); }
+.ba-rows { display: grid; align-content: center; gap: var(--space-sm); background: var(--color-paper-2); padding: var(--space-xl); }
+.ba-rows img { width: 100%; height: auto; }
+.ba-after .frame { background: var(--color-field-ice); padding: var(--space-xl) 0 0 var(--space-xl); overflow: hidden; height: clamp(300px, 30vw, 440px); }
+.ba-after .frame img { width: 125%; max-width: none; height: auto; }
+
+/* under 60rem every composition stacks in reading order */
+@media (max-width: 60rem) {
+  .again .head, .clear .head, .night .head, .band .stack .say { grid-template-columns: minmax(0, 1fr); align-items: start; gap: var(--space-md); }
+  .pane { grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); }
+  .aside { font-size: var(--text-title); max-width: none; }
+  .sticks .head, .calls, .together .head, .stage, .repo .head, .tree, .install .head, .shell { grid-column: 1 / -1; }
+  .sticks .head { position: static; }
+  .roles button { grid-template-columns: minmax(0, 1fr); gap: var(--space-xs); min-height: 88px; }
+  .clock { padding: var(--space-xl) var(--space-lg); }
+  .products, .split, .pair, .pair.even, .band.hero .split, .band:has(.shot--narrow) .stack, .ba { grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); }
+}
+@media (max-width: 40rem) {
+  .band#try .say, .band.hero .say { grid-template-columns: minmax(0, 1fr); }
+  .band.hero h1 { font-size: 2.25rem; }
+  .band#try .say h2 { grid-row: auto; }
+  .br-wide { display: none; }
+  .band.hero .shot img { width: 230%; }
+  .shotlink img, .product--social .shotlink img { width: 230%; }
+  .events { height: auto; display: grid; gap: var(--space-lg); padding-left: var(--space-lg); }
+  .events::before { left: 4px; right: auto; top: 0; bottom: 0; width: var(--space-2xs); height: auto; margin: 0; }
+  .events li, .events li:nth-child(odd), .events li:nth-child(even) { position: relative; left: auto; top: auto; bottom: auto; width: auto; padding-left: var(--space-lg); }
+  .events li::before, .events li:nth-child(odd)::before, .events li:nth-child(even)::before { left: -19px; top: 0.55em; bottom: auto; }
+  .events li::after { display: none; }
+  .axis { display: none; }
+  .hero-foot { grid-template-columns: minmax(0, 1fr); gap: var(--space-lg); }
+  .hero-foot .actions .btn { flex: 1 1 auto; }
+  .nav .container { gap: var(--space-md); }
+  .switch { display: flex; justify-self: stretch; }
+  .switch button { flex: 1 1 0; padding: 0 var(--space-xs); white-space: nowrap; }
+  .msg { font-size: var(--text-md); }
+  .read div, .ask dl div, .rows div { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .choice { padding: 0 var(--space-lg); }
+  .foot .cols { grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); }
+  .giant { font-size: 20.4vw; }
+  .shell pre { font-size: var(--text-sm); }
+  .ask, .clock, .tree, .well { padding: var(--space-lg); }
+  .shotlink, .shot .frame { padding: var(--space-md); }
+  .ba-rows { padding: var(--space-md); }
+  .ba-after .frame { height: 620px; padding: var(--space-md) var(--space-md) 0; }
+  .ba-after .frame img { width: 100%; }
+}
+
+/* the tree of goals (agent_team E43-S8): drawn by tools/goal_tree.py from the real repos; bigger goals above,
+   the steps that finish them below; one gold node is the focus; under 64rem the same tree reads as an outline */
+.sec--tree { background: var(--color-paper-3); }
+.pic--tree, .pic--fan { justify-items: stretch; padding: var(--space-xl) var(--space-xl) var(--space-lg); }
+.pic--tree { background: var(--color-paper-2); gap: var(--space-md); }
+.sec--tree .pic--tree, .band.alt .pic--tree { background: var(--color-paper); color: var(--color-ink); }
+.gt.gt--wide { width: min(100%, 980px, calc((100svh - 400px) * var(--ar, 2.2))); margin-inline: auto; }
+.sec:has(> .proof--wide), .band:has(> .proof--wide) { padding-block: clamp(var(--space-xl), 8vh, var(--space-2xl)); }
+/* the rest of the tree waits behind one control (E43-S8 round 2: fewer levels at a glance, the rest behind "more") */
+.gt-all { margin-top: var(--space-md); }
+.gt-all summary { display: inline-flex; align-items: center; min-height: 44px; padding: 0 var(--space-md); background: var(--color-paper-3); color: var(--color-ink); cursor: pointer; list-style: none; transition: background-color var(--dur-short) var(--ease-out); }
+.gt-all summary::-webkit-details-marker { display: none; }
+.gt-all summary:hover { background: var(--color-rule); }
+.gt-all summary:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+.gt-all[open] summary { margin-bottom: var(--space-lg); }
+.gt-all .gt.gt--wide { width: 100%; }
+.gt-wrap, .fan-wrap { width: 100%; }
+.gt, .fan { display: block; width: 100%; height: auto; font-family: var(--font-body); }
+.gt--phone, .fan--phone { display: none; max-width: 30rem; margin-inline: auto; }
+@media (max-width: 64rem) {
+  .gt--wide, .fan--wide { display: none; }
+  .gt--phone, .fan--phone { display: block; }
+}
+.gt-line, .fan-line { fill: none; stroke: var(--color-muted-2); stroke-width: 1.25; }
+.gt-box rect { fill: var(--color-paper-2); stroke: var(--color-rule); stroke-width: 1; }
+.gt-name { fill: var(--color-ink); font-weight: 500; }
+.gt-sub { fill: var(--color-muted); }
+.gt-l0 rect { fill: var(--color-ink); stroke: none; }
+.gt-l0 .gt-name { fill: var(--color-accent-ink); font-family: var(--font-display); font-weight: 400; }
+.gt-l0 .gt-sub { fill: var(--color-accent-ink); opacity: 0.75; }
+.gt-l1 .gt-name { font-family: var(--font-display); font-weight: 400; }
+.gt-more rect { fill: none; stroke: var(--color-muted-2); stroke-dasharray: 4 3; }
+.gt-more .gt-name { fill: var(--color-muted); font-weight: 400; }
+.gt-focus rect { fill: var(--color-paper-2); stroke: var(--color-accent); stroke-width: 2; }
+.gt-focus .gt-note { fill: var(--color-accent); }
+.gt-dot { stroke-width: 1.5; }
+.gt-done, .gt-key .gt-done { fill: var(--color-accent-2); stroke: var(--color-accent-2); background: var(--color-accent-2); }
+.gt-review, .gt-key .gt-review { fill: var(--color-accent); stroke: var(--color-accent); background: var(--color-accent); }
+.gt-active, .gt-key .gt-active { fill: transparent; stroke: var(--color-ink); border: 2px solid var(--color-ink); box-sizing: border-box; }
+.gt-planned, .gt-key .gt-planned { fill: transparent; stroke: var(--color-muted-2); stroke-dasharray: 2 2; border: 1px solid var(--color-muted-2); box-sizing: border-box; } /* taste-skill-ignore: the 11px legend dot for a planned goal, the same ring the tree draws */
+.gt-key { display: flex; flex-wrap: wrap; gap: var(--space-xs) var(--space-lg); margin: 0; padding: 0; list-style: none; font-size: var(--text-sm); color: var(--color-ink-2); justify-self: start; }
+.gt-key li { display: inline-flex; align-items: center; gap: var(--space-xs); }
+.gt-key i { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+
+/* one voice note, many threads, one inbox (agent_team E43-S9) */
+.fan-box rect, .fan-group rect { fill: var(--color-paper-2); stroke: var(--color-rule); }
+.fan-name { fill: var(--color-ink); font-family: var(--font-display); font-size: 19px; }
+.fan-sub, .fan-gname { fill: var(--color-ink-2); font-size: 14px; }
+.fan-gname { fill: var(--color-ink); font-size: 15px; }
+.fan-wave { fill: var(--color-accent-2); }
+.fan-dot { fill: var(--color-accent-2); }
+.fan-dot.fan-ask { fill: var(--color-accent); }
+.fan-ask rect { stroke: var(--color-accent); }
+.fan-inbox rect { fill: var(--color-accent); stroke: none; }
+.fan-inbox .fan-name, .fan-inbox .fan-sub { fill: var(--color-accent-ink); }
+.fan-kind .fan-name { font-size: 17px; }
+/* the voice note as one slide (E43-S9 round 2, Jordi: "one slide where all the content is there without having to
+   scroll", "maybe animate this"): the drawing is sized by the screen's height as well as its width, so headline,
+   drawing and both cards fit at 1280x800 and on a 390x844 phone */
+.band.band--slide { min-height: calc(100svh - var(--nav-h)); display: grid; align-items: center; padding-block: var(--space-lg); }
+.band--slide .proof { gap: var(--space-md); }
+.proof--slide .say { grid-template-columns: minmax(0, 1fr); gap: var(--space-xs); }
+.proof--slide h2 { font-size: clamp(1.875rem, 2.4vw + 0.75rem, 3.25rem); max-width: none; }
+.proof--slide .was { max-width: none; }
+.pic--fan { gap: var(--space-xs); padding: var(--space-md) var(--space-lg); background: var(--color-paper); }
+.fan--wide { width: min(100%, calc((100svh - var(--nav-h) - 240px) * 1200 / 520)); margin-inline: auto; }
+.fan--phone { width: min(100%, calc((100svh - var(--nav-h) - 270px) * 360 / 635)); max-width: none; }
+.fan { overflow: visible; }
+.fan-foot { display: flex; flex-wrap: nowrap; align-items: center; justify-content: space-between; gap: var(--space-xs) var(--space-md); }
+.fan-count { fill: var(--color-ink); font-family: var(--font-display); font-size: 24px; }
+.fan-group.fan-ask .fan-count { fill: var(--color-accent); }
+.fan-paper { fill: var(--color-tile); }
+.fan-card-link:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+.fan-card-link:hover .fan-kind > rect:first-child { stroke: var(--color-accent-hi); stroke-width: 2; }
+.fan-kind .fan-name { font-size: 17px; }
+.fan-kind .fan-sub { font-size: 13px; }
+.fan-inbox-sub { font-size: 15px; }
+@media (prefers-reduced-motion: no-preference) {
+  .js .fan .fan-line { stroke-dasharray: 1; }
+  .js .fan:not(.play) [data-s] { opacity: 0; }
+  .js .fan.play g[data-s] { animation: fan-up 560ms var(--ease-out) var(--d) both; transform-box: fill-box; }
+  .js .fan.play .fan-line[data-s] { animation: fan-draw 460ms var(--ease-out) var(--d) both; }
+  .js .fan.play .fan-wave { animation: fan-talk 520ms var(--ease-in-out) calc(var(--i) * 40ms) 6 alternate; transform-box: fill-box; transform-origin: center; }
+  @keyframes fan-up { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+  @keyframes fan-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+  @keyframes fan-talk { from { transform: scaleY(1); } to { transform: scaleY(0.3); } }
+}
+@media (max-width: 40rem) {
+  .band.band--slide { padding-block: var(--space-md); }
+  .pic--tree { padding: var(--space-lg) var(--space-md) var(--space-md); }
+  .pic--fan { padding: var(--space-sm); }
+  .proof--slide .was { font-size: var(--text-md); }
+}

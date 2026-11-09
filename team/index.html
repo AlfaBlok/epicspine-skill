@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EpicTeam: an AI team that works on your goals</title>
+<!-- EpicTeam's tab icon: logo C with the T (agent_team E65-S5, the same files as team.alpha9.io's) -->
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="favicon-16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="description" content="EpicTeam is an AI team that works on your goals. Personas with one job each, shared skills and sign-ins, several AI subscriptions, and one inbox for what needs you. One plan, €49 a month, with your own AI key and server.">
+<meta property="og:title" content="EpicTeam: an AI team that works on your goals">
+<meta property="og:description" content="You only see what needs you, in one inbox. Real screens of the tool.">
+<meta name="theme-color" content="#0d1a33">
+<!-- EpicTeam's public page (agent_team E43-S7). Every picture is a real production screen of team.alpha9.io, taken
+     read-only by agent_team console/scripts/e43s7-shots.mjs; private parts are folded or cropped out. -->
+<link rel="preload" href="../fonts/funnel-display-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../fonts/funnel-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../epic.css">
+<style>
+/* agent_team E43-S7 round 2: the inbox niceties, drawn from EpicTeam's one feature list by tools/feature_list.py */
+.nice { display: grid; gap: var(--space-xl); }
+.nice .say { display: grid; gap: var(--space-md); }
+.nice h2 { font-size: clamp(2rem, 2.2vw + 0.8rem, 3.25rem); max-width: 24ch; }
+.nice .was { max-width: 52ch; }
+.nice-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-md); grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr)); }
+.nice-list li { display: grid; align-content: start; gap: var(--space-xs); padding: var(--space-md); border: 1px solid var(--color-rule); border-radius: var(--radius-card); background: var(--color-paper); }
+.nice-list h3 { font-size: var(--text-md); }
+.nice-list p { color: var(--color-ink-2); font-size: var(--text-sm); }
+/* agent_team E81-S5: one plan, one price (Jordi's E81-A3 answer: €49 a month, the customer's own API key by default) */
+.plan { display: grid; gap: var(--space-xl); grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); align-items: start; }
+.plan .say { display: grid; gap: var(--space-md); }
+.plan h2 { font-size: clamp(2rem, 2.2vw + 0.8rem, 3.25rem); max-width: 18ch; }
+.plan .was { max-width: 44ch; }
+.plan-card { display: grid; gap: var(--space-md); padding: var(--space-xl); border: 1px solid var(--color-rule); border-radius: var(--radius-card); background: var(--color-paper); }
+.plan-card .amt { font: var(--display-weight) clamp(3rem, 4vw + 1rem, 4.5rem)/1 var(--font-display); letter-spacing: var(--tracking-display); }
+.plan-card .amt small { font: 400 var(--text-md)/1.3 var(--font-body); letter-spacing: 0; color: var(--color-muted); }
+.plan-card h3 { font-size: var(--text-md); }
+.plan-card ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-xs); color: var(--color-ink-2); font-size: var(--text-md); }
+.plan-card li { display: flex; gap: var(--space-xs); }
+.plan-card li svg { flex: none; width: 18px; height: 18px; margin-top: 0.25em; color: var(--color-accent); }
+.plan-card .fine-print { color: var(--color-muted); font-size: var(--text-sm); }
+@media (max-width: 40rem) { .plan-card { padding: var(--space-lg) var(--space-md); } }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="family" aria-label="The Epic family"><div class="container"><a href="../">EpicSpine</a><a href="./" aria-current="page">EpicTeam</a><a href="../social/">EpicSocial</a></div></div>
+  <nav class="nav" aria-label="Main"><div class="container">
+    <a class="wordmark" href="#top" aria-label="EpicTeam, back to the start"><svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><rect class="tile" width="32" height="32" rx="7"/><g transform="translate(3.40 0) skewX(-12)"><path class="g" d="M8 6H24V10H19V26H13V10H8Z"/></g></svg>EpicTeam</a>
+    <ul class="links">
+      <li class="hide-s"><a href="#voice">Voice to inbox</a></li>
+      <li class="hide-s"><a href="#tree">The tree</a></li>
+      <li class="hide-s"><a href="#review">Finished work</a></li>
+      <li class="hide-s"><a href="#inbox-focus">Focus</a></li>
+      <li class="hide-s"><a href="#signins">Sign-ins</a></li>
+      <li class="hide-s"><a href="#seats">Seats</a></li>
+      <li><a href="#price">Price</a></li>
+      <li><a href="../book/">Book</a></li>
+    </ul>
+    <a class="btn btn--primary btn--sm" href="#try">Try it</a>
+  </div></nav>
+</header>
+
+<main>
+  <section class="band hero" id="top" aria-labelledby="h-top">
+    <div class="container split">
+      <div class="say">
+        <h1 id="h-top">An AI team working on your goals.</h1>
+        <p class="lead">Everything that needs you, in one feed.</p>
+        <div class="actions">
+          <a class="btn btn--primary" href="#try">Try it</a>
+          <a class="btn" href="#review">See the real screens</a>
+        </div>
+      </div>
+      <figure class="show ba" aria-label="Before and after, in the real EpicTeam console on 6 November 2026">
+        <div class="ba-side">
+          <p class="ba-label">Three projects, each with items waiting</p>
+          <div class="ba-rows">
+            <img src="shots/project-1.webp" width="243" height="91" alt="The Epic Social launch project: 3 items waiting on you.">
+            <img src="shots/project-2.webp" width="243" height="71" alt="The Zenod launch project: 2 items waiting on you.">
+            <img src="shots/project-3.webp" width="243" height="71" alt="The agent_team project: 5 items waiting on you.">
+          </div>
+        </div>
+        <div class="ba-side ba-after">
+          <p class="ba-label">Select Team: one feed</p>
+          <div class="frame"><picture><source media="(max-width: 560px)" srcset="shots/feed-phone.webp" width="390" height="1038"><img src="shots/feed.webp" width="1024" height="898" fetchpriority="high" alt="EpicTeam's Team view: one list for every project. Blocked, waiting on you: 8. Snoozed: 4. Decided for you: 4. Coming up: 5. Answered: 58. Done, waiting for your review: 4."></picture></div>
+        </div>
+      </figure>
+    </div>
+  </section>
+
+  <section class="band alt band--slide" id="voice" aria-labelledby="h-voice">
+    <div class="container proof proof--wide proof--slide">
+      <div class="say">
+        <h2 id="h-voice">One voice note in. One inbox out.</h2>
+        <p class="was">30 minutes of talk became 35 items. Only two kinds of card come back to you.</p>
+      </div>
+      <figure class="pic pic--fan">
+        <div class="fan-wrap">
+<!-- goal-tree:fan begin (tools/goal_tree.py writes this) -->
+<svg class="fan fan--wide" viewBox="0 0 1200 520" width="1200" height="520" style="--ar:2.308" role="img" aria-labelledby="fan-wide-title fan-wide-desc"><title id="fan-wide-title">One voice note fans out into many threads and back into one inbox</title><desc id="fan-wide-desc">One 30-minute voice note of 7 November 2026 became 35 items placed in the goal tree, 3 of them in two places: 10 built, each in its own thread, 3 questions only you can answer, 7 ideas kept as drafts, 6 already in the plan, 12 passed to two other teams. Everything that needs its owner comes back to one inbox, as two kinds of card: blocked on you, or done and waiting for your approval.</desc><path class="fan-line" pathLength="1" d="M188 260H212" data-s="2" style="--d:400ms"/><path class="fan-line" pathLength="1" d="M408 220.0H416Q424 220.0 424 212.0V80.0Q424 72.0 432 72.0H464" data-s="3" style="--d:850ms"/><path class="fan-line" pathLength="1" d="M408 240.0H424Q432 240.0 432 232.0V174.0Q432 166.0 440 166.0H464" data-s="3" style="--d:960ms"/><path class="fan-line" pathLength="1" d="M408 260H464" data-s="3" style="--d:1070ms"/><path class="fan-line" pathLength="1" d="M408 280.0H424Q432 280.0 432 288.0V346.0Q432 354.0 440 354.0H464" data-s="3" style="--d:1180ms"/><path class="fan-line" pathLength="1" d="M408 300.0H416Q424 300.0 424 308.0V440.0Q424 448.0 432 448.0H464" data-s="3" style="--d:1290ms"/><path class="fan-line" pathLength="1" d="M754 72.0H790Q798 72.0 798 80.0V212.0Q798 220.0 806 220.0H800" data-s="4" style="--d:1700ms"/><path class="fan-line" pathLength="1" d="M754 166.0H782Q790 166.0 790 174.0V232.0Q790 240.0 798 240.0H800" data-s="4" style="--d:1760ms"/><path class="fan-line" pathLength="1" d="M754 260H800" data-s="4" style="--d:1820ms"/><path class="fan-line" pathLength="1" d="M754 354.0H782Q790 354.0 790 346.0V288.0Q790 280.0 798 280.0H800" data-s="4" style="--d:1880ms"/><path class="fan-line" pathLength="1" d="M754 448.0H790Q798 448.0 798 440.0V308.0Q798 300.0 806 300.0H800" data-s="4" style="--d:1940ms"/><path class="fan-line" pathLength="1" d="M964 240.0H968Q976 240.0 976 232.0V126.2Q976 118.2 984 118.2H990" data-s="5" style="--d:2300ms"/><path class="fan-line" pathLength="1" d="M964 280.0H968Q976 280.0 976 288.0V341.5Q976 349.5 984 349.5H990" data-s="5" style="--d:2460ms"/><g class="fan-box " data-s="1" style="--d:0ms"><rect x="0" y="200" width="188" height="120" rx="2"/><text class="fan-name" x="16" y="230">One voice note</text><text class="fan-sub" x="16" y="254">30 minutes, 7 November</text></g><g class="fan-wave-g"><rect class="fan-wave" x="16" y="289" width="3" height="6" rx="1.5" style="--i:0"/><rect class="fan-wave" x="23" y="285" width="3" height="14" rx="1.5" style="--i:1"/><rect class="fan-wave" x="30" y="281" width="3" height="22" rx="1.5" style="--i:2"/><rect class="fan-wave" x="37" y="286" width="3" height="12" rx="1.5" style="--i:3"/><rect class="fan-wave" x="44" y="279" width="3" height="26" rx="1.5" style="--i:4"/><rect class="fan-wave" x="51" y="283" width="3" height="18" rx="1.5" style="--i:5"/><rect class="fan-wave" x="58" y="288" width="3" height="8" rx="1.5" style="--i:6"/><rect class="fan-wave" x="65" y="282" width="3" height="20" rx="1.5" style="--i:7"/><rect class="fan-wave" x="72" y="278" width="3" height="28" rx="1.5" style="--i:8"/><rect class="fan-wave" x="79" y="285" width="3" height="14" rx="1.5" style="--i:9"/><rect class="fan-wave" x="86" y="289" width="3" height="6" rx="1.5" style="--i:10"/><rect class="fan-wave" x="93" y="284" width="3" height="16" rx="1.5" style="--i:11"/><rect class="fan-wave" x="100" y="280" width="3" height="24" rx="1.5" style="--i:12"/><rect class="fan-wave" x="107" y="287" width="3" height="10" rx="1.5" style="--i:13"/><rect class="fan-wave" x="114" y="283" width="3" height="18" rx="1.5" style="--i:14"/><rect class="fan-wave" x="121" y="289" width="3" height="6" rx="1.5" style="--i:15"/></g><g class="fan-box fan-tree" data-s="2" style="--d:500ms"><rect x="212" y="200" width="196" height="120" rx="2"/><text class="fan-name" x="228" y="230">Placed in the tree</text><text class="fan-sub" x="228" y="254">35 items, each under</text></g><text class="fan-sub" x="228" y="276" data-s="2" style="--d:500ms">its own goal</text><g class="fan-group " data-s="3" style="--d:1000ms"><rect x="464" y="32" width="290" height="80" rx="2"/><text class="fan-gname" x="480" y="60">10 built, each in its own thread</text><circle class="fan-dot " cx="484" cy="84" r="4.5"/><circle class="fan-dot " cx="498" cy="84" r="4.5"/><circle class="fan-dot " cx="512" cy="84" r="4.5"/><circle class="fan-dot " cx="526" cy="84" r="4.5"/><circle class="fan-dot " cx="540" cy="84" r="4.5"/><circle class="fan-dot " cx="554" cy="84" r="4.5"/><circle class="fan-dot " cx="568" cy="84" r="4.5"/><circle class="fan-dot " cx="582" cy="84" r="4.5"/><circle class="fan-dot " cx="596" cy="84" r="4.5"/><circle class="fan-dot " cx="610" cy="84" r="4.5"/></g><g class="fan-group fan-ask" data-s="3" style="--d:1110ms"><rect x="464" y="126" width="290" height="80" rx="2"/><text class="fan-gname" x="480" y="154">3 questions only you can answer</text><circle class="fan-dot fan-ask" cx="484" cy="178" r="4.5"/><circle class="fan-dot fan-ask" cx="498" cy="178" r="4.5"/><circle class="fan-dot fan-ask" cx="512" cy="178" r="4.5"/></g><g class="fan-group " data-s="3" style="--d:1220ms"><rect x="464" y="220" width="290" height="80" rx="2"/><text class="fan-gname" x="480" y="248">7 ideas kept as drafts</text><circle class="fan-dot " cx="484" cy="272" r="4.5"/><circle class="fan-dot " cx="498" cy="272" r="4.5"/><circle class="fan-dot " cx="512" cy="272" r="4.5"/><circle class="fan-dot " cx="526" cy="272" r="4.5"/><circle class="fan-dot " cx="540" cy="272" r="4.5"/><circle class="fan-dot " cx="554" cy="272" r="4.5"/><circle class="fan-dot " cx="568" cy="272" r="4.5"/></g><g class="fan-group " data-s="3" style="--d:1330ms"><rect x="464" y="314" width="290" height="80" rx="2"/><text class="fan-gname" x="480" y="342">6 already in the plan</text><circle class="fan-dot " cx="484" cy="366" r="4.5"/><circle class="fan-dot " cx="498" cy="366" r="4.5"/><circle class="fan-dot " cx="512" cy="366" r="4.5"/><circle class="fan-dot " cx="526" cy="366" r="4.5"/><circle class="fan-dot " cx="540" cy="366" r="4.5"/><circle class="fan-dot " cx="554" cy="366" r="4.5"/></g><g class="fan-group " data-s="3" style="--d:1440ms"><rect x="464" y="408" width="290" height="80" rx="2"/><text class="fan-gname" x="480" y="436">12 passed to two other teams</text><circle class="fan-dot " cx="484" cy="460" r="4.5"/><circle class="fan-dot " cx="498" cy="460" r="4.5"/><circle class="fan-dot " cx="512" cy="460" r="4.5"/><circle class="fan-dot " cx="526" cy="460" r="4.5"/><circle class="fan-dot " cx="540" cy="460" r="4.5"/><circle class="fan-dot " cx="554" cy="460" r="4.5"/><circle class="fan-dot " cx="568" cy="460" r="4.5"/><circle class="fan-dot " cx="582" cy="460" r="4.5"/><circle class="fan-dot " cx="596" cy="460" r="4.5"/><circle class="fan-dot " cx="610" cy="460" r="4.5"/><circle class="fan-dot " cx="624" cy="460" r="4.5"/><circle class="fan-dot " cx="638" cy="460" r="4.5"/></g><g class="fan-box fan-inbox" data-s="4" style="--d:2050ms"><rect x="800" y="200" width="164" height="120" rx="2"/><text class="fan-name" x="816" y="230">One inbox</text><text class="fan-sub" x="816" y="254">only what needs you</text></g><a class="fan-card-link" href="shots/ask-e73.webp" aria-label="Blocked on you: open the real card full size"><g class="fan-box fan-kind fan-ask" data-s="5" style="--d:2400ms"><rect x="990" y="40" width="210" height="156" rx="2"/><text class="fan-name" x="1002" y="66">Blocked on you</text><text class="fan-sub" x="1002" y="87">Pay $8 to verify our X account</text><clipPath id="fan-wide-clip0"><rect x="998" y="100" width="194" height="88"/></clipPath><rect class="fan-paper" x="998" y="100" width="194" height="88"/><image href="shots/ask-e73.webp" x="998" y="100" width="194" height="88" clip-path="url(#fan-wide-clip0)" preserveAspectRatio="xMidYMin meet"/></g></a><a class="fan-card-link" href="shots/review-card.webp" aria-label="Done, for your approval: open the real card full size"><g class="fan-box fan-kind " data-s="5" style="--d:2560ms"><rect x="990" y="220" width="210" height="259" rx="2"/><text class="fan-name" x="1002" y="246">Done, for your approval</text><text class="fan-sub" x="1002" y="267">Daily numbers on the home page</text><clipPath id="fan-wide-clip1"><rect x="998" y="280" width="194" height="191"/></clipPath><rect class="fan-paper" x="998" y="280" width="194" height="191"/><image href="shots/review-card.webp" x="998" y="280" width="194" height="191" clip-path="url(#fan-wide-clip1)" preserveAspectRatio="xMidYMin meet"/></g></a></svg>
+<svg class="fan fan--phone" viewBox="0 0 360 638" width="360" height="638" style="--ar:0.564" role="img" aria-labelledby="fan-phone-title fan-phone-desc"><title id="fan-phone-title">One voice note fans out into many threads and back into one inbox</title><desc id="fan-phone-desc">One 30-minute voice note of 7 November 2026 became 35 items placed in the goal tree, 3 of them in two places: 10 built, each in its own thread, 3 questions only you can answer, 7 ideas kept as drafts, 6 already in the plan, 12 passed to two other teams. Everything that needs its owner comes back to one inbox, as two kinds of card: blocked on you, or done and waiting for your approval.</desc><path class="fan-line" pathLength="1" d="M166 36H194" data-s="2" style="--d:400ms"/><path class="fan-line" pathLength="1" d="M277 72V84Q277 88 273 88H16Q8 88 8 96V324" data-s="3" style="--d:850ms"/><path class="fan-line" pathLength="1" d="M8 116Q8 122 14 122H24" data-s="3" style="--d:950ms"/><path class="fan-line" pathLength="1" d="M8 168Q8 174 14 174H24" data-s="3" style="--d:1060ms"/><path class="fan-line" pathLength="1" d="M8 220Q8 226 14 226H24" data-s="3" style="--d:1170ms"/><path class="fan-line" pathLength="1" d="M8 272Q8 278 14 278H24" data-s="3" style="--d:1280ms"/><path class="fan-line" pathLength="1" d="M8 324Q8 330 14 330H24" data-s="3" style="--d:1390ms"/><path class="fan-line" pathLength="1" d="M192 352V380" data-s="4" style="--d:1800ms"/><path class="fan-line" pathLength="1" d="M86 444V468" data-s="5" style="--d:2300ms"/><path class="fan-line" pathLength="1" d="M274 444V468" data-s="5" style="--d:2460ms"/><g class="fan-box " data-s="1" style="--d:0ms"><rect x="0" y="0" width="166" height="72" rx="2"/><text class="fan-name" x="16" y="30">One voice note</text><text class="fan-sub" x="16" y="54">30 minutes</text></g><g class="fan-box fan-tree" data-s="2" style="--d:500ms"><rect x="194" y="0" width="166" height="72" rx="2"/><text class="fan-name" x="210" y="30">In the tree</text><text class="fan-sub" x="210" y="54">35 items</text></g><g class="fan-group " data-s="3" style="--d:1000ms"><rect x="24" y="100" width="336" height="44" rx="2"/><text class="fan-count" x="40" y="130">10</text><text class="fan-gname" x="80" y="128">built in their own threads</text></g><g class="fan-group fan-ask" data-s="3" style="--d:1110ms"><rect x="24" y="152" width="336" height="44" rx="2"/><text class="fan-count" x="40" y="182">3</text><text class="fan-gname" x="80" y="180">questions only you can answer</text></g><g class="fan-group " data-s="3" style="--d:1220ms"><rect x="24" y="204" width="336" height="44" rx="2"/><text class="fan-count" x="40" y="234">7</text><text class="fan-gname" x="80" y="232">ideas kept as drafts</text></g><g class="fan-group " data-s="3" style="--d:1330ms"><rect x="24" y="256" width="336" height="44" rx="2"/><text class="fan-count" x="40" y="286">6</text><text class="fan-gname" x="80" y="284">already in the plan</text></g><g class="fan-group " data-s="3" style="--d:1440ms"><rect x="24" y="308" width="336" height="44" rx="2"/><text class="fan-count" x="40" y="338">12</text><text class="fan-gname" x="80" y="336">passed to two other teams</text></g><g class="fan-box fan-inbox" data-s="4" style="--d:2050ms"><rect x="0" y="380" width="360" height="64" rx="2"/><text class="fan-name" x="16" y="410">One inbox</text><text class="fan-sub" x="16" y="434">only what needs you</text></g><a class="fan-card-link" href="shots/ask-e73.webp" aria-label="Blocked on you: open the real card full size"><g class="fan-box fan-kind fan-ask" data-s="5" style="--d:2400ms"><rect x="0" y="468" width="172" height="168" rx="2"/><text class="fan-name" x="12" y="494">Blocked on you</text><clipPath id="fan-phone-clip0"><rect x="8" y="506" width="156" height="71"/></clipPath><rect class="fan-paper" x="8" y="506" width="156" height="71"/><image href="shots/ask-e73.webp" x="8" y="506" width="156" height="71" clip-path="url(#fan-phone-clip0)" preserveAspectRatio="xMidYMin meet"/></g></a><a class="fan-card-link" href="shots/review-card.webp" aria-label="Done for review: open the real card full size"><g class="fan-box fan-kind " data-s="5" style="--d:2560ms"><rect x="188" y="468" width="172" height="168" rx="2"/><text class="fan-name" x="200" y="494">Done for review</text><clipPath id="fan-phone-clip1"><rect x="196" y="506" width="156" height="122"/></clipPath><rect class="fan-paper" x="196" y="506" width="156" height="122"/><image href="shots/review-card.webp" x="196" y="506" width="156" height="154" clip-path="url(#fan-phone-clip1)" preserveAspectRatio="xMidYMin meet"/></g></a></svg>
+<!-- goal-tree:fan end -->
+        </div>
+        <figcaption class="fan-foot"><span>A real voice note, 7 November 2026.<span class="hide-s"> Open a card to see it full size.</span></span> <button class="btn btn--sm fan-replay" type="button" hidden>Play it again</button></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="band" id="tree" aria-labelledby="h-tree">
+    <div class="container proof proof--wide">
+      <div class="say">
+        <h2 id="h-tree">Every ask finds its place in one tree.</h2>
+        <p class="was">Bigger goals sit above the steps that finish them. Before: ideas get lost in old chats.</p>
+      </div>
+      <figure class="pic pic--tree">
+        <div class="gt-wrap">
+<!-- goal-tree:team begin (tools/goal_tree.py writes this) -->
+<svg class="gt gt--wide" viewBox="0 0 980 434" width="980" height="434" style="--ar:2.256" role="img" aria-labelledby="gt-team-wide-title gt-team-wide-desc"><title id="gt-team-wide-title">Our AI team&#x27;s goals as one tree</title><desc id="gt-team-wide-desc">Our AI team: everything it works on, 76 goals and 595 steps in its repo. Under it: Our public sites (in progress), with its steps: Show the real tool; Draw the tree of goals; One voice note, one inbox. Talk to the team by voice (in progress). Finished work waits for review (in progress).</desc><path class="gt-line" d="M490 116V148 M130 148H850 M130 148V180 M370 148V180 M610 148V180 M850 148V180"/><path class="gt-line" d="M130 273V305 M114 305H798 M114 305V337 M342 305V337 M570 305V337 M798 305V337"/><g class="gt-box gt-l0"><rect x="290" y="8" width="400" height="108" rx="2"/><text class="gt-name" x="306" y="44.0" font-size="26">Our AI team: everything it</text><text class="gt-name" x="306" y="75.7" font-size="26">works on</text><text class="gt-sub" x="306" y="110.4" font-size="16">76 goals and 595 steps in its repo</text></g><g class="gt-box gt-l1"><rect x="18" y="180" width="224" height="92" rx="2"/><circle class="gt-dot gt-active" cx="36" cy="202.6" r="5"><title>in progress</title></circle><text class="gt-name" x="52" y="210.2" font-size="20">Our public sites</text><text class="gt-sub" x="52" y="237.6" font-size="15">1 goal below, 9 steps</text></g><g class="gt-box gt-l2"><rect x="8" y="337" width="212" height="90" rx="2"/><circle class="gt-dot gt-review" cx="26" cy="358.3" r="5"><title>waiting for review</title></circle><text class="gt-name" x="42" y="365.5" font-size="19">Show the real</text><text class="gt-name" x="42" y="388.7" font-size="19">tool</text></g><g class="gt-box gt-l2 gt-focus"><rect x="236" y="337" width="212" height="90" rx="2"/><circle class="gt-dot gt-active" cx="254" cy="358.3" r="5"><title>in progress</title></circle><text class="gt-name" x="270" y="365.5" font-size="19">Draw the tree of</text><text class="gt-name" x="270" y="388.7" font-size="19">goals</text><text class="gt-sub gt-note" x="270" y="414.9" font-size="15">this picture</text></g><g class="gt-box gt-l2"><rect x="464" y="337" width="212" height="90" rx="2"/><circle class="gt-dot gt-active" cx="482" cy="358.3" r="5"><title>in progress</title></circle><text class="gt-name" x="498" y="365.5" font-size="19">One voice note,</text><text class="gt-name" x="498" y="388.7" font-size="19">one inbox</text></g><g class="gt-box gt-l2 gt-more"><rect x="692" y="337" width="212" height="90" rx="2"/><text class="gt-name" x="708" y="365.5" font-size="19">+5 more steps</text></g><g class="gt-box gt-l1"><rect x="258" y="180" width="224" height="92" rx="2"/><circle class="gt-dot gt-active" cx="276" cy="202.6" r="5"><title>in progress</title></circle><text class="gt-name" x="292" y="210.2" font-size="20">Talk to the team</text><text class="gt-name" x="292" y="234.6" font-size="20">by voice</text><text class="gt-sub" x="292" y="262.0" font-size="15">2 goals below, 35 steps</text></g><g class="gt-box gt-l1"><rect x="498" y="180" width="224" height="92" rx="2"/><circle class="gt-dot gt-active" cx="516" cy="202.6" r="5"><title>in progress</title></circle><text class="gt-name" x="532" y="210.2" font-size="20">Finished work</text><text class="gt-name" x="532" y="234.6" font-size="20">waits for review</text><text class="gt-sub" x="532" y="262.0" font-size="15">2 goals below, 35 steps</text></g><g class="gt-box gt-l1 gt-more"><rect x="738" y="180" width="224" height="92" rx="2"/><text class="gt-name" x="754" y="210.2" font-size="20">+33 more goals</text></g></svg>
+<svg class="gt gt--phone" viewBox="0 0 360 635" width="360" height="635" style="--ar:0.567" role="img" aria-labelledby="gt-team-phone-title gt-team-phone-desc"><title id="gt-team-phone-title">Our AI team&#x27;s goals as one tree</title><desc id="gt-team-phone-desc">Our AI team: everything it works on, 76 goals and 595 steps in its repo. Under it: Our public sites (in progress), with its steps: Show the real tool; Draw the tree of goals; One voice note, one inbox. Talk to the team by voice (in progress). Finished work waits for review (in progress).</desc><path class="gt-line" d="M15 97V601 M15 140H26 M15 449H26 M15 534H26 M15 601Q15 609 23 609H26"/><path class="gt-line" d="M37 172V377 M37 204H48 M37 267H48 M37 331H48 M37 377Q37 385 45 385H48"/><g class="gt-box gt-l0"><rect x="4" y="4" width="352" height="93" rx="2"/><text class="gt-name" x="20" y="35.0" font-size="21">Our AI team: everything it</text><text class="gt-name" x="20" y="60.6" font-size="21">works on</text><text class="gt-sub" x="20" y="89.2" font-size="14">76 goals and 595 steps in its repo</text></g><g class="gt-box gt-l1"><rect x="26" y="107" width="330" height="64" rx="2"/><circle class="gt-dot gt-active" cx="44" cy="128.6" r="5"><title>in progress</title></circle><text class="gt-name" x="60" y="135.4" font-size="18">Our public sites</text><text class="gt-sub" x="60" y="160.4" font-size="14">1 goal below, 9 steps</text></g><g class="gt-box gt-l2"><rect x="48" y="182" width="308" height="44" rx="2"/><circle class="gt-dot gt-review" cx="66" cy="202.1" r="5"><title>waiting for review</title></circle><text class="gt-name" x="82" y="208.6" font-size="17">Show the real tool</text></g><g class="gt-box gt-l2 gt-focus"><rect x="48" y="236" width="308" height="63" rx="2"/><circle class="gt-dot gt-active" cx="66" cy="256.1" r="5"><title>in progress</title></circle><text class="gt-name" x="82" y="262.6" font-size="17">Draw the tree of goals</text><text class="gt-sub gt-note" x="82" y="286.3" font-size="14">this picture</text></g><g class="gt-box gt-l2"><rect x="48" y="309" width="308" height="44" rx="2"/><circle class="gt-dot gt-active" cx="66" cy="329.1" r="5"><title>in progress</title></circle><text class="gt-name" x="82" y="335.5" font-size="17">One voice note, one inbox</text></g><g class="gt-box gt-l2 gt-more"><rect x="48" y="363" width="308" height="44" rx="2"/><text class="gt-name" x="64" y="389.5" font-size="17">+5 more steps</text></g><g class="gt-box gt-l1"><rect x="26" y="417" width="330" height="64" rx="2"/><circle class="gt-dot gt-active" cx="44" cy="437.7" r="5"><title>in progress</title></circle><text class="gt-name" x="60" y="444.5" font-size="18">Talk to the team by voice</text><text class="gt-sub" x="60" y="469.5" font-size="14">2 goals below, 35 steps</text></g><g class="gt-box gt-l1"><rect x="26" y="491" width="330" height="86" rx="2"/><circle class="gt-dot gt-active" cx="44" cy="511.9" r="5"><title>in progress</title></circle><text class="gt-name" x="60" y="518.7" font-size="18">Finished work waits for</text><text class="gt-name" x="60" y="540.7" font-size="18">review</text><text class="gt-sub" x="60" y="565.6" font-size="14">2 goals below, 35 steps</text></g><g class="gt-box gt-l1 gt-more"><rect x="26" y="587" width="330" height="44" rx="2"/><text class="gt-name" x="42" y="614.8" font-size="18">+33 more goals</text></g></svg>
+<details class="gt-all"><summary>Show more of the tree</summary>
+<svg class="gt gt--wide" viewBox="0 0 1200 397" width="1200" height="397" style="--ar:3.020" role="img" aria-labelledby="gt-team-all-wide-title gt-team-all-wide-desc"><title id="gt-team-all-wide-title">Our AI team&#x27;s goals as one tree</title><desc id="gt-team-all-wide-desc">Our AI team: everything it works on, 76 goals and 595 steps in its repo. Under it: Our public sites (in progress), with its steps: epicspine.dev goes live; Lead with the benefits; Show the real tool; Draw the tree of goals; One voice note, one inbox. Talk to the team by voice (in progress). Finished work waits for review (in progress). The team as a product (in progress). The repo is the only source (waiting for review).</desc><path class="gt-line" d="M600 104V136 M100 136H1100 M100 136V168 M300 136V168 M500 136V168 M700 136V168 M900 136V168 M1100 136V168"/><path class="gt-line" d="M100 248V280 M96 280H1056 M96 280V312 M288 280V312 M480 280V312 M672 280V312 M864 280V312 M1056 280V312"/><g class="gt-box gt-l0"><rect x="420" y="8" width="360" height="96" rx="2"/><text class="gt-name" x="436" y="40.0" font-size="22">Our AI team: everything it</text><text class="gt-name" x="436" y="66.8" font-size="22">works on</text><text class="gt-sub" x="436" y="96.7" font-size="14">76 goals and 595 steps in its repo</text></g><g class="gt-box gt-l1"><rect x="8" y="168" width="184" height="80" rx="2"/><circle class="gt-dot gt-active" cx="26" cy="187.8" r="5"><title>in progress</title></circle><text class="gt-name" x="42" y="193.9" font-size="16">Our public sites</text><text class="gt-sub" x="42" y="216.4" font-size="13">1 goal below, 9 steps</text></g><g class="gt-box gt-l2"><rect x="8" y="312" width="176" height="78" rx="2"/><circle class="gt-dot gt-done" cx="26" cy="331.1" r="5"><title>done</title></circle><text class="gt-name" x="42" y="336.8" font-size="15">epicspine.dev</text><text class="gt-name" x="42" y="355.1" font-size="15">goes live</text></g><g class="gt-box gt-l2"><rect x="200" y="312" width="176" height="78" rx="2"/><circle class="gt-dot gt-review" cx="218" cy="331.1" r="5"><title>waiting for review</title></circle><text class="gt-name" x="234" y="336.8" font-size="15">Lead with the</text><text class="gt-name" x="234" y="355.1" font-size="15">benefits</text></g><g class="gt-box gt-l2"><rect x="392" y="312" width="176" height="78" rx="2"/><circle class="gt-dot gt-review" cx="410" cy="331.1" r="5"><title>waiting for review</title></circle><text class="gt-name" x="426" y="336.8" font-size="15">Show the real</text><text class="gt-name" x="426" y="355.1" font-size="15">tool</text></g><g class="gt-box gt-l2 gt-focus"><rect x="584" y="312" width="176" height="78" rx="2"/><circle class="gt-dot gt-active" cx="602" cy="331.1" r="5"><title>in progress</title></circle><text class="gt-name" x="618" y="336.8" font-size="15">Draw the tree of</text><text class="gt-name" x="618" y="355.1" font-size="15">goals</text><text class="gt-sub gt-note" x="618" y="376.4" font-size="13">this picture</text></g><g class="gt-box gt-l2"><rect x="776" y="312" width="176" height="78" rx="2"/><circle class="gt-dot gt-active" cx="794" cy="331.1" r="5"><title>in progress</title></circle><text class="gt-name" x="810" y="336.8" font-size="15">One voice note,</text><text class="gt-name" x="810" y="355.1" font-size="15">one inbox</text></g><g class="gt-box gt-l2 gt-more"><rect x="968" y="312" width="176" height="78" rx="2"/><text class="gt-name" x="984" y="336.8" font-size="15">+3 more steps</text></g><g class="gt-box gt-l1"><rect x="208" y="168" width="184" height="80" rx="2"/><circle class="gt-dot gt-active" cx="226" cy="187.8" r="5"><title>in progress</title></circle><text class="gt-name" x="242" y="193.9" font-size="16">Talk to the team</text><text class="gt-name" x="242" y="213.4" font-size="16">by voice</text><text class="gt-sub" x="242" y="235.9" font-size="13">2 goals below, 35 steps</text></g><g class="gt-box gt-l1"><rect x="408" y="168" width="184" height="80" rx="2"/><circle class="gt-dot gt-active" cx="426" cy="187.8" r="5"><title>in progress</title></circle><text class="gt-name" x="442" y="193.9" font-size="16">Finished work</text><text class="gt-name" x="442" y="213.4" font-size="16">waits for review</text><text class="gt-sub" x="442" y="235.9" font-size="13">2 goals below, 35 steps</text></g><g class="gt-box gt-l1"><rect x="608" y="168" width="184" height="80" rx="2"/><circle class="gt-dot gt-active" cx="626" cy="187.8" r="5"><title>in progress</title></circle><text class="gt-name" x="642" y="193.9" font-size="16">The team as a</text><text class="gt-name" x="642" y="213.4" font-size="16">product</text><text class="gt-sub" x="642" y="235.9" font-size="13">33 goals below, 202 steps</text></g><g class="gt-box gt-l1"><rect x="808" y="168" width="184" height="80" rx="2"/><circle class="gt-dot gt-review" cx="826" cy="187.8" r="5"><title>waiting for review</title></circle><text class="gt-name" x="842" y="193.9" font-size="16">The repo is the</text><text class="gt-name" x="842" y="213.4" font-size="16">only source</text><text class="gt-sub" x="842" y="235.9" font-size="13">12 steps</text></g><g class="gt-box gt-l1 gt-more"><rect x="1008" y="168" width="184" height="80" rx="2"/><text class="gt-name" x="1024" y="193.9" font-size="16">+31 more goals</text></g></svg>
+<svg class="gt gt--phone" viewBox="0 0 360 841" width="360" height="841" style="--ar:0.428" role="img" aria-labelledby="gt-team-all-phone-title gt-team-all-phone-desc"><title id="gt-team-all-phone-title">Our AI team&#x27;s goals as one tree</title><desc id="gt-team-all-phone-desc">Our AI team: everything it works on, 76 goals and 595 steps in its repo. Under it: Our public sites (in progress), with its steps: epicspine.dev goes live; Lead with the benefits; Show the real tool; Draw the tree of goals; One voice note, one inbox. Talk to the team by voice (in progress). Finished work waits for review (in progress). The team as a product (in progress). The repo is the only source (waiting for review).</desc><path class="gt-line" d="M15 91V807 M15 131H26 M15 541H26 M15 612H26 M15 682H26 M15 752H26 M15 807Q15 815 23 815H26"/><path class="gt-line" d="M37 162V471 M37 194H48 M37 248H48 M37 302H48 M37 363H48 M37 425H48 M37 471Q37 479 45 479H48"/><g class="gt-box gt-l0"><rect x="4" y="4" width="352" height="87" rx="2"/><text class="gt-name" x="20" y="33.0" font-size="19">Our AI team: everything it</text><text class="gt-name" x="20" y="56.2" font-size="19">works on</text><text class="gt-sub" x="20" y="82.4" font-size="13">76 goals and 595 steps in its repo</text></g><g class="gt-box gt-l1"><rect x="26" y="101" width="330" height="60" rx="2"/><circle class="gt-dot gt-active" cx="44" cy="121.2" r="5"><title>in progress</title></circle><text class="gt-name" x="60" y="127.3" font-size="16">Our public sites</text><text class="gt-sub" x="60" y="149.8" font-size="13">1 goal below, 9 steps</text></g><g class="gt-box gt-l2"><rect x="48" y="172" width="308" height="44" rx="2"/><circle class="gt-dot gt-done" cx="66" cy="191.0" r="5"><title>done</title></circle><text class="gt-name" x="82" y="196.7" font-size="15">epicspine.dev goes live</text></g><g class="gt-box gt-l2"><rect x="48" y="226" width="308" height="44" rx="2"/><circle class="gt-dot gt-review" cx="66" cy="245.0" r="5"><title>waiting for review</title></circle><text class="gt-name" x="82" y="250.7" font-size="15">Lead with the benefits</text></g><g class="gt-box gt-l2"><rect x="48" y="280" width="308" height="44" rx="2"/><circle class="gt-dot gt-review" cx="66" cy="299.0" r="5"><title>waiting for review</title></circle><text class="gt-name" x="82" y="304.7" font-size="15">Show the real tool</text></g><g class="gt-box gt-l2 gt-focus"><rect x="48" y="334" width="308" height="59" rx="2"/><circle class="gt-dot gt-active" cx="66" cy="353.0" r="5"><title>in progress</title></circle><text class="gt-name" x="82" y="358.7" font-size="15">Draw the tree of goals</text><text class="gt-sub gt-note" x="82" y="380.0" font-size="13">this picture</text></g><g class="gt-box gt-l2"><rect x="48" y="403" width="308" height="44" rx="2"/><circle class="gt-dot gt-active" cx="66" cy="422.2" r="5"><title>in progress</title></circle><text class="gt-name" x="82" y="427.9" font-size="15">One voice note, one inbox</text></g><g class="gt-box gt-l2 gt-more"><rect x="48" y="457" width="308" height="44" rx="2"/><text class="gt-name" x="64" y="481.9" font-size="15">+3 more steps</text></g><g class="gt-box gt-l1"><rect x="26" y="511" width="330" height="60" rx="2"/><circle class="gt-dot gt-active" cx="44" cy="530.8" r="5"><title>in progress</title></circle><text class="gt-name" x="60" y="536.9" font-size="16">Talk to the team by voice</text><text class="gt-sub" x="60" y="559.4" font-size="13">2 goals below, 35 steps</text></g><g class="gt-box gt-l1"><rect x="26" y="581" width="330" height="60" rx="2"/><circle class="gt-dot gt-active" cx="44" cy="601.2" r="5"><title>in progress</title></circle><text class="gt-name" x="60" y="607.3" font-size="16">Finished work waits for review</text><text class="gt-sub" x="60" y="629.8" font-size="13">2 goals below, 35 steps</text></g><g class="gt-box gt-l1"><rect x="26" y="652" width="330" height="60" rx="2"/><circle class="gt-dot gt-active" cx="44" cy="671.6" r="5"><title>in progress</title></circle><text class="gt-name" x="60" y="677.7" font-size="16">The team as a product</text><text class="gt-sub" x="60" y="700.2" font-size="13">33 goals below, 202 steps</text></g><g class="gt-box gt-l1"><rect x="26" y="722" width="330" height="60" rx="2"/><circle class="gt-dot gt-review" cx="44" cy="742.1" r="5"><title>waiting for review</title></circle><text class="gt-name" x="60" y="748.1" font-size="16">The repo is the only source</text><text class="gt-sub" x="60" y="770.7" font-size="13">12 steps</text></g><g class="gt-box gt-l1 gt-more"><rect x="26" y="793" width="330" height="44" rx="2"/><text class="gt-name" x="42" y="818.6" font-size="16">+31 more goals</text></g></svg>
+</details>
+<!-- goal-tree:team end -->
+        </div>
+        <ul class="gt-key" aria-label="What the dots mean"><li><i class="gt-done"></i>Done</li><li><i class="gt-review"></i>Waiting for review</li><li><i class="gt-active"></i>In progress</li><li><i class="gt-planned"></i>Planned</li></ul>
+        <figcaption>Our team’s real tree of goals, drawn from its repo on 8 November 2026.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="band alt" id="review" aria-labelledby="h-review">
+    <div class="container proof">
+      <div class="say">
+        <h2 id="h-review">Every finished task shows how to check it.</h2>
+        <p class="was">Before: you dig through chats to see what got done.</p>
+      </div>
+      <figure class="pic">
+        <div class="win"><picture><source media="(max-width: 560px)" srcset="shots/review-card-phone.webp" width="390" height="1116"><img style="--w:934px" src="shots/review-card.webp" width="934" height="920" loading="lazy" alt="A finished task in EpicTeam's feed: what you are marking as complete, the goal of the task, what was delivered with one gap marked, a picture of the result, where it sits among the goal's tasks, and three buttons: mark this task complete, new iteration with feedback, deny."></picture></div>
+        <figcaption>A finished task in our own feed, 6 November 2026.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- features:team begin (tools/feature_list.py writes this) -->
+  <section class="band" id="inbox-focus" aria-labelledby="h-inbox-focus">
+    <div class="container nice">
+      <div class="say">
+        <h2 id="h-inbox-focus">Keeps your inbox focused, no context overload.</h2>
+        <p class="was">Small things the team does so your list holds only what needs you, once, in words you can judge.</p>
+      </div>
+      <ul class="nice-list">
+        <li><h3>One page, one card</h3><p>When several tasks change the same page, you get one card for it, never one per task.</p></li>
+        <li><h3>Folded tasks close themselves</h3><p>A task folded into another task's card closes on its own, so it never asks you twice.</p></li>
+        <li><h3>Answered questions leave your list</h3><p>Answer a question once, in the inbox or in the repo, and it drops off for good.</p></li>
+        <li><h3>Snooze what can wait</h3><p>Hide anything for three days, a week or a month. It comes back by itself, and a count shows what is snoozed.</p></li>
+        <li><h3>Vague work never reaches you</h3><p>Finished work reaches you only as a clear card with a live link to check. Anything vaguer goes back to the agent first.</p></li>
+        <li><h3>The Gap finder skips what already shipped</h3><p>Each day it lists what you asked for more than once and still lack, after checking what was delivered since its last run.</p></li>
+        <li><h3>Proposals never repeat</h3><p>The two personas that suggest new goals check what exists and each other first, and never suggest a turned-down idea again.</p></li>
+        <li><h3>Every button answers at once</h3><p>A press is saved within a second and the slow repo write runs after, so you never wait or press twice.</p></li>
+      </ul>
+    </div>
+  </section>
+<!-- features:team end -->
+
+  <section class="band alt" id="signins" aria-labelledby="h-signins">
+    <div class="container proof">
+      <div class="say">
+        <h2 id="h-signins">Sign in once. Every agent can use it.</h2>
+        <p class="was">Before: every agent needs its own logins.</p>
+      </div>
+      <figure class="pic">
+        <div class="win"><img style="--w:561px" src="shots/signins.webp" width="561" height="412" loading="lazy" alt="Browser sign-ins shared with every agent: Airbnb, Reddit, Twitter and X, each synced from Chrome on the owner's laptop."></div>
+        <figcaption>Sign-ins synced from one laptop. The values stay encrypted and are never shown.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="band" id="seats" aria-labelledby="h-seats">
+    <div class="container proof">
+      <div class="say">
+        <h2 id="h-seats">One usage limit never stops the work.</h2>
+        <p class="was">Before: one subscription hits its limit and everything waits.</p>
+      </div>
+      <figure class="pic">
+        <div class="win"><img style="--w:496px" src="shots/hosts.webp" width="496" height="224" loading="lazy" alt="The console's machine: up, and 4 of the 5 seats in the pool in use."></div>
+        <figcaption>Five AI subscriptions in one pool, four at work, 4 November 2026.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="band alt" id="spine" aria-labelledby="h-spine">
+    <div class="container proof">
+      <div class="say">
+        <h2 id="h-spine">Its memory is your repo.</h2>
+        <p class="was">EpicTeam runs on EpicSpine, so nothing is locked inside the app. <a href="../">What EpicSpine does</a></p>
+      </div>
+      <figure class="pic pic--term">
+        <div class="win"><picture><source media="(max-width: 40rem)" srcset="../shots/repo-phone.webp" width="412" height="333"><img style="--w:691px" src="../shots/repo.webp" width="691" height="245" loading="lazy" alt="A repo in a terminal: the plan is one file next to the code, and git log shows its history."></picture></div>
+        <figcaption>Every goal, decision and lesson is a file in git.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="band" id="price" aria-labelledby="h-price">
+    <div class="container plan">
+      <div class="say">
+        <h2 id="h-price">One plan. €49 a month.</h2>
+        <p class="was">You bring your own AI and your own server. We run the console that runs your team on them.</p>
+        <p class="was">Your agents use your own AI key by default, billed to you by Anthropic or OpenAI. The server is yours too, in your own Hetzner account, about €6 to €11 a month for most teams. If you leave, it stays with you.</p>
+      </div>
+      <div class="plan-card">
+        <div class="amt">€49 <small>a month, one plan</small></div>
+        <h3>What the €49 covers</h3>
+        <ul>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Your own team page, inbox, goals and review cards, on phone and laptop</li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Every persona, on its own schedule</li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>We set up your server and keep it running</li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>As many AI seats as your server holds, in one pool</li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Your keys and sign-ins kept for your team only</li>
+        </ul>
+        <p class="fine-print">You pay your AI and your server yourself, so a busy month never costs you more here. You may sign in with your own Claude subscription on your server, but that sign-in is yours: we never see it or store it. Prices before VAT.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="band alt" id="try" aria-labelledby="h-try">
+    <div class="container split">
+      <div class="say">
+        <h2 id="h-try">Want it for your team?</h2>
+        <p class="lead">EpicTeam runs our own work every day. Until it opens at €49 a month, the way in is the EpicSocial alpha, built on it.</p>
+        <div class="actions">
+          <a class="btn btn--primary" href="../testers/">Apply to test</a>
+          <a class="btn" href="../social/">See EpicSocial</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="container">
+    <div class="cols">
+      <div><h2>EpicTeam</h2><ul>
+        <li><a href="#top">One feed</a></li>
+        <li><a href="#voice">Voice note to inbox</a></li>
+        <li><a href="#tree">One tree of goals</a></li>
+        <li><a href="#review">Finished work</a></li>
+        <li><a href="#signins">Shared sign-ins</a></li>
+        <li><a href="#seats">One pool of seats</a></li>
+        <li><a href="#price">One plan, €49 a month</a></li>
+      </ul></div>
+      <div><h2>The family</h2><ul>
+        <li><a href="../">EpicSpine</a></li>
+        <li><a href="../social/">EpicSocial</a></li>
+        <li><a href="../book/">The Book</a></li>
+      </ul></div>
+      <div><h2>Source</h2><ul>
+        <li><a href="https://github.com/AlfaBlok/epicspine-skill">github.com/AlfaBlok/epicspine-skill</a></li>
+        <li>AGPL-3.0</li>
+      </ul></div>
+    </div>
+    <p class="fine">Screens taken on team.alpha9.io, 4 November 2026. Set in Funnel Display, Funnel Sans and Martian Mono (SIL OFL 1.1).</p> <!-- taste-skill-ignore: the font credit names the code face -->
+  </div>
+</footer>
+<script>
+// The entrance (E43-S6): the parts of each section rise once as it enters, as on the EpicSpine page.
+// Without script, or without IntersectionObserver, everything simply shows.
+(function () {
+  if (!("IntersectionObserver" in window)) { return; }
+  var els = document.querySelectorAll(".band .say > *, .band .show, .band .pic, .ba-side");
+  var io = new IntersectionObserver(function (es) {
+    es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+  }, { rootMargin: "0px 0px -8% 0px" });
+  els.forEach(function (el) { el.classList.add("rise"); io.observe(el); });
+  document.documentElement.classList.add("js");
+})();
+// The voice note slide (E43-S9 round 2) plays once as it comes into view: the note, the tree, the five groups, the
+// inbox, the two cards. "Play it again" replays it. Under reduced motion or without script it is simply all there.
+(function () {
+  var wrap = document.querySelector(".fan-wrap");
+  if (!wrap || !("IntersectionObserver" in window) || matchMedia("(prefers-reduced-motion: reduce)").matches) { return; }
+  var svgs = wrap.querySelectorAll(".fan"), again = document.querySelector(".fan-replay");
+  function play() {
+    svgs.forEach(function (s) { s.classList.remove("play"); s.getBoundingClientRect(); s.classList.add("play"); });
+  }
+  var io = new IntersectionObserver(function (es) {
+    if (es[0].isIntersecting) { play(); io.disconnect(); }
+  }, { threshold: 0.4 });
+  io.observe(wrap);
+  again.hidden = false;
+  again.addEventListener("click", play);
+})();
+</script>
+</body>
+</html>

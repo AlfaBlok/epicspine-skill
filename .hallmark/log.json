@@ -2,6 +2,72 @@
  {
   "mode": "redesign",
   "depth": "full",
+  "scope": "site",
+  "shape": "Feature Stack",
+  "theme": "rim",
+  "hero": "Banner (/), Stage (/team/)",
+  "imagery": "product",
+  "photos": [
+   "volumes"
+  ],
+  "signature": "each benefit is its real screen first, named after; /team/ three projects then one feed",
+  "sections": [
+   "hero",
+   "again",
+   "sticks",
+   "together",
+   "repo",
+   "family",
+   "install"
+  ],
+  "waived": [
+   "83",
+   "79",
+   "44c",
+   "47c"
+  ],
+  "prompt": "E43-S6/S7 round 3: every benefit shown by a real screen (EPIC-43 L-1)",
+  "date": "2026-11-06"
+ },
+ {
+  "mode": "redesign",
+  "depth": "full",
+  "scope": "site",
+  "shape": "Feature Stack",
+  "theme": "rim",
+  "axes": "dark/grotesk-sans/cool",
+  "hero": "Banner",
+  "nav": "banner over a bar",
+  "footer": "mast",
+  "imagery": "product fragments, one archival photograph, real EpicTeam and EpicSocial screens",
+  "photos": [
+   "commons:121825019"
+  ],
+  "entry": "index.html",
+  "fingerprint": "navy-gold-funnel",
+  "sections": [
+   "hero",
+   "switcher",
+   "call-and-response",
+   "giant-list",
+   "timeline",
+   "band",
+   "photograph",
+   "two-products",
+   "band"
+  ],
+  "signature": "the new chat, without EpicSpine and with it, one switch apart",
+  "waived": [
+   "64",
+   "39b",
+   "79"
+  ],
+  "prompt": "E43-S6 iteration 2: epicspine.dev benefits first, redesigned with hallmark and the taste skill",
+  "date": "2026-11-04"
+ },
+ {
+  "mode": "redesign",
+  "depth": "full",
   "scope": "page",
   "shape": "Slides",
   "theme": "terminal",
