@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.11.09.2 — Steps a person does by hand go out as a steps page
+
+- **Changed:** the spine model and the human-asks doctrine say steps a human does by hand go out as a steps page on the agent_team step kit (a Done switch, Stuck and a note per step), never a block of text (agent_team E87-S3, root L-52, Jordi's E83-A6 "proper url with all steps not this text blob").
+
 ## 2026.11.09.1 — Social pack: a post goes out only from its project's own account
 
 - **Added:** rule `own_account` in the social pack: a project's brief names its accounts on an `Accounts:` line (X, Reddit), and the Publisher refuses a post from an account the project does not list; the pack README says so (agent_team E69-S3, Jordi's E46-A25 "Epic social should be posting" and his E69-A1 option A).

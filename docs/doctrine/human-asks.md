@@ -42,7 +42,7 @@ Write one line per ask under `## Waiting on`, right after Current State.
 
 | Field | Required for | What it holds |
 |---|---|---|
-| `steps:` | `do` | the exact commands, or a link to a runbook that has them, plus the host and user |
+| `steps:` | `do` | the exact commands, or a link to a runbook that has them, plus the host and user; steps for the human to do by hand (accounts, settings, sign-ins) go out as a steps page with a Done / Stuck / note control per step (agent_team EPIC-87 kit, how-to `docs/steps-kit.md` there), never a text blob |
 | `options: A \| B` | `decide` | the choices |
 | `recommend:` | `decide`, `approve`, `do` (v6: all) | a concrete choice or action and why, never "your call" |
 | `unblocks:` | all | which rows proceed once answered (before v6 also the cost of waiting, now in `impact:`) |
