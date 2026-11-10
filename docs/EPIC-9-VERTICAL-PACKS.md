@@ -75,6 +75,7 @@ One line per decision; detail goes to a linked page.
 |---|---|---|---|---|---|
 | 2026-10-27 | accepted | Jordi (C4): a small vertical add-on to epic-spine for the social repo's typed sections; 'let's build it' = ready | packs, not a social-epic-spine | [agent_team EPIC-34](https://github.com/AlfaBlok/agent_team/blob/main/docs/spines/epic-34-social-team-mvp.md) Decisions | never |
 | 2026-10-27 | accepted | Created as a goal under epicspine-operating-system | one node in the epic log | EPIC-0-OPERATING-SYSTEM.md | never |
+| 2026-11-07 | accepted | Social pack release 2026.11.07.2 (fee7d83): the posts ledger's optional Benefit column moved last, after Status, so ledgers and fixtures read by position keep their Status; made by agent_team E71-S2's worker (run_5adf6738) when the console tests refused feedback writes on 2026.11.07.1. The commit named no row; attributed here by agent_team E63-S16 | an optional pack column goes after Status | fee7d83, CHANGELOG 2026.11.07.2, agent_team docs/spines/benefits-as-the-totem-of-the-social-oper.md E71-S2 | never |
 
 ## Operating Learnings
 
