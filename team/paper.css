@@ -1,0 +1,179 @@
+/* EpicTeam page on paper, agent_team E43-S13. Jordi on the old navy look (2026-11-10): "I dislike this design very much,
+   I thought we had moved on from it". The whole page now wears the paper style the home page and #flow already wear
+   (paper-deck, the shared `paper` brand: video/library/brands/paper.json deck.tokens).
+   How: ../epic.css stays as the layout underneath (its grids, the tree and the voice note drawings, the entrances), and
+   this file, loaded after it, maps its colour and type tokens onto the paper tokens and restyles the chrome. Every
+   section keeps its markup and its ids, so parts added beside it (team/phone.css, E43-S12) pick up the paper look
+   through the same tokens. No new colour, no shadow, no gradient. */
+@font-face { font-family: "Newsreader"; font-weight: 400; font-display: swap; src: url("../paper/fonts/newsreader-400.ttf") format("truetype"); }
+@font-face { font-family: "Newsreader"; font-weight: 500; font-display: swap; src: url("../paper/fonts/newsreader-500.ttf") format("truetype"); }
+@font-face { font-family: "Instrument Sans"; font-weight: 400; font-display: swap; src: url("../paper/fonts/instrument-sans-400.ttf") format("truetype"); }
+@font-face { font-family: "Instrument Sans"; font-weight: 500; font-display: swap; src: url("../paper/fonts/instrument-sans-500.ttf") format("truetype"); }
+@font-face { font-family: "Instrument Sans"; font-weight: 600; font-display: swap; src: url("../paper/fonts/instrument-sans-600.ttf") format("truetype"); }
+
+:root {
+  color-scheme: light;
+  /* tokens:begin paper (video/library/brands/paper.json deck.tokens) */
+  --bg: #f6f2e9; --stage: #e9e3d5; --stage-2: #ded6c4; --ink: #18211c; --muted: #4a554e; --faint: #8d948c;
+  --line: #c9c1ae; --accent: #1f4d3a; --accent-soft: #cfe0d4; --accent-ink: #f6f2e9; --warn: #8a4b1c;
+  --serif: "Newsreader", Georgia, "Times New Roman", serif; --sans: "Instrument Sans", system-ui, sans-serif;
+  /* tokens:end */
+  --edge: clamp(1.25rem, 4vw, 3rem);
+  /* epic.css's names, pointed at the paper tokens */
+  --color-paper: var(--bg); --color-paper-2: var(--stage); --color-paper-3: var(--stage);
+  --color-ink: var(--ink); --color-ink-2: var(--muted); --color-muted: var(--muted); --color-muted-2: var(--faint);
+  --color-rule: var(--line); --color-rule-2: var(--stage-2);
+  --color-accent: var(--accent); --color-accent-hi: var(--ink); --color-accent-ink: var(--accent-ink);
+  --color-accent-2: var(--accent); --color-accent-2-ink: var(--ink);
+  --color-focus-on-dark: var(--accent); --color-focus: var(--accent);
+  --color-field-gold: var(--accent); --color-field-ice: var(--stage); --color-field-ice-2: var(--stage-2);
+  --color-tile: var(--bg); --color-tile-ink: var(--ink);
+  --font-display: var(--serif); --font-body: var(--sans);
+  --text-md: 1rem; --text-sm: 0.9rem; --text-lead: clamp(1.2rem, 1.8vw, 1.45rem);
+  --radius-card: 6px; --tracking-display: -0.015em; --display-weight: 400;
+  --container: 76rem; --gutter: var(--edge);
+  --nav-h: 68px;
+}
+
+/* base: a book serif for what we claim, a plain sans for what proves it */
+body { background: var(--bg); color: var(--ink); font: 400 1rem/1.55 var(--sans); }
+a { text-underline-offset: 3px; text-decoration-thickness: 1px; text-decoration-color: currentColor; }
+a:hover { color: var(--ink); text-decoration-color: var(--accent); }
+h1, h2 { font-weight: 400; letter-spacing: -0.015em; line-height: 1.08; }
+h3 { font: 500 1.3rem/1.25 var(--serif); letter-spacing: 0; }
+.lead, .was { font-family: var(--serif); color: var(--muted); line-height: 1.5; }
+.was { font-size: clamp(1.15rem, 1.5vw, 1.35rem); }
+.was a { color: var(--ink); }
+:focus-visible { outline-color: var(--accent); }
+
+/* buttons: the deep green for the action, an ink outline for the second */
+.btn { border-radius: 6px; min-height: 3rem; background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); font: 500 1.02rem/1 var(--sans); }
+.btn:hover { background: var(--ink); color: var(--bg); }
+.btn--primary { background: var(--accent); color: var(--accent-ink); box-shadow: none; }
+.btn--primary:hover { background: var(--ink); color: var(--bg); }
+.btn--sm { min-height: 2.5rem; border-radius: 999px; padding: 0 1rem; font-size: 0.95rem; }
+
+/* chrome: the family line, then the bar, both on paper with one hairline */
+.family { background: var(--bg); border-bottom: 1px solid var(--line); font: 400 0.88rem var(--sans); }
+.family .container { min-height: 34px; }
+.family a { color: var(--faint); }
+.family a[aria-current] { color: var(--ink); }
+.nav { background: color-mix(in srgb, var(--bg) 94%, transparent); backdrop-filter: blur(6px); border-bottom: 1px solid var(--line); }
+.wordmark { font: 500 1.35rem var(--serif); letter-spacing: 0; gap: 0.55rem; }
+.mark { width: 26px; height: 26px; }
+.mark .tile { fill: var(--ink); }
+.mark .g { fill: var(--bg); }
+.links { gap: 1.4rem; font: 400 0.95rem var(--sans); }
+.links a { color: var(--muted); }
+.links a:hover { color: var(--ink); text-decoration: underline; }
+.nav .btn--sm { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+.nav .btn--sm:hover { background: var(--ink); color: var(--bg); }
+
+/* sections: one ground, a hairline between them, the deck's measure */
+.band, .band.alt { background: var(--bg); color: var(--ink); padding-block: clamp(4rem, 8vw, 7rem); }
+main > :is(.band, .loopp):not(.hero) { border-top: 1px solid var(--line); }
+.sec:has(> .proof), .band:has(> .proof) { padding-block: clamp(4rem, 8vw, 7rem); }
+.band:has(> .proof--wide) { padding-block: clamp(3.5rem, 7vw, 6rem); }
+
+/* hero: the claim at deck size, the before and after on flat stages */
+.band.hero { padding-block: clamp(3rem, 6vw, 5rem) clamp(3.5rem, 7vw, 6rem); }
+.band.hero h1 { font-size: clamp(2.8rem, 6vw, 5.4rem); line-height: 1.02; letter-spacing: -0.015em; }
+.band.hero .say .lead { font-size: clamp(1.25rem, 2vw, 1.6rem); color: var(--muted); }
+.ba-label { font: 400 0.95rem/1.4 var(--sans); color: var(--muted); }
+.ba-after .ba-label { color: var(--ink); font-weight: 500; }
+.ba-rows, .ba-after .frame { background: var(--stage); border-radius: 6px; }
+.ba-rows img, .ba-after .frame img { border-radius: 3px; }
+
+/* screens: a flat stage, the real screen inside it, a sans caption under it */
+.win { background: var(--stage); border-radius: 6px; }
+.band.alt .win, .sec.tone .win, .pic--term .win { background: var(--stage); }
+.win img { border-radius: 3px; }
+/* the repo is a real terminal capture with a clear ground: it keeps the terminal's own dark ground inside the stage */
+.pic--term .win img { box-sizing: border-box; background: var(--ink); padding: clamp(0.75rem, 2vw, 1.25rem); border-radius: 4px; }
+.pic figcaption, .shot figcaption { font: 400 0.9rem/1.45 var(--sans); color: var(--muted); }
+
+/* the voice note and the tree: the drawings on a stage, ink lines, the one green on what waits for you */
+.pic--fan, .pic--tree, .band.alt .pic--tree, .sec--tree .pic--tree { background: var(--stage); border-radius: 6px; }
+.gt, .fan { font-family: var(--sans); }
+.gt-line, .fan-line { stroke: var(--ink); stroke-width: 1.2; opacity: 0.55; }
+.gt-box rect, .fan-box rect, .fan-group rect { fill: var(--bg); stroke: none; }
+.gt-l0 rect { fill: var(--ink); }
+.gt-l0 .gt-name { fill: var(--bg); font-family: var(--serif); font-weight: 500; }
+.gt-l0 .gt-sub { fill: var(--stage-2); opacity: 1; }
+.gt-l1 .gt-name { font-family: var(--serif); font-weight: 500; }
+.gt-more rect { fill: none; stroke: var(--faint); }
+.gt-focus rect { fill: var(--accent-soft); stroke: none; }
+.gt-done, .gt-key .gt-done { fill: var(--accent); stroke: var(--accent); background: var(--accent); }
+.gt-review, .gt-key .gt-review { fill: var(--warn); stroke: var(--warn); background: var(--warn); }
+.gt-planned, .gt-key .gt-planned { stroke: var(--faint); border-color: var(--faint); }
+.gt-key { font: 400 0.88rem var(--sans); color: var(--muted); }
+.gt-all summary { background: transparent; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--line); font: 500 0.95rem var(--sans); }
+.gt-all summary:hover { background: transparent; box-shadow: inset 0 0 0 1px var(--ink); }
+.fan-name, .fan-count { font-family: var(--serif); font-weight: 500; }
+.fan-wave, .fan-dot { fill: var(--ink); opacity: 0.7; }
+.fan-dot.fan-ask { fill: var(--accent); opacity: 1; }
+.fan-ask rect { fill: var(--accent-soft); }
+.fan-group.fan-ask .fan-count { fill: var(--accent); }
+.fan-inbox rect { fill: var(--ink); }
+.fan-inbox .fan-name, .fan-inbox .fan-sub { fill: var(--bg); }
+.fan-kind > rect:first-child { stroke: var(--line); }
+.fan-kind.fan-ask > rect:first-child { stroke: var(--accent); }
+.fan-card-link:hover .fan-kind > rect:first-child { stroke: var(--ink); }
+.fan-foot { font: 400 0.9rem/1.45 var(--sans); color: var(--muted); }
+.fan-replay { min-height: 2.5rem; }
+
+/* the personas: a ruled list, the name in serif, when it wakes in sans */
+.roster-win { background: transparent; padding: 0; }
+.roster b { font: 500 1.1rem/1.3 var(--serif); }
+.roster span { color: var(--muted); }
+.roster em { color: var(--muted); font: 500 0.88rem var(--sans); }
+.roster li { border-top-color: var(--line); }
+.roster li:first-child { border-top-color: var(--ink); }
+.roster li:last-child { border-bottom-color: var(--line); }
+
+/* the feature lists: rules, not boxes; columns under one ink rule */
+.nice-list { gap: 0 2rem; border-top: 1px solid var(--ink); grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); }
+.nice-list li { padding: 1.2rem 0 1.4rem; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: transparent; }
+.nice-list h3 { font: 500 1.15rem/1.3 var(--serif); }
+.nice-list p { color: var(--muted); font-size: 0.95rem; line-height: 1.5; }
+
+/* the channels table: an ink rule under the head, hairlines between rows, the channel in serif (its own <style> sits
+   later in the page, so these carry the section id) */
+#channels .caps-wrap { border: 0; border-radius: 0; background: transparent; }
+#channels .caps table { font: 400 0.95rem/1.45 var(--sans); }
+#channels .caps thead th { font: 500 0.9rem var(--sans); color: var(--muted); border-bottom: 1px solid var(--ink); padding-left: 0; }
+#channels .caps th, #channels .caps td { padding: 0.85rem 1rem 0.85rem 0; border-bottom-color: var(--line); }
+#channels .caps tr:last-child th, #channels .caps tr:last-child td { border-bottom: 1px solid var(--line); }
+#channels .caps tbody th { font: 500 1.1rem/1.3 var(--serif); }
+#channels .caps tbody th span { font: 400 0.9rem/1.45 var(--sans); color: var(--muted); }
+#channels .cap-w { font: 500 0.82rem var(--sans); padding: 0.2rem 0.6rem; background: transparent; color: var(--faint); box-shadow: inset 0 0 0 1px var(--line); }
+#channels .cap-w.works { background: var(--accent); color: var(--accent-ink); box-shadow: none; }
+#channels .cap-w.partly { border: 0; box-shadow: inset 0 0 0 1px var(--accent); color: var(--accent); }
+#channels .cap-w.na { box-shadow: none; padding-inline: 0; }
+
+/* the price: one card, the chosen one, with the accent ring */
+.plan-card { border: 0; box-shadow: inset 0 0 0 1px var(--accent); border-radius: 6px; background: var(--bg); }
+.plan-card .amt { font: 400 clamp(3rem, 4vw + 1rem, 4.5rem)/1 var(--serif); letter-spacing: -0.02em; }
+.plan-card .amt small { font: 400 1rem/1.3 var(--sans); color: var(--muted); }
+.plan-card h3 { font: 500 1.05rem var(--sans); }
+.plan-card ul { font: 400 1rem/1.5 var(--sans); color: var(--muted); }
+.plan-card .fine-print { font: 400 0.88rem/1.5 var(--sans); color: var(--muted); }
+
+/* the close: the only full green band, one action */
+.band#try { background: var(--accent); color: var(--accent-ink); border-top: 0; }
+.band#try h2 { color: var(--accent-ink); }
+.band#try .lead { color: var(--accent-soft); }
+.band#try .btn--primary { background: var(--accent-ink); color: var(--accent); }
+.band#try .btn--primary:hover { background: var(--accent-soft); color: var(--accent); }
+.band#try .btn:not(.btn--primary) { background: transparent; color: var(--accent-ink); box-shadow: inset 0 0 0 1px var(--accent-soft); }
+.band#try .btn:not(.btn--primary):hover { background: var(--accent-ink); color: var(--accent); }
+.band#try :focus-visible { outline-color: var(--accent-ink); }
+
+/* foot: one ink rule, sans columns, the sources line */
+.foot { background: var(--bg); color: var(--muted); padding-block: 3rem 2.5rem; font: 400 0.92rem/1.6 var(--sans); }
+.foot .cols { border-top: 1px solid var(--ink); padding-top: 1.5rem; }
+.foot h2 { font: 500 1.1rem var(--serif); color: var(--ink); letter-spacing: 0; }
+.foot a:hover { color: var(--ink); }
+.fine { color: var(--muted); }
+.foot .cols + .fine { margin-top: 2rem; }
+.band#try .say { align-items: center; }

@@ -12,11 +12,11 @@
 <meta name="description" content="EpicTeam is an AI team that works on your goals. Personas with one job each, shared skills and sign-ins, several AI subscriptions, and one inbox for what needs you. One plan, €49 a month, with your own AI key and server.">
 <meta property="og:title" content="EpicTeam: an AI team that works on your goals">
 <meta property="og:description" content="You only see what needs you, in one inbox. Real screens of the tool.">
-<meta name="theme-color" content="#0d1a33">
+<meta name="theme-color" content="#f6f2e9">
 <!-- EpicTeam's public page (agent_team E43-S7). Every picture is a real production screen of team.alpha9.io, taken
      read-only by agent_team console/scripts/e43s7-shots.mjs; private parts are folded or cropped out. -->
-<link rel="preload" href="../fonts/funnel-display-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="../fonts/funnel-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../paper/fonts/newsreader-400.ttf" as="font" type="font/ttf" crossorigin>
+<link rel="preload" href="../paper/fonts/instrument-sans-400.ttf" as="font" type="font/ttf" crossorigin>
 <link rel="stylesheet" href="../epic.css">
 <style>
 /* agent_team E43-S7 round 2: the inbox niceties, drawn from EpicTeam's one feature list by tools/feature_list.py */
@@ -43,6 +43,9 @@
 .plan-card .fine-print { color: var(--color-muted); font-size: var(--text-sm); }
 @media (max-width: 40rem) { .plan-card { padding: var(--space-lg) var(--space-md); } }
 </style>
+<!-- agent_team E43-S13: the whole page on paper (Jordi 2026-11-10 on the navy look: "I thought we had moved on from it");
+     ../epic.css stays the layout underneath, paper.css maps its tokens onto the shared paper brand. -->
+<link rel="stylesheet" href="paper.css">
 </head>
 <body>
 <header class="top">
@@ -138,7 +141,7 @@
        had moved on from it". So this section stands on paper (paper-deck, the shared paper brand) and plays the whole-loop
        scenes he agreed one by one on E84-A2 ("yes, I love this diagram... it's on the money"): the zoom-out view he asked for
        there, then the seven stops. loop/scenes.js is a copy of agent_team docs/proposals/e84-s12-whole-loop-video; the two
-       phone screens in it are real, taken read-only by E84-S12. The rest of the page keeps its old look for now. -->
+       phone screens in it are real, taken read-only by E84-S12. Since E43-S13 the rest of the page is on paper too. -->
   <section class="loopp" id="flow" aria-labelledby="h-flow">
     <link rel="stylesheet" href="loop/loop.css">
     <div class="loopp-in">
@@ -380,7 +383,7 @@
         <li>AGPL-3.0</li>
       </ul></div>
     </div>
-    <p class="fine">Screens taken on team.alpha9.io, 4 November 2026. Set in Funnel Display, Funnel Sans and Martian Mono (SIL OFL 1.1).</p> <!-- taste-skill-ignore: the font credit names the code face -->
+    <p class="fine">Screens taken on team.alpha9.io, 4 November 2026. Set in Newsreader and Instrument Sans (SIL OFL 1.1).</p>
   </div>
 </footer>
 <script>
