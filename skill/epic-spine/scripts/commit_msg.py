@@ -13,8 +13,8 @@ import subprocess
 import sys
 from pathlib import Path
 
-TICKET_CODE = re.compile(r"(?<![A-Za-z0-9-])(?:EPIC-\d+(?:-[A-Z]{0,3}\d+[a-z]?)*|[A-Z]{1,4}-\d+|[A-Z]{1,4}\d+[a-z]?(?:-[A-Z]{0,3}\d+[a-z]?)*)(?![A-Za-z0-9])")
-SPINE_PATH = re.compile(r"\bdocs/(?:spines/[\w./-]+|EPIC-[\w./-]+|tickets/[\w./-]+)\.md\b")
+TICKET_CODE = re.compile(r"(?<![A-Za-z0-9-])(?:EPIC-\d+(?:-[A-Z]{0,3}\d+[a-z]?)*|[A-Z]{1,4}-(?:\d+|[A-Z]{1,3}\d+[a-z]?)|[A-Z]{1,4}\d+[a-z]?(?:-[A-Z]{0,3}\d+[a-z]?)*)(?![A-Za-z0-9])")
+SPINE_PATH = re.compile(r"\bdocs/(?:spines|tickets)/[\w./-]+\.md\b|(?<![\w./-])(?:[\w.-]+/)*[\w.-]*(?:EPIC|Epic|epic|SPINE|Spine|spine)[\w.-]*\.md\b")
 EXEMPT_SUBJECT = re.compile(r"^(?:Merge\b|Revert\b|fixup! |squash! |amend! |epicspine[: ])", re.I)
 EXEMPT_MESSAGE = re.compile(r"\bvia console\b|\((?:console|desk chat)\)|\(Jordi, (?:asking the Team desk|his voice note|desk chat)\)", re.I)
 TRAILER = re.compile(r"^(?:Run|Ready|Co-Authored-By|Signed-off-by|Reviewed-by|Change-Id):\s", re.I)

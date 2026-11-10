@@ -24,13 +24,18 @@ class NamesTicketTest(unittest.TestCase):
     def test_codes_and_paths_name_a_ticket(self) -> None:
         for m in ("E62-S2: review from spine", "M2-41 fix", "EPIC-63 plan", "Answer EPIC-29-A2", "E34: Waiting on nobody",
                   "E50/E45: seats", "Root L-48: plain words", "Secrets: SK-1 add", "E13-S17c: judge",
-                  "rows in docs/spines/epic-62-repo-is-the-source.md", "tidy\n\nPart of E63-S7."):
+                  "rows in docs/spines/epic-62-repo-is-the-source.md", "tidy\n\nPart of E63-S7.",
+                  # agent_team E63-S16: prefix-letter codes and root spine files with other names
+                  "docs/EPIC_SPINE.md: TAX-A8 feedback done round 2 TAX-A13 (af14531)", "TAX-A9 answered", "ABC-S12 fix",
+                  "EPIC.md: tidy", "rows in docs/travel/TRAVEL_SPINE.md", "docs/EPIC-0-ROOT.md: state", "see epic-spine.md"):
             self.assertTrue(commit_msg.names_ticket(m), m)
 
     def test_orphans(self) -> None:
         for m in ("Setup counts the sign-ins", "Document Zenod seat setup outcome", "see https://x.test/E62-S2",
                   "Fix it\n\nRun: run_5c3f5010-56cb\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
-                  "tweak\n# E62-S2 in a comment line does not count"):
+                  "tweak\n# E62-S2 in a comment line does not count",
+                  "Use GPT-4o for summaries", "Update README.md and notes.md", "Bump UTF-8x handling", "docs/EPIC_SPINE.mdx draft",
+                  "Social pack: Benefit column last on posts so positional ledgers keep their Status (2026.11.07.2)"):
             self.assertFalse(commit_msg.names_ticket(m), m)
 
     def test_exempt(self) -> None:
