@@ -40,7 +40,8 @@ class NamesTicketTest(unittest.TestCase):
 
     def test_exempt(self) -> None:
         for m in ("Merge branch 'wt/x'", 'Revert "thing"', "fixup! thing", "Team skills: remove diagram (Jordi, via console)",
-                  "Stamped ready for delivery (Jordi, asking the Team desk)", "Ask moot: credits are back (console)", ""):
+                  "Stamped ready for delivery (Jordi, asking the Team desk)", "Ask moot: credits are back (console)", "",
+                  "Desk inbox: desk/inbox/2026-11-10-alpha9-e45-s5-ask-seam-live.md answered", "Desk note from infra-vps: VPS1 load"):
             self.assertTrue(commit_msg.names_ticket(m), m)
 
 
