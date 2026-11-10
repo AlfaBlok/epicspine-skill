@@ -1,4 +1,4 @@
-# Human asks: contract (v7)
+# Human asks: contract (v8)
 
 Page of [EPIC-4](../EPIC-4-DOCTRINE-2.md). v1 was step 12 (agent_team M2-SKILL). v2 is step 17 (M2-SKILL2, Jordi, 2026-10-21). v3 is step 20 ([D19](decisions.md#d19), agent_team M2-35, 2026-10-22): reference lines, search before asking, consumed answers. v4 is D19's amendment (EPIC-0 ticket-34, 2026-10-23): `superseded` asks, done notes, `Waiting on:` code references, advisories on unreadable lines. v5 (EPIC-0 ticket-36, agent_team EPIC-8 E8-S4, 2026-10-24): ask-writing rules and their advisories. v6 (EPIC-0 ticket-38, agent_team EPIC-8 E8-S8, root L-14 amended, 2026-10-24): asks in human format, `impact:`, `risk:`, `why <who>:`. v7 (EPIC-0 ticket-39, agent_team EPIC-8 E8-S10, root L-16, 2026-10-24): end-of-turn offers. Earlier shapes are unchanged.
 
@@ -53,6 +53,14 @@ Write one line per ask under `## Waiting on`, right after Current State.
 | `why <who>:` | all (v6) | why only this human can do it, not an agent, e.g. `why Jordi:` |
 
 Fields may come in any order. The v6 fields are required for open asks written from 2026-10-24 on; older asks stay valid.
+
+**Many humans** (agent_team EPIC-90, E90-S3): a world may list its humans under `## People` in its root spine, one line each:
+`- @<handle> : owner|expert|analyst|made aware · area: <goals> · escalates to: @<handle> after <n> h · alerts: <how>`
+(`scripts/people.py`; no section = one human, the owner, as before). Then:
+- `@<who>` may be anyone on the list; an ask naming someone off it is reported (`people_problems`).
+- After `@<who>` the tag may add, in this order: `approve by @<who>` (a second person approves the answer: the row stays blocked until they do), `aware @<who>, @<who>` (hear the outcome, never block), `escalated by @<who>` (who passed it up, by Not sure or their time limit; the note is the ` — escalated: @<who>: …` field). E.g. `[ask E91-A2: decide @Leo approve by @Marta aware @Jordi since 2026-11-09 row E91-S4]`.
+- Answered with an approver: `[answered E91-A2 2026-11-10 @Leo · awaits @Marta · aware @Jordi]`. An answer that `awaits` is not usable yet: the asker does not act on it. On yes: `· approved @Marta 2026-11-11`. Free text from the approver is feedback: the line opens again for the one who answered, with ` — sent back: @Marta: … (was: …)`.
+- Owner rules (Jordi, E90-A1): only the owner approves money, changes a goal or Done means, or adds people; outside humans see only the goals they are named on (their area, or an ask naming them).
 
 **Row status word:** the blocked row is set to `blocked`. Current State's `Waiting on:` lists the codes, e.g. `Jordi: E4-A3, E4-A4` (any ask code it names, this epic's or another's, `<repo>/<code>` across repos, is read as a reference); `nobody` or `none` (first word) means no human blocks, whatever follows.
 
@@ -119,7 +127,7 @@ Before raising an ask, check, in this order: the open asks in this repo's tree (
   "context": "the cutover found ticks missing since Monday; ...", "impact": "the cutover (S2, S3) proceeds; ...",
   "risk": "~2 min gap in ticks while it restarts; rollback: start the old unit", "why": "only you hold root on vps1", "since": "2026-10-24", "row": "S3", "state": "open", "answer": null}]
 ```
-Unknown or missing fields are null. `context` is repo-relative when it is a local link or path, else kept as written; `why` is the `why <who>:` text. On an `answered` or `superseded` line, `code` is kept, and `ask`, `since` and `row` may be null (`who` too when superseded). `state` is `open`, `answered`, `feedback` (a `[feedback …]` line: changes wanted, work reopened; `answer` holds the words after ` — feedback:`), `done` (`· done` consumed answer or feedback; `answer` excludes the suffix) or `superseded`. `outcome` is `approved` (the answer starts `APPROVED`), `denied` (`DENIED`), `feedback` or `answered` (any other answer) on an answered, feedback or done line, else null. `superseded_by` is the code after `by` (`[superseded …]`, or `superseded by` in an answered tag), else null. An ask type outside the four is kept as written (and warned). `snoozed_until` (`YYYY-MM-DD`) is present only on a line carrying ` — snoozed until: <date>`. `waiting_on` never holds reference lines.
+Unknown or missing fields are null. `context` is repo-relative when it is a local link or path, else kept as written; `why` is the `why <who>:` text. On an `answered` or `superseded` line, `code` is kept, and `ask`, `since` and `row` may be null (`who` too when superseded). `state` is `open`, `answered`, `feedback` (a `[feedback …]` line: changes wanted, work reopened; `answer` holds the words after ` — feedback:`), `done` (`· done` consumed answer or feedback; `answer` excludes the suffix) or `superseded`. `outcome` is `approved` (the answer starts `APPROVED`), `denied` (`DENIED`), `feedback` or `answered` (any other answer) on an answered, feedback or done line, else null. `superseded_by` is the code after `by` (`[superseded …]`, or `superseded by` in an answered tag), else null. An ask type outside the four is kept as written (and warned). `snoozed_until` (`YYYY-MM-DD`) is present only on a line carrying ` — snoozed until: <date>`. Many humans (E90-S3), each present only when the line names it: `approve_by`, `aware` (a list), `escalated_by`, `awaits`, `approved_by`, `approved_at`, `escalated`, `sent_back`; the root's `people` (handle, role, area, escalates_to, escalate_after_hours, alerts) and `people_problems` are top-level keys of `--json`. `waiting_on` never holds reference lines.
 
 Reference lines are a separate per-node list, `[]` when there are none:
 ```json
@@ -145,7 +153,8 @@ The validator and the commit check warn on:
 - more than 3 open asks;
 - an ask open for more than 7 days;
 - a `waits on` or `Waiting on:` code of this repo that no ask or Decisions row cites (a cross-repo one never warns, it reports `unresolved`);
-- a `## Waiting on` bullet the tools cannot read, an unknown ask type, or extra text in an `answered` tag, naming the canonical form;
+- a `## Waiting on` bullet the tools cannot read, an unknown ask type, or extra text in an `answered` tag (`· awaits`, `· approved` and `· aware` are not extra), naming the canonical form;
+- a `## People` line the tools cannot read, an unknown role, an `escalates to` naming someone off the list, a list with no owner, or an open ask naming someone off the list (`people_problems`);
 - a Current State `Waiting on:` that names a human (`Jordi: …`, `Jordi — …`) but no ask code (write the codes, or `nobody`).
 
 A `waits on` line satisfies the first checks (a row or epic blocked on it has an ask naming it). `done` and `superseded` lines are not open asks, so the open-count, stale and missing-field checks skip them.

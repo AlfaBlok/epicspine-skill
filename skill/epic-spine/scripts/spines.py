@@ -18,7 +18,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import doctrine as D  # noqa: E402
-import personas as P  # noqa: E402
+import people as H, personas as P  # noqa: E402
 import run_state as R  # noqa: E402
 import spine_tree as T  # noqa: E402
 import standing as S  # noqa: E402
@@ -172,7 +172,7 @@ def _scan(repo: Path, refs: bool) -> dict:
     return {"root": rel(root) if root else None, "nodes": list(nodes.values()), "orphans": orphans, "mismatches": mismatches,
             "orphan_pages": orphan_pages, "looks_like_epic": like_epic, "stale": stale(repo, list(nodes.values())),
             "ranked": T.rank([p for p, n in nodes.items() if n["status"] in OPEN], {p: n["heat"] for p, n in nodes.items()}),
-            "personas": P.roster(repo, list(nodes.values()), {n["path"]: v.table_rows(meta(repo / n["path"], cache)["sections"].get("Issue Ledger", "")) for n in nodes.values()})}
+            "personas": P.roster(repo, list(nodes.values()), {n["path"]: v.table_rows(meta(repo / n["path"], cache)["sections"].get("Issue Ledger", "")) for n in nodes.values()}), **H.of_root(meta(root, cache)["text"] if root else "", list(nodes.values()))}
 
 
 def main() -> int:
