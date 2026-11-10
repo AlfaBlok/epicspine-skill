@@ -133,32 +133,39 @@
     </div>
   </section>
 
-  <!-- agent_team E43-S11, Jordi's follow-up when he closed E43-S10 (2026-11-09): "Explain the voice note to inbox flow in
-       simple words on the EpicTeam page". His words: 20:15Z "explain this flow in very simple terms", 20:39Z (^e-527d7c)
-       "it's pure voice ... turns into a ticketing system ... it gets things executed". Steps light up one after another;
-       under reduced motion they simply all show. -->
-  <section class="band" id="flow" aria-labelledby="h-flow">
-    <div class="container proof">
-      <div class="say">
-        <h2 id="h-flow">How a voice note becomes finished work.</h2>
-        <p class="was">You talk. The team turns what you said into tickets and gets them done. You only press a button at the end.</p>
-        <blockquote class="flow-quote"><p>&ldquo;It&rsquo;s pure voice. You talk your mind and it turns into a ticketing system. It gets things executed.&rdquo;</p><footer>From the voice note that asked for this page, 9 November 2026.</footer></blockquote>
+  <!-- agent_team E43-S11 round 2. Jordi on round 1's navy steps (2026-11-10): "I dislike this design very much, I thought we
+       had moved on from it". So this section stands on paper (paper-deck, the shared paper brand) and plays the whole-loop
+       scenes he agreed one by one on E84-A2 ("yes, I love this diagram... it's on the money"): the zoom-out view he asked for
+       there, then the seven stops. loop/scenes.js is a copy of agent_team docs/proposals/e84-s12-whole-loop-video; the two
+       phone screens in it are real, taken read-only by E84-S12. The rest of the page keeps its old look for now. -->
+  <section class="loopp" id="flow" aria-labelledby="h-flow">
+    <link rel="stylesheet" href="loop/loop.css">
+    <div class="loopp-in">
+      <div class="loopp-say">
+        <p class="loopp-num">How it works</p>
+        <h2 id="h-flow">An organization that turns like a wheel.</h2>
+        <p class="loopp-lede">Pure voice in. Work done, every day.</p>
+        <blockquote><p>&ldquo;It&rsquo;s pure voice. You talk your mind and it turns into a ticketing system. It gets things executed.&rdquo;</p><footer>From the voice note that asked for this section, 9 November 2026.</footer></blockquote>
       </div>
-      <figure class="pic">
-        <div class="win roster-win">
-          <ol class="flow" aria-label="From your voice note to your inbox, in seven steps">
-            <li style="--i:0"><b>You talk.</b><span>Leave a voice note on WhatsApp or press the mic in the app. Say as much as you like.</span></li>
-            <li style="--i:1"><b>It is written down.</b><span>The note becomes text, word for word, and is kept in your memory.</span></li>
-            <li style="--i:2"><b>Each ask finds its goal.</b><span>Every thing you asked for becomes a ticket under the goal it belongs to.</span></li>
-            <li style="--i:3"><b>The project manager hands it out.</b><span>On its next round it gives each ready ticket to a worker.</span></li>
-            <li style="--i:4"><b>The worker builds it and proves it.</b><span>It does the work and puts the result somewhere you can open it.</span></li>
-            <li style="--i:5"><b>It comes back to you as one card.</b><span>In your inbox, with a ping on your phone. When only you can do a step, you get one page of steps.</span></li>
-            <li style="--i:6"><b>One press closes it.</b><span>What comes next starts by itself. Or answer with a voice note and it goes round again.</span></li>
-          </ol>
-        </div>
-        <figcaption>How our own team works every day, 9 November 2026.</figcaption>
+      <ol class="loopp-steps" aria-label="The loop, step by step">
+          <li><button type="button" data-s="machine"><span class="n"></span><span>Zoom out: one machine</span></button></li>
+          <li><button type="button" data-s="say"><span class="n">1</span><span>I say it<span class=me>on my phone</span></span></button></li>
+          <li><button type="button" data-s="keep"><span class="n">2</span><span>Zenod keeps it</span></button></li>
+          <li><button type="button" data-s="hear"><span class="n">3</span><span>My team hears it</span></button></li>
+          <li><button type="button" data-s="tickets"><span class="n">4</span><span>The desk writes tickets</span></button></li>
+          <li><button type="button" data-s="work"><span class="n">5</span><span>Agents work</span></button></li>
+          <li><button type="button" data-s="ready"><span class="n">6</span><span>WhatsApp: ready<span class=me>on my phone</span></span></button></li>
+          <li><button type="button" data-s="unblock"><span class="n">7</span><span>One tap to unblock<span class=me>on my phone</span></span></button></li>
+      </ol>
+      <figure class="loopp-stage">
+        <div class="loopp-scene"></div>
+        <figcaption class="loopp-cap"><p><b>Unstructured ideas in. Delivered work out.</b><span>Zoom out from the wheel and it is one machine.</span></p><button type="button" class="loopp-play" hidden>Pause</button></figcaption>
+        <div class="loopp-bar" aria-hidden="true"><i></i></div>
       </figure>
     </div>
+    <script src="loop/paper.js" defer></script>
+    <script src="loop/scenes.js" defer></script>
+    <script src="loop/loop.js" defer></script>
   </section>
 
   <section class="band alt" id="review" aria-labelledby="h-review">
