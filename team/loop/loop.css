@@ -19,7 +19,7 @@
   font: 400 1.1875rem/1.55 var(--serif); -webkit-font-smoothing: antialiased; color-scheme: light;
 }
 .loopp-in { max-width: 76rem; margin: 0 auto; display: grid; gap: 2rem 4.5rem; align-items: start;
-  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); grid-template-areas: "say stage" "steps stage"; }
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); grid-template-areas: "say stage" "steps stage" "film film"; }
 .loopp-say { grid-area: say; }
 .loopp-num { font: 500 0.95rem/1.4 var(--sans); color: var(--faint); margin: 0 0 0.75rem; }
 .loopp h2 { font: 400 clamp(2.3rem, 4.2vw, 3.6rem)/1.05 var(--serif); letter-spacing: -0.015em; text-wrap: balance; margin: 0; max-width: 14ch; color: var(--ink); }
@@ -55,8 +55,23 @@
 .loopp-bar { height: 2px; background: var(--line); margin: 0.75rem 0.25rem 0; overflow: hidden; }
 .loopp-bar i { display: block; height: 100%; width: 0; background: var(--accent); }
 
+/* agent_team E84-S18: the approved whole-loop video, a phone-shaped player beside its words. */
+.loopp-film { grid-area: film; display: grid; grid-template-columns: minmax(0, 20rem) minmax(0, 1fr); gap: 2rem 4.5rem; align-items: center;
+  border-top: 1px solid var(--line); padding-top: clamp(2rem, 4vw, 3.5rem); margin-top: 0.5rem; }
+.loopp-video { display: block; width: 100%; height: auto; aspect-ratio: 9 / 16; background: var(--stage); border-radius: 10px; box-shadow: 0 0 0 1px var(--line); }
+.loopp-film-say h3 { font: 400 clamp(1.8rem, 3vw, 2.5rem)/1.1 var(--serif); letter-spacing: -0.01em; margin: 0; color: var(--ink); max-width: 18ch; }
+.loopp-film-say p { margin: 1rem 0 0; max-width: 34ch; color: var(--muted); }
+.loopp-film-say .loopp-small { font: 400 0.95rem/1.45 var(--sans); color: var(--faint); }
+.loopp-film-say details { margin-top: 1.25rem; font: 400 0.98rem/1.5 var(--sans); color: var(--muted); max-width: 40rem; }
+.loopp-film-say summary { cursor: pointer; color: var(--accent); font-weight: 500; }
+.loopp-film-say summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.loopp-film-say ol { margin: 0.75rem 0 0; padding-left: 1.25rem; }
+.loopp-film-say li { margin: 0.25rem 0; }
+
 @media (max-width: 900px) {
-  .loopp-in { grid-template-columns: minmax(0, 1fr); grid-template-areas: "say" "stage" "steps"; gap: 1.75rem; }
+  .loopp-in { grid-template-columns: minmax(0, 1fr); grid-template-areas: "say" "stage" "steps" "film"; gap: 1.75rem; }
+  .loopp-film { grid-template-columns: minmax(0, 1fr); gap: 1.25rem; padding-top: 1.75rem; }
+  .loopp-video { max-width: 20rem; justify-self: center; }
   .loopp-stage { padding: 0.4rem; }
   .loopp-scene { padding: 1.5%; }
   .loopp-cap { padding: 0.75rem 0.5rem 0.25rem; }
