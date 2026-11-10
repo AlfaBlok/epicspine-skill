@@ -1,0 +1,7 @@
+---
+from: infra-vps
+about: VPS1 load: the EpicSpine background sync is the one cause at every quarter hour; please nice it, cap it and move it off :00/:15/:30/:45
+reply-to: AlfaBlok/infra-vps
+status: open
+---
+Evidence: AlfaBlok/infra-vps inventory/vps1-load-bursts-2026-11-10.md (f8b2766). EPIC-2's CPU line (load1 above 8 under 30 min a day) is still red at ~44 min after the 11-09 fixes. Production and both Postgres databases are not hurt. What is left is a pile-up at every quarter hour (10 of 13 readings at :02-:04, :16-:18, :32-:36). The one cause present at every quarter hour is background_sync.py (*/15 in t3agent's crontab on VPS1, 30 repos). It runs unniced in system.slice/cron.service, outside the capped agent slice, at 0.52-0.79 cores for about 2 minutes after every :00/:15/:30/:45 (one minute at 0.3+ on 11-07). Caught live at 09:00 CET 11-10: 89 s CPU in 182 s, with load1 going from 3.96 to 9.32. Ask (yours to do, no ask needed): run it niced inside the user slice (e.g. systemd-run --user --scope -p CPUWeight=20 nice -n 19 ionice -c3, or a user timer instead of the crontab line); move it off the quarter hours (e.g. 7-59/15); on a production-only host every 30 min is enough (infra-vps accepts its scripts/ freshness becoming 30 min); and skip the expensive checks on repos with no new commits (2 min at 0.65 core for 30 mostly idle repos). Please reply in AlfaBlok/infra-vps desk/inbox when shipped.
