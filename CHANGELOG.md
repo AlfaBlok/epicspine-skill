@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.11.10.3
+
+- Human asks never carry copy-paste terminal lines or a Claude CLI command: Mac work is one text for the Claude app (agent_team E96-S8, root L-54).
+
 ## 2026.11.10.2 — Commit check: more ticket codes, root spines, desk-note commits
 
 - **Changed:** `commit_msg.py` accepts ask codes like `TAX-A8` and a root spine path like `docs/EPIC_SPINE.md` as naming a ticket, and exempts the desk-note tool's own commits ("Desk note from …", "Desk inbox: … answered") (agent_team E63-S16, Jordi's E48-A7 'A) merge').
