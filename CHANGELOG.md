@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.11.10.2 — Commit check: more ticket codes, root spines, desk-note commits
+
+- **Changed:** `commit_msg.py` accepts ask codes like `TAX-A8` and a root spine path like `docs/EPIC_SPINE.md` as naming a ticket, and exempts the desk-note tool's own commits ("Desk note from …", "Desk inbox: … answered") (agent_team E63-S16, Jordi's E48-A7 'A) merge').
+
 ## 2026.11.10.1 — Many humans: a People list, and asks that name who approves and who is made aware
 
 - **Added:** `## People` in a root spine (one line a human: owner, expert, analyst or made aware, area, escalates to with a time limit, alerts), read by `scripts/people.py`; `spines.py --json` gains `people` and `people_problems` (a line it cannot read, no owner, an ask naming someone off the list) (agent_team E90-S3, Jordi's E90-A1 "A yes to all four").
