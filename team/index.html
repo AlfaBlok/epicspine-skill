@@ -55,6 +55,7 @@
       <li class="hide-s"><a href="#review">Finished work</a></li>
       <li class="hide-s"><a href="#inbox-focus">Focus</a></li>
       <li class="hide-s"><a href="#signins">Sign-ins</a></li>
+      <li class="hide-s"><a href="#channels">Channels</a></li>
       <li class="hide-s"><a href="#seats">Seats</a></li>
       <li><a href="#price">Price</a></li>
       <li><a href="../book/">Book</a></li>
@@ -178,6 +179,8 @@
       <ul class="nice-list">
         <li><h3>Every site counts its own visitors</h3><p>Each of your sites shows its daily visits and sign-ups on its own row, named and linked, with test visits kept apart.</p></li>
         <li><h3>Steps you do by hand come as one page.</h3><p>When only you can do something, you get one page of steps. Tick Done or Stuck on each, add a note, and the waiting work starts.</p></li>
+        <li><h3>Open EpicTeam at app.epicteam.app</h3><p>EpicTeam answers on its own address from anywhere, in its own look, and asks for a login before anything else.</p></li>
+        <li><h3>The team emails you. Your reply finds its ticket.</h3><p>The team writes to you about one task, with its code in the subject. Reply from any mail app and your words land on that task by themselves.</p></li>
       </ul>
     </div>
   </section>
@@ -197,6 +200,7 @@
         <li><h3>Proposals never repeat</h3><p>The two personas that suggest new goals check what exists and each other first, and never suggest a turned-down idea again.</p></li>
         <li><h3>Every button answers at once</h3><p>A press is saved within a second and the slow repo write runs after, so you never wait or press twice.</p></li>
         <li><h3>One answer closes every repeat</h3><p>Answer a question once and every other open question it settles closes too, quoting your words. Money and access questions only get flagged.</p></li>
+        <li><h3>What still needs you, ranked</h3><p>One page lists every task that still needs your hands, ranked by the minutes it costs you each week, with how each one leaves your hands.</p></li>
       </ul>
     </div>
   </section>
@@ -214,6 +218,47 @@
       </figure>
     </div>
   </section>
+
+<!-- capabilities:team begin (agent_team scripts/capability_catalog.py writes this) -->
+  <style>
+  .caps { display: grid; gap: var(--space-xl); }
+  .caps .say { display: grid; gap: var(--space-md); }
+  .caps h2 { font-size: clamp(2rem, 2.2vw + 0.8rem, 3.25rem); max-width: 24ch; }
+  .caps .was { max-width: 56ch; }
+  .caps-wrap { overflow-x: auto; border: 1px solid var(--color-rule); border-radius: var(--radius-card); background: var(--color-paper); }
+  .caps table { border-collapse: collapse; width: 100%; min-width: 44rem; font-size: var(--text-sm); }
+  .caps th, .caps td { padding: var(--space-sm) var(--space-md); border-bottom: 1px solid var(--color-rule); text-align: left; vertical-align: top; }
+  .caps tr:last-child th, .caps tr:last-child td { border-bottom: 0; }
+  .caps thead th { color: var(--color-muted); font-weight: 600; }
+  .caps tbody th { font-weight: 600; min-width: 15rem; }
+  .caps tbody th span { display: block; font-weight: 400; color: var(--color-ink-2); margin-top: var(--space-xs); }
+  .cap-w { display: inline-block; padding: 0.1em 0.6em; border-radius: 99px; font-weight: 600; white-space: nowrap; background: var(--color-rule); color: var(--color-ink-2); }
+  .cap-w.works { background: var(--color-accent); color: var(--color-paper); }
+  .cap-w.partly { background: transparent; border: 1px solid var(--color-accent); color: var(--color-ink); }
+  </style>
+  <section class="band" id="channels" aria-labelledby="h-channels">
+    <div class="container caps">
+      <div class="say">
+        <h2 id="h-channels">What your agents can read, send and answer.</h2>
+        <p class="was">Per channel, tested on its own schedule. Last tested 2026-11-09. One mailbox: the Gmail you connect. Mail to anyone but you, and any post, waits for your yes.</p>
+      </div>
+      <div class="caps-wrap"><table>
+        <thead><tr><th scope="col">Channel</th><th scope="col">Read</th><th scope="col">Send</th><th scope="col">Reply in public</th><th scope="col">Receive</th><th scope="col">Answer</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Reddit<span>Reads posts, comments and chats. Posts, replies and answers go out only through your own home connection.</span></th><td><span class="cap-w works">Works</span></td><td><span class="cap-w partly">Partly</span></td><td><span class="cap-w partly">Partly</span></td><td><span class="cap-w works">Works</span></td><td><span class="cap-w partly">Partly</span></td></tr>
+          <tr><th scope="row">X<span>Built and proven: posts, replies and mentions through the official X API. Paused while the team account is renamed.</span></th><td><span class="cap-w notyet">Not yet</span></td><td><span class="cap-w notyet">Not yet</span></td><td><span class="cap-w notyet">Not yet</span></td><td><span class="cap-w notyet">Not yet</span></td><td><span class="cap-w notyet">Not yet</span></td></tr>
+          <tr><th scope="row">Email<span>Reads your connected Gmail, mails you about a ticket, and your reply lands on that ticket. Mail to anyone else waits for your yes.</span></th><td><span class="cap-w works">Works</span></td><td><span class="cap-w works">Works</span></td><td><span class="cap-w na">n/a</span></td><td><span class="cap-w works">Works</span></td><td><span class="cap-w works">Works</span></td></tr>
+          <tr><th scope="row">WhatsApp<span>Sends you what waits on you, and your voice notes reach the team as text.</span></th><td><span class="cap-w na">n/a</span></td><td><span class="cap-w works">Works</span></td><td><span class="cap-w na">n/a</span></td><td><span class="cap-w works">Works</span></td><td><span class="cap-w notyet">Not yet</span></td></tr>
+          <tr><th scope="row">Airbnb<span>Reads and answers host messages, with the text you approved.</span></th><td><span class="cap-w partly">Partly</span></td><td><span class="cap-w na">n/a</span></td><td><span class="cap-w na">n/a</span></td><td><span class="cap-w works">Works</span></td><td><span class="cap-w works">Works</span></td></tr>
+          <tr><th scope="row">TikTok<span>Not built yet: the account comes first.</span></th><td><span class="cap-w notyet">Not yet</span></td><td><span class="cap-w notyet">Not yet</span></td><td><span class="cap-w notyet">Not yet</span></td><td><span class="cap-w notyet">Not yet</span></td><td><span class="cap-w notyet">Not yet</span></td></tr>
+          <tr><th scope="row">Instagram<span>Not built yet: the account comes first.</span></th><td><span class="cap-w notyet">Not yet</span></td><td><span class="cap-w notyet">Not yet</span></td><td><span class="cap-w notyet">Not yet</span></td><td><span class="cap-w notyet">Not yet</span></td><td><span class="cap-w notyet">Not yet</span></td></tr>
+          <tr><th scope="row">LinkedIn<span>Not built yet: the company page comes first.</span></th><td><span class="cap-w notyet">Not yet</span></td><td><span class="cap-w notyet">Not yet</span></td><td><span class="cap-w notyet">Not yet</span></td><td><span class="cap-w notyet">Not yet</span></td><td><span class="cap-w notyet">Not yet</span></td></tr>
+          <tr><th scope="row">YouTube<span>Not built yet: the channel comes first.</span></th><td><span class="cap-w notyet">Not yet</span></td><td><span class="cap-w notyet">Not yet</span></td><td><span class="cap-w notyet">Not yet</span></td><td><span class="cap-w na">n/a</span></td><td><span class="cap-w na">n/a</span></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </section>
+<!-- capabilities:team end -->
 
   <section class="band" id="seats" aria-labelledby="h-seats">
     <div class="container proof">
