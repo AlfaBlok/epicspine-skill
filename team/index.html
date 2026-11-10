@@ -51,6 +51,7 @@
     <a class="wordmark" href="#top" aria-label="EpicTeam, back to the start"><svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><rect class="tile" width="32" height="32" rx="7"/><g transform="translate(3.40 0) skewX(-12)"><path class="g" d="M8 6H24V10H19V26H13V10H8Z"/></g></svg>EpicTeam</a>
     <ul class="links">
       <li class="hide-s"><a href="#voice">Voice to inbox</a></li>
+      <li class="hide-s"><a href="#flow">How it works</a></li>
       <li class="hide-s"><a href="#tree">The tree</a></li>
       <li class="hide-s"><a href="#review">Finished work</a></li>
       <li class="hide-s"><a href="#inbox-focus">Focus</a></li>
@@ -131,6 +132,41 @@
         <figcaption>Our team’s real tree of goals, drawn from its repo on 8 November 2026.</figcaption>
       </figure>
     </div>
+  </section>
+
+  <!-- agent_team E43-S11 round 2. Jordi on round 1's navy steps (2026-11-10): "I dislike this design very much, I thought we
+       had moved on from it". So this section stands on paper (paper-deck, the shared paper brand) and plays the whole-loop
+       scenes he agreed one by one on E84-A2 ("yes, I love this diagram... it's on the money"): the zoom-out view he asked for
+       there, then the seven stops. loop/scenes.js is a copy of agent_team docs/proposals/e84-s12-whole-loop-video; the two
+       phone screens in it are real, taken read-only by E84-S12. The rest of the page keeps its old look for now. -->
+  <section class="loopp" id="flow" aria-labelledby="h-flow">
+    <link rel="stylesheet" href="loop/loop.css">
+    <div class="loopp-in">
+      <div class="loopp-say">
+        <p class="loopp-num">How it works</p>
+        <h2 id="h-flow">An organization that turns like a wheel.</h2>
+        <p class="loopp-lede">Pure voice in. Work done, every day.</p>
+        <blockquote><p>&ldquo;It&rsquo;s pure voice. You talk your mind and it turns into a ticketing system. It gets things executed.&rdquo;</p><footer>From the voice note that asked for this section, 9 November 2026.</footer></blockquote>
+      </div>
+      <ol class="loopp-steps" aria-label="The loop, step by step">
+          <li><button type="button" data-s="machine"><span class="n"></span><span>Zoom out: one machine</span></button></li>
+          <li><button type="button" data-s="say"><span class="n">1</span><span>I say it<span class=me>on my phone</span></span></button></li>
+          <li><button type="button" data-s="keep"><span class="n">2</span><span>Zenod keeps it</span></button></li>
+          <li><button type="button" data-s="hear"><span class="n">3</span><span>My team hears it</span></button></li>
+          <li><button type="button" data-s="tickets"><span class="n">4</span><span>The desk writes tickets</span></button></li>
+          <li><button type="button" data-s="work"><span class="n">5</span><span>Agents work</span></button></li>
+          <li><button type="button" data-s="ready"><span class="n">6</span><span>WhatsApp: ready<span class=me>on my phone</span></span></button></li>
+          <li><button type="button" data-s="unblock"><span class="n">7</span><span>One tap to unblock<span class=me>on my phone</span></span></button></li>
+      </ol>
+      <figure class="loopp-stage">
+        <div class="loopp-scene"></div>
+        <figcaption class="loopp-cap"><p><b>Unstructured ideas in. Delivered work out.</b><span>Zoom out from the wheel and it is one machine.</span></p><button type="button" class="loopp-play" hidden>Pause</button></figcaption>
+        <div class="loopp-bar" aria-hidden="true"><i></i></div>
+      </figure>
+    </div>
+    <script src="loop/paper.js" defer></script>
+    <script src="loop/scenes.js" defer></script>
+    <script src="loop/loop.js" defer></script>
   </section>
 
   <section class="band alt" id="review" aria-labelledby="h-review">
