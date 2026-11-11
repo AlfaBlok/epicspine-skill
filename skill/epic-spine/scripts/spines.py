@@ -17,11 +17,8 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-import doctrine as D  # noqa: E402
-import people as H, personas as P  # noqa: E402
-import run_state as R  # noqa: E402
-import spine_tree as T  # noqa: E402
-import standing as S  # noqa: E402
+import doctrine as D, people as H, personas as P  # noqa: E402
+import run_state as R, spine_tree as T, standing as S  # noqa: E402
 import validate_spine as v  # noqa: E402
 from ask_refs import resolve, waits  # noqa: E402
 from grants import grants, uses  # noqa: E402
@@ -100,12 +97,13 @@ def problems(repo: Path, path: Path, cache: dict) -> list[str] | None:
     return out
 
 
-def scan(repo: Path, refs: bool = True) -> dict:
+def scan(repo: Path, refs: bool = True, light: bool = False) -> dict:
+    """``light``: only ``root`` and ``nodes`` (the tree and each node's fields), for a sibling's ask states (E6-S83)."""
     with D.remembering():
-        return _scan(repo, refs)
+        return _scan(repo, refs, light)
 
 
-def _scan(repo: Path, refs: bool) -> dict:
+def _scan(repo: Path, refs: bool, light: bool = False) -> dict:
     cache = {None: (repo := repo.resolve())}
     docs = [p.resolve() for p in goal_docs(repo)]
     root = find_root(repo, cache, docs)
@@ -153,6 +151,8 @@ def _scan(repo: Path, refs: bool) -> dict:
 
     if root:
         visit(root)
+    if light:
+        return {"root": rel(root) if root else None, "nodes": list(nodes.values())}
     queue = [d for d in docs if rel(d) not in nodes]
     for d in queue:  # docs a goal links as children are goal docs too
         queue += [t for _, t in meta(d, cache)["rows"] if t and t.suffix == ".md" and t.is_file() and rel(t) not in nodes and t not in queue]

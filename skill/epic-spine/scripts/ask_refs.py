@@ -70,7 +70,8 @@ def states(repo: Path, nodes: list[dict]) -> dict[str, str]:
 def tree_states(repo: Path) -> dict[str, str] | None:  # None: not a checkout or no root spine
     try:
         import spines
-        log = spines.scan(repo, refs=False) if repo.is_dir() else {"root": None}
+        # E6-S83: only the tree and its asks (light): no git log, page or persona pass; a full sibling scan took 16 s each on vps1
+        log = spines.scan(repo, refs=False, light=True) if repo.is_dir() else {"root": None}
         return states(repo, log["nodes"]) if log["root"] else None
     except Exception:
         return None
@@ -84,7 +85,9 @@ def resolve(repo: Path, nodes: list[dict], root_text: str) -> None:
     """Set each reference's `state` to its target ask's state (open, answered, done), else `unresolved`."""
     own, mine, sibling = states(repo, nodes), names(repo, root_text), {}
     for r in (r for n in nodes for r in n["waits_on"]):
-        found = own if r["repo"] in (None, *mine) else sibling.setdefault(r["repo"], tree_states(repo.parent / r["repo"]) or {})
+        if r["repo"] not in (None, *mine) and r["repo"] not in sibling:  # each sibling read once (E6-S83: setdefault read it per reference)
+            sibling[r["repo"]] = tree_states(repo.parent / r["repo"]) or {}
+        found = own if r["repo"] in (None, *mine) else sibling[r["repo"]]
         r["state"] = found.get(r["code"], "unresolved")
 
 

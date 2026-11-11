@@ -6,6 +6,7 @@ import shutil
 import sys
 import tempfile
 import unittest
+import unittest.mock
 from pathlib import Path
 
 import test_epic_log as T
@@ -129,6 +130,35 @@ class ResolveTests(TreeCase):
         got = self.waits("- [waits on sib-repo-for-asks/INFRA-A7 row 3] g", "- [waits on sib-repo-for-asks/INFRA-A8] g", "- [waits on nowhere-repo/X-A1] g")
         self.assertEqual(["open", "unresolved", "unresolved"], [w["state"] for w in got])
         self.assertEqual(("sib-repo-for-asks/INFRA-A7", "sib-repo-for-asks", "INFRA-A7", "3"), tuple(got[0][k] for k in ("ref", "repo", "code", "row")))
+
+    def test_sibling_is_read_once_light_and_keeps_the_outer_cache(self) -> None:
+        """E6-S83: three references to one sibling read it once, through the light scan (no git log, page or persona pass), and
+        the outer scan keeps its one-read-per-file cache after it."""
+        import ask_refs
+        import doctrine
+        import spines
+        calls, outer = [], []
+        real_scan, real_states = spines.scan, ask_refs.tree_states
+
+        def spy_scan(repo, refs=True, light=False):
+            calls.append((Path(repo).name, light))
+            return real_scan(repo, refs, light)
+
+        def spy_states(repo):
+            got = real_states(repo)
+            outer.append(doctrine._reads is not None)
+            return got
+
+        self.add_ask("\n".join(f"- [waits on sib-repo-for-asks/INFRA-A{n}] g" for n in (7, 7, 8)))
+        with unittest.mock.patch.object(spines, "scan", spy_scan), unittest.mock.patch.object(ask_refs, "tree_states", spy_states):
+            got = spines.scan(self.repo)
+        self.assertEqual([("sib-repo-for-asks", True)], [c for c in calls if c[0] == "sib-repo-for-asks"])
+        self.assertEqual([True], outer)
+        node = next(n for n in got["nodes"] if n["path"] == "docs/a.md")
+        self.assertEqual(["open", "open", "unresolved"], [w["state"] for w in node["waits_on"]])
+        light = real_scan(self.sibling, refs=False, light=True)
+        self.assertEqual({"root", "nodes"}, set(light))
+        self.assertEqual([n["waiting_on"] for n in real_scan(self.sibling)["nodes"]], [n["waiting_on"] for n in light["nodes"]])
 
     def test_superseded_and_waiting_on_references_resolve(self) -> None:
         (self.repo / "docs/root.md").write_text(T.ROOT.replace("## Non-Goals", "## Waiting on\n\n" + SUPERSEDED.replace("EPIC-10-A8", "E4-A1") + "\n\n## Non-Goals"))

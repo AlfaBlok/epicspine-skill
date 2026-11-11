@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.11.11.6
+
+- `spines.py --json` reads a sibling checkout's ask states once per repo and only its tree and asks (no git log, page or persona pass), and a scan inside a scan keeps the outer one's read cache: zenod-social's read on VPS1 went from 117 s (seven full sibling scans) to a few seconds, output byte-identical (agent_team E6-S83, merged by E6-S85).
+
 ## 2026.11.11.5
 
 - **Changed:** social pack rule `no_late_post`: a missed post still goes out up to 24 h after its slot (held in the Team Browser outbox while the laptop and phone are offline); past that the agent_team console moves it once to its campaign's next free slot, at most 3 days ahead, with Jordi's approval kept, or holds it. The Publisher's `scheduled → held` waits 24 h instead of 60 min (agent_team E34-S32, Jordi 2026-11-11: "let's invest more in the infra that queues and sends when available").
