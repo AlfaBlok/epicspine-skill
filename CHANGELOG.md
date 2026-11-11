@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.11.11.1
+
+- Social pack: the `zenod-counts#<field>` metric source reads Zenod's public counts endpoint (agent_team E80-S4).
+
 ## 2026.11.10.3
 
 - Human asks never carry copy-paste terminal lines or a Claude CLI command: Mac work is one text for the Claude app (agent_team E96-S8, root L-54).
