@@ -23,6 +23,7 @@ Last attempted: 2026-11-11 DM wake run_905a0cea: E0-S43 closed (background sync 
 Result: all three Done means met; awaiting Jordi's verification of the Outcome
 Evidence: 259ed38, 89554d8, a61f07b, 85a86fd; [evidence page](root/dod-evidence-2026-10-24.md)
 Waiting on: none
+Monitoring: E0-S43 closed (VPS1 sync CPU 89 s to 19.8 s, infra-vps told) and E5-S8 merged (915 tests OK); E5-5 dropped; E5-6 waits on infra-vps and zenod-social fixing the… · next check 2026-11-13T08:00:00.000Z
 Approved work: none open beyond this root's DOD
 Next action: EPIC-5 E5-6 waits on infra-vps and zenod-social fixing their own rows (desk notes 66dad38, 515149c; re-check 2026-11-13); Jordi marks the verdict on EPIC-6, EPIC-7, EPIC-9, EPIC-10 (review)
 Source revision: main
