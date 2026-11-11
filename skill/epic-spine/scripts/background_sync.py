@@ -6,8 +6,7 @@ Roots: ``EPICSPINE_REPO_ROOTS`` (os.pathsep list) else the existing ones of ``~/
 ``.epicspine-off`` / ``EpicSpine: off`` skipped. Per repo: ``repo_sync.sync`` (fetch, ff-only when clean and behind, push
 integration-branch work per policy; never force/commit), the pre-commit gate, the vendored-copy check and local_mess.py (backup
 pushes, auto_return.py, worktree/dirty/server reports, repo_state.py counts); idle repos (HEAD and refs as the last full check
-left them, no sync note) only fetch and keep their entry, full check again after 6 h (E0-S43). Status key ``machine``: public
-servers. No AGENTS.md blocks. 20 s per repo (+40 s local_mess), 5 min total, least recently synced first, no prompts, flock,
+left them, no sync note) only fetch, full check (and stale-goal scan) every 6 h (E0-S43). ``machine``: public servers. 20 s per repo (+40 s local_mess), 5 min total, least recently synced first, no prompts, flock,
 idle IO (``ionice -c3``) where it exists. Writes ``~/.agents/epicspine-sync-status.json``; SessionStart shows only the current
 repo's lines (L-18). ``EPICSPINE_SYNC=off`` disables. Silent unless ``-v``. Stdlib only; never raises."""
 
@@ -89,7 +88,8 @@ def sync_repo(top: Path, home: Path, skill_dir: Path, total: Clock, env: dict | 
         notes += repo_sync.sync(top, clock, fetch_seconds=15, push_seconds=15)
     ahead, behind = counts(top, branch := out(git(["symbolic-ref", "--short", "-q", "HEAD"], top, Clock(3), 3)))
     prev, sig = previous or {}, signature(top)
-    if (age(prev.get("checked")) or FULL_SECONDS) < FULL_SECONDS and not notes and sig and sig == prev.get("sig"):  # idle: nothing new since the last full check
+    recent = lambda key: (age(prev.get(key)) or FULL_SECONDS) < FULL_SECONDS  # noqa: E731
+    if recent("checked") and not notes and sig and sig == prev.get("sig"):  # idle: nothing new since the last full check
         return {**prev, "last_run": now_iso(), "branch": branch, "ahead": ahead, "behind": behind, "pulled": 0, "pushed": 0, "timed_out": not clock.ok()}
     with contextlib.suppress(Exception):
         notes += vendored_skill.check(top, clock, home, skill_dir, throttle=False)
@@ -106,7 +106,7 @@ def sync_repo(top: Path, home: Path, skill_dir: Path, total: Clock, env: dict | 
         why = re.match(r"EpicSpine attention: repo (\S+) \((.*?)\) needs the user: (.*?)\. Tell the user", note)
         attention.append(f"{why.group(1)} ({why.group(2)}): {why.group(3)}" if why else note.removeprefix("EpicSpine attention: "))
     return {"name": top.name, "last_run": now_iso(), "checked": now_iso(), "sig": signature(top), "branch": branch, "ahead": ahead, "behind": behind, "pulled": pulled,
-            "pushed": pushed, "timed_out": not clock.ok(), "attention": attention, "stale": list(filter(None, [epic_log.attention(top)])), "branches_pushed": mess.get("branches_pushed", 0),
+            "pushed": pushed, "timed_out": not clock.ok(), "attention": attention, "stale": prev.get("stale", []) if recent("stale_at") else list(filter(None, [epic_log.attention(top)])), "stale_at": prev.get("stale_at") if recent("stale_at") else now_iso(), "branches_pushed": mess.get("branches_pushed", 0),
             "mess": mess.get("mess", []), "dirty_since": mess.get("dirty_since"), "auto": mess.get("auto", []), "state": mess.get("state", {})}
 
 

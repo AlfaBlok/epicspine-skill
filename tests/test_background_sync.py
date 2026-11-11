@@ -177,7 +177,8 @@ class SyncTest(Base):
         other = self.other(bare, "o")
         commit(other, "new", "x")
         git(other, "push", "-q", "origin", "main")
-        with mock.patch.object(bg.local_mess, "guard", return_value={"mess": ["seen"]}) as guard:
+        with mock.patch.object(bg.local_mess, "guard", return_value={"mess": ["seen"]}) as guard, \
+                mock.patch.object(bg.epic_log, "attention", side_effect=AssertionError("stale goals rescanned within 6 h")):
             entry = self.entry(clone)
         self.assertEqual((guard.call_count, entry["pulled"], entry["mess"]), (1, 1, ["seen"]))
         repos = json.loads((self.home / bg.STATUS).read_text())["repos"]
