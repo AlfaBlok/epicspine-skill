@@ -6,13 +6,13 @@ Roots: ``EPICSPINE_REPO_ROOTS`` (os.pathsep list) else the existing ones of ``~/
 ``.epicspine-off`` / ``EpicSpine: off`` skipped. Per repo: ``repo_sync.sync`` (fetch, ff-only when clean and behind, push
 integration-branch work per policy; never force/commit), the pre-commit gate, the vendored-copy check and local_mess.py (backup
 pushes, auto_return.py, worktree/dirty/server reports, repo_state.py counts); idle repos (HEAD and refs as the last full check
-left them, no sync note) only fetch, full check (and stale-goal scan) every 6 h (E0-S43). ``machine``: public servers. 20 s per repo (+40 s local_mess), 5 min total, least recently synced first, no prompts, flock,
+left them, no sync note) only fetch, full check (and stale-goal scan) every 6-7 h (E0-S43). ``machine``: public servers. 20 s per repo (+40 s local_mess), 5 min total, least recently synced first, no prompts, flock,
 idle IO (``ionice -c3``) where it exists. Writes ``~/.agents/epicspine-sync-status.json``; SessionStart shows only the current
 repo's lines (L-18). ``EPICSPINE_SYNC=off`` disables. Silent unless ``-v``. Stdlib only; never raises."""
 
 from __future__ import annotations
 
-import argparse, contextlib, hashlib, json, os, re, shutil, subprocess, sys, time  # noqa: E401
+import argparse, contextlib, hashlib, json, os, re, shutil, subprocess, sys, time, zlib  # noqa: E401
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -88,7 +88,7 @@ def sync_repo(top: Path, home: Path, skill_dir: Path, total: Clock, env: dict | 
         notes += repo_sync.sync(top, clock, fetch_seconds=15, push_seconds=15)
     ahead, behind = counts(top, branch := out(git(["symbolic-ref", "--short", "-q", "HEAD"], top, Clock(3), 3)))
     prev, sig = previous or {}, signature(top)
-    recent = lambda key: (age(prev.get(key)) or FULL_SECONDS) < FULL_SECONDS  # noqa: E731
+    recent = lambda key: (age(prev.get(key)) or 1e9) < FULL_SECONDS * (6 + zlib.crc32(str(top).encode()) % 100 / 100) / 6  # noqa: E731 (6-7 h, spread)
     if recent("checked") and not notes and sig and sig == prev.get("sig"):  # idle: nothing new since the last full check
         return {**prev, "last_run": now_iso(), "branch": branch, "ahead": ahead, "behind": behind, "pulled": 0, "pushed": 0, "timed_out": not clock.ok()}
     with contextlib.suppress(Exception):

@@ -2,7 +2,7 @@
 
 ## 2026.11.11.4
 
-- Background sync runs the stale-goal scan at most every 6 h, also on repos with new commits (E0-S43).
+- Background sync runs the stale-goal scan at most every 6 h, also on repos with new commits, and each repo's 6 h full check is spread over the next hour so they never all fall due in one run (E0-S43).
 
 ## 2026.11.11.3
 
