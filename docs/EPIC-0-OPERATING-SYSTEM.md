@@ -19,12 +19,12 @@ Skill updates: auto
 
 Owner: /root delivery manager
 Status: done
-Last attempted: 2026-10-25 DM wake run_21b34e03: removed agent-written Verdict/Closed (only Jordi marks the verdict); 2026-10-24 root DM wake (run_53683ac3): EPIC-3 closed; ledger made honest; root trimmed 141→99; `spines.py --bind` shipped (2026.10.24.8); DOD-1..3 ticked; Outcome written
+Last attempted: 2026-11-11 DM wake run_905a0cea: E0-S43 closed (background sync 7-59/15, nice 19, idle IO, idle-repo skip; VPS1 CPU 89 s→19.8 s per run; 915 tests OK; infra-vps told 06eeb96), which ends the reopen; E5-S8 merged; E5-5 dropped (FYI EPIC-5-A2)
 Result: all three Done means met; awaiting Jordi's verification of the Outcome
 Evidence: 259ed38, 89554d8, a61f07b, 85a86fd; [evidence page](root/dod-evidence-2026-10-24.md)
 Waiting on: none
 Approved work: none open beyond this root's DOD
-Next action: Jordi marks the verdict on EPIC-6, EPIC-7, EPIC-9 (review) and EPIC-0's Outcome; EPIC-5 E5-6 waits on infra-vps E15-S2 and zenod-social E0-S10 (their threads), E5-5 on infra-vps's trial review (~2026-11-07); EPIC-10 E10-S1 in flight (seat7), E10-S2 on E10-A2
+Next action: EPIC-5 E5-6 waits on infra-vps and zenod-social fixing their own rows (desk notes 66dad38, 515149c; re-check 2026-11-13); Jordi marks the verdict on EPIC-6, EPIC-7, EPIC-9, EPIC-10 (review)
 Source revision: main
 Verified at: 2026-11-02
 
