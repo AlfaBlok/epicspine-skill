@@ -52,7 +52,7 @@ def route(lc: dict, prev: str | None, to: str, kind: str | None, role: str | Non
     return None
 
 
-def check_section(schema: dict, s: dict, at: str, new: str, old: str | None, role: str | None, source) -> list[str]:
+def check_section(schema: dict, s: dict, at: str, new: str, old: str | None, role: str | None, source, brief=None) -> list[str]:
     tag = f"{at} ## {s['heading']}" if s["heading"] else at
     text = md.body(new, s["heading"])
     if text is None:  # an optional section (Benefits, E71-S2) may be left out
@@ -124,7 +124,7 @@ def check_section(schema: dict, s: dict, at: str, new: str, old: str | None, rol
         passed = {f"{a}>{b}" for a, b in steps}
         targets = [b for a, b in steps]
         live = set(lc["path"][min([lc["path"].index(t) for t in targets if t in lc["path"]] or [len(lc["path"])]):])
-        ctx = {"rows": recs, "status": lk, "live": live, "source": source}
+        ctx = {"rows": recs, "status": lk, "live": live, "source": source, "brief": brief or (lambda code: "")}
         for key, c in schema.get("checks", {}).items():
             plats = [x.lower() for x in c.get("platforms", [])]
             kinds = [x.lower() for x in c.get("kinds", [])]
@@ -150,6 +150,19 @@ def validate(schema: dict, repo: Path, new, old, role: str | None = None, only: 
             return md.items(text)
         tbl = md.table(text)
         return [{k: r.get(f["column"], "") for k, f in s["fields"].items()} for r in (tbl[1] if tbl else [])]
+    briefs: dict[str, str] = {}
+
+    def brief(code: str) -> str:
+        """A campaign's brief: the `## Campaign plan` of the spine whose title is `# <code>: …` (agent_team E60-S9)."""
+        code = (code or "").strip()
+        if code and code not in briefs:
+            briefs[code] = ""
+            for sp in sorted(repo.glob("docs/spines/**/*.md")):
+                text = new(str(sp.relative_to(repo))) or ""
+                if re.match(rf"#\s+{re.escape(code)}\s*:", text):
+                    briefs[code] = md.body(text, "Campaign plan") or ""
+                    break
+        return briefs.get(code, "")
     out = []
     for f in schema["files"].values():
         for s in f["sections"].values():
@@ -158,7 +171,7 @@ def validate(schema: dict, repo: Path, new, old, role: str | None = None, only: 
                 else sorted(str(p.relative_to(repo)) for p in repo.glob(path.replace("{date}", "*"))) if f.get("many") else [path]
             for p in paths:
                 if (only is None or p in only) and (text := new(p)) is not None:
-                    out += check_section(schema, s, p, text, old(p), role, source)
+                    out += check_section(schema, s, p, text, old(p), role, source, brief)
     return out
 
 

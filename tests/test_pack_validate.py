@@ -225,6 +225,31 @@ class Validate(unittest.TestCase):
         self.assertIn("caps: 2 posts in r/other that week (cap 1 a week)",
                       self.after("Writer", {"status": "scheduled", "slot": "2026-10-27 09:00", "community": "r/other"}))
 
+    def test_caps_daily_profile_post_when_the_campaign_brief_names_the_profile(self) -> None:
+        # agent_team E60-S9 (Jordi 2026-11-10: "posting every day on Reddit what I accomplished"): u/jordimr's own
+        # profile is one post a day for a campaign whose brief names it, one a week for any other; subreddits unchanged.
+        spines = self.repo.root / "docs/spines"
+        spines.mkdir(parents=True, exist_ok=True)
+        (spines / "day.md").write_text("# EPIC-15: Day in the life\n\n## Campaign plan\n\nAccount and channel: Reddit, u/jordimr.\n"
+                                       "- His own profile (u/jordimr) takes one post a day.\n\n## Non-Goals\n\n- No posts on the profile u/someone.\n")
+        (spines / "testers.md").write_text("# EPIC-6: Zenod testers\n\n## Campaign plan\n\nAccount and channel: Reddit, u/jordimr.\n")
+        prof = {"status": "scheduled", "community": "u/jordimr"}
+        week = [{**prof, "id": f"P-003{i}", "slot": f"2026-10-{27 + i} 09:00"} for i in range(3) if 27 + i != 29]  # 29th: P-0002
+        self.assertNotIn("caps:", self.after("Writer", *[{**r, "campaign": "EPIC-15"} for r in week]))
+        refused = self.after("Writer", *[{**r, "campaign": "EPIC-6"} for r in week])
+        self.assertIn("caps: 2 posts in u/jordimr that week (cap 1 a week) (a daily profile post needs its campaign's brief", refused)
+        self.assertIn("caps: 2 posts in u/jordimr that week", self.after("Writer", *week))  # no campaign: no brief
+        # the brief must name this profile on its plan line: another handle or the Non-Goals part does not count
+        self.assertIn("caps: 2 posts in u/someone that week", self.after("Writer", *[{**r, "campaign": "EPIC-15", "community": "u/someone"} for r in week]))
+        # Reddit's 1 a day still counts the profile post, and a second profile post that day is refused
+        two = self.after("Writer", {**prof, "id": "P-0031", "campaign": "EPIC-15", "slot": "2026-10-30 09:00"},
+                         {**prof, "id": "P-0032", "campaign": "EPIC-15", "slot": "2026-10-30 18:00"})
+        self.assertIn("caps: 2 posts on Reddit on 2026-10-30 (cap 1 a day)", two)
+        self.assertIn("caps: 2 posts on the profile u/jordimr on 2026-10-30 (cap 1 a day)", two)
+        # a subreddit keeps 1 a week, even for the campaign whose brief names the profile
+        sub = [{"status": "scheduled", "community": "r/SideProject", "campaign": "EPIC-15", "id": f"P-004{i}", "slot": f"2026-10-{27 + i} 09:00"} for i in (0, 1)]
+        self.assertIn("caps: 2 posts in r/SideProject that week (cap 1 a week)", self.after("Writer", *sub))
+
     def test_hold_rules(self) -> None:
         text = GOOD + "<br>Our pricing is fair"
         self.assertIn("hold_rules: matches hold rule R1", self.after("Writer", {"status": "scheduled", "text": text}))
