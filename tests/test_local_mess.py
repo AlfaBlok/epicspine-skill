@@ -25,6 +25,12 @@ def iso(days: float) -> str:
 
 
 class MessBase(Base):
+    def setUp(self) -> None:
+        super().setUp()
+        patch = mock.patch.object(bg, "FULL_SECONDS", 0)  # every run here is a full check (the idle skip: test_background_sync)
+        patch.start()
+        self.addCleanup(patch.stop)
+
     def worktree(self, clone: Path, name: str, days: float = 0, files: dict[str, str] | None = None) -> Path:
         """A linked worktree ``~/github/<name>`` on ``wt/<name>`` with one commit and an idle age of ``days``."""
         path = self.root / name

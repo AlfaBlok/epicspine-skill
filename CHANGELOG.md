@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.11.11.3
+
+- Background sync stops the quarter-hour load spike (E0-S43): cron runs it at :07/:22/:37/:52 under `nice -n 19` with idle IO (`ionice -c3`; macOS plist `Nice` + `LowPriorityIO`), the installer rewrites the old tagged line, and a repo with no new commit since its last full check only fetches (full check again after 6 h).
+
 ## 2026.11.11.2
 
 - The assignee check skips finished ledger rows (done, superseded, cancelled, moved: `claim.CLOSED`); open rows stay checked (EPIC-5 E5-S8).

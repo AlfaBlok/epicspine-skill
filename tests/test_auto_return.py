@@ -34,6 +34,9 @@ if grep -qx "$head" "$state/gh-open" 2>/dev/null; then echo '[{"number":7}]'; el
 class ReturnBase(Base):
     def setUp(self) -> None:
         super().setUp()
+        patch = mock.patch.object(bg, "FULL_SECONDS", 0)  # every run here is a full check (the idle skip: test_background_sync)
+        patch.start()
+        self.addCleanup(patch.stop)
         gh = self.bin / "gh"
         gh.write_text(GH)
         gh.chmod(gh.stat().st_mode | stat.S_IEXEC)
