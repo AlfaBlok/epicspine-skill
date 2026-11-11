@@ -126,8 +126,8 @@ class PersonaTests(unittest.TestCase):
 
     def test_unknown_assignee_rejected(self):
         errors = self.check(epic([("Watcher", "ready"), ("Stranger", "ready"), ("unassigned", "done")]))
-        self.assertEqual(len(errors), 2)
-        self.assertTrue(all("not a team persona or Jordi" in e for e in errors))
+        self.assertEqual(len(errors), 1)  # the done row is nobody's queue (E5-S8)
+        self.assertIn("'Stranger' is not a team persona or Jordi", errors[0])
 
     def test_draft_row_may_be_unassigned(self):
         self.assertEqual(self.check(epic([("unassigned", "draft")])), [])
