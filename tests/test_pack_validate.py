@@ -300,7 +300,7 @@ class Validate(unittest.TestCase):
         self.assertEqual("", self.after("Jordi", {**sched, "feedback": "Approved 2026-11-03 15:10 UTC"}))
         rules = json.loads((SCRIPTS.parent / "packs/social/schema.json").read_text())["rules"]
         self.assertEqual("Publisher", rules["no_late_post"]["by"])
-        self.assertIn("never goes out", rules["no_late_post"]["doc"])
+        self.assertIn("at most 24 h late", rules["no_late_post"]["doc"])
 
     def test_hold_rule_kind_post_holds_every_post_and_held_drafts_pass_the_text_checks(self) -> None:
         from pack_checks import holds
