@@ -103,8 +103,17 @@ def run_check(key: str, c: dict, rec: dict, ctx: dict) -> list[str]:
         live = [r for r in ctx["rows"] if r.get(ctx["status"], "").lower() in ctx["live"] and r.get("platform", "").lower() == plat]
         posts = [r for r in live if r.get("kind", "").lower() == "post"]
         cap = (p.get("threads_per_day_by_platform") or {}).get(plat, p.get("threads_per_day", 1e9))
-        if kind == "post" and len(n := [r for r in posts if day(r) == day(rec)]) > cap:
-            out.append(f"{len(n)} posts on {rec.get('platform')} on {day(rec)} (cap {cap} a day)")
+        # agent_team E86-S18 (Jordi via zenod-social EPIC-0-A27: "We should be doing multiple tweets every day in this
+        # phase"): an account named in threads_per_day_by_account (`<platform>:<community>`, e.g. x:@zenodmemory) takes
+        # its own day cap and counts only its own posts; every other account keeps the platform's cap, counted without them.
+        own = {k.strip().lower(): v for k, v in (p.get("threads_per_day_by_account") or {}).items()}
+        acct = lambda r: f"{plat}:{(r.get('community') or '').strip().lower()}"
+        if acct(rec) in own:
+            cap, mine, who = own[acct(rec)], [r for r in posts if acct(r) == acct(rec)], f"{rec.get('platform')} {rec.get('community')}"
+        else:
+            mine, who = [r for r in posts if acct(r) not in own], rec.get("platform")
+        if kind == "post" and len(n := [r for r in mine if day(r) == day(rec)]) > cap:
+            out.append(f"{len(n)} posts on {who} on {day(rec)} (cap {cap} a day)")
         try:
             week = dt.date.fromisoformat(day(rec)).isocalendar()[:2]
             same = [r for r in posts if r.get("community") and r.get("community") == rec.get("community")

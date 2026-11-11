@@ -17,6 +17,7 @@ from _safe_env import safe_env
 SCRIPTS = Path(__file__).parents[1] / "skill" / "epic-spine" / "scripts"
 sys.path.insert(0, str(SCRIPTS))
 import pack  # noqa: E402
+import pack_checks  # noqa: E402
 import pack_init  # noqa: E402
 import pack_validate  # noqa: E402
 
@@ -214,6 +215,28 @@ class Validate(unittest.TestCase):
         self.assertNotIn("caps:", two)
         four = self.after("Writer", *[{**x, "id": f"P-001{i}", "slot": f"2026-10-30 1{i}:00"} for i in range(4)])
         self.assertIn("caps: 4 posts on X on 2026-10-30 (cap 3 a day)", four)
+
+    def test_caps_by_account_lets_one_account_take_ten_a_day(self) -> None:
+        # agent_team E86-S18 (Jordi via zenod-social EPIC-0-A27: "We should be doing multiple tweets every day in this
+        # phase"): x:@zenodmemory takes 10 X posts a day; its posts do not count against the other X accounts' 3.
+        z = {"platform": "X", "status": "scheduled", "community": "@ZenodMemory"}
+        ten = [{**z, "id": f"P-01{i:02}", "slot": f"2026-10-30 {8 + i:02}:00"} for i in range(10)]
+        self.assertNotIn("caps:", self.after("Writer", *ten))
+        eleven = ten + [{**z, "id": "P-0199", "slot": "2026-10-30 20:00"}]
+        self.assertIn("caps: 11 posts on X @ZenodMemory on 2026-10-30 (cap 10 a day)", self.after("Writer", *eleven))
+        other = {"platform": "X", "status": "scheduled", "community": "@EpicSocialHQ"}
+        three = [{**other, "id": f"P-02{i:02}", "slot": f"2026-10-30 {9 + i:02}:30"} for i in range(3)]
+        self.assertNotIn("caps:", self.after("Writer", *ten, *three))
+        four = three + [{**other, "id": "P-0299", "slot": "2026-10-30 21:30"}]
+        self.assertIn("caps: 4 posts on X on 2026-10-30 (cap 3 a day)", self.after("Writer", *ten, *four))
+
+    def test_caps_by_account_absent_keeps_the_platform_cap(self) -> None:
+        # no threads_per_day_by_account: @ZenodMemory is one more X account at 3 a day, as before E86-S18
+        params = {k: v for k, v in SOCIAL["checks"]["caps"]["params"].items() if k != "threads_per_day_by_account"}
+        z = {"platform": "X", "community": "@ZenodMemory", "kind": "post", "status": "scheduled"}
+        rows = [{**z, "id": f"P-{i}", "slot": f"2026-10-30 1{i}:00"} for i in range(4)]
+        out = pack_checks.run_check("caps", {"params": params}, rows[-1], {"rows": rows, "status": "status", "live": {"scheduled"}})
+        self.assertEqual(["4 posts on X on 2026-10-30 (cap 3 a day)"], out)
 
     def test_caps_community_week_only_on_community_platforms(self) -> None:
         # agent_team E78-S5: X rows carry the account (@ZenodAgent) as their community; the weekly cap per
