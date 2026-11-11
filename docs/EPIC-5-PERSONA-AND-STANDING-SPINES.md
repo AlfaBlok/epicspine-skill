@@ -24,24 +24,26 @@ EpicSpine defines how a persona is written as a markdown file and how a standing
 - [x] E5-2 Standing spine kind: `## Targets` (target per period) and a Current State scoreboard (target vs actual for this period); a miss becomes a ledger row; never needs an Outcome; the validator accepts it. (2026-10-24: references/standing-spines.md, standing.py; merge 1acbdde)
 - [x] E5-3 Tasks and hand-offs: a task is an Issue Ledger row with an assignee (Owner column) and a status; every persona wake starts with its queue (open rows assigned to it in the epics it is on); hand-off = reassign the row (several rows for several jobs); a task serving another goal goes in that goal's ledger with a link back; a task that outgrows a wake or two becomes a child epic. Every action is a commit signed by the persona; shared files keep a fixed shape; each section has a named writer via the assignment's write scope. (2026-10-24: references/persona-tasks.md, 69372e6)
 - [x] E5-4 Assignees must exist: the validator rejects a ledger row whose assignee is not a persona on that repo's team (persona files in the repo, or the epic's `## Team` table until files exist) or `Jordi`; `spines.py --json` lists each persona's queue. (2026-10-24: personas.assignee_errors + spines.py --json personas/queue; merge 1d4e9fc)
-- [ ] E5-5 Asks as tasks: an ask to Jordi is a ledger row assigned to `Jordi` (same fields as an ask: what, why, impact, risk + rollback, recommendation); tried first on infra-vps EPIC-15, then adopted or dropped with a Decisions row.
+- [x] E5-5 Asks as tasks: an ask to Jordi is a ledger row assigned to `Jordi` (same fields as an ask: what, why, impact, risk + rollback, recommendation); tried first on infra-vps EPIC-15, then adopted or dropped with a Decisions row. (2026-11-11: dropped as doctrine, Decisions row; asks stay coded `[ask]` lines under `## Waiting on`)
 - [ ] E5-6 Used for real: zenod-social and infra-vps EPIC-15 spines and their persona files validate, with every ledger assignee a real persona or Jordi.
 
 ## Current State
 
 Owner: Delivery Manager (agent-team console)
 Status: active
-Last attempted: 2026-10-27 Jordi approved nj_958bad5c: DM committed persona files: infra-vps a465c42 (3), zenod-social 19f0de9 (5); all --strict OK; E5-S6 (orphan advisory on persona files) dispatched
-Result: E5-1..E5-4 met; E5-6: persona files valid in both repos, zenod-social root spine passes, infra-vps EPIC-15 fails only on its own row E15-R6 (empty PR/Branch); E5-5 waits on the infra-vps trial
-Evidence: infra-vps 9409eb5, a465c42; zenod-social 4c72143, 19f0de9; merges 1d4e9fc, 44ab11e, 1acbdde, 085cf62
+Last attempted: 2026-11-11 DM wake run_905a0cea: E5-5 dropped (Decisions, FYI EPIC-5-A2); E5-S8 dispatched (assignee check skips finished rows); re-validated both repos
+Result: E5-1..E5-5 met; E5-6 open: persona files all --strict OK, infra-vps EPIC-15 fails 14 (custom statuses, E15-S3, one worker assignee), zenod-social root fails 21 (PR/Branch, worker assignees, parked, noted)
+Evidence: infra-vps 102320f, zenod-social d946bed validated 2026-11-11; earlier infra-vps 9409eb5, a465c42; zenod-social 4c72143, 19f0de9
 Waiting on: nobody
-Monitoring: infra-vps EPIC-15 and zenod-social root strict-clean since 2026-10-26 · 2026-11-02: persona files all OK; spines fail on infra-vps E15-S2 (assignee) and zenod-social E0-S10 (PR/Branch), both owners' rows · next check 2026-11-03T08:00Z · then tick E5-6 ; E5-5 infra-vps trial review due ~2026-11-07 (its Decisions row 'after 2 weeks of runs') · then adopt or drop by a Decisions row and tick E5-5
+Monitoring: infra-vps EPIC-15 and zenod-social root strict-clean since 2026-10-26 · next check 2026-11-12T08:00Z after E5-S8 merges · then desk-note each repo its remaining errors and tick E5-6 when both pass
 Approved work: none
-Next action: merge E5-S6; tick E5-6 once infra-vps E15-R6 has PR/Branch filled (its owner, L-14); E5-5 waits on infra-vps running the asks-as-tasks trial
+Next action: E5-S8 worker merges; then desk notes to infra-vps and zenod-social with their remaining strict errors (L-14); tick E5-6 when both pass
 Source revision: main
-Verified at: 2026-11-02
+Verified at: 2026-11-11
 
 ## Waiting on
+
+- [answered EPIC-5-A2 2026-11-11 @Delivery-Manager] Should an ask to Jordi be a ledger row assigned to him (the infra-vps trial) instead of a coded ask line? — answer: no, dropped; asks stay one coded line under Waiting on, a row may still name Jordi as its owner while it waits — why: only infra-vps used rows, and the console's cards, FYIs and duplicate guard all read the coded lines, so two forms split one inbox — rollback: reopen E5-5 and delete its Decisions row
 
 - [answered EPIC-5-A1 2026-10-26 @Unblocker · done 2026-10-27 infra-vps a465c42, zenod-social 19f0de9 (Jordi approved nj_958bad5c)] May the epicspine-skill Delivery Manager add persona files to infra-vps and zenod-social so EPIC-5 can finish? (console Needs Jordi nj_958bad5c, raised 2026-10-25 by the Delivery Manager, row E5-6) — answer: yes, as proposed: new `personas/<name>.md` files only, one per persona already on infra-vps EPIC-15's and zenod-social root's Team tables, copied from the console persona; change no existing file; run `validate_spine.py --strict` on the files and both spines and revert the repo's commit if either fails; one commit per repo, main-direct — why: E5-6 Done means requires persona files in both repos; Jordi approved the same kind of cross-repo, reversible, docs-only edit for this same row on 2026-10-25 (nj_b310a5d1, done in 9409eb5 and 4c72143); new files grant no access, spend nothing and publish nothing — source: EPIC-5 Done means E5-6; Jordi's approve of nj_b310a5d1 (2026-10-25); E5-1 persona format (references/personas.md) — confidence: 80% — rollback: `git revert` the one commit in each repo (or delete the new personas/ files); the Team tables stay the assignee source until files exist (E5-4)
 
@@ -61,7 +63,8 @@ Steps: each is independently testable and closes only with evidence.
 | E5-S4 | Ticket worker | worker run_98fc838e (with E6-S1) | validator accepts step codes (E5-S1) as Issue in row-as-ticket spines: spine_new.py scaffolds fail --strict | done | none | merged (branch deleted) | main | c804f48, merge 44ab11e; graph --strict 0 errors | 2026-10-24 | none |
 | E5-S5 | Ticket worker | worker run_83cd4392 | Jordi on a Team table needs no persona file | done | none | merged (branch deleted) | main | 89a1521, merge 085cf62; 730 tests OK | 2026-10-26 | none |
 | E5-S6 | Ticket worker | worker run_c14d5ebb (Sonnet 5.5, seat2) | persona files are not orphan pages (pre-commit flagged all 8 in infra-vps a465c42, zenod-social 19f0de9) | done | none | merged (branch deleted) | main | 4a19298, merge 8461a2c (release 2026.10.27.4; version renumbered from .3, collided with the pack release); 775 tests OK | 2026-10-27 | none |
-| E5-S7 | Delivery manager | Delivery Manager | E5-5..6: asks-as-tasks trial adopted or dropped; infra-vps EPIC-15 and zenod-social spines + persona files strict-clean | active | infra-vps EPIC-15 row E15-S2 (assignee not a persona), zenod-social root row E0-S10 (empty PR/Branch); infra-vps trial review ~2026-11-07 (L-14) | main | main | persona files: infra-vps 3, zenod-social 8, all --strict OK (2026-11-02); E15-R6 now fixed | 2026-11-02 | re-check infra-vps EPIC-15 each wake; tick E5-6, then E5-5 on its trial Decisions row |
+| E5-S7 | Delivery manager | Delivery Manager | E5-6: infra-vps EPIC-15 and zenod-social spines + persona files strict-clean | active | E5-S8; infra-vps EPIC-15 (its custom statuses `needs fix`/`needs diagnosis`, E15-S3 PR/Branch) and zenod-social root (PR/Branch, `parked`, `noted`, a 12-cell row): their owners' rows (L-14) | main | main | 2026-11-11 run_905a0cea: persona files all --strict OK (infra-vps 3, zenod-social 8); infra-vps EPIC-15 14 errors, zenod-social root 21; E5-5 dropped (Decisions) | 2026-11-11 | after E5-S8 merges, desk-note each repo its remaining errors; tick E5-6 when both pass |
+| E5-S8 | Ticket worker | worker (Delivery Manager dispatch 2026-11-11) | assignee check skips finished rows: a done or superseded row is nobody's queue, so its historic worker assignee is not an error (9 of zenod-social's and 1 of infra-vps' strict errors) | active | none | main | main | dispatched run_905a0cea | 2026-11-11 | worker: fix personas.assignee_errors + test, manifest, merge main |
 
 ## Decisions
 
@@ -73,6 +76,7 @@ One line per decision; detail goes to a linked page.
 | 2026-10-24 | accepted | Requested by agent_team EPIC-12 (approved plan): EpicSpine owns the persona and standing-spine formats; the console only reads them | format owner = doctrine owner (agent_team L-12) | [agent_team EPIC-12](https://github.com/AlfaBlok/agent_team/blob/main/docs/spines/epic-12-zenod-live-heard-sold.md) | never |
 | 2026-10-24 | accepted | Persona generic, assignment (cadence, write scope, goal notes) in the epic's Team table; tasks = ledger rows with an assignee that must be a real persona or Jordi; asks-as-tasks trialled on infra-vps EPIC-15 | Jordi 2026-10-24 ('go for it'; 'you cannot make an owner that is not a persona in the repo') | [agent_team EPIC-12](https://github.com/AlfaBlok/agent_team/blob/main/docs/spines/epic-12-zenod-live-heard-sold.md) | after the EPIC-15 trial |
 | 2026-10-26 | accepted | decided by Unblocker: EPIC-5-A1 (nj_958bad5c) yes, DM may add new persona files to infra-vps and zenod-social, validate --strict, one commit per repo | E5-6 needs them; same scope as Jordi's approved nj_b310a5d1; additive and reversible | Waiting on EPIC-5-A1; run_7983789d | rollback: git revert the commit in each repo |
+| 2026-11-11 | accepted | decided by Delivery Manager: E5-5 asks-as-tasks dropped as doctrine — why: after 2.5 weeks only infra-vps used it (E15-R13, E15-S1) while the console made the coded `[ask CODE]` line under `## Waiting on` the one place Jordi answers (cards, FYIs, duplicate guard); two forms of the same ask split his inbox — rollback: reopen E5-5 and revert this row | asks stay coded lines; a row may still name `Jordi` as Owner while it waits on his ask (E5-4 accepts it) | infra-vps EPIC-15 Decisions 2026-10-24, hand-off table; run_905a0cea | Jordi reverses the FYI EPIC-5-A2 |
 
 ## Operating Learnings
 

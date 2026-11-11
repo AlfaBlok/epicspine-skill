@@ -85,6 +85,7 @@ Risk: the fresh-agent bind was measured once (n=1) on Claude; the thin repo-bloc
 |---|---|---|---|---|---|---|---|---|---|---|
 | draft | Ticket worker | worker (Opus 5.5, T3 thread) | Enforce manager-never-implements and push-on-close with hooks: PreToolUse `manager_guard.py` (allowlist-first Bash/Edit policy, subagents via `agent_id`) + Stop `push_gate.py` | deferred | none | PR #28 (feat/manager-guards) | 6ccb101 | PARKED 2026-10-13 by user (D18); archived 2026-10-24 as tags `archive/feat/manager-guards`, `archive/feat/dispatcher-guard` (branches deleted, PR #28 closed). Do not merge, install, or build on it | 2026-10-24 | none (parked: not raised again) |
 | E0-S42 | Ticket worker | worker run_187fe12f (Sonnet 5.5, seat5) | duplicate-ask-code advisory fires when a Decisions row cites an open ask (EPIC-10 E10-A2, bb7434b): only a code reused by another ask line is a duplicate | done | none | merged (branch deleted) | main | 453cf21, merge 5332d10 (release 2026.11.02.5); 837 tests OK | 2026-11-02 | none |
+| E0-S43 | Ticket worker | worker (Delivery Manager dispatch 2026-11-11) | background sync stops the quarter-hour load spike on VPS1 (infra-vps desk note 2026-11-10): niced and idle-priority, off :00/:15/:30/:45, skips expensive checks on repos with no new commits | active | none | main | main | desk/inbox/2026-11-10-infra-vps-vps1-load-the-epicspine-background-sync.md; infra-vps f8b2766 | 2026-11-11 | worker: change the installed cron line and background_sync.py, test, manifest, reinstall on VPS1 and VPS3, merge main; then DM replies to infra-vps |
 
 Done tickets (39 rows, Next Action done/none, moved verbatim): [done ledger](root/steps.md#done-ledger).
 
@@ -93,6 +94,8 @@ Done tickets (39 rows, Next Action done/none, moved verbatim): [done ledger](roo
 | Date | Outcome | Decision / Attempt | Durable Summary | Evidence | Revisit When |
 |---|---|---|---|---|---|
 | 2026-10-27 | accepted | Jordi via console: outcome marked accomplished, Status done | EpicSpine is a lean, always-on default: a cold agent binds with one `spines.py --bind` call (61 lines read, was 282), the 72-line SKILL.md kernel and Default Behaviors card ship with every installed copy linked to the canonical checkout, and 656 tests plus strict graph validation are green on main. | ## Outcome | — |
+| 2026-11-11 | accepted | reopened by E0-S43 (infra-vps desk note: background sync load on VPS1) | the root's Outcome stands; this row closes the reopen | desk/inbox/2026-11-10-infra-vps-vps1-load-the-epicspine-background-sync.md; run_905a0cea | when E0-S43 closes |
+| 2026-11-11 | accepted | 'Feature list from agent_team: …' commits (e.g. 6e24183, 07693cb) are the epicspine.dev feature list synced by `tools/feature_list.py` from agent_team's feature files (agent_team E43-S7); they belong to those agent_team rows, no epicspine-skill row | names the untagged commit 6e24183 | 6e24183; agent_team docs/features/*.json | never |
 
 21 decisions: [decisions table](root/decisions.md#decisions-table).
 
