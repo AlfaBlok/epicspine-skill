@@ -43,11 +43,12 @@ def read(path: Path) -> str:
 def remembering():
     """Within the block each file is read once (a repo scan reads every doc up to four times, slow on a loaded host); files must not change meanwhile."""
     global _reads, _found
+    outer = _reads, _found  # re-entrant (E6-S83): a sibling scan inside a scan gives the outer one its cache back
     _reads, _found = {}, {}
     try:
         yield
     finally:
-        _reads = _found = None
+        _reads, _found = outer
 
 
 def is_epic(text: str) -> bool:

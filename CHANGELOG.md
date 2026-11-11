@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.11.11.5
+
+- `spines.py --json` reads a sibling checkout's ask states once per repo and only its tree and asks (no git log, page or persona pass), and a scan inside a scan keeps the outer one's read cache: zenod-social's read on VPS1 went from 117 s (seven full sibling scans) to a few seconds, output byte-identical (agent_team E6-S83).
+
 ## 2026.11.11.4
 
 - Background sync runs the stale-goal scan at most every 6 h, also on repos with new commits, and each repo's 6 h full check is spread over the next hour so they never all fall due in one run (E0-S43).
