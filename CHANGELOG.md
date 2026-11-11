@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.11.11.5
+
+- **Changed:** social pack rule `no_late_post`: a missed post still goes out up to 24 h after its slot (held in the Team Browser outbox while the laptop and phone are offline); past that the agent_team console moves it once to its campaign's next free slot, at most 3 days ahead, with Jordi's approval kept, or holds it. The Publisher's `scheduled → held` waits 24 h instead of 60 min (agent_team E34-S32, Jordi 2026-11-11: "let's invest more in the infra that queues and sends when available").
+
 ## 2026.11.11.4
 
 - Background sync runs the stale-goal scan at most every 6 h, also on repos with new commits, and each repo's 6 h full check is spread over the next hour so they never all fall due in one run (E0-S43).
