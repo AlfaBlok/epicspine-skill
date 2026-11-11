@@ -7,18 +7,22 @@ Roots: ``EPICSPINE_REPO_ROOTS`` (os.pathsep list) else ``~/github``, ``~/Documen
 ``repo_sync.sync`` (fetch, ff-only when clean and behind, push committed integration-branch work per Integration policy;
 never force/commit, dirty files untouched), the pre-commit gate (``global_install.ensure_gate``), the vendored-copy check and
 local_mess.py (backup-push local-only branches; auto_return.py merges ``Ready: yes`` additive branches and deletes merged ones;
-report idle/merged worktrees, old uncommitted changes, stale servers; repo_state.py counts). Status key ``machine``: servers on every interface. No AGENTS.md blocks are installed
+report idle/merged worktrees, old uncommitted changes, stale servers; repo_state.py counts). Idle repos (refs and HEAD as the
+last full check left them, no sync note) only fetch: their last entry is kept, full check again after 6 h (E0-S43). Status key ``machine``: servers on every interface. No AGENTS.md blocks are installed
 (they would be uncommitted files). 20 s per repo (+40 s local_mess), 5 min total, least recently synced first, no prompts, flock.
 Writes ``~/.agents/epicspine-sync-status.json``; SessionStart prints only the current repo's mess/stale lines from it (never another repo's state: L-18).
-``EPICSPINE_SYNC=off`` disables. Silent (cron mail) unless ``-v``. Stdlib only; never raises."""
+``EPICSPINE_SYNC=off`` disables. Idle IO (``ionice -c3``) where it exists. Silent (cron mail) unless ``-v``. Stdlib only; never raises."""
 
 from __future__ import annotations
 
 import argparse
 import contextlib
+import hashlib
 import json
 import os
 import re
+import shutil
+import subprocess
 import sys
 import time
 from datetime import datetime, timezone
@@ -32,7 +36,7 @@ STATUS = ".agents/epicspine-sync-status.json"
 LOCK = ".agents/epicspine-sync.lock"
 DEFAULT_ROOTS = ("github", "Documents/GitHub", "code", "src")
 REPO_SECONDS, TOTAL_SECONDS, DEPTH, MAX_AGE_DAYS = 20.0, 300.0, 2, 90
-STALE_SECONDS, SHOWN = 24 * 3600, 5
+STALE_SECONDS, SHOWN, FULL_SECONDS = 24 * 3600, 5, 6 * 3600
 PATH_EXTRA = ("/opt/homebrew/bin", "/usr/local/bin", "/usr/bin", "/bin")
 
 
@@ -79,19 +83,34 @@ def counts(top: Path, branch: str | None) -> tuple[int | None, int | None]:
     return (int(got[0]), int(got[1])) if len(got) == 2 else (None, None)
 
 
+def signature(top: Path) -> str | None:
+    """HEAD and every ref (fetched ones included): unchanged means no new commit anywhere since the last full check."""
+    refs = out(git(["for-each-ref", "--format=%(objectname) %(refname)"], top, Clock(3), 3))
+    head = out(git(["rev-parse", "-q", "--verify", "HEAD"], top, Clock(3), 3))
+    branch = out(git(["symbolic-ref", "-q", "HEAD"], top, Clock(3), 3))
+    return hashlib.sha1(f"{branch}\n{head}\n{refs}".encode()).hexdigest()[:16] if refs is not None else None
+
+
 def sync_repo(top: Path, home: Path, skill_dir: Path, total: Clock, env: dict | None = None, procs: list | None = None,
               previous: dict | None = None) -> dict:
     clock = Clock(max(0.0, min(REPO_SECONDS, total.cap(REPO_SECONDS))))
     notes: list[str] = []
-    for step in (lambda: repo_sync.sync(top, clock, fetch_seconds=15, push_seconds=15),
-                 lambda: vendored_skill.check(top, clock, home, skill_dir, throttle=False)):
-        with contextlib.suppress(Exception):
-            notes += step()
+    with contextlib.suppress(Exception):
+        notes += repo_sync.sync(top, clock, fetch_seconds=15, push_seconds=15)
+    branch = out(git(["symbolic-ref", "--short", "-q", "HEAD"], top, Clock(3), 3))
+    ahead, behind = counts(top, branch)
+    prev, sig = previous or {}, signature(top)
+    try:
+        fresh = time.time() - datetime.strptime(str(prev.get("checked")), "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc).timestamp() < FULL_SECONDS
+    except ValueError:
+        fresh = False
+    if fresh and not notes and sig and sig == prev.get("sig"):  # idle: nothing new since the last full check
+        return {**prev, "last_run": now_iso(), "branch": branch, "ahead": ahead, "behind": behind, "pulled": 0, "pushed": 0, "timed_out": not clock.ok()}
+    with contextlib.suppress(Exception):
+        notes += vendored_skill.check(top, clock, home, skill_dir, throttle=False)
     with contextlib.suppress(Exception):
         import global_install
         global_install.ensure_gate(top)
-    branch = out(git(["symbolic-ref", "--short", "-q", "HEAD"], top, Clock(3), 3))
-    ahead, behind = counts(top, branch)
     text = " ".join(notes)
     pulled, pushed = (int(m.group(1)) if m else 0 for m in (re.search(r"fast-forwarded (\d+)", text), re.search(r"pushed (\d+) commit", text)))
     mess = {}
@@ -101,7 +120,7 @@ def sync_repo(top: Path, home: Path, skill_dir: Path, total: Clock, env: dict | 
     for note in (n for n in notes if n.startswith("EpicSpine attention:")):
         why = re.match(r"EpicSpine attention: repo (\S+) \((.*?)\) needs the user: (.*?)\. Tell the user", note)
         attention.append(f"{why.group(1)} ({why.group(2)}): {why.group(3)}" if why else note.removeprefix("EpicSpine attention: "))
-    return {"name": top.name, "last_run": now_iso(), "branch": branch, "ahead": ahead, "behind": behind, "pulled": pulled,
+    return {"name": top.name, "last_run": now_iso(), "checked": now_iso(), "sig": signature(top), "branch": branch, "ahead": ahead, "behind": behind, "pulled": pulled,
             "pushed": pushed, "timed_out": not clock.ok(), "attention": attention, "stale": list(filter(None, [epic_log.attention(top)])), "branches_pushed": mess.get("branches_pushed", 0),
             "mess": mess.get("mess", []), "dirty_since": mess.get("dirty_since"), "auto": mess.get("auto", []), "state": mess.get("state", {})}
 
@@ -190,6 +209,9 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Sync every repo under the repo roots (see module docstring).")
     parser.add_argument("-v", "--verbose", action="store_true", help="print one line per repo")
     args = parser.parse_args(argv)
+    with contextlib.suppress(Exception):  # idle IO for this run and its git children (cron adds nice -n 19)
+        if shutil.which("ionice"):
+            subprocess.run(["ionice", "-c3", "-p", str(os.getpid())], capture_output=True, timeout=5)
     try:
         return run(dict(os.environ), Path.home(), SKILL_DIR, args.verbose)
     except Exception:

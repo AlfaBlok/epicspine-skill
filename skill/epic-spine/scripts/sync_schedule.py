@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Schedule ``background_sync.py`` every 15 minutes: a tagged user-crontab entry (Linux) or a LaunchAgent (macOS).
+"""Schedule ``background_sync.py`` every 15 minutes, lowest CPU priority (``nice -n 19``; background_sync.py sets idle IO
+itself where ``ionice`` exists) and off the quarter hours (:07/:22/:37/:52, where other jobs pile up: E0-S43): a tagged
+user-crontab entry (Linux) or a LaunchAgent (macOS, ``Nice`` + ``LowPriorityIO``). An older tagged line is rewritten.
 
 Installed by ``agents_block.py install-global`` (removed by ``uninstall-global``, reported by ``check-global``) and
 re-ensured by rehook.py at session start, so a machine that self-updates gets it without a manual re-run. Only the
@@ -23,7 +25,7 @@ import install_guard as ig  # noqa: E402
 SKILL_DIR = Path(__file__).resolve().parent.parent
 MARK = "# epicspine-background-sync"
 LABEL = "dev.epicspine.sync"
-INTERVAL = 900
+INTERVAL, OFFSET = 900, 7
 SYSTEM_PATH = "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 
 
@@ -33,7 +35,7 @@ def target(skill_dir: Path) -> str:
 
 
 def cron_line(skill_dir: Path) -> str:
-    return f'*/{INTERVAL // 60} * * * * python3 "{target(skill_dir)}" >/dev/null 2>&1 {MARK}'
+    return f'{OFFSET}-59/{INTERVAL // 60} * * * * nice -n 19 python3 "{target(skill_dir)}" >/dev/null 2>&1 {MARK}'
 
 
 def plist_path(home: Path) -> Path:
@@ -46,6 +48,7 @@ def plist_text(skill_dir: Path) -> str:
             f"  <key>Label</key><string>{LABEL}</string>\n  <key>ProgramArguments</key>\n  <array>\n"
             f"    <string>/usr/bin/env</string><string>python3</string><string>{target(skill_dir)}</string>\n  </array>\n"
             f"  <key>StartInterval</key><integer>{INTERVAL}</integer>\n  <key>RunAtLoad</key><true/>\n"
+            "  <key>Nice</key><integer>19</integer>\n  <key>LowPriorityIO</key><true/>\n"
             f"  <key>EnvironmentVariables</key><dict><key>PATH</key><string>{SYSTEM_PATH}</string></dict>\n"
             "</dict>\n</plist>\n")
 

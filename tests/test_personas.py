@@ -219,3 +219,14 @@ class PersonaTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class FinishedRowAssigneeTests(unittest.TestCase):
+    """E5-S8: a finished row is nobody's queue, so its historic worker assignee is no error; open rows stay checked."""
+
+    def test_only_open_rows_checked(self):
+        import personas
+        rows = [{"Issue": f"E1-S{n}", "Status": s, "Owner / Assignment": "Worker (Sonnet 5.5)"}
+                for n, s in enumerate(("done (no confirm: plumbing)", "superseded (moved)", "cancelled", "draft", "review", "active (x)"), 1)]
+        errors = personas.assignee_errors(rows, ["builder"])
+        self.assertEqual([e.split(" (")[0] for e in errors], ["ledger row 5", "ledger row 6"])

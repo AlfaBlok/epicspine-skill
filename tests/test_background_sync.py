@@ -167,6 +167,26 @@ class SyncTest(Base):
         self.assertEqual(git(clone, "rev-parse", "HEAD"), git(other, "rev-parse", "HEAD"))
         self.assertTrue(entry["last_run"].endswith("Z"))
 
+    def test_an_idle_repo_only_fetches_until_a_new_commit_or_six_hours(self) -> None:  # E0-S43
+        bare, clone = self.repo("idle")
+        first = self.entry(clone)
+        self.assertEqual(first["checked"], first["last_run"])
+        with mock.patch.object(bg.local_mess, "guard", side_effect=AssertionError("full check on an idle repo")), \
+                mock.patch.object(bg.epic_log, "attention", side_effect=AssertionError("full check on an idle repo")):
+            self.assertEqual(self.entry(clone)["checked"], first["checked"])
+        other = self.other(bare, "o")
+        commit(other, "new", "x")
+        git(other, "push", "-q", "origin", "main")
+        with mock.patch.object(bg.local_mess, "guard", return_value={"mess": ["seen"]}) as guard:
+            entry = self.entry(clone)
+        self.assertEqual((guard.call_count, entry["pulled"], entry["mess"]), (1, 1, ["seen"]))
+        repos = json.loads((self.home / bg.STATUS).read_text())["repos"]
+        repos[str(clone.resolve())]["checked"] = "2020-01-01T00:00:00Z"
+        bg.save(self.home, repos, self.skill)
+        with mock.patch.object(bg.local_mess, "guard", return_value={}) as guard:
+            self.entry(clone)
+        self.assertEqual(guard.call_count, 1)
+
     def test_committed_work_is_pushed_never_forced(self) -> None:
         bare, clone = self.repo("p")
         commit(clone, "mine", "x")
@@ -476,7 +496,15 @@ class CronTest(Base):
 
     def test_exact_line(self) -> None:
         canon = install_guard.install_dir(self.skill) or self.skill  # the main checkout when the suite runs from a worktree
-        self.assertEqual(self.line, f'*/15 * * * * python3 "{canon}/scripts/background_sync.py" >/dev/null 2>&1 # epicspine-background-sync')
+        self.assertEqual(self.line, f'7-59/15 * * * * nice -n 19 python3 "{canon}/scripts/background_sync.py" >/dev/null 2>&1 # epicspine-background-sync')
+
+    def test_the_old_quarter_hour_line_is_rewritten_once(self) -> None:  # E0-S43: Skill updates: auto machines pick it up
+        (self.bin / "state").mkdir(parents=True, exist_ok=True)
+        (self.bin / "state" / "crontab").write_text(f'*/15 * * * * python3 "{self.skill}/scripts/background_sync.py" >/dev/null 2>&1 # epicspine-background-sync\nkeep\n')
+        self.assertEqual(sched.cron_state(self.skill), "stale")
+        self.assertEqual(sched.apply("install", self.home, self.skill)[0], "updated (user crontab, every 15 min)")
+        self.assertEqual(self.tab(), "keep\n" + self.line + "\n")
+        self.assertEqual(sched.cron_install(self.skill), "current")
 
     def test_install_is_idempotent_and_preserves_other_entries(self) -> None:
         foreign = "MAILTO=me@example.com\n20 5 * * * /usr/bin/backup --all\n"
@@ -541,6 +569,7 @@ class LaunchdTest(Base):
         self.assertEqual(data["Label"], "dev.epicspine.sync")
         self.assertEqual(data["StartInterval"], 900)
         self.assertTrue(data["RunAtLoad"])
+        self.assertEqual((data["Nice"], data["LowPriorityIO"]), (19, True))
         self.assertEqual(data["ProgramArguments"], ["/usr/bin/env", "python3", f"{install_guard.install_dir(self.skill) or self.skill}/scripts/background_sync.py"])
         self.assertIn("/opt/homebrew/bin", data["EnvironmentVariables"]["PATH"])
         self.assertEqual(self.plist, self.home / "Library" / "LaunchAgents" / "dev.epicspine.sync.plist")

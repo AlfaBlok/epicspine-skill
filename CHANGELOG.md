@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.11.11.2
+
+- The assignee check skips finished ledger rows (done, superseded, cancelled, moved: `claim.CLOSED`); open rows stay checked (EPIC-5 E5-S8).
+
 ## 2026.11.11.1
 
 - Social pack: the `zenod-counts#<field>` metric source reads Zenod's public counts endpoint (agent_team E80-S4).
