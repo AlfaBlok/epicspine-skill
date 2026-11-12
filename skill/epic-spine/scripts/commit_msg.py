@@ -4,7 +4,7 @@ ticket. A message that names no row, ask, epic or learning code (``E62-S2``, ``M
 ``L-46``) and no spine path (``docs/spines/….md``) gets one warning line; the commit always goes through (exit 0).
 Merges, reverts, fixups and the agent_team console's own writes (``via console``, desk chat, voice note) are exempt.
 The agent_team console lists such commits that reached main for the Delivery Manager (agent_team E63-S7, same patterns:
-console/server/src/status/orphanCommits.ts). ``python3 commit_msg.py --check "<message>"`` prints ok / orphan."""
+core/console/server/src/status/orphanCommits.ts). ``python3 commit_msg.py --check "<message>"`` prints ok / orphan."""
 
 from __future__ import annotations
 
