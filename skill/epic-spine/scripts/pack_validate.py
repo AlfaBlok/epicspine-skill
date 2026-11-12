@@ -15,7 +15,7 @@ from pathlib import Path
 
 import pack
 import pack_md as md
-from pack_checks import run_check
+from pack_checks import brief_reader, run_check
 
 def role_of(schema: dict, by: str | None = None, message: str | None = None) -> tuple[str | None, str | None]:
     """(role, issue): the writer's pack role, or None when unknown; an issue when it names no role of the pack."""
@@ -52,7 +52,7 @@ def route(lc: dict, prev: str | None, to: str, kind: str | None, role: str | Non
     return None
 
 
-def check_section(schema: dict, s: dict, at: str, new: str, old: str | None, role: str | None, source) -> list[str]:
+def check_section(schema: dict, s: dict, at: str, new: str, old: str | None, role: str | None, source, brief=None) -> list[str]:
     tag = f"{at} ## {s['heading']}" if s["heading"] else at
     text = md.body(new, s["heading"])
     if text is None:  # an optional section (Benefits, E71-S2) may be left out
@@ -124,7 +124,7 @@ def check_section(schema: dict, s: dict, at: str, new: str, old: str | None, rol
         passed = {f"{a}>{b}" for a, b in steps}
         targets = [b for a, b in steps]
         live = set(lc["path"][min([lc["path"].index(t) for t in targets if t in lc["path"]] or [len(lc["path"])]):])
-        ctx = {"rows": recs, "status": lk, "live": live, "source": source}
+        ctx = {"rows": recs, "status": lk, "live": live, "source": source, "brief": brief or (lambda code: "")}
         for key, c in schema.get("checks", {}).items():
             plats = [x.lower() for x in c.get("platforms", [])]
             kinds = [x.lower() for x in c.get("kinds", [])]
@@ -150,7 +150,7 @@ def validate(schema: dict, repo: Path, new, old, role: str | None = None, only: 
             return md.items(text)
         tbl = md.table(text)
         return [{k: r.get(f["column"], "") for k, f in s["fields"].items()} for r in (tbl[1] if tbl else [])]
-    out = []
+    out, brief = [], brief_reader(repo, new)
     for f in schema["files"].values():
         for s in f["sections"].values():
             path = md.where(f, s)
@@ -158,7 +158,7 @@ def validate(schema: dict, repo: Path, new, old, role: str | None = None, only: 
                 else sorted(str(p.relative_to(repo)) for p in repo.glob(path.replace("{date}", "*"))) if f.get("many") else [path]
             for p in paths:
                 if (only is None or p in only) and (text := new(p)) is not None:
-                    out += check_section(schema, s, p, text, old(p), role, source)
+                    out += check_section(schema, s, p, text, old(p), role, source, brief)
     return out
 
 

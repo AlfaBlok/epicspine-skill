@@ -2,7 +2,8 @@
 
 link_rule (max links, none on line n), disclosure (a phrase in the first lines), never_say (the brief's list),
 hold_rules (a quoted phrase, or `field: value` (several joined by commas all match; `none` = empty), from the brief's hold table: matched means held, not scheduled), caps
-(per platform: posts a day (threads_per_day, or threads_per_day_by_platform for that platform), posts per community a week (only on per_community_per_week_platforms, default Reddit), replies a day, counting rows in the live states), link_present,
+(per platform: posts a day (threads_per_day, or threads_per_day_by_platform for that platform), posts per community a week (only on per_community_per_week_platforms, default Reddit; the account's own profile `u/<handle>` takes
+profile_posts_per_day instead when the row's campaign brief names it, agent_team E60-S9), replies a day, counting rows in the live states), link_present,
 approved (a phrase in a field only the owner writes: a held post goes out with Jordi's `Approved` note in its Feedback; a DM
 reply with it in the message's Feedback), filled (a field is not empty: a sent DM reply records its send in Result)."""
 from __future__ import annotations
@@ -14,6 +15,34 @@ URL = re.compile(r"https?://\S+")
 # A line break in a ledger cell: `<br>`, a literal `\n`, a newline, or the paragraph mark " · " the posts ledger joins
 # paragraphs with (agent_team E61-S7: without it a whole post was line 1, so link_rule refused any link in it).
 BREAK = re.compile(r"<br\s*/?>|\\n|\n|\s+·\s+", re.I)
+
+
+# agent_team E60-S9: a Community cell that is the account's own Reddit profile (`u/jordimr`), as the console's ownHandle reads it.
+PROFILE = re.compile(r"/?u/([\w-]{3,20})", re.I)
+
+
+def profile_named(brief: str, handle: str) -> bool:
+    """The campaign brief names the profile as a place it posts: one line with both `u/<handle>` and the word profile."""
+    who = re.compile(rf"(?<![\w/])u/{re.escape(handle)}\b", re.I)
+    return any(who.search(x) and re.search(r"\bprofile\b", x, re.I) for x in (brief or "").splitlines())
+
+
+def brief_reader(repo, new):
+    """code -> a campaign's brief: the `## Campaign plan` of the spine whose title is `# <code>: …`, read once (agent_team E60-S9)."""
+    import pack_md as md
+    briefs: dict[str, str] = {}
+
+    def brief(code: str) -> str:
+        code = (code or "").strip()
+        if code and code not in briefs:
+            briefs[code] = ""
+            for sp in sorted(repo.glob("docs/spines/**/*.md")):
+                text = new(str(sp.relative_to(repo))) or ""
+                if re.match(rf"#\s+{re.escape(code)}\s*:", text):
+                    briefs[code] = md.body(text, "Campaign plan") or ""
+                    break
+        return briefs.get(code, "")
+    return brief
 
 
 def lines(rec: dict) -> list[str]:
@@ -92,8 +121,17 @@ def run_check(key: str, c: dict, rec: dict, ctx: dict) -> list[str]:
         live = [r for r in ctx["rows"] if r.get(ctx["status"], "").lower() in ctx["live"] and r.get("platform", "").lower() == plat]
         posts = [r for r in live if r.get("kind", "").lower() == "post"]
         cap = (p.get("threads_per_day_by_platform") or {}).get(plat, p.get("threads_per_day", 1e9))
-        if kind == "post" and len(n := [r for r in posts if day(r) == day(rec)]) > cap:
-            out.append(f"{len(n)} posts on {rec.get('platform')} on {day(rec)} (cap {cap} a day)")
+        # agent_team E86-S18 (Jordi via zenod-social EPIC-0-A27: "We should be doing multiple tweets every day in this
+        # phase"): an account named in threads_per_day_by_account (`<platform>:<community>`, e.g. x:@zenodmemory) takes
+        # its own day cap and counts only its own posts; every other account keeps the platform's cap, counted without them.
+        own = {k.strip().lower(): v for k, v in (p.get("threads_per_day_by_account") or {}).items()}
+        acct = lambda r: f"{plat}:{(r.get('community') or '').strip().lower()}"
+        if acct(rec) in own:
+            cap, mine, who = own[acct(rec)], [r for r in posts if acct(r) == acct(rec)], f"{rec.get('platform')} {rec.get('community')}"
+        else:
+            mine, who = [r for r in posts if acct(r) not in own], rec.get("platform")
+        if kind == "post" and len(n := [r for r in mine if day(r) == day(rec)]) > cap:
+            out.append(f"{len(n)} posts on {who} on {day(rec)} (cap {cap} a day)")
         try:
             week = dt.date.fromisoformat(day(rec)).isocalendar()[:2]
             same = [r for r in posts if r.get("community") and r.get("community") == rec.get("community")
@@ -104,7 +142,16 @@ def run_check(key: str, c: dict, rec: dict, ctx: dict) -> list[str]:
         # handle like X's @ZenodAgent (agent_team E78-S5); a pack lists its community platforms
         community_platforms = [x.lower() for x in p.get("per_community_per_week_platforms", ["reddit"])]
         if kind == "post" and plat in community_platforms and len(same) > p.get("per_community_per_week", 1e9):
-            out.append(f"{len(same)} posts in {rec.get('community')} that week (cap {p['per_community_per_week']} a week)")
+            # agent_team E60-S9 (Jordi 2026-11-10: "posting every day on Reddit what I accomplished"): the account's own
+            # profile (Community `u/<handle>`) is not a community with its own rules: a campaign whose brief names it
+            # gets one profile post a day there instead of one a week; the platform's day cap still counts it.
+            prof = PROFILE.fullmatch((rec.get("community") or "").strip())
+            if prof and profile_named(ctx.get("brief", lambda c: "")(rec.get("campaign", "")), prof.group(1)):
+                if len(n := [r for r in same if day(r) == day(rec)]) > p.get("profile_posts_per_day", 1):
+                    out.append(f"{len(n)} posts on the profile {rec.get('community')} on {day(rec)} (cap {p.get('profile_posts_per_day', 1)} a day)")
+            else:
+                out.append(f"{len(same)} posts in {rec.get('community')} that week (cap {p['per_community_per_week']} a week)"
+                           + (f" (a daily profile post needs its campaign's brief to name the profile {rec.get('community')})" if prof else ""))
         if kind != "post" and len(n := [r for r in live if r.get("kind", "").lower() != "post" and day(r) == day(rec)]) > p.get("replies_per_day", 1e9):
             out.append(f"{len(n)} replies on {rec.get('platform')} on {day(rec)} (cap {p['replies_per_day']} a day)")
         return out

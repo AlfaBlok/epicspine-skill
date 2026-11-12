@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.11.12.1
+
+- Social pack caps take a per-account day cap: `caps.params.threads_per_day_by_account`, keyed `<platform>:<community>` lowercased (an X row's Community is its handle), set to `{"x:@zenodmemory": 10}`, so @ZenodMemory may schedule up to 10 X posts a day; that account counts only its own posts and every other account keeps the platform cap counted without it; no key keeps the old behaviour (agent_team E86-S18, Jordi via zenod-social EPIC-0-A27).
+- Social pack caps let u/jordimr's own Reddit profile take one post a day when the campaign brief names it, instead of one a week, for the daily Day in the life post (agent_team E60-S9, Jordi's voice note 2026-11-10).
+
 ## 2026.11.11.6
 
 - `spines.py --json` reads a sibling checkout's ask states once per repo and only its tree and asks (no git log, page or persona pass), and a scan inside a scan keeps the outer one's read cache: zenod-social's read on VPS1 went from 117 s (seven full sibling scans) to a few seconds, output byte-identical (agent_team E6-S83, merged by E6-S85).
