@@ -18,6 +18,8 @@ assert SPEC and SPEC.loader
 migration = importlib.util.module_from_spec(SPEC)
 sys.modules[SPEC.name] = migration
 SPEC.loader.exec_module(migration)
+sys.path.insert(0, str(SCRIPTS))
+import doctrine  # noqa: E402
 
 
 class CompactStateTests(unittest.TestCase):
@@ -124,6 +126,39 @@ class CompactStateTests(unittest.TestCase):
         self.assertNotIn("next_action", document.state)
         document = self.document(original.replace("Execution status: ready", "Execution status: active"))
         self.assertTrue(any("conflicting state status:" in error for error in document.errors))
+
+    def test_current_state_status_wins_over_a_conflicting_execution_status(self):
+        # E48-S74: macro_dash's macro-1 had Current State `Status: active` and an
+        # Execution Cursor `Execution status:` that disagreed; the conflict read as no
+        # status (planning). Current State wins; the others are a validator warning.
+        original = (ROOT / "tests/fixtures/legacy-v1.md").read_text()
+        text = original.replace("Phase: implementation", "Status: active — pilot running\nPhase: implementation", 1)
+        document = self.document(text)
+        self.assertEqual("active — pilot running", document.state["status"])
+        self.assertFalse(any("conflicting state status" in error for error in document.errors))
+        warning = next(w for w in document.warnings if "conflicting state status" in w)
+        self.assertIn("Current State / Status", warning)
+        self.assertIn("Execution Cursor / Execution status", warning)
+        self.assertIn("preamble / Status", warning)
+        self.assertEqual("active", doctrine.status_word(text))
+        # two Current State Status lines that disagree still pick no winner
+        clash = text.replace("Phase: implementation", "Status: blocked\nPhase: implementation", 1)
+        document = self.document(clash)
+        self.assertNotIn("status", document.state)
+        self.assertTrue(any("conflicting state status:" in error for error in document.errors))
+        self.assertEqual("", doctrine.status_word(clash))
+
+    def test_single_status_spine_is_unchanged(self):
+        original = (ROOT / "tests/fixtures/legacy-v1.md").read_text()
+        text = original.replace("Execution status: ready\n", "").replace("Status: ready\n", "", 1)
+        text = text.replace("Phase: implementation", "Status: active\nPhase: implementation", 1)
+        document = self.document(text)
+        self.assertEqual("active", document.state["status"])
+        self.assertFalse(any("conflicting state" in m for m in document.errors + document.warnings))
+        self.assertEqual("active", doctrine.status_word(text))
+        document = self.document(self.source())
+        self.assertEqual([], document.warnings)
+        self.assertEqual("ready", doctrine.status_word(self.source()))
 
     def test_no_approved_work_is_an_explicit_valid_gate(self):
         document = self.document(self.source().replace("Approved work: Read and validate this synthetic example locally.", "Approved work: none"))
