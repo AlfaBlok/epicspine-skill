@@ -32,12 +32,12 @@ EpicSpine defines how a persona is written as a markdown file and how a standing
 Owner: Delivery Manager (agent-team console)
 Status: active
 Last attempted: 2026-11-14 DM wake run_3becf441: re-validated: infra-vps EPIC-15 --strict OK (f50dbc8), persona files OK in both repos; zenod-social root 4 errors (292d364); desk note 909a983; E5-S7 worker run_494cef71 started (claim-aware assignee check)
-Result: E5-1..E5-5 met; E5-6 half met: infra-vps EPIC-15 and all persona files --strict OK; zenod-social root 4 errors (2 its rows: a Decisions row above the separator, E0-S63 worker owner; 1 checker defect: claim.py lease owner flagged, fixing in E5-S7)
+Result: E5-1..E5-5 met; E5-6 half met: infra-vps EPIC-15 and all persona files --strict OK; checker now accepts claim.py lease owners (eeb73d6); zenod-social root 3 errors on 2 of its rows
 Evidence: infra-vps f50dbc8 (5bb1480 fix), zenod-social 292d364 validated 2026-11-14; desk notes 909a983 (zenod-social), 88ade64 (infra-vps reply closed)
 Waiting on: nobody
 Monitoring: zenod-social root strict-clean since 2026-11-11 until 2026-11-21 · next check 2026-11-16T08:00Z re-validate (desk note 909a983) · then tick E5-6, write the Outcome, Status review
 Approved work: none
-Next action: merge-check E5-S7 (run_494cef71); zenod-social fixes 2 rows (L-14); re-validate on its reply or 2026-11-16; tick E5-6 when it passes
+Next action: zenod-social fixes 2 rows (L-14, desk note 909a983); re-validate on its reply or 2026-11-16; tick E5-6 when it passes, then Outcome and Status review
 Source revision: main
 Verified at: 2026-11-14
 
@@ -63,7 +63,7 @@ Steps: each is independently testable and closes only with evidence.
 | E5-S4 | Ticket worker | worker run_98fc838e (with E6-S1) | validator accepts step codes (E5-S1) as Issue in row-as-ticket spines: spine_new.py scaffolds fail --strict | done | none | merged (branch deleted) | main | c804f48, merge 44ab11e; graph --strict 0 errors | 2026-10-24 | none |
 | E5-S5 | Ticket worker | worker run_83cd4392 | Jordi on a Team table needs no persona file | done | none | merged (branch deleted) | main | 89a1521, merge 085cf62; 730 tests OK | 2026-10-26 | none |
 | E5-S6 | Ticket worker | worker run_c14d5ebb (Sonnet 5.5, seat2) | persona files are not orphan pages (pre-commit flagged all 8 in infra-vps a465c42, zenod-social 19f0de9) | done | none | merged (branch deleted) | main | 4a19298, merge 8461a2c (release 2026.10.27.4; version renumbered from .3, collided with the pack release); 775 tests OK | 2026-10-27 | none |
-| E5-S7 | Delivery manager | Delivery Manager | E5-6: infra-vps EPIC-15 and zenod-social spines + persona files strict-clean | active | infra-vps EPIC-15 clean (2026-11-14); zenod-social root 2 errors on its rows (L-14, desk note 909a983) + claim.py lease owner flagged by assignee check (worker run_494cef71) | main | main | 2026-11-14: infra-vps EPIC-15 --strict OK (f50dbc8); zenod-social 14→4 (292d364); desk note 909a983; worker run_494cef71 on the claim-aware assignee check | 2026-11-14 | verify run_494cef71 commit; re-validate zenod-social on its reply or 2026-11-16; tick E5-6 when it passes |
+| E5-S7 | Delivery manager | Delivery Manager | E5-6: infra-vps EPIC-15 and zenod-social spines + persona files strict-clean | active | zenod-social root: 2 rows of its own (a Decisions row above the separator, E0-S63 worker owner; L-14, desk note 909a983) | main | main | 2026-11-14: infra-vps EPIC-15 --strict OK (f50dbc8); claim-aware assignee check eeb73d6 (run_494cef71, 920 tests OK, E0-S53 error gone); zenod-social 14→3 (292d364); desk note 909a983 | 2026-11-14 | re-validate zenod-social on its reply or 2026-11-16; tick E5-6 when it passes |
 | E5-S8 | Ticket worker | unassigned | assignee check skips finished rows: a done or superseded row is nobody's queue, so its historic worker assignee is not an error (9 of zenod-social's and 1 of infra-vps' strict errors) | done (no confirm: validator plumbing, its effect shows as fewer errors on other repos' spines) | none | main | main | personas.assignee_errors skips finished rows via claim.CLOSED (done/superseded/cancelled/moved), open rows stay checked; code + test landed in 72e37ce (swept in by the DM spine commit, 2026.11.11.2), old test updated in the E5-S8 commit; 915 tests OK; --strict: zenod-social root 21 → 14 errors (assignee 10 → 3, left: E0-S29 active, E0-S52 and E0-S59 review), infra-vps EPIC-15 14 → 13 (assignee 1 → 0); EPIC-0 --graph output unchanged | 2026-11-11 | none: E5-S7 desk-notes the remaining errors |
 
 ## Decisions
