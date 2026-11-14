@@ -11,7 +11,7 @@ import re
 import sys
 from pathlib import Path
 
-from claim import CLOSED
+from claim import CLOSED, LEASE
 
 FRONT = ("name", "template", "model", "host")
 BODY = ("Remit", "Reads", "Writes")
@@ -131,8 +131,12 @@ def team(rows: list[dict[str, str]], header: list[str], files: dict | None = Non
 def assignee_errors(rows: list[dict[str, str]], people: list[str], files: dict | None = None) -> list[str]:
     """Open (non-draft, unfinished: ``claim.CLOSED``) ledger rows whose assignee is neither a persona on the team (the persona files, else the Team table) nor Jordi."""
     known = set(files or people) | {HUMAN}
+
+    def ok(cell: str) -> bool:  # a claim (claim.py: `<holder> — claimed …, lease until …`) may be held by a persona or a run id
+        m = LEASE.search(cell)
+        return slug(cell[:m.start()] if m else cell) in known or bool(m and re.fullmatch(r"run_[\w-]+", cell[:m.start()].strip()))
     return [f"ledger row {n} ({r.get('Issue', '')}) is {r['Status']} but assignee {r.get('Owner / Assignment', '')!r} is not a team persona or Jordi"
-            for n, r in enumerate(rows, 1) if r.get("Status", "").lower() != "draft" and not CLOSED.match(r.get("Status", "")) and slug(r.get("Owner / Assignment", "")) not in known]
+            for n, r in enumerate(rows, 1) if r.get("Status", "").lower() != "draft" and not CLOSED.match(r.get("Status", "")) and not ok(r.get("Owner / Assignment", ""))]
 
 
 def epic_errors(path: Path, sections: dict[str, str], header: list[str], rows: list[dict[str, str]], table) -> list[str]:

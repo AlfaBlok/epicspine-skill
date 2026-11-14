@@ -230,3 +230,11 @@ class FinishedRowAssigneeTests(unittest.TestCase):
                 for n, s in enumerate(("done (no confirm: plumbing)", "superseded (moved)", "cancelled", "draft", "review", "active (x)"), 1)]
         errors = personas.assignee_errors(rows, ["builder"])
         self.assertEqual([e.split(" (")[0] for e in errors], ["ledger row 5", "ledger row 6"])
+
+    def test_claimed_owner_is_persona_or_run_id(self):
+        import personas
+        lease = " — claimed 2026-11-14T00:23Z, lease until 2026-11-14T02:23Z"
+        owners = ("run_f7441187-aa" + lease, "Builder" + lease, "Stranger" + lease, "run_f7441187-aa")
+        rows = [{"Issue": f"E1-S{n}", "Status": "active", "Owner / Assignment": o} for n, o in enumerate(owners, 1)]
+        errors = personas.assignee_errors(rows, ["builder"])
+        self.assertEqual([e.split(" (")[0] for e in errors], ["ledger row 3", "ledger row 4"])
