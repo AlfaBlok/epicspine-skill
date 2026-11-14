@@ -23,9 +23,9 @@ Last attempted: 2026-11-11 DM wake run_905a0cea: E0-S43 closed (background sync 
 Result: all three Done means met; awaiting Jordi's verification of the Outcome
 Evidence: 259ed38, 89554d8, a61f07b, 85a86fd; [evidence page](root/dod-evidence-2026-10-24.md)
 Waiting on: none
-Monitoring: E0-S43 closed (VPS1 sync CPU 89 s to 19.8 s, infra-vps told) and E5-S8 merged (915 tests OK); E5-5 dropped; E5-6 waits on infra-vps and zenod-social fixing the… · next check 2026-11-13T08:00:00.000Z
+Monitoring: EPIC-5 E5-6 zenod-social root strict-clean since 2026-11-11 until 2026-11-21 · next check 2026-11-16T08:00Z re-validate (infra-vps EPIC-15 already OK 2026-11-14; zenod-social desk note 909a983; E5-S7 claim-aware assignee fix run_494cef71) · then tick E5-6 and EPIC-5 Outcome
 Approved work: none open beyond this root's DOD
-Next action: EPIC-5 E5-6 waits on infra-vps and zenod-social fixing their own rows (desk notes 66dad38, 515149c; re-check 2026-11-13); Jordi marks the verdict on EPIC-6, EPIC-7, EPIC-9, EPIC-10 (review)
+Next action: EPIC-5 E5-6 waits on zenod-social fixing 2 rows (desk note 909a983, re-check 2026-11-16); infra-vps half passed 2026-11-14; Jordi marks the verdict on EPIC-6, EPIC-7, EPIC-9, EPIC-10 (review)
 Source revision: main
 Verified at: 2026-11-02
 
@@ -96,7 +96,7 @@ Done tickets (39 rows, Next Action done/none, moved verbatim): [done ledger](roo
 |---|---|---|---|---|---|
 | 2026-10-27 | accepted | Jordi via console: outcome marked accomplished, Status done | EpicSpine is a lean, always-on default: a cold agent binds with one `spines.py --bind` call (61 lines read, was 282), the 72-line SKILL.md kernel and Default Behaviors card ship with every installed copy linked to the canonical checkout, and 656 tests plus strict graph validation are green on main. | ## Outcome | — |
 | 2026-11-11 | accepted | reopened by E0-S43 (infra-vps desk note: background sync load on VPS1) | the root's Outcome stands; this row closes the reopen | desk/inbox/2026-11-10-infra-vps-vps1-load-the-epicspine-background-sync.md; run_905a0cea | when E0-S43 closes |
-| 2026-11-11 | accepted | 'Feature list from agent_team: …' commits (e.g. 6e24183, 07693cb) are the epicspine.dev feature list synced by `tools/feature_list.py` from agent_team's feature files (agent_team E43-S7); they belong to those agent_team rows, no epicspine-skill row | names the untagged commit 6e24183 | 6e24183; agent_team docs/features/*.json | never |
+| 2026-11-11 | accepted | 'Feature list from agent_team: …' commits (e.g. 6e24183, 07693cb) are the epicspine.dev feature list synced by `tools/feature_list.py` from agent_team's feature files (agent_team E43-S7); they belong to those agent_team rows, no epicspine-skill row | names the untagged commits 6e24183, 4e58ef4 ('features: …', same sync) | 6e24183, 4e58ef4; agent_team docs/features/*.json | never |
 
 21 decisions: [decisions table](root/decisions.md#decisions-table).
 
