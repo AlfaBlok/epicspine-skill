@@ -20,7 +20,7 @@
 <body>
 <header class="nav">
   <div class="container">
-    <a class="wordmark" href="https://epicspine.dev/testers/"><svg viewBox="0 0 32 32" aria-hidden="true"><g fill="#7c3bed"><path d="M6 0h20a6 6 0 0 1 6 6v16a6 6 0 0 1-6 6H15l-8 4v-4H6a6 6 0 0 1-6-6V6a6 6 0 0 1 6-6z"/></g><g fill="#fff"><g transform="translate(2.98 0) skewX(-12)"><path d="M8 8A4 4 0 0 1 12 4L24 4L24 8L14 8L14 12L20 12A4 4 0 0 1 24 16L24 20A4 4 0 0 1 20 24L8 24L8 20L18 20L18 16L12 16A4 4 0 0 1 8 12Z"/></g></g></svg>EpicSocial</a>
+    <a class="wordmark" href="/testers/"><svg viewBox="0 0 32 32" aria-hidden="true"><g fill="#7c3bed"><path d="M6 0h20a6 6 0 0 1 6 6v16a6 6 0 0 1-6 6H15l-8 4v-4H6a6 6 0 0 1-6-6V6a6 6 0 0 1 6-6z"/></g><g fill="#fff"><g transform="translate(2.98 0) skewX(-12)"><path d="M8 8A4 4 0 0 1 12 4L24 4L24 8L14 8L14 12L20 12A4 4 0 0 1 24 16L24 20A4 4 0 0 1 20 24L8 24L8 20L18 20L18 16L12 16A4 4 0 0 1 8 12Z"/></g></g></svg>EpicSocial</a>
     <a class="btn btn--small" href="#signup">Apply</a>
   </div>
 </header>
@@ -194,7 +194,8 @@
     else if (q.get("error") === "answers") document.getElementById("err-answers").style.display = "block";
     else if (q.get("error")) document.getElementById("err").style.display = "block";
     var src = q.get("utm_source") || q.get("src");
-    if (src) document.querySelector('input[name="source"]').value = "epicspine.dev/testers?" + src.slice(0, 40);
+    // agent_team E43-S16: the page is also served on epicsocial.app/testers/, so the source names the site it was sent from.
+    document.querySelector('input[name="source"]').value = location.hostname.replace(/^www\./, "") + "/testers" + (src ? "?" + src.slice(0, 40) : "");
     // agent_team E46-S18: free for 5 teams. The console's count of applications says whether the 5 places are applied for;
     // the form stays open either way (past 5 it is the waitlist). If the count can't be read, the page simply says nothing more.
     var spots = document.querySelectorAll("[data-places]");

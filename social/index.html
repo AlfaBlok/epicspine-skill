@@ -579,7 +579,7 @@ button, input, textarea { font: inherit; color: inherit; }
       <li><b>Nothing goes out without your OK.</b> Every post is a draft until you approve it.</li>
     </ul>
     <div class="paths">
-      <div><h3>Want to test it now?</h3><p>Testers run it on their own Reddit and X during the alpha, at about $10 a month. Read what we ask and apply at <a href="https://epicspine.dev/testers/">epicspine.dev/testers</a>.</p></div>
+      <div><h3>Want to test it now?</h3><p>Testers run it on their own Reddit and X during the alpha, at about $10 a month. Read what we ask and apply at <a href="../testers/">epicsocial.app/testers</a>.</p></div>
       <div><h3>Rather wait?</h3><p>Join the waitlist. We’ll write to you when EpicSocial opens to more people. Nothing to pay, no commitment. <a href="#join">Join the waitlist</a></p></div>
     </div>
   </div>
@@ -610,7 +610,7 @@ button, input, textarea { font: inherit; color: inherit; }
     <details><summary>What happens if I cancel?<svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></summary><p>The team stops working. Your files, with your brand voice, calendar, every post and every lesson, stay with you. You can even run the open-source team on them yourself.</p></details>
     <details><summary>Can I run it myself instead?<svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></summary><p>Yes. The engine is open source. Bring your own server and your own AI key and run it for free. The hosted plan is for people who’d rather we handle the servers, the setup and the AI costs.</p></details>
     <details><summary>What does “alpha” mean here?<svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></summary><p>It works and we use it every day, but it is early: things change from week to week, and we set each team up by hand with you. We are looking for testers to use it on their own accounts and tell us what is broken.</p></details>
-    <details><summary>Can I test it now?<svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></summary><p>Yes. Testers start during the alpha, at about $10 a month, with nothing to pay until your own team runs: <a href="https://epicspine.dev/testers/">epicspine.dev/testers</a>.</p></details>
+    <details><summary>Can I test it now?<svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></summary><p>Yes. Testers start during the alpha, at about $10 a month, with nothing to pay until your own team runs: <a href="../testers/">epicsocial.app/testers</a>.</p></details>
     <details><summary>What happens when I join the waitlist?<svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></summary><p>Nothing yet: we keep your email and write to you when EpicSocial opens to more people. No payment, no newsletter.</p></details>
   </div>
 </div></section>
@@ -619,7 +619,7 @@ button, input, textarea { font: inherit; color: inherit; }
   <div class="light" aria-hidden="true"><canvas data-light width="240" height="120"></canvas></div>
   <div class="container"><div class="join-card">
     <h2>Join the waitlist.</h2>
-    <p>EpicSocial is in alpha. Leave your email and we’ll write to you when it opens to more people. Nothing to pay, no commitment. Want to start now? <a href="https://epicspine.dev/testers/">Apply to test it</a>.</p>
+    <p>EpicSocial is in alpha. Leave your email and we’ll write to you when it opens to more people. Nothing to pay, no commitment. Want to start now? <a href="../testers/">Apply to test it</a>.</p>
     <form id="wl" method="post" action="https://signup.alpha9.io/api/public/testers">
       <label for="f-email">Email</label>
       <div class="row">
@@ -737,7 +737,7 @@ form.addEventListener('submit', (e) => {
 const q = new URLSearchParams(location.search);
 if (q.get('signed') === '1') {
   form.hidden = true; thanks.hidden = false;
-  thanks.innerHTML = '<h3>You’re on the list.</h3><p>Thanks. We’ll write to you when EpicSocial opens to more people. Nothing to pay. Want to start sooner? <a href="https://epicspine.dev/testers/">Apply to test it</a>.</p>';
+  thanks.innerHTML = '<h3>You’re on the list.</h3><p>Thanks. We’ll write to you when EpicSocial opens to more people. Nothing to pay. Want to start sooner? <a href="../testers/">Apply to test it</a>.</p>';
 } else if (q.get('error')) {
   const msg = { email: 'That email does not look right. Please check it.', too_many: 'Too many tries from here. Please try again in an hour.', full: 'The list is full for now. Please try again later.' }[q.get('error')] || 'Something went wrong. Please try again.';
   document.getElementById('e-email').textContent = msg;
