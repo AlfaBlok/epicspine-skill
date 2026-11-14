@@ -188,11 +188,11 @@ def parse_fields(text: str) -> dict[str, str]:
     return parse_key_values(preamble)
 
 
-def read_state(text: str, *, compact: bool = False) -> tuple[dict[str, str], dict[str, list[str]], list[str]]:
+def read_state(text: str, *, compact: bool = False, warnings: list[str] | None = None) -> tuple[dict[str, str], dict[str, list[str]], list[str]]:
     """Normalize execution facts without selecting a winner for contradictions.
 
     Values are single-line strings; provenance is source section/label/line.
-    Conflicting keys are omitted from the returned state and reported as errors.
+    Conflicting keys are omitted from the returned state and reported as errors (but a Current State Status beats other Status lines, those go to ``warnings``; E48-S74).
     This API is shared with migration and execution-only rollup consumers.
     """
     candidates: dict[str, list[tuple[str, str]]] = {}
@@ -233,6 +233,10 @@ def read_state(text: str, *, compact: bool = False) -> tuple[dict[str, str], dic
         # supply a trustworthy value to migration or rollup consumers.
         resolved = [(value, source) for value, source in entries if value and not value.startswith("<") and not (key == "status" and value.lower().startswith("draft | ready | active"))]
         distinct = {comparable(value) for value, _ in resolved}
+        current = [(x, src) for x, src in resolved if src.startswith("Current State /")] if key == "status" and len(distinct) > 1 else []
+        if len({comparable(x) for x, _ in current}) == 1:  # the Current State Status wins; the others warn so the owner tidies them (E48-S74)
+            warnings is None or warnings.append(f"conflicting state status: {current[0][1]} = {current[0][0]!r} wins over " + "; ".join(f"{src} = {x!r}" for x, src in resolved if (x, src) not in current) + "; remove or align the other Status lines")
+            resolved, distinct = current, {comparable(current[0][0])}
         if len(distinct) > 1:
             details = "; ".join(f"{source} = {value!r}" for value, source in resolved)
             errors.append(f"conflicting state {key}: {details}; reconcile explicitly before migration or rollup")
@@ -755,7 +759,7 @@ def validate_local(path: Path, *, dialect: str = "auto", ticket_source: Path | N
     compact = profile == "compact"
     if profile not in {"full", "compact"}:
         errors.append(f"unsupported Spine profile: {profile}; expected full or compact")
-    state, state_sources, state_errors = read_state(text, compact=compact)
+    state, state_sources, state_errors = read_state(text, compact=compact, warnings=warnings)
     errors.extend(state_errors)
 
     # A supported CLI selection overrides the declaration; it cannot conceal an

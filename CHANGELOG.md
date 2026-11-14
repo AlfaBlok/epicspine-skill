@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.11.13.1
+
+- When a spine has more than one Status line and they disagree, the `## Current State` one wins (`spines.py --json`, the bind view, the goal tree and every `read_state` reader), instead of the conflict reading as no status, which counted as planning and offered a stale "Mark ready" card; the validator names the other lines in a `conflicting state status: … wins over …` warning so the owner tidies them. Two Current State Status lines that disagree still pick no winner; a single Status line reads as before (agent_team E48-S74, found by E48-S61 on macro_dash's macro-1).
+
 ## 2026.11.12.1
 
 - Social pack caps take a per-account day cap: `caps.params.threads_per_day_by_account`, keyed `<platform>:<community>` lowercased (an X row's Community is its handle), set to `{"x:@zenodmemory": 10}`, so @ZenodMemory may schedule up to 10 X posts a day; that account counts only its own posts and every other account keeps the platform cap counted without it; no key keeps the old behaviour (agent_team E86-S18, Jordi via zenod-social EPIC-0-A27).
