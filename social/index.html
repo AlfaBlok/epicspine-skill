@@ -3,15 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>EpicSocial: AI agents that build your reputation. Join the waitlist.</title>
+<title>EpicSocial: AI agents that build your reputation. Your first 10 posts free.</title>
 <!-- agent_team E65-S5: one letter per product on logo C (E for EpicSpine, S for EpicSocial), made by agent_team console/scripts/gen-brand.mjs -->
 <link rel="icon" href="/favicon-social.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32-social.png" type="image/png" sizes="32x32">
 <link rel="icon" href="/favicon-16-social.png" type="image/png" sizes="16x16">
 <link rel="apple-touch-icon" href="/apple-touch-icon-social.png">
-<meta name="description" content="EpicSocial is a small team of AI agents that find ideas, write your posts and answer replies. You approve every post. Alpha release: join the waitlist, or apply to test it.">
+<meta name="description" content="EpicSocial is a small team of AI agents that find ideas, write your posts and answer replies. You approve every post. Try it: send your site link and our team writes your first 10 posts free, then €99 a month.">
 <meta property="og:title" content="EpicSocial: AI agents that build your reputation">
-<meta property="og:description" content="They find ideas, write posts and answer replies. You approve every post. Alpha release: join the waitlist.">
+<meta property="og:description" content="They find ideas, write posts and answer replies. You approve every post. Your first 10 posts free.">
 <meta name="theme-color" content="#f9f8f3">
 <link rel="preload" href="fonts/funnel-display-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/funnel-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
@@ -251,8 +251,8 @@ button, input, textarea { font: inherit; color: inherit; }
 .join form { display: grid; gap: var(--space-sm); margin-top: var(--space-xs); }
 .join .row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--space-xs); }
 .join label { font-size: var(--text-sm); font-weight: 500; }
-.join input[type=email] { min-height: 48px; width: 100%; padding: 0 var(--space-md); border: var(--rule-hair) solid var(--color-muted); border-radius: var(--radius-pill); background: var(--color-light); }
-.join input[type=email]:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+.join input[type=email], .join input[type=text] { min-height: 48px; width: 100%; padding: 0 var(--space-md); border: var(--rule-hair) solid var(--color-muted); border-radius: var(--radius-pill); background: var(--color-light); }
+.join input[type=email]:focus-visible, .join input[type=text]:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
 .join input[aria-invalid="true"] { border-color: var(--color-error); }
 .err { min-height: 1.4em; font-size: var(--text-sm); color: var(--color-error); }
 .privacy { font-size: var(--text-xs); color: var(--color-muted); }
@@ -375,7 +375,7 @@ button, input, textarea { font: inherit; color: inherit; }
     <a href="#pricing">Pricing</a>
     <a href="#faq">FAQ</a>
   </nav>
-  <a class="btn btn--sm" href="#join">Join the waitlist</a>
+  <a class="btn btn--sm" href="#trial">Start your trial</a>
 </div></header>
 
 <main>
@@ -384,10 +384,9 @@ button, input, textarea { font: inherit; color: inherit; }
     <h1>AI agents that build your reputation.</h1>
     <p class="lead">They find ideas, write posts and answer replies. You approve every post.</p>
     <div class="actions">
-      <a class="btn" href="#join">Join the waitlist</a>
-      <a class="btn btn--clear" href="#alpha">What alpha means</a>
+      <a class="btn" href="#trial">Send your link</a>
     </div>
-    <p class="note">Alpha release, for founders, small businesses and creators. The waitlist is free.</p>
+    <p class="note">The trial: we write your first 10 posts free. Then €99 a month.</p>
   </div>
 
   <div class="stage">
@@ -583,14 +582,13 @@ button, input, textarea { font: inherit; color: inherit; }
       <li><b>Nothing goes out without your OK.</b> Every post is a draft until you approve it.</li>
     </ul>
     <div class="paths">
-      <div><h3>Want to test it now?</h3><p>Testers run it on their own Reddit and X during the alpha, at about $10 a month. Read what we ask and apply at <a href="../testers/">epicsocial.app/testers</a>.</p></div>
-      <div><h3>Rather wait?</h3><p>Join the waitlist. We’ll write to you when EpicSocial opens to more people. Nothing to pay, no commitment. <a href="#join">Join the waitlist</a></p></div>
+      <div><h3>Want to try it now?</h3><p>Send your site link. Our team writes your first 10 posts free, you approve each one, and they go out on your own Reddit and X. <a href="#trial">Start your trial</a></p></div>
     </div>
   </div>
   <div class="price" id="pricing">
-    <h2 style="font-size: var(--text-2xl)">One plan, after the alpha.</h2>
-    <div class="amt">€99 <small>/ month, planned</small></div>
-    <p class="muted small">The price we plan once EpicSocial opens. During the alpha, testers pay about $10 a month, and the waitlist costs nothing.</p>
+    <h2 style="font-size: var(--text-2xl)">One plan, after your trial.</h2>
+    <div class="amt">€99 <small>/ month</small></div>
+    <p class="muted small">Your first 10 posts are free. After them, €99 a month by card, only if you want to keep going.</p>
     <ul>
       <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>4 AI agents: Ideas, Researcher, Writer, Responder</li>
       <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>3 posts a week, each researched, with a diagram</li>
@@ -598,7 +596,7 @@ button, input, textarea { font: inherit; color: inherit; }
       <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Weekly report and an approval inbox</li>
       <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Reddit and X, AI usage included</li>
     </ul>
-    <a class="btn" href="#join">Join the waitlist</a>
+    <a class="btn" href="#trial">Start your trial</a>
     <p class="muted small">Coming later: more posts a week, faster replies, more channels.</p>
   </div>
 </div></section>
@@ -614,28 +612,31 @@ button, input, textarea { font: inherit; color: inherit; }
     <details><summary>What happens if I cancel?<svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></summary><p>The team stops working. Your files, with your brand voice, calendar, every post and every lesson, stay with you. You can even run the open-source team on them yourself.</p></details>
     <details><summary>Can I run it myself instead?<svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></summary><p>Yes. The engine is open source. Bring your own server and your own AI key and run it for free. The hosted plan is for people who’d rather we handle the servers, the setup and the AI costs.</p></details>
     <details><summary>What does “alpha” mean here?<svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></summary><p>It works and we use it every day, but it is early: things change from week to week, and we set each team up by hand with you. We are looking for testers to use it on their own accounts and tell us what is broken.</p></details>
-    <details><summary>Can I test it now?<svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></summary><p>Yes. Testers start during the alpha, at about $10 a month, with nothing to pay until your own team runs: <a href="../testers/">epicsocial.app/testers</a>.</p></details>
-    <details><summary>What happens when I join the waitlist?<svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></summary><p>Nothing yet: we keep your email and write to you when EpicSocial opens to more people. No payment, no newsletter.</p></details>
+    <details><summary>Can I try it now?<svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></summary><p>Yes. Send your site link and our team writes your first 10 posts free. You approve each one before it goes out. <a href="#trial">Start your trial</a>.</p></details>
+    <details><summary>What happens after I send my link?<svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></summary><p>We write back within a day with a one-page brief about your product and your first drafts. You answer each one with yes, no, or a note. After your 10 posts, it is €99 a month by card, only if you want to keep going. Nothing to pay before that.</p></details>
   </div>
 </div></section>
 
-<section class="join" id="join">
+<section class="join" id="trial">
   <div class="light" aria-hidden="true"><canvas data-light width="240" height="120"></canvas></div>
   <div class="container"><div class="join-card">
-    <h2>Join the waitlist.</h2>
-    <p>EpicSocial is in alpha. Leave your email and we’ll write to you when it opens to more people. Nothing to pay, no commitment. Want to start now? <a href="../testers/">Apply to test it</a>.</p>
+    <h2>Your first 10 posts, free.</h2>
+    <p>Send your site link. Our team writes your first 10 posts, and you approve each one before it goes out on your account. After the 10, it is €99 a month by card, only if you want to keep going.</p>
     <form id="wl" method="post" action="https://signup.alpha9.io/api/public/testers">
+      <label for="f-link">Your site</label>
+      <input type="text" id="f-link" name="link" required maxlength="300" autocomplete="url" inputmode="url" placeholder="yoursite.com" aria-describedby="e-link">
+      <div class="err" id="e-link" role="alert"></div>
       <label for="f-email">Email</label>
       <div class="row">
         <input type="email" id="f-email" name="email" required maxlength="254" autocomplete="email" inputmode="email" placeholder="you@example.com" aria-describedby="e-email">
-        <button class="btn" type="submit">Join the waitlist</button>
+        <button class="btn" type="submit">Send my link</button>
       </div>
       <div class="err" id="e-email" role="alert"></div>
-      <input type="hidden" name="offer" value="waitlist-alpha">
+      <input type="hidden" name="offer" value="trial-10">
       <input type="hidden" name="source" value="social page">
-      <input type="hidden" name="back" value="https://epicspine.dev/social/">
+      <input type="hidden" name="back" value="https://epicsocial.app/">
       <div class="hp" aria-hidden="true"><label for="website">Leave this empty</label><input id="website" name="website" tabindex="-1" autocomplete="off"></div>
-      <p class="privacy">We keep only your email, on our own private list, to write to you about EpicSocial. No payment, no newsletter, no sharing. Ask us and we delete it.</p>
+      <p class="privacy">We keep your link and email on our own private list, only to write your posts and to write to you. No newsletter, no sharing. Ask us and we delete it.</p>
     </form>
     <div class="thanks" id="thanks" role="status" hidden></div>
   </div></div>
@@ -726,25 +727,32 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)');
   tick();
 })();
 
-// ---- Waitlist (E10-S6, EPIC-10-A2): a plain form post to the console's sign-up list (offer waitlist-alpha, email only, no payment).
-// The console answers 303 back to this page with ?signed=1 or ?error=<code>#join.
+// ---- The trial (agent_team E46-S46, was the waitlist of E10-S6): a plain form post to the console's sign-up list
+// (offer trial-10: the site link and an email; the team writes the first 10 posts free, then €99 a month by card).
+// The console answers 303 back to this page with ?signed=1 or ?error=<code>#trial.
 const form = document.getElementById('wl'), thanks = document.getElementById('thanks');
 form.querySelector('input[name=back]').value = location.origin + location.pathname;
 const src = new URLSearchParams(location.search).get('src');
 if (src) form.querySelector('input[name=source]').value = 'social page?' + src.slice(0, 40);
 form.addEventListener('submit', (e) => {
   const email = document.getElementById('f-email').value.trim(), bad = !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
+  const link = document.getElementById('f-link').value.trim(), badLink = !/^(https?:\/\/)?[a-z0-9-]+(\.[a-z0-9-]+)+(\/\S*)?$/i.test(link);
   document.getElementById('e-email').textContent = bad ? 'Please enter a valid email.' : '';
   document.getElementById('f-email').setAttribute('aria-invalid', bad ? 'true' : 'false');
-  if (bad) e.preventDefault();
+  document.getElementById('e-link').textContent = badLink ? 'Please enter your site, like yoursite.com.' : '';
+  document.getElementById('f-link').setAttribute('aria-invalid', badLink ? 'true' : 'false');
+  if (bad || badLink) e.preventDefault();
 });
 const q = new URLSearchParams(location.search);
 if (q.get('signed') === '1') {
   form.hidden = true; thanks.hidden = false;
-  thanks.innerHTML = '<h3>You’re on the list.</h3><p>Thanks. We’ll write to you when EpicSocial opens to more people. Nothing to pay. Want to start sooner? <a href="../testers/">Apply to test it</a>.</p>';
+  thanks.innerHTML = '<h3>We got your link.</h3><p>Thanks. Our team writes back within a day with a short brief about your product and your first drafts. Nothing goes out without your yes, and nothing to pay for your first 10 posts.</p>';
+} else if (q.get('paid') === '1') {
+  form.hidden = true; thanks.hidden = false;
+  thanks.innerHTML = '<h3>Thank you.</h3><p>Your EpicSocial plan is on. Your team keeps writing, and you keep approving every post.</p>';
 } else if (q.get('error')) {
-  const msg = { email: 'That email does not look right. Please check it.', too_many: 'Too many tries from here. Please try again in an hour.', full: 'The list is full for now. Please try again later.' }[q.get('error')] || 'Something went wrong. Please try again.';
-  document.getElementById('e-email').textContent = msg;
+  const msg = { email: 'That email does not look right. Please check it.', link: 'That link does not look right. Try yoursite.com.', too_many: 'Too many tries from here. Please try again in an hour.', full: 'The list is full for now. Please try again later.' }[q.get('error')] || 'Something went wrong. Please try again.';
+  document.getElementById(q.get('error') === 'link' ? 'e-link' : 'e-email').textContent = msg;
 }
 </script>
 <!-- page view counter (agent_team E46-S17, E80-S2): our own, no cookie, nothing about the visitor kept. It sends the post id of a link's ?s= and only the host name of the site the visitor came from, keeps ?s= on links to our other pages, and adds both to the sign-up form so an application keeps its source. --><script>(function(){var q=new URLSearchParams(location.search),s=(q.get("s")||"").slice(0,40),r="";try{r=document.referrer?new URL(document.referrer).hostname.replace(/^www\./,""):""}catch(e){}var i=new Image(1,1);i.referrerPolicy="no-referrer";i.src="https://signup.alpha9.io/api/public/pv?p=/social/&h="+encodeURIComponent(location.hostname)+(s?"&s="+encodeURIComponent(s):"")+(r?"&r="+encodeURIComponent(r):"");if(s)document.querySelectorAll("a[href]").forEach(function(a){var v=a.getAttribute("href");if(v.charAt(0)==="#")return;try{var h=new URL(v,location.href);if(h.hostname!==location.hostname||h.searchParams.has("s"))return;h.searchParams.set("s",s);a.setAttribute("href",h.pathname+h.search+h.hash)}catch(e){}});document.querySelectorAll("form[action*='signup.alpha9.io']").forEach(function(f){[["s",s],["ref",r],["site",location.hostname]].forEach(function(p){if(!p[1])return;var x=document.createElement("input");x.type="hidden";x.name=p[0];x.value=p[1];f.appendChild(x)});if(location.hostname!=="epicspine.dev")f.querySelectorAll("input[name=back]").forEach(function(b){b.value=location.origin+location.pathname})})})();</script><noscript><img src="https://signup.alpha9.io/api/public/pv?p=/social/" alt="" width="1" height="1" style="position:absolute;left:-9999px" referrerpolicy="no-referrer" loading="eager"></noscript>
