@@ -25,21 +25,34 @@ EpicSpine defines how a persona is written as a markdown file and how a standing
 - [x] E5-3 Tasks and hand-offs: a task is an Issue Ledger row with an assignee (Owner column) and a status; every persona wake starts with its queue (open rows assigned to it in the epics it is on); hand-off = reassign the row (several rows for several jobs); a task serving another goal goes in that goal's ledger with a link back; a task that outgrows a wake or two becomes a child epic. Every action is a commit signed by the persona; shared files keep a fixed shape; each section has a named writer via the assignment's write scope. (2026-10-24: references/persona-tasks.md, 69372e6)
 - [x] E5-4 Assignees must exist: the validator rejects a ledger row whose assignee is not a persona on that repo's team (persona files in the repo, or the epic's `## Team` table until files exist) or `Jordi`; `spines.py --json` lists each persona's queue. (2026-10-24: personas.assignee_errors + spines.py --json personas/queue; merge 1d4e9fc)
 - [x] E5-5 Asks as tasks: an ask to Jordi is a ledger row assigned to `Jordi` (same fields as an ask: what, why, impact, risk + rollback, recommendation); tried first on infra-vps EPIC-15, then adopted or dropped with a Decisions row. (2026-11-11: dropped as doctrine, Decisions row; asks stay coded `[ask]` lines under `## Waiting on`)
-- [ ] E5-6 Used for real: zenod-social and infra-vps EPIC-15 spines and their persona files validate, with every ledger assignee a real persona or Jordi.
+- [x] E5-6 Used for real: zenod-social and infra-vps EPIC-15 spines and their persona files validate, with every ledger assignee a real persona or Jordi. (2026-11-15: both --strict 0 errors on 2026-11-14, zenod-social root f1ab4ba, infra-vps EPIC-15 f50dbc8; persona files OK in both repos)
 
 ## Current State
 
 Owner: Delivery Manager (agent-team console)
-Status: active
-Last attempted: 2026-11-14 DM wake run_3becf441: re-validated: infra-vps EPIC-15 --strict OK (f50dbc8), persona files OK in both repos; zenod-social root 4 errors (292d364); desk note 909a983; E5-S7 worker run_494cef71 started (claim-aware assignee check)
-Result: E5-1..E5-5 met; E5-6 half met: infra-vps EPIC-15 and all persona files --strict OK; checker now accepts claim.py lease owners (eeb73d6); zenod-social root 3 errors on 2 of its rows
-Evidence: infra-vps f50dbc8 (5bb1480 fix), zenod-social 292d364 validated 2026-11-14; desk notes 909a983 (zenod-social), 88ade64 (infra-vps reply closed)
+Status: review
+Last attempted: 2026-11-15 DM wake run_a4f6ec93: zenod-social reply (f1ab4ba strict-clean) re-validated in its repo: 0 errors; infra-vps EPIC-15 f50dbc8 0 errors; E5-6 ticked, Outcome written
+Result: E5-1..E5-6 met; both repos' spines and persona files were --strict clean on 2026-11-14; each has since added one new row error of its own (desk-noted, their hygiene per L-14)
+Evidence: zenod-social f1ab4ba, infra-vps f50dbc8 (both --strict 0 errors, checked 2026-11-15); desk notes this run
 Waiting on: nobody
-Monitoring: zenod-social root strict-clean since 2026-11-11 until 2026-11-21 · next check 2026-11-16T08:00Z re-validate (desk note 909a983) · then tick E5-6, write the Outcome, Status review
 Approved work: none
-Next action: zenod-social fixes 2 rows (L-14, desk note 909a983); re-validate on its reply or 2026-11-16; tick E5-6 when it passes, then Outcome and Status review
+Next action: Jordi marks the verdict
 Source revision: main
-Verified at: 2026-11-14
+Verified at: 2026-11-15
+
+## Outcome
+
+Outcome: Personas are generic files, standing spines and assignee checks are doctrine, and two real repos (zenod-social, infra-vps) passed --strict with them.
+Risk: both repos keep adding rows; on 2026-11-15 each had one new strict error (zenod-social E0-S83 assignee text, infra-vps E15-S3 done without evidence), desk-noted to them; asks-as-tasks dropped (EPIC-5-A2).
+
+| Done means | Evidence |
+|---|---|
+| E5-1 | references/personas.md, personas.py; 633052c, merge 1d4e9fc |
+| E5-2 | references/standing-spines.md, standing.py; 721bfda, merge 1acbdde |
+| E5-3 | references/persona-tasks.md; 69372e6, 4c10634 |
+| E5-4 | personas.assignee_errors; merge 1d4e9fc; finished rows skipped 72e37ce; claim-aware eeb73d6 |
+| E5-5 | dropped, Decisions 2026-11-11, FYI EPIC-5-A2 |
+| E5-6 | zenod-social f1ab4ba, infra-vps f50dbc8: --strict 0 errors; persona files a465c42, 19f0de9 |
 
 ## Waiting on
 
@@ -63,7 +76,7 @@ Steps: each is independently testable and closes only with evidence.
 | E5-S4 | Ticket worker | worker run_98fc838e (with E6-S1) | validator accepts step codes (E5-S1) as Issue in row-as-ticket spines: spine_new.py scaffolds fail --strict | done | none | merged (branch deleted) | main | c804f48, merge 44ab11e; graph --strict 0 errors | 2026-10-24 | none |
 | E5-S5 | Ticket worker | worker run_83cd4392 | Jordi on a Team table needs no persona file | done | none | merged (branch deleted) | main | 89a1521, merge 085cf62; 730 tests OK | 2026-10-26 | none |
 | E5-S6 | Ticket worker | worker run_c14d5ebb (Sonnet 5.5, seat2) | persona files are not orphan pages (pre-commit flagged all 8 in infra-vps a465c42, zenod-social 19f0de9) | done | none | merged (branch deleted) | main | 4a19298, merge 8461a2c (release 2026.10.27.4; version renumbered from .3, collided with the pack release); 775 tests OK | 2026-10-27 | none |
-| E5-S7 | Delivery manager | Delivery Manager | E5-6: infra-vps EPIC-15 and zenod-social spines + persona files strict-clean | active | zenod-social root: 2 rows of its own (a Decisions row above the separator, E0-S63 worker owner; L-14, desk note 909a983) | main | main | 2026-11-14: infra-vps EPIC-15 --strict OK (f50dbc8); claim-aware assignee check eeb73d6 (run_494cef71, 920 tests OK, E0-S53 error gone); zenod-social 14→3 (292d364); desk note 909a983 | 2026-11-14 | re-validate zenod-social on its reply or 2026-11-16; tick E5-6 when it passes |
+| E5-S7 | Delivery manager | Delivery Manager | E5-6: infra-vps EPIC-15 and zenod-social spines + persona files strict-clean | done (no confirm: validator results across two repos, nothing for Jordi to open) | none | main | main | 2026-11-15: zenod-social root f1ab4ba --strict 0 errors (its reply desk note), infra-vps EPIC-15 f50dbc8 0 errors; claim-aware assignee check eeb73d6 | 2026-11-15 | none |
 | E5-S8 | Ticket worker | unassigned | assignee check skips finished rows: a done or superseded row is nobody's queue, so its historic worker assignee is not an error (9 of zenod-social's and 1 of infra-vps' strict errors) | done (no confirm: validator plumbing, its effect shows as fewer errors on other repos' spines) | none | main | main | personas.assignee_errors skips finished rows via claim.CLOSED (done/superseded/cancelled/moved), open rows stay checked; code + test landed in 72e37ce (swept in by the DM spine commit, 2026.11.11.2), old test updated in the E5-S8 commit; 915 tests OK; --strict: zenod-social root 21 → 14 errors (assignee 10 → 3, left: E0-S29 active, E0-S52 and E0-S59 review), infra-vps EPIC-15 14 → 13 (assignee 1 → 0); EPIC-0 --graph output unchanged | 2026-11-11 | none: E5-S7 desk-notes the remaining errors |
 
 ## Decisions
