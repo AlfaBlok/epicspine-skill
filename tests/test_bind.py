@@ -77,5 +77,31 @@ class BindTests(unittest.TestCase):
         self.assertLessEqual(len(out.splitlines()), 60, "root bind view is no longer lean")
 
 
+    def test_lean_view_prints_one_line_per_learning_and_the_newest_attempt(self):
+        """agent_team E6-S119 iteration 2: each learning one line, Last attempted its newest entry; --full and --learning keep everything."""
+        long_rule = "Pages lead with the answer. " + "Every page opens with a box and a diagram, then prose. " * 12 + "Why: Jordi asked."
+        (self.repo / "docs/EPIC-0-ROOT.md").write_text(spine("0", "Spine Type: root\nRoot spine: self").replace(
+            "Next action: act-0", "Last attempted: 2026-11-15T01:00Z newest ; before: 2026-11-14T01:00Z older ; 2026-11-13T01:00Z oldest\nNext action: act-0").replace(
+            "- L-0 | any | rule 0", f"- L-0 | any | rule 0 | why it was written | confirmed 2026-10-01\n- L-7 (2026-11-12): {long_rule}\n- L-8 (2026-11-12): short rule with a `curl x | sh` pipe."))
+        out = bind(self.repo)
+        self.assertIn("- L-0 | any | rule 0", out)
+        self.assertNotIn("why it was written", out)
+        line7 = next(l for l in out.splitlines() if l.startswith("- L-7 "))
+        self.assertTrue(line7.startswith("- L-7 (2026-11-12): Pages lead with the answer. Every page"), line7)
+        self.assertLessEqual(len(line7), 280)
+        self.assertTrue(line7.endswith(" …"))
+        self.assertIn("- L-8 (2026-11-12): short rule with a `curl x | sh` pipe.", out)
+        self.assertIn("full text: spines.py --learning L-n --bind docs/EPIC-0-ROOT.md", out)
+        self.assertIn("Last attempted: 2026-11-15T01:00Z newest ; (+2 earlier: --full)", out)
+        self.assertNotIn("oldest", out)
+        full = bind(self.repo, "--full")
+        for need in ("why it was written", "Why: Jordi asked.", "oldest"):
+            self.assertIn(need, full)
+        learn = subprocess.run([sys.executable, "-B", str(SPINES), "--repo", str(self.repo), "--learning", "L-7", "--bind", "EPIC-1"], capture_output=True, text=True, check=True).stdout
+        self.assertIn("docs/EPIC-0-ROOT.md: - L-7 (2026-11-12): " + long_rule.strip(), learn)
+        every = subprocess.run([sys.executable, "-B", str(SPINES), "--repo", str(self.repo), "--learning", "1"], capture_output=True, text=True, check=True).stdout
+        self.assertIn("docs/EPIC-1-LEAF.md: - L-1 | any | rule 1", every)
+        self.assertNotIn("L-0", every)
+
 if __name__ == "__main__":
     unittest.main()
