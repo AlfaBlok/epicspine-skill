@@ -8,7 +8,8 @@ The claim is written into the row itself, in one commit pushed to the repo's int
 cell becomes ``WHO — claimed <UTC>, lease until <UTC>`` and its Status ``active``. A live claim by someone else is
 refused (exit 3) and the message names the holder; a closed row (done, superseded, cancelled) is refused (exit 4).
 The worker's later commits that name the row renew the lease (the console reads them); ``--renew`` extends it by hand,
-``--release`` gives the row back (Owner ``unassigned``, Status ``ready``).
+``--release`` gives the row back (Owner ``unassigned``, Status ``ready``) when it is still active; a row the worker
+moved on (review, monitoring, waiting, blocked) keeps its status.
 
 It works on a fresh partial clone of the checkout's ``origin`` (never the caller's working tree, which may be dirty or
 on a worktree branch). A push rejected as non-fast-forward re-fetches, re-reads the row and re-checks the claim, up to
@@ -109,8 +110,13 @@ def attempt(clone: Path, a: argparse.Namespace, branch: str) -> tuple[int, str]:
     if a.release:
         if not held or held[0] != a.by:
             return 3, f"row {a.row} is not claimed by {a.by}; nothing released"
-        cells[oo] = " unassigned "
-        if not CLOSED.match(status):
+        # a row the worker already moved on (review, monitoring, waiting, blocked) keeps its status and names who did
+        # it; only a row still in the claim's own "active" goes back to ready (agent_team 15 Nov: release put E40-S46
+        # and E96-S52 back to ready right after their workers set review and monitoring)
+        if CLOSED.match(status) or not re.match(r"^\s*(active|ready)\b", status, re.I):
+            cells[oo] = f" {a.by} (delivered) ".replace("|", "/")
+        else:
+            cells[oo] = " unassigned "
             cells[so] = " ready "
         what = f"Release {a.row}: {a.by}"
     else:
