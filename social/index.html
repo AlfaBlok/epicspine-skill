@@ -10,6 +10,17 @@
 <link rel="icon" href="/favicon-16-social.png" type="image/png" sizes="16x16">
 <link rel="apple-touch-icon" href="/apple-touch-icon-social.png">
 <meta name="description" content="EpicSocial is a small team of AI agents that find ideas, write your posts and answer replies. You approve every post. Alpha release: join the waitlist, or apply to test it.">
+<!-- agent_team E46-S57 SEO pass: one address per page, a share picture and what the page is, for search engines -->
+<link rel="canonical" href="https://epicsocial.app/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://epicsocial.app/">
+<meta property="og:site_name" content="EpicSocial">
+<meta property="og:image" content="https://epicsocial.app/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="EpicSocial: AI agents that build your reputation">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"EpicSocial","url":"https://epicsocial.app/","applicationCategory":"BusinessApplication","operatingSystem":"Web","description":"EpicSocial is a small team of AI agents that find ideas, write your posts and answer replies. You approve every post. Alpha release: join the waitlist, or apply to test it."}</script>
 <meta property="og:title" content="EpicSocial: AI agents that build your reputation">
 <meta property="og:description" content="They find ideas, write posts and answer replies. You approve every post. Alpha release: join the waitlist.">
 <meta name="theme-color" content="#f9f8f3">
@@ -390,7 +401,7 @@ button, input, textarea { font: inherit; color: inherit; }
   </div>
 
   <div class="stage">
-    <div class="light" aria-hidden="true"><canvas data-light width="224" height="176"></canvas></div>
+    <div class="light" aria-hidden="true"><canvas data-light width="112" height="88"></canvas></div>
     <figure class="inbox" id="inbox" aria-label="Example: your team at work on one post">
       <div class="inbox-head">
         <p class="inbox-title">Your team, this week</p>
@@ -605,7 +616,7 @@ button, input, textarea { font: inherit; color: inherit; }
 </div></section>
 
 <section class="join" id="join">
-  <div class="light" aria-hidden="true"><canvas data-light width="240" height="120"></canvas></div>
+  <div class="light" aria-hidden="true"><canvas data-light width="120" height="60"></canvas></div>
   <div class="container"><div class="join-card">
     <h2>Join the waitlist.</h2>
     <p>EpicSocial is in alpha. Leave your email and we’ll write to you when it opens to more people. Nothing to pay, no commitment. Want to start now? <a href="../testers/">Apply to test it</a>.</p>
@@ -671,7 +682,7 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)');
       }
       ctx.putImageData(img, 0, 0);
     }
-    function loop(t) { if (!visible || reduce.matches) return; if (t - last > 40) { frame(t); last = t; } raf = requestAnimationFrame(loop); }
+    function loop(t) { if (!visible || reduce.matches) return; if (t - last > 66) { frame(t); last = t; } raf = requestAnimationFrame(loop); }
     frame(4200);
     new IntersectionObserver((es) => { visible = es[0].isIntersecting; cancelAnimationFrame(raf); if (visible && !reduce.matches) raf = requestAnimationFrame(loop); }).observe(cv);
   });

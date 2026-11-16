@@ -1,0 +1,10 @@
+# epicspine.dev (agent_team E46-S57): the product pages are for search engines; the skill's working files are not.
+User-agent: *
+Disallow: /desk/
+Disallow: /docs/
+Disallow: /tests/
+Disallow: /tools/
+Disallow: /examples/
+Allow: /
+
+Sitemap: https://epicspine.dev/sitemap.xml

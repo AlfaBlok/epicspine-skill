@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- agent_team E46-S57: epicspine.dev's public pages. /social/ and /team/ live at epicsocial.app and epicteam.app (their own sitemaps). -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://epicspine.dev/</loc><lastmod>2026-11-16</lastmod></url>
+  <url><loc>https://epicspine.dev/explainer/</loc><lastmod>2026-11-16</lastmod></url>
+  <url><loc>https://epicspine.dev/book/</loc><lastmod>2026-11-16</lastmod></url>
+</urlset>
