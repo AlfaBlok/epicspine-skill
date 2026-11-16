@@ -682,9 +682,14 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)');
       }
       ctx.putImageData(img, 0, 0);
     }
-    function loop(t) { if (!visible || reduce.matches) return; if (t - last > 66) { frame(t); last = t; } raf = requestAnimationFrame(loop); }
+    function loop(t) { if (!visible || !awake || reduce.matches) return; if (t - last > 66) { frame(t); last = t; } raf = requestAnimationFrame(loop); }
     frame(4200);
-    new IntersectionObserver((es) => { visible = es[0].isIntersecting; cancelAnimationFrame(raf); if (visible && !reduce.matches) raf = requestAnimationFrame(loop); }).observe(cv);
+    // agent_team E46-S57: the light moves from the visitor's first move, scroll or key (a still frame until then), so the
+    // page is ready to use at once on a phone instead of drawing light while it loads.
+    let awake = false;
+    const wake = () => { if (awake) return; awake = true; cancelAnimationFrame(raf); if (visible && !reduce.matches) raf = requestAnimationFrame(loop); };
+    for (const ev of ['pointermove', 'pointerdown', 'scroll', 'keydown', 'touchstart']) addEventListener(ev, wake, { once: true, passive: true });
+    new IntersectionObserver((es) => { visible = es[0].isIntersecting; cancelAnimationFrame(raf); if (visible && awake && !reduce.matches) raf = requestAnimationFrame(loop); }).observe(cv);
   });
 })();
 
