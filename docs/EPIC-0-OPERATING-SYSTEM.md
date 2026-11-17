@@ -95,7 +95,7 @@ Done tickets (39 rows, Next Action done/none, moved verbatim): [done ledger](roo
 |---|---|---|---|---|---|
 | 2026-10-27 | accepted | Jordi via console: outcome marked accomplished, Status done | EpicSpine is a lean, always-on default: a cold agent binds with one `spines.py --bind` call (61 lines read, was 282), the 72-line SKILL.md kernel and Default Behaviors card ship with every installed copy linked to the canonical checkout, and 656 tests plus strict graph validation are green on main. | ## Outcome | — |
 | 2026-11-11 | accepted | reopened by E0-S43 (infra-vps desk note: background sync load on VPS1) | the root's Outcome stands; this row closes the reopen | desk/inbox/2026-11-10-infra-vps-vps1-load-the-epicspine-background-sync.md; run_905a0cea | when E0-S43 closes |
-| 2026-11-11 | accepted | 'Feature list from agent_team: …' commits (e.g. 6e24183, 07693cb) are the epicspine.dev feature list synced by `tools/feature_list.py` from agent_team's feature files (agent_team E43-S7); they belong to those agent_team rows, no epicspine-skill row | names the untagged commits 6e24183, 4e58ef4 ('features: …', same sync) | 6e24183, 4e58ef4, c79e80b; agent_team docs/features/*.json | never |
+| 2026-11-11 | accepted | 'Feature list from agent_team: …' commits (e.g. 6e24183, 07693cb) are the epicspine.dev feature list synced by `tools/feature_list.py` from agent_team's feature files (agent_team E43-S7); they belong to those agent_team rows, no epicspine-skill row | names the untagged commits 6e24183, 4e58ef4 ('features: …', same sync) | 6e24183, 4e58ef4, c79e80b, de91424; agent_team docs/features/*.json | never |
 
 21 decisions: [decisions table](root/decisions.md#decisions-table).
 
