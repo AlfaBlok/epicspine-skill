@@ -286,6 +286,21 @@ class Validate(unittest.TestCase):
         self.assertIn("hold_rules: matches hold rule R1", self.after("Writer", {"status": "scheduled", "text": text}))
         self.assertEqual("", self.after("Writer", {"status": "held", "text": text}))
 
+    def test_slot_held_post_goes_back_on_schedule_without_approval(self) -> None:
+        # agent_team E6-S160 (Jordi vn_ab57eb2b: "don't ask me about the scheduling, the timing, the day"): a post the
+        # console held only because its slot passed needs no Approved note to go back on schedule; after his Revise
+        # requested note it does again.
+        note = "Held 2026-11-16 15:28 UTC: its slot 2026-11-15 14:00 passed and no free slot in the next 3 days"
+        held = {"status": "held", "slot": "2026-11-15 14:00", "feedback": note}
+        self.after(None, held)
+        self.repo.commit()
+        self.assertEqual("", self.after("Jordi", {**held, "status": "scheduled", "slot": "2026-11-20 14:00"}))
+        self.assertEqual("", self.after("Writer", {**held, "status": "scheduled", "slot": "2026-11-20 14:00"}))
+        revised = {**held, "feedback": note + "; Revise requested 2026-11-17 08:00 UTC: shorter"}
+        self.after("Jordi", revised)
+        self.repo.commit()
+        self.assertIn("approved: no approval from Jordi", self.after("Writer", {**revised, "status": "scheduled", "slot": "2026-11-20 14:00"}))
+
     def test_approval_gate_held_to_scheduled_needs_jordis_approved_note(self) -> None:
         # agent_team E46-S2: a campaign that wants every post approved holds them all (hold rule `Kind: post`);
         # Jordi's Approve writes "Approved" in Feedback; with feedback, the Writer applies it and schedules it.

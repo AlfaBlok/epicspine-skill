@@ -129,6 +129,11 @@ def check_section(schema: dict, s: dict, at: str, new: str, old: str | None, rol
             plats = [x.lower() for x in c.get("platforms", [])]
             kinds = [x.lower() for x in c.get("kinds", [])]
             if flds[lk]["lifecycle"] in c.get("lifecycles", [flds[lk]["lifecycle"]]) and passed & set(c.get("at", [])) and (not plats or rec.get("platform", "").lower() in plats) and (not kinds or kind in kinds):
+                # agent_team E6-S160: `unless` {field, pattern} skips the check for a row whose field matches (e.g. a post
+                # held only because its slot passed needs no new approval to go back on schedule).
+                u = c.get("unless")
+                if u and re.search(u["pattern"], rec.get(u["field"], "") or "", re.I | re.S):
+                    continue
                 for m in run_check(key, c, rec, ctx):
                     say(f"{key}: {m}")
     if lc and s.get("rows") != "replace":

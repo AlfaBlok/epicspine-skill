@@ -56,7 +56,7 @@ Every new campaign starts from one template, the Zenod testers marketing plan Jo
 | held | scheduled | Writer | Jordi approved it with feedback (`Approved with feedback <date>: …` in Feedback): the Writer applies it to the text, then schedules it |
 | scheduled | posted | Publisher | its slot; link in the same commit |
 | scheduled | expired | Publisher | best-before passed |
-| scheduled | held | Publisher | its slot passed over 24 h ago (the console moves such a post to its next free slot first, agent_team E34-S32) and Jordi has not released it since (his `Approved` or `Post now` note dated at or after the slot): a late post never goes out, it waits for Jordi (rule `no_late_post`, agent_team E60-S2) |
+| scheduled | held | Publisher | its slot passed over 24 h ago (the console moves such a post to its next free slot first, agent_team E34-S32) and Jordi has not released it since (his `Approved` or `Post now` note dated at or after the slot): a late post never goes out late; since agent_team E6-S160 the console re-slots it on every miss (after the Team Browser shows it did not go out) and never holds it for Jordi's scheduling, so this step is only for a post it could not move (rule `no_late_post`, agent_team E60-S2) |
 | draft | posted | Responder, Engager | reply / outreach rows, checks pass |
 | posted | measured | Reporter (any); Responder, Engager (their rows) | 48 h after posting |
 | draft, held, scheduled | pulled | Jordi | unscheduled, never goes out |
