@@ -204,43 +204,40 @@ class Validate(unittest.TestCase):
         self.assertIn("never_say: says never-say phrase 'revolutionary'", out)
 
     def test_caps(self) -> None:
-        out = self.after("Writer", {"status": "scheduled", "slot": "2026-10-29 10:00"})
-        self.assertIn("caps: 2 posts on Reddit on 2026-10-29 (cap 1 a day)", out)
+        # agent_team E46-S73 (Jordi 2026-11-18, vn_bb95d6bd: "I wanna post today 12 posts on every platform"): Reddit
+        # takes 12 posts a day across communities; each community keeps 1 a week.
+        r = {"status": "scheduled"}
+        twelve = [{**r, "id": f"P-05{i:02}", "slot": "2026-10-29 10:00", "community": f"r/c{i}"} for i in range(11)]
+        self.assertNotIn("caps:", self.after("Writer", *twelve))  # 11 more + the fixture's one = 12
+        thirteen = twelve + [{**r, "id": "P-0599", "slot": "2026-10-29 11:00", "community": "r/c99"}]
+        self.assertIn("caps: 13 posts on Reddit on 2026-10-29 (cap 12 a day)", self.after("Writer", *thirteen))
         self.assertIn("caps: 2 posts in r/other that week", self.after("Writer", {"status": "scheduled", "community": "r/other"}))
 
-    def test_caps_x_takes_three_posts_a_day(self) -> None:
-        # agent_team E78-S1 (the 15-day push): X has its own cap of 3 posts a day; Reddit keeps 1.
-        x = {"platform": "X", "status": "scheduled", "slot": "2026-10-30 09:00", "community": ""}
-        two = self.after("Writer", {**x, "id": "P-0010"}, {**x, "id": "P-0011", "slot": "2026-10-30 12:00"})
-        self.assertNotIn("caps:", two)
-        four = self.after("Writer", *[{**x, "id": f"P-001{i}", "slot": f"2026-10-30 1{i}:00"} for i in range(4)])
-        self.assertIn("caps: 4 posts on X on 2026-10-30 (cap 3 a day)", four)
+    def test_caps_x_takes_twelve_posts_a_day(self) -> None:
+        # agent_team E46-S73: every X account takes 12 a day (it was 3 since E78-S1).
+        x = {"platform": "X", "status": "scheduled", "community": ""}
+        twelve = [{**x, "id": f"P-01{i:02}", "slot": f"2026-10-30 {8 + i:02}:00"} for i in range(12)]
+        self.assertNotIn("caps:", self.after("Writer", *twelve))
+        thirteen = twelve + [{**x, "id": "P-0199", "slot": "2026-10-30 21:00"}]
+        self.assertIn("caps: 13 posts on X on 2026-10-30 (cap 12 a day)", self.after("Writer", *thirteen))
 
-    def test_caps_by_account_lets_one_account_take_ten_a_day(self) -> None:
-        # agent_team E86-S18 (Jordi via zenod-social EPIC-0-A27: "We should be doing multiple tweets every day in this
-        # phase"): x:@zenodmemory takes 10 X posts a day; its posts do not count against the other X accounts' 3.
-        z = {"platform": "X", "status": "scheduled", "community": "@ZenodMemory"}
-        ten = [{**z, "id": f"P-01{i:02}", "slot": f"2026-10-30 {8 + i:02}:00"} for i in range(10)]
-        self.assertNotIn("caps:", self.after("Writer", *ten))
-        eleven = ten + [{**z, "id": "P-0199", "slot": "2026-10-30 20:00"}]
-        self.assertIn("caps: 11 posts on X @ZenodMemory on 2026-10-30 (cap 10 a day)", self.after("Writer", *eleven))
-        other = {"platform": "X", "status": "scheduled", "community": "@OtherHQ"}
-        three = [{**other, "id": f"P-02{i:02}", "slot": f"2026-10-30 {9 + i:02}:30"} for i in range(3)]
-        self.assertNotIn("caps:", self.after("Writer", *ten, *three))
-        four = three + [{**other, "id": "P-0299", "slot": "2026-10-30 21:30"}]
-        self.assertIn("caps: 4 posts on X on 2026-10-30 (cap 3 a day)", self.after("Writer", *ten, *four))
-
-    def test_caps_by_account_lets_epicsocialhq_take_five_a_day(self) -> None:
-        # agent_team E46-S73 (Jordi 2026-11-18, dx_d9218a5f: "I want five posts on X"): @EpicSocialHQ takes 5 a day.
-        e = {"platform": "X", "status": "scheduled", "community": "@EpicSocialHQ"}
-        five = [{**e, "id": f"P-03{i:02}", "slot": f"2026-11-18 {9 + i:02}:00"} for i in range(5)]
-        self.assertNotIn("caps:", self.after("Writer", *five))
-        six = five + [{**e, "id": "P-0399", "slot": "2026-11-18 21:00"}]
-        self.assertIn("caps: 6 posts on X @EpicSocialHQ on 2026-11-18 (cap 5 a day)", self.after("Writer", *six))
+    def test_caps_by_account_counts_only_its_own_posts(self) -> None:
+        # agent_team E86-S18, E46-S73: x:@zenodmemory and x:@epicsocialhq take 12 each; their posts do not count
+        # against the other X accounts' 12.
+        for handle, day in (("@ZenodMemory", "2026-10-30"), ("@EpicSocialHQ", "2026-11-18")):
+            z = {"platform": "X", "status": "scheduled", "community": handle}
+            twelve = [{**z, "id": f"P-03{i:02}", "slot": f"{day} {8 + i:02}:00"} for i in range(12)]
+            self.assertNotIn("caps:", self.after("Writer", *twelve))
+            self.assertIn(f"caps: 13 posts on X {handle} on {day} (cap 12 a day)",
+                          self.after("Writer", *twelve, {**z, "id": "P-0399", "slot": f"{day} 21:00"}))
+            other = {"platform": "X", "status": "scheduled", "community": "@OtherHQ"}
+            more = [{**other, "id": f"P-04{i:02}", "slot": f"{day} {8 + i:02}:30"} for i in range(12)]
+            self.assertNotIn("caps:", self.after("Writer", *twelve, *more))
 
     def test_caps_by_account_absent_keeps_the_platform_cap(self) -> None:
-        # no threads_per_day_by_account: @ZenodMemory is one more X account at 3 a day, as before E86-S18
+        # no threads_per_day_by_account: @ZenodMemory is one more X account under the platform cap
         params = {k: v for k, v in SOCIAL["checks"]["caps"]["params"].items() if k != "threads_per_day_by_account"}
+        params["threads_per_day_by_platform"] = {"x": 3}
         z = {"platform": "X", "community": "@ZenodMemory", "kind": "post", "status": "scheduled"}
         rows = [{**z, "id": f"P-{i}", "slot": f"2026-10-30 1{i}:00"} for i in range(4)]
         out = pack_checks.run_check("caps", {"params": params}, rows[-1], {"rows": rows, "status": "status", "live": {"scheduled"}})
@@ -248,7 +245,7 @@ class Validate(unittest.TestCase):
 
     def test_caps_community_week_only_on_community_platforms(self) -> None:
         # agent_team E78-S5: X rows carry the account (@ZenodAgent) as their community; the weekly cap per
-        # community is Reddit's (subreddits), so X takes 3 a day all week; a Reddit community stays at 1 a week.
+        # community is Reddit's (subreddits), so X posts every day all week; a Reddit community stays at 1 a week.
         x = {"platform": "X", "status": "scheduled", "community": "@ZenodAgent"}
         rows = [{**x, "id": f"P-002{i}", "slot": f"2026-10-{27 + i // 3} 1{i % 3}:00"} for i in range(6)]
         self.assertNotIn("caps:", self.after("Writer", *rows))
@@ -272,10 +269,9 @@ class Validate(unittest.TestCase):
         self.assertIn("caps: 2 posts in u/jordimr that week", self.after("Writer", *week))  # no campaign: no brief
         # the brief must name this profile on its plan line: another handle or the Non-Goals part does not count
         self.assertIn("caps: 2 posts in u/someone that week", self.after("Writer", *[{**r, "campaign": "EPIC-15", "community": "u/someone"} for r in week]))
-        # Reddit's 1 a day still counts the profile post, and a second profile post that day is refused
+        # a second profile post that day is refused (Reddit's day cap of 12 still counts it)
         two = self.after("Writer", {**prof, "id": "P-0031", "campaign": "EPIC-15", "slot": "2026-10-30 09:00"},
                          {**prof, "id": "P-0032", "campaign": "EPIC-15", "slot": "2026-10-30 18:00"})
-        self.assertIn("caps: 2 posts on Reddit on 2026-10-30 (cap 1 a day)", two)
         self.assertIn("caps: 2 posts on the profile u/jordimr on 2026-10-30 (cap 1 a day)", two)
         # a subreddit keeps 1 a week, even for the campaign whose brief names the profile
         sub = [{"status": "scheduled", "community": "r/SideProject", "campaign": "EPIC-15", "id": f"P-004{i}", "slot": f"2026-10-{27 + i} 09:00"} for i in (0, 1)]
