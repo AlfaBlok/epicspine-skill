@@ -4,6 +4,9 @@
  * prefers-reduced-motion or ?still: each scene rests on its final frame and nothing moves until Play is pressed.
  */
 (function () {
+  // agent_team E97-S21 (Jordi 18 Nov: "second one is too slow"): scenes play 1.8 times faster and each holds its last
+  // frame 2.5 scene seconds (1.4 s) after it settles, so the wheel goes round in about 26 s instead of 64 s
+  var SPEED = 1.8, HOLD = 2.5;
   var root = document.querySelector('.loopp');
   if (!root || !window.LiveScenes) return;
   var host = root.querySelector('.loopp-scene');
@@ -47,9 +50,10 @@
     var dt = last ? Math.min((now - last) / 1000, 0.1) : 0;
     last = now;
     if (playing && on) {
-      elapsed += dt;
-      if (elapsed >= h.len) show(idx + 1);
-      else { h.draw(elapsed); bar.style.width = (100 * elapsed / h.len).toFixed(1) + '%'; }
+      elapsed += dt * SPEED;
+      var end = Math.min(h.len, (h.settle || h.len) + HOLD);
+      if (elapsed >= end) show(idx + 1);
+      else { h.draw(elapsed); bar.style.width = (100 * elapsed / end).toFixed(1) + '%'; }
     }
     requestAnimationFrame(tick);
   })(performance.now());
