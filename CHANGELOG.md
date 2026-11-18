@@ -2,6 +2,7 @@
 
 ## 2026.11.18.1
 
+- Social pack: posts a day per channel is the daily target the engine runs on, not only a cap: the console makes that many slots a day spread over the day, the Writer's and Publisher's wakes open on the open slots, a missed post moves to the next open one; change the number and all of it follows (agent_team E46-S83, Jordi 2026-11-18 vn_bd068df2: "If we just need to say today the goal is 12. And then automatically, because the goal is 12, it should happen").
 - Social pack caps: 12 posts a day on every platform (`threads_per_day` 12, no X-only cap), @ZenodMemory and @EpicSocialHQ 12 each; Reddit keeps 1 a week per community and the profile's 1 a day (agent_team E46-S73, Jordi 2026-11-18 vn_bb95d6bd: "I never asked for those caps ... I wanna post today 12 posts on every platform").
 - Social pack caps: @EpicSocialHQ may schedule 5 X posts a day (`threads_per_day_by_account` `"x:@epicsocialhq": 5`); other X accounts keep 3 (agent_team E46-S73, Jordi 2026-11-18: "I want five posts on X").
 
