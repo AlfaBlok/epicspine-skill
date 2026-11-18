@@ -224,11 +224,19 @@ class Validate(unittest.TestCase):
         self.assertNotIn("caps:", self.after("Writer", *ten))
         eleven = ten + [{**z, "id": "P-0199", "slot": "2026-10-30 20:00"}]
         self.assertIn("caps: 11 posts on X @ZenodMemory on 2026-10-30 (cap 10 a day)", self.after("Writer", *eleven))
-        other = {"platform": "X", "status": "scheduled", "community": "@EpicSocialHQ"}
+        other = {"platform": "X", "status": "scheduled", "community": "@OtherHQ"}
         three = [{**other, "id": f"P-02{i:02}", "slot": f"2026-10-30 {9 + i:02}:30"} for i in range(3)]
         self.assertNotIn("caps:", self.after("Writer", *ten, *three))
         four = three + [{**other, "id": "P-0299", "slot": "2026-10-30 21:30"}]
         self.assertIn("caps: 4 posts on X on 2026-10-30 (cap 3 a day)", self.after("Writer", *ten, *four))
+
+    def test_caps_by_account_lets_epicsocialhq_take_five_a_day(self) -> None:
+        # agent_team E46-S73 (Jordi 2026-11-18, dx_d9218a5f: "I want five posts on X"): @EpicSocialHQ takes 5 a day.
+        e = {"platform": "X", "status": "scheduled", "community": "@EpicSocialHQ"}
+        five = [{**e, "id": f"P-03{i:02}", "slot": f"2026-11-18 {9 + i:02}:00"} for i in range(5)]
+        self.assertNotIn("caps:", self.after("Writer", *five))
+        six = five + [{**e, "id": "P-0399", "slot": "2026-11-18 21:00"}]
+        self.assertIn("caps: 6 posts on X @EpicSocialHQ on 2026-11-18 (cap 5 a day)", self.after("Writer", *six))
 
     def test_caps_by_account_absent_keeps_the_platform_cap(self) -> None:
         # no threads_per_day_by_account: @ZenodMemory is one more X account at 3 a day, as before E86-S18
