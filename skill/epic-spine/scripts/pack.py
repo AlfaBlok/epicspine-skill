@@ -28,7 +28,7 @@ def available() -> list[str]:
 
 
 def load(name: str) -> dict:
-    return json.loads((PACKS / name / "schema.json").read_text(encoding="utf-8"))
+    return __import__("pack_params").lay_over(name, json.loads((PACKS / name / "schema.json").read_text(encoding="utf-8")))  # owner's numbers, E46-S93
 
 
 def enabled(repo: Path) -> list[str]:
