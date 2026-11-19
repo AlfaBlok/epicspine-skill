@@ -124,6 +124,23 @@ class SocialPack(unittest.TestCase):
             self.assertIn("Campaign", pack_role.role_text(SOCIAL, role).split("Campaign plan")[-1])
         self.assertNotIn("Campaign plan", pack_role.role_text(SOCIAL, "Publisher"))
 
+    def test_delivery_manager_is_the_worlds_senior_lead(self) -> None:
+        # agent_team E46-S89: the world's Delivery manager is its one senior lead (plan, objective, numbers, corrective action
+        # through the engine), never a second persona; only its wake text carries the lead remit.
+        import pack_role
+        lead = SOCIAL["lead"]
+        self.assertEqual("Delivery manager", lead["role"])
+        self.assertIn(lead["role"], SOCIAL["roles"])
+        for key in ("doc", "key_result", "reads", "every_wake", "may_change", "never", "talks", "briefings", "cadence"):
+            self.assertTrue(lead[key], key)
+        self.assertTrue(any("L-8" in x for x in lead["every_wake"]))
+        text = pack_role.role_text(SOCIAL, "Delivery manager")
+        self.assertIn("You lead this world", text)
+        self.assertIn("E46-S88", text)
+        for role in ("Writer", "Publisher", "Reporter"):
+            self.assertNotIn("You lead this world", pack_role.role_text(SOCIAL, role))
+        self.assertEqual([], pack.check(SOCIAL))
+
     def test_publisher_sends_only_its_own_campaigns_posts(self) -> None:
         # agent_team E60-S4: a Publisher acts only on its campaign's rows (empty Campaign = the repo level), never a retired campaign's.
         import pack_role

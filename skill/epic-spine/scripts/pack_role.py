@@ -58,6 +58,19 @@ def _reads(schema: dict) -> list[str]:
     return ["", "Read first, in this order, at every wake:"] + [f"{i}. `{x.split(' (')[0]}`" + (f" ({x.split(' (', 1)[1]}" if " (" in x else "") for i, x in enumerate(order, 1)] if order else []
 
 
+def _lead(schema: dict, role: str) -> list[str]:
+    """The senior lead's remit (agent_team E46-S89), from the schema's `lead` key, only for the role it names: what it reads,
+    what it does every wake, what it may change, what it never does, how the owner talks to it. Empty for any other role."""
+    lead = schema.get("lead") or {}
+    if lead.get("role") != role:
+        return []
+    out = ["", "## You lead this world (senior lead)", lead["doc"], "", f"Your key result: {lead['key_result']}. Cadence: {lead['cadence']}."]
+    for title, key in (("Read every wake", "reads"), ("Every wake, in this order", "every_wake"), ("You may change", "may_change"), ("Never", "never")):
+        out += ["", f"{title}:"] + [f"- {x}" for x in lead.get(key, [])]
+    out += ["", f"How {schema.get('owner') or 'the owner'} talks to you: {lead['talks']}", f"Your briefings: {lead['briefings']}."]
+    return out
+
+
 def role_text(schema: dict, role: str) -> str:
     """What one persona may do, from the schema alone, as Markdown for its wake prompt: duty, writable targets, status
     moves with their checks, the hold / approval rules that bind it, the commit signature. `role` is a key of `roles`."""
@@ -102,5 +115,6 @@ def role_text(schema: dict, role: str) -> str:
     if bind:
         out += ["", "Rules that bind you:"] + bind
     out += _benefits(schema)
+    out += _lead(schema, role)
     out += ["", f"Every step is a commit signed `Persona: {role}` (`EPICSPINE_PERSONA={role}`); the hook rejects an illegal transition."]
     return "\n".join(out) + "\n"
