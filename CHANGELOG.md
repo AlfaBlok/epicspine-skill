@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.11.19.1
+
+- Packs: the owner's numbers lie over a pack's check params: `pack.py load` reads `{"params": {"<pack>": {"<check>": {…}}}}` from the file `EPICSPINE_PACK_PARAMS` names, else `~/.config/epicspine/pack-params.json` (a map param merges key by key; no file, the pack's own), so the commit check agrees with the posts a day he sets in his console's Settings (agent_team E46-S93, Jordi closing E46-S87 on 19 Nov: change a posting number from Settings itself).
+
 ## 2026.11.18.1
 
 - Social pack: posts a day per channel is the daily target the engine runs on, not only a cap: the console makes that many slots a day spread over the day, the Writer's and Publisher's wakes open on the open slots, a missed post moves to the next open one; change the number and all of it follows (agent_team E46-S83, Jordi 2026-11-18 vn_bd068df2: "If we just need to say today the goal is 12. And then automatically, because the goal is 12, it should happen").

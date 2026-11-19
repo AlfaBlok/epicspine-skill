@@ -213,6 +213,31 @@ class Validate(unittest.TestCase):
         self.assertIn("caps: 13 posts on Reddit on 2026-10-29 (cap 12 a day)", self.after("Writer", *thirteen))
         self.assertIn("caps: 2 posts in r/other that week", self.after("Writer", {"status": "scheduled", "community": "r/other"}))
 
+    def test_caps_owner_numbers_from_settings(self) -> None:
+        # agent_team E46-S93 (Jordi closing E46-S87, 19 Nov: change a posting number from Settings itself): his number
+        # in the file EPICSPINE_PACK_PARAMS names lies over the pack's, so the commit check agrees with his console.
+        import os
+        with tempfile.TemporaryDirectory() as d:
+            f = Path(d) / "posting-numbers.json"
+            f.write_text(json.dumps({"params": {"social": {"caps": {"threads_per_day": 13, "threads_per_day_by_account": {"x:@other": 2}}}}}))
+            old = os.environ.get("EPICSPINE_PACK_PARAMS")
+            os.environ["EPICSPINE_PACK_PARAMS"] = str(f)
+            try:
+                p = pack.load("social")["checks"]["caps"]["params"]
+                self.assertEqual(p["threads_per_day"], 13)
+                self.assertEqual(p["threads_per_day_by_account"]["x:@other"], 2)
+                self.assertEqual(p["threads_per_day_by_account"]["x:@zenodmemory"], SOCIAL["checks"]["caps"]["params"]["threads_per_day_by_account"]["x:@zenodmemory"])
+                x = {"platform": "X", "status": "scheduled", "community": ""}
+                thirteen = [{**x, "id": f"P-06{i:02}", "slot": f"2026-10-30 {8 + i:02}:00"} for i in range(13)]
+                self.assertNotIn("caps:", self.after("Writer", *thirteen))
+                self.assertIn("caps: 14 posts on X on 2026-10-30 (cap 13 a day)", self.after("Writer", *thirteen, {**x, "id": "P-0699", "slot": "2026-10-30 22:00"}))
+            finally:
+                if old is None:
+                    os.environ.pop("EPICSPINE_PACK_PARAMS", None)
+                else:
+                    os.environ["EPICSPINE_PACK_PARAMS"] = old
+        self.assertEqual(pack.load("social")["checks"]["caps"]["params"]["threads_per_day"], SOCIAL["checks"]["caps"]["params"]["threads_per_day"])
+
     def test_caps_x_takes_twelve_posts_a_day(self) -> None:
         # agent_team E46-S73: every X account takes 12 a day (it was 3 since E78-S1).
         x = {"platform": "X", "status": "scheduled", "community": ""}
