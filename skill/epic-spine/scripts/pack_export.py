@@ -83,9 +83,10 @@ def table(sec: dict, start: int, body: list[str], rel: str, warn, states: dict, 
         if cols:
             warn(rel, start + i + 1, f"{what} column(s): {', '.join(cols)}")
     rows: list[dict] = []
-    for k in range(i + 2, len(body)):
-        if not body[k].strip().startswith("|"):
-            break
+    found, gaps = md.row_lines(body, i + 2)
+    if gaps:  # E46-S73: rows under a stray blank line still count; the gap is named so the file gets fixed
+        warn(rel, start + gaps[0] + 1, f"blank line inside the table ({len(gaps)} line(s)): the rows under it are read, but delete it (Markdown ends the table there)")
+    for k in found:
         line, c = start + k + 1, cells(body[k])
         if len(c) > len(head):
             warn(rel, line, f"row skipped: {len(c)} cells under {len(head)} columns (unescaped |?)")

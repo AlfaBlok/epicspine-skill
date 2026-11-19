@@ -65,6 +65,10 @@ def check_section(schema: dict, s: dict, at: str, new: str, old: str | None, rol
     if not tbl:
         return [f"{tag}: no table (pack.py init writes its header)"]
     head, raw = tbl
+    # E46-S73: a blank line inside the table hides every row under it from Markdown readers; refuse a change that adds one
+    gaps = md.table_gaps(text)
+    if len(gaps) > len(md.table_gaps(md.body(old, s["heading"]))):
+        return [f"{tag}: blank line inside the table (line {gaps[0] + 1} of the section): delete it, Markdown ends the table there and the rows under it are lost"]
     gone = [f["column"] for f in flds.values() if "computed" not in f and not f.get("optional") and f["column"] not in head]
     if gone:
         return [f"{tag}: missing column(s) {', '.join(gone)}"]

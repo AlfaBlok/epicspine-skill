@@ -61,6 +61,43 @@ def cells(line: str) -> list[str]:
     return [c.strip().replace("\\|", "|") for c in re.split(r"(?<!\\)\|", s)]
 
 
+def row_lines(lines: list[str], first: int) -> tuple[list[int], list[int]]:
+    """(indexes of the table rows from `first` on, indexes of blank lines found inside the table).
+
+    agent_team E46-S73 iteration 5: a blank line left inside a ledger (zenod-social's posts ledger, 18 Nov 18:12Z) ended
+    the table there, so every row under it (125 posts, every TikTok among them) vanished from the export: the console's
+    wake gate, Publisher brief and slot counts never saw them and nothing was sent. A blank line followed by more rows
+    (not a new table: no separator line under its first row) now continues the table; callers name the gap."""
+    rows: list[int] = []
+    gaps: list[int] = []
+    k = first
+    while k < len(lines):
+        if lines[k].lstrip().startswith("|"):
+            rows.append(k)
+            k += 1
+            continue
+        if lines[k].strip():
+            break
+        n = k
+        while n < len(lines) and not lines[n].strip():
+            n += 1
+        new_table = n + 1 < len(lines) and all(SEP.fullmatch(c) for c in cells(lines[n + 1]))
+        if n >= len(lines) or not lines[n].lstrip().startswith("|") or new_table:
+            break
+        gaps.extend(range(k, n))
+        k = n
+    return rows, gaps
+
+
+def table_gaps(text: str | None) -> list[int]:
+    """0-based line indexes (in `text`) of blank lines inside its first table."""
+    lines = (text or "").splitlines()
+    i = next((n for n, line in enumerate(lines) if line.lstrip().startswith("|")), len(lines))
+    if i + 1 >= len(lines) or not all(SEP.fullmatch(c) for c in cells(lines[i + 1])):
+        return []
+    return row_lines(lines, i + 2)[1]
+
+
 def table(text: str | None) -> tuple[list[str], list[dict[str, str]]] | None:
     """(header, rows as column -> cell) of the first table in `text`; None when there is none."""
     lines = (text or "").splitlines()
@@ -68,9 +105,8 @@ def table(text: str | None) -> tuple[list[str], list[dict[str, str]]] | None:
     if i + 1 >= len(lines) or not all(SEP.fullmatch(c) for c in cells(lines[i + 1])):
         return None
     head, rows = cells(lines[i]), []
-    for line in lines[i + 2:]:
-        if not line.lstrip().startswith("|"):
-            break
+    for k in row_lines(lines, i + 2)[0]:
+        line = lines[k]
         vals = cells(line)
         rows.append(dict(zip(head, vals + [""] * (len(head) - len(vals)))))
     return head, rows
