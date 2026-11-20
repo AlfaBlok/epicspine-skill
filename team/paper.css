@@ -151,13 +151,15 @@ main > :is(.band, .loopp):not(.hero) { border-top: 1px solid var(--line); }
 #channels .cap-w.partly { border: 0; box-shadow: inset 0 0 0 1px var(--accent); color: var(--accent); }
 #channels .cap-w.na { box-shadow: none; padding-inline: 0; }
 
-/* the price: one card, the chosen one, with the accent ring */
-.plan-card { border: 0; box-shadow: inset 0 0 0 1px var(--accent); border-radius: 6px; background: var(--bg); }
-.plan-card .amt { font: 400 clamp(3rem, 4vw + 1rem, 4.5rem)/1 var(--serif); letter-spacing: -0.02em; }
+/* the price: three seat bundles (agent_team E88-S65), the first with the accent ring */
+.plan-card { border: 0; box-shadow: inset 0 0 0 1px var(--line); border-radius: 6px; background: var(--bg); }
+.plan-card--lead { box-shadow: inset 0 0 0 1px var(--accent); }
+.plan-card .amt { font: 400 clamp(2.5rem, 3vw + 1rem, 3.5rem)/1 var(--serif); letter-spacing: -0.02em; }
 .plan-card .amt small { font: 400 1rem/1.3 var(--sans); color: var(--muted); }
-.plan-card h3 { font: 500 1.05rem var(--sans); }
-.plan-card ul { font: 400 1rem/1.5 var(--sans); color: var(--muted); }
-.plan-card .fine-print { font: 400 0.88rem/1.5 var(--sans); color: var(--muted); }
+.plan-card h3, .included h3 { font: 500 1.05rem var(--sans); }
+.plan-card .who { font: 400 1rem/1.5 var(--sans); color: var(--muted); }
+.included ul { font: 400 1rem/1.5 var(--sans); color: var(--muted); }
+.included .fine-print { font: 400 0.88rem/1.5 var(--sans); color: var(--muted); }
 
 /* the close: the only full green band, one action */
 .band#try { background: var(--accent); color: var(--accent-ink); border-top: 0; }

@@ -9,7 +9,7 @@
 <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
 <link rel="icon" href="favicon-16.png" type="image/png" sizes="16x16">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<meta name="description" content="Run 20+ agents automatically aligned to accomplish your objective. One objective fans out to a team of AI personas on up to 20 AI subscriptions; their work lands on its key results. One plan, €49 a month.">
+<meta name="description" content="Run 20+ agents automatically aligned to accomplish your objective. One objective fans out to a team of AI personas on up to 20 AI subscriptions; their work lands on its key results. Pick 2, 5 or 16 seats, from €289 a month, the AI and the servers included.">
 <!-- agent_team E46-S57 SEO pass: one address per page, a share picture and what the page is, for search engines -->
 <link rel="canonical" href="https://epicteam.app/">
 <meta property="og:type" content="website">
@@ -20,7 +20,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="EpicTeam: run 20+ agents aligned to your objective">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"EpicTeam","url":"https://epicteam.app/","applicationCategory":"BusinessApplication","operatingSystem":"Web","description":"Run 20+ agents automatically aligned to accomplish your objective. One objective fans out to a team of AI personas on up to 20 AI subscriptions; their work lands on its key results. One plan, €49 a month.","offers":{"@type":"Offer","price":"49","priceCurrency":"EUR"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"EpicTeam","url":"https://epicteam.app/","applicationCategory":"BusinessApplication","operatingSystem":"Web","description":"Run 20+ agents automatically aligned to accomplish your objective. One objective fans out to a team of AI personas on up to 20 AI subscriptions; their work lands on its key results. Pick 2, 5 or 16 seats, from €289 a month, the AI and the servers included.","offers":{"@type":"AggregateOffer","lowPrice":"289","highPrice":"1969","offerCount":"3","priceCurrency":"EUR"}}</script>
 <meta property="og:title" content="EpicTeam: run 20+ agents aligned to your objective">
 <meta property="og:description" content="One objective fans out to 20+ agents. Their results fan back in to its key results.">
 <meta name="theme-color" content="#f6f2e9">
@@ -39,19 +39,25 @@
 .nice-list li { display: grid; align-content: start; gap: var(--space-xs); padding: var(--space-md); border: 1px solid var(--color-rule); border-radius: var(--radius-card); background: var(--color-paper); }
 .nice-list h3 { font-size: var(--text-md); }
 .nice-list p { color: var(--color-ink-2); font-size: var(--text-sm); }
-/* agent_team E81-S5: one plan, one price (Jordi's E81-A3 answer: €49 a month, the customer's own API key by default) */
-.plan { display: grid; gap: var(--space-xl); grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); align-items: start; }
-.plan .say { display: grid; gap: var(--space-md); }
-.plan h2 { font-size: clamp(2rem, 2.2vw + 0.8rem, 3.25rem); max-width: 18ch; }
-.plan .was { max-width: 44ch; }
-.plan-card { display: grid; gap: var(--space-md); padding: var(--space-xl); border: 1px solid var(--color-rule); border-radius: var(--radius-card); background: var(--color-paper); }
-.plan-card .amt { font: var(--display-weight) clamp(3rem, 4vw + 1rem, 4.5rem)/1 var(--font-display); letter-spacing: var(--tracking-display); }
-.plan-card .amt small { font: 400 var(--text-md)/1.3 var(--font-body); letter-spacing: 0; color: var(--color-muted); }
+/* agent_team E88-S65: three seat bundles (Jordi's E88-S60 answer 2026-11-20: €289, €649, €1,969 for 2, 5, 16 seats) */
+.price { display: grid; gap: var(--space-xl); }
+.price .say { display: grid; gap: var(--space-md); }
+.price h2 { font-size: clamp(2rem, 2.2vw + 0.8rem, 3.25rem); max-width: 18ch; }
+.price .was { max-width: 52ch; }
+.bundles { display: grid; gap: var(--space-md); grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); }
+.plan-card { display: grid; gap: var(--space-sm); align-content: start; padding: var(--space-xl); border: 1px solid var(--color-rule); border-radius: var(--radius-card); background: var(--color-paper); }
+.plan-card--lead { border-color: var(--color-accent); }
 .plan-card h3 { font-size: var(--text-md); }
-.plan-card ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-xs); color: var(--color-ink-2); font-size: var(--text-md); }
-.plan-card li { display: flex; gap: var(--space-xs); }
-.plan-card li svg { flex: none; width: 18px; height: 18px; margin-top: 0.25em; color: var(--color-accent); }
-.plan-card .fine-print { color: var(--color-muted); font-size: var(--text-sm); }
+.plan-card .amt { font: var(--display-weight) clamp(2.5rem, 3vw + 1rem, 3.5rem)/1 var(--font-display); letter-spacing: var(--tracking-display); }
+.plan-card .amt small { font: 400 var(--text-md)/1.3 var(--font-body); letter-spacing: 0; color: var(--color-muted); }
+.plan-card .who { color: var(--color-ink-2); }
+.plan-card .btn { justify-self: start; margin-top: var(--space-xs); }
+.included { display: grid; gap: var(--space-sm); max-width: 44rem; }
+.included h3 { font-size: var(--text-md); }
+.included ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-xs); color: var(--color-ink-2); font-size: var(--text-md); }
+.included li { display: flex; gap: var(--space-xs); }
+.included li svg { flex: none; width: 18px; height: 18px; margin-top: 0.25em; color: var(--color-accent); }
+.included .fine-print { color: var(--color-muted); font-size: var(--text-sm); }
 @media (max-width: 40rem) { .plan-card { padding: var(--space-lg) var(--space-md); } }
 /* agent_team E97-S21 (Jordi 18 Nov: "far shorter ... dark background for screenshots ... fan out, fan in"): the short page */
 .band.hero h1 { font-size: clamp(2.25rem, 4.6vw, 4.5rem); max-width: 20ch; }
@@ -372,7 +378,7 @@
         <li><h3>Sign up or sign in with Google or GitHub</h3><p>Press Continue with Google or Continue with GitHub on EpicTeam or EpicSocial. A new account gets its own world, an existing one signs straight in.</p></li>
         <li><h3>The team emails you. Your reply finds its ticket.</h3><p>The team writes to you from its own mailbox about one task, with its code in the subject. Reply from any mail app and your words land on that task by themselves.</p></li>
         <li><h3>Your agents send from their own addresses</h3><p>The team mails from dm@epicteam.app and hello@epicsocial.app, and mail to those addresses reaches you. No paid mailboxes and no clicks per address.</p></li>
-        <li><h3>One plan, one price</h3><p>EpicTeam is one product at 49 euros a month with your own AI key, and the page says what it includes.</p></li>
+        <li><h3>Pick your seats</h3><p>EpicTeam comes in three bundles: 2, 5 or 16 seats at 289, 649 or 1,969 euros a month, the AI and the servers included. Each bundle has its own button, and the payment opens at its price.</p></li>
         <li><h3>Projects, not milestones.</h3><p>The screens say project wherever they used to say milestone, so each project reads as the thing you are building.</p></li>
         <li><h3>Your goals as a scorecard.</h3><p>Each pursuit you care about shows as one row with its deck, kit and value proposition one click away, and a mark for moving or stalled when nothing changed in three days.</p></li>
         <li><h3>One-time jobs, followed to done.</h3><p>A job that belongs to none of your goals, like a letter about a dispute, still runs from your voice note to a card you answer, and shows on the One-offs page in the side menu until it is done.</p></li>
@@ -387,7 +393,7 @@
         <li><h3>When what you waited for is ready, you hear about it.</h3><p>Anything you asked for, marked urgent or gave a deadline goes to the top of its own inbox section, which opens by itself, marked Ready for you with where it is and one button to open it, and a WhatsApp or mail tells you once.</p></li>
         <li><h3>Your workspace opens on one objective: Get set up</h3><p>A new account's workspace opens on one objective, Get set up, with five key results and a light on each: connect GitHub, create a goal, attach a persona, run it, and, if you want it, connect MCP for WhatsApp. The chat beside it works to turn them green. A second workspace you make from your account starts empty, for the objectives you choose.</p></li>
         <li><h3>Connect GitHub and pick your repo</h3><p>Press Connect GitHub on Home or under Settings, Connections, and say yes on GitHub's page. Then pick the repo your team works in. A repo that already holds your workspace opens with its goals and key results as they are. Or make a new private repo in your account and your workspace moves into it.</p></li>
-        <li><h3>Every goal keeps its shortlists</h3><p>Each goal has a Trackers tab: small tables with names, a status and notes, like the influencers you mean to invite. Some come with every goal, empty until your team fills them, and your team asks you before adding a new one.</p></li>
+        <li><h3>Every goal keeps its shortlists</h3><p>Each goal has a Trackers tab: small tables with names, a status and notes, like the influencers you mean to invite. Some come with every goal, empty until your team fills them, and your team asks you before adding a new one. Press a column to sort it, each status shows in colour, and the people proposed for the first message sit on top under the exact messages they would get.</p></li>
       </ul>
     </div>
   </section>
@@ -415,6 +421,7 @@
         <li><h3>A voice note from any page</h3><p>Tap the microphone in the top bar to send your team a voice note without leaving the page you are on.</p></li>
         <li><h3>Talk once, both desks hear it</h3><p>Say it to either desk, and the part meant for the other desk reaches it at once, in your own words.</p></li>
         <li><h3>One report a day from your desk.</h3><p>Every evening your desks send one WhatsApp and one email together: what each got done, the numbers that moved, and the one thing each needs from you.</p></li>
+        <li><h3>Your morning briefing on WhatsApp at 6:00.</h3><p>Every morning at 6:00 your time one WhatsApp brings what to start with, what went out yesterday and what goes out today, with four pictures: your objectives, the team's last day, each channel's week and the campaign plan. A briefing that does not arrive alerts you in 15 minutes. The last briefings' pictures also wait on Home under the Briefing button, earlier ones one tap away.</p></li>
         <li><h3>A strategist for each big project</h3><p>Three times a week a strategist reads all the open work of one project and its numbers, names what you are really after, says what moves it and what is busywork, and brings you a few recommendations with why.</p></li>
         <li><h3>Speak once on a card, both desks hear</h3><p>A voice note you leave on a card that also speaks to your other team reaches that desk once, and you get one line saying so.</p></li>
         <li><h3>Say it twice and the team checks it is live</h3><p>When you ask for the same thing twice, by voice or typed in the chat, the team opens the live screen on a phone and a laptop and checks it against your words. If it is not there, you get one red message saying what is missing. A typed message can also mark a card stale, not only a voice note.</p></li>
@@ -427,10 +434,12 @@
         <li><h3>Your evening brief is one picture of all your lights</h3><p>At 19:40 one WhatsApp picture shows every objective in your order with its lights, today's changes ringed, and the brief's words as its caption.</p></li>
         <li><h3>Your daily social digest shows what worked, best first</h3><p>At 20:00 one WhatsApp picture lists the last 24 hours of posts, best to worst by impressions and replies, so you see what works at a glance.</p></li>
         <li><h3>A voice note is never lost</h3><p>Every recorder keeps your audio on the device until the server confirms it, retries for days and shows waiting to send. A bad connection never costs you a note.</p></li>
-        <li><h3>Ask for a briefing and talk through your objectives</h3><p>Press Briefing or say brief me: your team shows each objective and its key results one by one, with each number and when it was measured, and you answer by voice. What you say is kept on that objective for the team.</p></li>
+        <li><h3>Sent in seconds, with a clear Sent mark</h3><p>Tap stop and your voice note says Sent as soon as your audio is safe on the server, then your words appear in the chat by themselves. A slow send alerts the team.</p></li>
+        <li><h3>Ask for a briefing and talk through your objectives</h3><p>Press Briefing or say brief me, in the chat or on a call: your team takes each objective and its key results one by one, with each number and when it was measured, and you answer by voice. What you say is kept on that objective for the team.</p></li>
         <li><h3>Go through your inbox on a call</h3><p>Call your team and say next: the voice already knows your inbox and your objectives, reads each card and what it asks you, and keeps track of which card you are on.</p></li>
         <li><h3>Call about one part of your inbox</h3><p>A phone button beside each inbox section, like Goals to set, starts a call that already holds those cards. It guides you one by one with each card and its evidence on your screen, asks what you want, presses your own button only after your spoken yes, and hands everything else to your team.</p></li>
         <li><h3>Every call is kept and checked like a voice note</h3><p>Each call with your team goes whole into your memory: your words, the voice's and everything the call did. A minute after you hang up, a check lists what you asked, what landed and anything that did not, and your team turns each gap into work.</p></li>
+        <li><h3>The call does what you say, and says done only when it is</h3><p>Say yes on a card and the call presses it, even when you ask for something else in the same breath. It says it landed only once the change is saved in your project, tells you each answer from your team on the question you asked, and when you give feedback or ask it not to interrupt, it listens until you are done.</p></li>
         <li><h3>Your desk tells you what it sent where, and asks you nothing in the chat</h3><p>Speak or type as much as you like. Your desk answers with each point you made and where it went, with a link. Its own advice goes to the teammate doing the work, and any question for you waits on your inbox, so nothing gets lost in the chat.</p></li>
       </ul>
     </div>
@@ -509,6 +518,8 @@
         <li><h3>Every link you see opens with one tap</h3><p>Any web address on a card, a question for you, a page or a chat message is a link you tap, on phone and laptop, and the team's cards are checked so none shows one you cannot open.</p></li>
         <li><h3>Every card answers with its buttons, then Voice or Text.</h3><p>Each card shows its own answer buttons in one even row, then Voice and Text. Voice records with one tap and sends with the next. Text opens a box for words and screenshots only when you want it, so no empty box fills the card. On a phone the buttons sit in even pairs.</p></li>
         <li><h3>Switch an objective off without losing it</h3><p>Each objective has a Switch off button. It stays in your list, greyed under Inactive with the day you switched it off, and leaves your goals to set, your counts, your inbox and your team's work until you switch it back on.</p></li>
+        <li><h3>Mark an objective done and keep it</h3><p>Each objective has a Mark done button. A reached objective moves under Done with its day, out of your goals to set, your counts, your inbox and your team's work, and Undo brings it back.</p></li>
+        <li><h3>Every choice shows its options</h3><p>A card that asks you to pick between options shows the link or picture of those options above its buttons, and every link looks like a link.</p></li>
       </ul>
     </div>
   </section>
@@ -562,8 +573,10 @@
         <li><h3>Each product keeps one map, and its key pages are tabs</h3><p>Every product has a fixed set of key pages, like its marketing plan, pricing and launch board. Each one is a tab on its goal, and every teammate reads them before working and updates them after.</p></li>
         <li><h3>Each objective reads plainly: its priority, its product, every status in a word</h3><p>Your objectives are numbered in your order. Each one says its priority, opens its product in its own tab, shows every target in full and says each key result's status in a word: at target, on its way, behind or not measured.</p></li>
         <li><h3>Your team works on servers of its own</h3><p>Each wake of your workspace's team runs on a fresh server made for you alone, and its Delivery Manager starts its workers there too. Your keys are read from your own vault and your repo is cloned for that one job, then wiped.</p></li>
-        <li><h3>Your team runs on your own AI</h3><p>On the Your AI page you paste your Anthropic API key, your own Claude login or another provider's key. It goes into your own team vault and every job of your team uses it, never ours.</p></li>
+        <li><h3>Your plan includes your team's AI</h3><p>Your team's AI comes with your plan as a bundle of seats, set up and run by us. Nothing to set up: no key, no AI account. The Your AI page shows how much of this hour's share your team has used.</p></li>
+        <li><h3>Or bring your own AI</h3><p>If you would rather use your own Anthropic API key, your own Claude login or another provider's key, paste it on the Your AI page. It goes into your own team vault and every job of your team uses it instead of the included AI.</p></li>
         <li><h3>Chat and call your team on your own AI</h3><p>Your team's chat answers on your own server with your own AI. Its Call uses your browser's own listening and voice, so every word stays on your AI.</p></li>
+        <li><h3>See every AI subscription your team runs on</h3><p>One screen shows each AI subscription, the agent working on it now, who used it today and how close it is to its limit.</p></li>
       </ul>
     </div>
   </section>
@@ -572,22 +585,41 @@
   </section>
 
   <section class="band" id="price" aria-labelledby="h-price">
-    <div class="container plan">
+    <div class="container price">
       <div class="say">
-        <h2 id="h-price">One plan. €49 a month.</h2>
-        <p class="was">You bring your own AI and your own server. We run the console that runs your team on them.</p>
+        <h2 id="h-price">Pick your seats. We run the rest.</h2>
+        <p class="was">A seat is one AI teammate working for you. We run the AI, the servers and the console, so there is nothing to set up.</p>
       </div>
-      <div class="plan-card">
-        <div class="amt">€49 <small>a month, one plan</small></div>
-        <h3>What the €49 covers</h3>
+      <div class="bundles">
+        <div class="plan-card plan-card--lead">
+          <h3>2 seats</h3>
+          <div class="amt">€289 <small>a month</small></div>
+          <p class="who">Two teammates for one project.</p>
+          <a class="btn btn--primary" href="https://cloud.epicteam.app/login?next=%2F%3Fbundle%3D2">Start with 2 seats</a>
+        </div>
+        <div class="plan-card">
+          <h3>5 seats</h3>
+          <div class="amt">€649 <small>a month</small></div>
+          <p class="who">Five teammates for a small business.</p>
+          <a class="btn" href="https://cloud.epicteam.app/login?next=%2F%3Fbundle%3D5">Start with 5 seats</a>
+        </div>
+        <div class="plan-card">
+          <h3>16 seats</h3>
+          <div class="amt">€1,969 <small>a month</small></div>
+          <p class="who">A whole AI company of sixteen.</p>
+          <a class="btn" href="https://cloud.epicteam.app/login?next=%2F%3Fbundle%3D16">Start with 16 seats</a>
+        </div>
+      </div>
+      <div class="included">
+        <h3>Every bundle includes</h3>
         <ul>
           <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Your own team page, inbox, goals and review cards, on phone and laptop</li>
           <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Every persona, on its own schedule</li>
-          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>We set up your server and keep it running</li>
-          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>As many AI seats as your server holds, in one pool</li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>The AI your seats use, set up and paid by us</li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Servers we make for your team and keep running</li>
           <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Your keys and sign-ins kept for your team only</li>
         </ul>
-        <p class="fine-print">You pay your AI and your server yourself. Prices before VAT.</p>
+        <p class="fine-print">Each bundle is €49 for the console plus €120 a seat. Billed monthly, cancel any time. Prices before VAT.</p>
       </div>
     </div>
   </section>
@@ -596,10 +628,10 @@
     <div class="container split">
       <div class="say">
         <h2 id="h-try">Want it for your team?</h2>
-        <p class="lead">EpicTeam runs our own work every day. Until it opens at €49 a month, the way in is the EpicSocial alpha, built on it.</p>
+        <p class="lead">Pick a bundle and sign up with Google, GitHub or email. Your team starts working once your plan is paid.</p>
         <div class="actions">
-          <a class="btn btn--primary" href="../testers/">Apply to test</a>
-          <a class="btn" href="../social/">See EpicSocial</a>
+          <a class="btn btn--primary" href="https://cloud.epicteam.app/login?next=%2F%3Fbundle%3D2">Start with 2 seats</a>
+          <a class="btn" href="#price">See the bundles</a>
         </div>
       </div>
     </div>
@@ -613,7 +645,7 @@
         <li><a href="#fan">20+ agents, one objective</a></li>
         <li><a href="#voice">Voice note to inbox</a></li>
         <li><a href="#flow">The wheel</a></li>
-        <li><a href="#price">One plan, €49 a month</a></li>
+        <li><a href="#price">Seats from €289 a month</a></li>
       </ul></div>
       <div><h2>The family</h2><ul>
         <li><a href="../">EpicSpine</a></li>
