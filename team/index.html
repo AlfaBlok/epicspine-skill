@@ -661,6 +661,18 @@
   </div>
 </footer>
 <script>
+// agent_team E88-S65: "Play it again" always shows it worked: the drawing goes back to its start, plays over two frames,
+// and the button says Playing… until it ends.
+window.replayBtn = function (btn, reset, play, ms) {
+  btn.addEventListener("click", function () {
+    reset();
+    btn.disabled = true; btn.textContent = "Playing…";
+    requestAnimationFrame(function () { requestAnimationFrame(play); });
+    setTimeout(function () { btn.disabled = false; btn.textContent = "Play it again"; }, ms);
+  });
+};
+</script>
+<script>
 // E97-S21: the fan-out, fan-in diagram plays once as it comes into view (about 3 s); "Play it again" replays it.
 (function () {
   var fig = document.querySelector(".ff-fig");
@@ -671,7 +683,7 @@
   var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { play(); io.disconnect(); } }, { threshold: 0.35 });
   io.observe(fig);
   again.hidden = false;
-  again.addEventListener("click", play);
+  replayBtn(again, function () { svgs.forEach(function (s) { s.classList.remove("play"); s.classList.add("wait"); }); }, function () { svgs.forEach(function (s) { s.classList.remove("wait"); s.classList.add("play"); }); }, 3200);
 })();
 </script>
 <script>
@@ -700,7 +712,7 @@
   }, { threshold: 0.4 });
   io.observe(wrap);
   again.hidden = false;
-  again.addEventListener("click", play);
+  replayBtn(again, function () { svgs.forEach(function (s) { s.classList.remove("play"); }); }, function () { svgs.forEach(function (s) { s.classList.add("play"); }); }, 3200);
 })();
 </script>
 <!-- page view counter (agent_team E46-S17, E80-S2, E85-S7): our own, no cookie, nothing about the visitor kept. It sends the post id of a link's ?s= and only the host name of the site the visitor came from, keeps ?s= on links to our other pages, and adds both to the sign-up form so an application keeps its source. --><script>(function(){var q=new URLSearchParams(location.search),s=(q.get("s")||"").slice(0,40),r="";try{r=document.referrer?new URL(document.referrer).hostname.replace(/^www\./,""):""}catch(e){}var i=new Image(1,1);i.referrerPolicy="no-referrer";i.src="https://signup.alpha9.io/api/public/pv?p=/team/&h="+encodeURIComponent(location.hostname)+(s?"&s="+encodeURIComponent(s):"")+(r?"&r="+encodeURIComponent(r):"");if(s)document.querySelectorAll("a[href]").forEach(function(a){var v=a.getAttribute("href");if(v.charAt(0)==="#")return;try{var h=new URL(v,location.href);if(h.hostname!==location.hostname||h.searchParams.has("s"))return;h.searchParams.set("s",s);a.setAttribute("href",h.pathname+h.search+h.hash)}catch(e){}});document.querySelectorAll("form[action*='signup.alpha9.io']").forEach(function(f){[["s",s],["ref",r],["site",location.hostname]].forEach(function(p){if(!p[1])return;var x=document.createElement("input");x.type="hidden";x.name=p[0];x.value=p[1];f.appendChild(x)});if(location.hostname!=="epicspine.dev")f.querySelectorAll("input[name=back]").forEach(function(b){b.value=location.origin+location.pathname})})})();</script><noscript><img src="https://signup.alpha9.io/api/public/pv?p=/team/" alt="" width="1" height="1" style="position:absolute;left:-9999px" referrerpolicy="no-referrer" loading="eager"></noscript>
