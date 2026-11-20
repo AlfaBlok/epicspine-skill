@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>EpicSocial: AI agents that build your reputation. Join the waitlist.</title>
+<title>EpicSocial: set one objective, an AI team runs your campaign</title>
 <!-- agent_team E65-S5: one letter per product on logo C (E for EpicSpine, S for EpicSocial), made by agent_team console/scripts/gen-brand.mjs -->
 <link rel="icon" href="/favicon-social.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32-social.png" type="image/png" sizes="32x32">
 <link rel="icon" href="/favicon-16-social.png" type="image/png" sizes="16x16">
 <link rel="apple-touch-icon" href="/apple-touch-icon-social.png">
-<meta name="description" content="EpicSocial is a small team of AI agents that find ideas, write your posts and answer replies. You approve every post. Alpha release: join the waitlist, or apply to test it.">
+<meta name="description" content="Set one objective and an AI team runs your social campaign: it writes, posts on X, Reddit, YouTube Shorts and TikTok, measures every post and sends you the numbers on WhatsApp each evening. Alpha: apply to test it.">
 <!-- agent_team E46-S57 SEO pass: one address per page, a share picture and what the page is, for search engines -->
 <link rel="canonical" href="https://epicsocial.app/">
 <meta property="og:type" content="website">
@@ -19,485 +19,348 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="EpicSocial: AI agents that build your reputation">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"EpicSocial","url":"https://epicsocial.app/","applicationCategory":"BusinessApplication","operatingSystem":"Web","description":"EpicSocial is a small team of AI agents that find ideas, write your posts and answer replies. You approve every post. Alpha release: join the waitlist, or apply to test it."}</script>
-<meta property="og:title" content="EpicSocial: AI agents that build your reputation">
-<meta property="og:description" content="They find ideas, write posts and answer replies. You approve every post. Alpha release: join the waitlist.">
+<meta name="twitter:title" content="EpicSocial: set one objective, an AI team runs your campaign">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"EpicSocial","url":"https://epicsocial.app/","applicationCategory":"BusinessApplication","operatingSystem":"Web","description":"Set one objective and an AI team runs your social campaign: it writes, posts, measures every post and sends you the numbers on WhatsApp each evening. Alpha: apply to test it."}</script>
+<meta property="og:title" content="EpicSocial: set one objective, an AI team runs your campaign">
+<meta property="og:description" content="It writes, posts, measures every post and tells you each evening on WhatsApp where it stands.">
 <meta name="theme-color" content="#f9f8f3">
+<!-- agent_team E46-S102 (Jordi 20 Nov, Team desk: "revamp epicsocial.app landing page, to showcase screenshot of real
+     campaigns with real okrs ... screenshot of digests I get on WhatsApp ... the wheel, the campaign manager ... a mini demo
+     ... via clean looking screenshot, use animated diagrams. Make it like epicteam.app and just add the social flavor").
+     Built like epicteam.app (E97-S21): short, one idea per screen, real screens on dark bands, animated diagrams; EpicSocial's
+     own fonts and pink. Every picture is real: the Zenod campaign on cloud.epicsocial.app in its dark look, taken read-only
+     20 Nov, and the evening WhatsApp pair sent 19 Nov 18:30 Mexico City; the signed-in account, one personal handle and one
+     private line are covered. -->
 <link rel="preload" href="fonts/funnel-display-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/funnel-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-<!-- EpicSocial waitlist (agent_team EPIC-10, E10-S4..S6; Hallmark redesign 2026-11-02 on Jordi's review). Published at epicspine.dev/social/. No trackers, no third-party requests: fonts are served from this site; the only outside request is the waitlist form post. -->
 <style>
-/* Hallmark · shape: Narrative Workflow (swapped from the draw's Stat-Led: the page tells how a post is made) · genre: atmospheric · theme: Refract (by request, with Cobalt and Console explored) · redesign: full · job: join
- * hero: Stage · nav: slab · footer: colophon block · imagery: the product built (the approval inbox, playing) · signature: a post drafted, approved and answered live on water light · refract: water/pool, accent swapped to a bright pink at Jordi's ask
- * axes: light/grotesk-sans/cool · posture: restrained · contrast: pass · fold: pass · draw: b45a7a · v2.0.0 */
-/* Hallmark · pre-emit critique: P4 H5 E4 S4 R4 V4 · weakest: S, a waitlist page could be anyone's; led with the real post flow (idea, research, draft, your OK, replies) playing in the hero instead of claims */
-/* Hallmark · waive 47c · the approval inbox built as a sample inside the hero figure · the inbox is private to each customer, no public screen to capture */
-/* Hallmark · E43-S8 round 2 (agent_team, Jordi 2026-11-08) · each benefit is one unit as on EpicSpine and EpicTeam: the headline first, its screen beside it in a window capped at min(480px, 60vh); the campaign tree shows three steps at a glance, the rest behind "Show more of the tree" */
-/* Hallmark · waive 77 · "On Reddit and X, every day." · its real screen is a wide strip of daily numbers, shown whole */
-/* Hallmark · E43-S7 round 3 (EPIC-43 L-1) · the five benefit lines of EPIC-71 (draft) each shown by one real social.alpha9.io screen, taken read-only (agent_team console/scripts/e43-benefit-shots.mjs), the benefit named after it; the hero keeps its built sample */
-/* Hallmark · waive 83 · every picture below the hero is the product's own screen, one per benefit · EPIC-43 L-1, Jordi 2026-11-06: show each benefit with its real screen, first and largest */
-/* Hallmark · dropped #real, #flow, #team, #week, #get and the sample week script · round 3: explanation the real screens make unnecessary */
-/* Hallmark · reworded "Idea persona" to "Ideas agent", "four AI personas" to "four AI agents" · Jordi: not too techy, AI agents */
-/* Hallmark · waive 79 · the water stage runs to y 860 at 1440 x 900 · only the head column ends at 726, the hero's lit panel fills the screen */
-/* Hallmark · waive 44c · Stage visual bleeding off the outer edge · the water light runs to the right edge of the window by design of the hero */
-/* Hallmark · dismissed 59 · ten blocks: the hero, the five benefit lines of EPIC-71 (each needs its own screen), alpha, questions, the waitlist and the footer */
-/* Hallmark · dismissed 70 · the thanks shows only on ?signed=1, after the console at team.alpha9.io/api/public/testers stored the email and answered 303 */
-/* Hallmark · answered F7 · avatars, status chips and the day picker are round like the controls they sit with, by the theme's soft-pill language */
-/* Hallmark · dropped #how (five setup steps), the repo tree and "Under the hood: two ideas" · Jordi: minimalist, not too techy; ownership kept as one plain section, setup kept in the alpha list */
-
 @font-face { font-family: "Funnel Display"; src: url("fonts/funnel-display-latin.woff2") format("woff2"); font-weight: 300 500; font-display: swap; }
 @font-face { font-family: "Funnel Sans"; src: url("fonts/funnel-sans-latin.woff2") format("woff2"); font-weight: 400 500; font-display: swap; }
-
 :root {
   color-scheme: light;
-  --space-3xs: 2px; --space-2xs: 4px; --space-xs: 8px; --space-sm: 12px; --space-md: 16px; --space-lg: 24px; --space-xl: 40px; --space-2xl: 64px; --space-3xl: 96px; --space-4xl: 144px;
-  --text-xs: 0.8125rem; --text-sm: 0.875rem; --text-md: 1rem; --text-lg: 1.25rem; --text-xl: 1.5625rem; --text-2xl: 1.953rem; --text-3xl: 2.441rem;
-  --text-display: clamp(2.75rem, 4.4vw + 1rem, 5rem);
-  --text-section: clamp(2rem, 2.5vw + 1rem, 3.5rem); --text-title: clamp(1.25rem, 0.75vw + 0.875rem, 1.625rem); --text-lead: clamp(1.125rem, 0.35vw + 1rem, 1.375rem);
-  --text-figure: clamp(3.5rem, 5vw + 1rem, 6rem);
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --dur-micro: 120ms; --dur-short: 220ms; --dur-long: 420ms;
-  --container: 1360px; --gutter: 64px; --gap-columns: 32px; --section-gap-s: 120px; --section-gap: 144px;
-  --z-raised: 10; --z-sticky-nav: 300;
-  --color-paper: oklch(98.2% 0.006 95); --color-paper-2: oklch(96.4% 0.006 95); --color-paper-3: oklch(93.6% 0.008 95);
-  --color-ink: oklch(23% 0.035 245); --color-ink-2: oklch(36% 0.035 245); --color-muted: oklch(48% 0.025 240);
-  --color-rule: oklch(89.5% 0.008 230); --color-rule-2: oklch(80% 0.012 230);
-  --color-accent: oklch(55% 0.235 358); --color-accent-hi: oklch(49% 0.22 358); --color-accent-ink: oklch(99% 0.003 95);
-  --color-accent-soft: oklch(95% 0.03 358); --color-accent-bright: oklch(66% 0.25 358);
-  --color-focus: oklch(50% 0.2 358);
-  --color-ok: oklch(48% 0.12 160); --color-ok-soft: oklch(95% 0.035 160);
-  --color-error: oklch(52% 0.19 27);
-  --color-shade: oklch(86% 0.05 212); --color-shade-2: oklch(74% 0.07 220); --color-light: oklch(99.7% 0.004 95);
-  --color-clear: oklch(99.7% 0.004 95 / 0.84);
-  --edge-btn: inset 0 1px 0 oklch(100% 0 0 / 0.28);
-  --edge-light: inset 0 1px 0 oklch(100% 0 0 / 0.9), inset 0 0 0 1px oklch(100% 0 0 / 0.55);
-  --shadow-card: 18px 28px 48px -26px oklch(52% 0.09 220 / 0.38), 2px 3px 6px -2px oklch(40% 0.05 230 / 0.12);
-  --shadow-cast: 28px 40px 70px -30px oklch(60% 0.11 212 / 0.5);
+  --space-xs: 8px; --space-sm: 12px; --space-md: 16px; --space-lg: 24px; --space-xl: 40px; --space-2xl: 64px; --space-3xl: 112px;
+  --text-sm: 0.875rem; --text-md: 1rem; --text-lg: 1.25rem;
+  --text-display: clamp(2.4rem, 4vw + 0.8rem, 4.4rem); --text-section: clamp(1.9rem, 2.2vw + 0.9rem, 3.1rem); --text-lead: clamp(1.1rem, 0.4vw + 1rem, 1.35rem);
+  --container: 1240px; --gutter: clamp(20px, 4vw, 56px);
+  --paper: oklch(98.2% 0.006 95); --paper-2: oklch(95.6% 0.007 95); --ink: oklch(23% 0.035 245); --ink-2: oklch(38% 0.035 245); --muted: oklch(50% 0.025 240);
+  --rule: oklch(89.5% 0.008 230); --rule-2: oklch(80% 0.012 230);
+  --accent: oklch(55% 0.235 358); --accent-hi: oklch(49% 0.22 358); --accent-ink: oklch(99% 0.003 95); --accent-soft: oklch(94% 0.035 358);
+  --night: #0b0b0d; --night-2: #17171b; --night-rule: #2a2a30; --night-ink: #f2f0ec; --night-muted: #a9a6a0;
+  --ok: oklch(55% 0.13 155);
   --font-display: "Funnel Display", ui-sans-serif, system-ui, sans-serif; --font-body: "Funnel Sans", ui-sans-serif, system-ui, sans-serif;
-  --radius-card: 22px; --radius-inner: 12px; --radius-pill: 999px; --rule-hair: 1px;
-  --tracking-display: -0.032em; --display-weight: 400;
+  --radius: 18px; --radius-in: 10px; --ease: cubic-bezier(0.16, 1, 0.3, 1);
 }
-
 *, *::before, *::after { box-sizing: border-box; }
 html, body { overflow-x: clip; }
-html { scroll-behavior: smooth; scroll-padding-top: var(--space-3xl); scrollbar-color: var(--color-muted) var(--color-paper); }
-body { caret-color: var(--color-accent); margin: 0; background: var(--color-paper); color: var(--color-ink); font-family: var(--font-body); font-size: 1.0625rem; line-height: 1.6; -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: 100%; }
-::selection { background: color-mix(in oklab, var(--color-accent) 22%, transparent); color: var(--color-ink); }
-:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
-a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 0.18em; text-decoration-color: var(--color-rule-2); transition: text-decoration-color var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out); }
-a:hover { text-decoration-color: var(--color-accent); color: var(--color-accent-hi); }
-h1, h2, h3 { margin: 0; font-family: var(--font-display); font-weight: var(--display-weight); font-synthesis: none; letter-spacing: var(--tracking-display); line-height: 1.04; overflow-wrap: break-word; min-width: 0; text-wrap: balance; color: var(--color-ink); }
-h1 { font-size: var(--text-display); max-width: 11ch; line-height: 1.02; }
-h2 { font-size: var(--text-section); max-width: 20ch; }
-h3 { font-size: var(--text-title); line-height: 1.2; letter-spacing: -0.015em; }
+html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 400 1.0625rem/1.6 var(--font-body); -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: 100%; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+a { color: inherit; text-underline-offset: 0.18em; text-decoration-thickness: 1px; }
+h1, h2, h3 { margin: 0; font-family: var(--font-display); font-weight: 400; letter-spacing: -0.03em; line-height: 1.04; text-wrap: balance; }
+h1 { font-size: var(--text-display); max-width: 15ch; }
+h2 { font-size: var(--text-section); max-width: 18ch; }
+h3 { font-size: var(--text-lg); letter-spacing: -0.015em; line-height: 1.25; }
 p { margin: 0; text-wrap: pretty; }
-ul { margin: 0; padding: 0; list-style: none; }
-button, input, textarea { font: inherit; color: inherit; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+img { display: block; max-width: 100%; height: auto; }
+figure { margin: 0; }
 [hidden] { display: none !important; }
 .container { width: 100%; max-width: var(--container); margin-inline: auto; padding-inline: var(--gutter); }
-.lead { font-size: var(--text-lead); line-height: 1.45; color: var(--color-ink-2); max-width: 44ch; }
-.muted { color: var(--color-muted); }
+.lead { font-size: var(--text-lead); line-height: 1.45; color: var(--ink-2); max-width: 40ch; }
+.muted { color: var(--muted); }
 .small { font-size: var(--text-sm); }
-.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-
-/* Controls */
-.btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-xs); min-height: 48px; padding: 0 var(--space-lg); border: 0; border-radius: var(--radius-pill); background: var(--color-accent); color: var(--color-accent-ink); font: 500 var(--text-md)/1 var(--font-body); text-decoration: none; white-space: nowrap; cursor: pointer; box-shadow: var(--edge-btn), var(--shadow-card); transition: background-color var(--dur-short) var(--ease-out), transform var(--dur-micro) var(--ease-out); }
-.btn:hover { background: var(--color-accent-hi); color: var(--color-accent-ink); }
-.btn:active { transform: translateY(1px); }
-.btn:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
-.btn:disabled { opacity: 0.55; cursor: not-allowed; }
-.btn--clear { background: transparent; color: var(--color-ink); box-shadow: inset 0 0 0 1px var(--color-rule-2); }
-.btn--clear:hover { background: var(--color-paper-2); color: var(--color-ink); box-shadow: inset 0 0 0 1px var(--color-ink-2); }
-.btn--sm { min-height: 44px; padding: 0 var(--space-md); font-size: var(--text-sm); }
-
-/* Family line and nav (slab) */
-.family { font-size: var(--text-xs); color: var(--color-muted); border-bottom: var(--rule-hair) solid var(--color-rule); }
-.family .container { display: flex; gap: var(--space-md); padding-block: var(--space-2xs); }
-.family a { text-decoration: none; }
-.family a:hover { text-decoration: underline; }
-.family b { font-weight: 500; color: var(--color-ink); }
-.nav { position: sticky; top: 0; z-index: var(--z-sticky-nav); background: color-mix(in oklab, var(--color-paper) 92%, transparent); border-bottom: var(--rule-hair) solid var(--color-rule); }
-.nav .container { display: flex; align-items: center; gap: var(--space-lg); min-height: 68px; }
-.wordmark { white-space: nowrap; display: inline-flex; align-items: center; gap: var(--space-xs); font: 500 var(--text-lg)/1 var(--font-display); letter-spacing: -0.02em; text-decoration: none; margin-right: auto; }
+.kicker { font-size: var(--text-sm); color: var(--accent-hi); letter-spacing: 0.02em; }
+.say { display: grid; gap: var(--space-md); align-content: start; }
+.actions { display: flex; flex-wrap: wrap; gap: var(--space-sm); margin-top: var(--space-xs); }
+.btn { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 var(--space-lg); border: 0; border-radius: 999px; background: var(--accent); color: var(--accent-ink); font: 500 var(--text-md)/1 var(--font-body); text-decoration: none; white-space: nowrap; cursor: pointer; transition: background-color 0.2s var(--ease); }
+.btn:hover { background: var(--accent-hi); }
+.btn--clear { background: transparent; color: var(--ink); border: 1px solid var(--rule-2); }
+.btn--clear:hover { background: var(--paper-2); }
+.btn--sm { min-height: 42px; padding: 0 var(--space-md); font-size: var(--text-sm); }
+/* chrome */
+.family { font-size: 0.8rem; color: var(--muted); border-bottom: 1px solid var(--rule); }
+.family .container { display: flex; gap: var(--space-md); padding-block: 4px; }
+.family a { text-decoration: none; } .family a:hover { text-decoration: underline; } .family b { font-weight: 500; color: var(--ink); }
+.nav { position: sticky; top: 0; z-index: 30; background: var(--paper); border-bottom: 1px solid var(--rule); }
+.nav .container { display: flex; align-items: center; gap: var(--space-lg); min-height: 64px; }
+.wordmark { display: inline-flex; align-items: center; gap: var(--space-xs); font: 500 var(--text-lg)/1 var(--font-display); letter-spacing: -0.02em; text-decoration: none; margin-right: auto; }
 .wordmark svg { width: 26px; height: 26px; }
-.nav .links { display: flex; gap: var(--space-lg); font-size: var(--text-sm); }
-.nav .links a { text-decoration: none; color: var(--color-ink-2); }
-.nav .links a:hover { color: var(--color-accent-hi); }
-
-/* Hero (Stage): head left, the inbox playing on water light right */
-.hero { position: relative; }
-.hero .container { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--gap-columns); align-items: center; min-height: clamp(560px, calc(100svh - 100px), 860px); padding-block: var(--space-xl); }
-.hero-copy { display: grid; gap: var(--space-lg); align-content: center; position: relative; z-index: var(--z-raised); }
-.hero-copy .actions { display: flex; flex-wrap: wrap; gap: var(--space-sm); margin-top: var(--space-xs); }
-.hero-copy .note { font-size: var(--text-sm); color: var(--color-muted); }
-.stage { position: relative; min-height: clamp(560px, calc(100svh - 180px), 760px); display: grid; place-items: center; }
-.light { position: absolute; inset: 0 calc(-1 * var(--gutter)) 0 0; border-radius: var(--radius-card) 0 0 var(--radius-card); overflow: hidden; background: var(--color-shade); }
-.light canvas { width: 100%; height: 100%; display: block; }
-.inbox { position: relative; z-index: var(--z-raised); width: min(100%, 470px); margin: 0; background: var(--color-clear); border-radius: var(--radius-card); box-shadow: var(--edge-light), var(--shadow-cast); padding: var(--space-lg); display: grid; gap: var(--space-md); }
-.inbox-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-sm); }
-.inbox-title { font: 400 var(--text-lg)/1.2 var(--font-display); letter-spacing: -0.015em; }
-.toggle { display: inline-grid; place-items: center; width: 44px; height: 44px; border: 0; border-radius: var(--radius-pill); background: var(--color-paper-2); color: var(--color-ink-2); cursor: pointer; box-shadow: inset 0 0 0 1px var(--color-rule); transition: background-color var(--dur-short) var(--ease-out); }
-.toggle:hover { background: var(--color-paper-3); }
-.toggle:active { transform: translateY(1px); }
-.toggle svg { width: 16px; height: 16px; }
-.agents { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-xs); }
-.agent { display: grid; justify-items: center; gap: var(--space-2xs); padding: var(--space-xs) var(--space-2xs); border-radius: var(--radius-inner); font-size: var(--text-xs); color: var(--color-muted); transition: background-color var(--dur-long) var(--ease-out), color var(--dur-long) var(--ease-out); }
-.agent .av { width: 36px; height: 36px; }
-.agent.on { background: var(--color-accent-soft); color: var(--color-ink); }
-.av { display: inline-grid; place-items: center; flex: none; width: 32px; height: 32px; border-radius: var(--radius-pill); background: var(--color-paper-3); color: var(--color-ink-2); font: 500 var(--text-xs)/1 var(--font-body); box-shadow: inset 0 0 0 1px var(--color-rule); }
-.agent.on .av { background: var(--color-accent); color: var(--color-accent-ink); box-shadow: none; }
-.av--you { background: var(--color-ink); color: var(--color-paper); box-shadow: none; }
-.doing { min-height: 1.6em; font-size: var(--text-sm); color: var(--color-ink-2); }
-.post { background: var(--color-light); border-radius: var(--radius-inner); box-shadow: inset 0 0 0 1px var(--color-rule); padding: var(--space-md); display: grid; gap: var(--space-sm); }
-.post-by { display: flex; align-items: center; gap: var(--space-xs); font-size: var(--text-sm); }
-.post-by b { font-weight: 500; }
-.post-by .where { margin-left: auto; color: var(--color-muted); font-size: var(--text-xs); }
-.post-text { min-height: 7.2em; font-size: var(--text-md); line-height: 1.5; }
-.post-text .caret { display: inline-block; width: 2px; height: 1.05em; margin-left: 1px; vertical-align: -0.15em; background: var(--color-accent); animation: blink 1s steps(1) infinite; }
-@keyframes blink { 50% { opacity: 0; } }
-.post-foot { display: flex; align-items: center; justify-content: space-between; gap: var(--space-sm); flex-wrap: wrap; }
-.state { display: inline-flex; align-items: center; min-height: 28px; padding: 0 var(--space-sm); border-radius: var(--radius-pill); font-size: var(--text-xs); font-weight: 500; background: var(--color-paper-2); color: var(--color-ink-2); }
-.state.wait { background: var(--color-accent-soft); color: var(--color-accent-hi); }
-.state.ok { background: var(--color-ok-soft); color: var(--color-ok); }
-.approve-fake { min-height: 36px; padding: 0 var(--space-md); border-radius: var(--radius-pill); background: var(--color-accent); color: var(--color-accent-ink); font-size: var(--text-sm); font-weight: 500; display: inline-flex; align-items: center; transition: transform var(--dur-short) var(--ease-out), opacity var(--dur-short) var(--ease-out); }
-.approve-fake.press { transform: scale(0.94); }
-.replies { display: grid; gap: var(--space-xs); }
-.reply { display: flex; gap: var(--space-xs); align-items: flex-start; font-size: var(--text-sm); line-height: 1.45; transition: opacity var(--dur-long) var(--ease-out), transform var(--dur-long) var(--ease-out); }
-.reply .av { width: 26px; height: 26px; font-size: 0.6875rem; }
-.reply.from-team .av { background: var(--color-accent); color: var(--color-accent-ink); box-shadow: none; }
-.js .reply.pending { opacity: 0; transform: translateY(6px); }
-.caption { font-size: var(--text-xs); color: var(--color-muted); }
-
-/* Sections */
-.section { padding-block: var(--section-gap-s); }
-.section--paper2 { background: var(--color-paper-2); }
-/* agent_team feature list (EpicSocial, 2026-11-08): what EpicSocial does for you, drawn from its one list by tools/feature_list.py */
-.nice { display: grid; gap: var(--space-xl); }
-.nice .say { display: grid; gap: var(--space-md); }
-.nice .was { color: var(--color-ink-2); max-width: 52ch; }
-.nice-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-md); grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr)); }
-.nice-list li { display: grid; align-content: start; gap: var(--space-xs); padding: var(--space-md); border: 1px solid var(--color-rule); border-radius: var(--radius-card); background: var(--color-paper); }
-.nice-list h3 { font-size: var(--text-md); }
-.nice-list p { color: var(--color-ink-2); font-size: var(--text-sm); }
-.head { display: grid; gap: var(--space-md); margin-bottom: var(--space-2xl); max-width: 60ch; }
-.head p { color: var(--color-ink-2); font-size: var(--text-lead); line-height: 1.45; max-width: 52ch; }
-
-/* How a post is made: one lane of five steps */
-.lane { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: var(--rule-hair) solid var(--color-ink); }
-.lane li { position: relative; padding: var(--space-lg) var(--space-lg) 0 0; display: grid; gap: var(--space-xs); align-content: start; }
-.lane .n { font: 300 var(--text-3xl)/1 var(--font-display); color: var(--color-shade-2); font-variant-numeric: tabular-nums; }
-.lane li.you .n { color: var(--color-accent); }
-.lane p { color: var(--color-ink-2); font-size: var(--text-md); }
-.lane-note { margin-top: var(--space-xl); color: var(--color-muted); font-size: var(--text-sm); }
-
-/* The team as a schedule */
-.team { border-top: var(--rule-hair) solid var(--color-rule); }
-.team li { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 6fr) minmax(0, 3fr); gap: var(--gap-columns); align-items: center; padding-block: var(--space-lg); border-bottom: var(--rule-hair) solid var(--color-rule); }
-.team .who { display: flex; align-items: center; gap: var(--space-sm); }
-.team .who::before { content: attr(data-initial); display: inline-grid; place-items: center; flex: none; width: 44px; height: 44px; border-radius: var(--radius-pill); background: var(--color-light); color: var(--color-ink-2); font: 500 var(--text-sm)/1 var(--font-body); letter-spacing: 0; box-shadow: inset 0 0 0 1px var(--color-rule); }
-.team p { color: var(--color-ink-2); }
-.team .when { color: var(--color-muted); font-size: var(--text-sm); text-align: right; }
-
-/* A week: tap a day */
-.week { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--gap-columns); align-items: start; }
-.days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: var(--space-2xs); padding: var(--space-2xs); border-radius: var(--radius-pill); background: var(--color-paper-3); margin-bottom: var(--space-lg); }
-.day { min-height: 44px; border: 0; border-radius: var(--radius-pill); background: transparent; color: var(--color-ink-2); font-size: var(--text-sm); font-weight: 500; cursor: pointer; transition: background-color var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out); }
-.day:hover { background: var(--color-paper-2); }
-.day:active { transform: translateY(1px); }
-.day[aria-selected="true"] { background: var(--color-light); color: var(--color-ink); box-shadow: var(--edge-light), var(--shadow-card); }
-.log { display: grid; gap: 0; border-top: var(--rule-hair) solid var(--color-rule); min-height: 300px; }
-.ev { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--space-sm); padding-block: var(--space-md); border-bottom: var(--rule-hair) solid var(--color-rule); }
-.ev .t { font-size: var(--text-xs); color: var(--color-muted); }
-.ev p { color: var(--color-ink-2); }
-.sample { background: var(--color-light); border-radius: var(--radius-card); box-shadow: var(--edge-light), var(--shadow-card); padding: var(--space-lg); display: grid; gap: var(--space-md); }
-.sample .diagram { border-radius: var(--radius-inner); background: var(--color-accent-soft); padding: var(--space-lg); font: 400 var(--text-xl)/1.15 var(--font-display); letter-spacing: -0.02em; color: var(--color-ink); }
-.sample .acts { display: flex; flex-wrap: wrap; gap: var(--space-xs); align-items: center; }
-.sample textarea { width: 100%; min-height: 84px; margin-top: var(--space-sm); padding: var(--space-sm); border: var(--rule-hair) solid var(--color-muted); border-radius: var(--radius-inner); background: var(--color-light); resize: vertical; }
-.sample textarea:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 1px; }
-
-/* What you get: figures */
-.figures { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--gap-columns); border-top: var(--rule-hair) solid var(--color-ink); }
-.figures li { padding-top: var(--space-lg); display: grid; gap: var(--space-xs); align-content: start; }
-.figures .fig { font: 300 var(--text-figure)/0.95 var(--font-display); letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
-.figures .fig svg { width: 0.8em; height: 0.8em; color: var(--color-accent); }
-.figures h3 { font-size: var(--text-lg); }
-.figures p { color: var(--color-ink-2); font-size: var(--text-md); }
-.own { margin-top: var(--space-3xl); display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--gap-columns); align-items: start; }
-.own p { color: var(--color-ink-2); font-size: var(--text-lead); line-height: 1.5; max-width: 54ch; }
-
-/* Alpha and pricing */
-.alpha { display: grid; grid-template-columns: minmax(0, 1fr); max-width: 72rem; gap: var(--space-2xl); align-items: start; }
-.alpha-list { border-top: var(--rule-hair) solid var(--color-rule); margin-top: var(--space-xl); }
-.alpha-list li { padding-block: var(--space-md); border-bottom: var(--rule-hair) solid var(--color-rule); color: var(--color-ink-2); }
-.alpha-list b { color: var(--color-ink); font-weight: 500; }
-.paths { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--gap-columns); margin-top: var(--space-xl); }
-.paths h3 { font-size: var(--text-lg); margin-bottom: var(--space-xs); }
-.paths p { color: var(--color-ink-2); }
-.price { position: sticky; top: 96px; background: var(--color-light); border-radius: var(--radius-card); box-shadow: var(--edge-light), var(--shadow-cast); padding: var(--space-xl); display: grid; gap: var(--space-md); }
-.price .amt { font: 300 var(--text-figure)/1 var(--font-display); letter-spacing: -0.04em; }
-.price .amt small { font: 400 var(--text-lg)/1 var(--font-body); letter-spacing: 0; color: var(--color-muted); }
-.price ul { display: grid; gap: var(--space-xs); color: var(--color-ink-2); font-size: var(--text-md); }
-.price li { display: flex; gap: var(--space-xs); }
-.price li svg { flex: none; width: 18px; height: 18px; margin-top: 0.2em; color: var(--color-accent); }
-.price .btn { width: 100%; }
-
-/* FAQ */
-.faq { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--gap-columns); align-items: start; }
-.faq details { border-bottom: var(--rule-hair) solid var(--color-rule); }
-.faq details:first-child { border-top: var(--rule-hair) solid var(--color-rule); }
-.faq summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; gap: var(--space-md); padding-block: var(--space-md); font: 400 var(--text-lg)/1.3 var(--font-display); }
-.faq summary::-webkit-details-marker { display: none; }
-.faq summary:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
-.faq summary svg { flex: none; width: 18px; height: 18px; color: var(--color-muted); transition: transform var(--dur-short) var(--ease-out); }
-.faq details[open] summary svg { transform: rotate(45deg); }
-.faq details p { padding-bottom: var(--space-md); color: var(--color-ink-2); max-width: 62ch; }
-
-/* Join: the light again, the form on a clear panel */
-.join { position: relative; overflow: hidden; padding-block: var(--section-gap); }
-.join .light { inset: 0; border-radius: 0; }
-.join .container { position: relative; z-index: var(--z-raised); display: grid; place-items: center; }
-.join-card { width: min(100%, 640px); background: var(--color-clear); border-radius: var(--radius-card); box-shadow: var(--edge-light), var(--shadow-cast); padding: var(--space-2xl) var(--space-xl); display: grid; gap: var(--space-md); }
-.join-card > p { color: var(--color-ink-2); }
-.join form { display: grid; gap: var(--space-sm); margin-top: var(--space-xs); }
-.join .row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--space-xs); }
-.join label { font-size: var(--text-sm); font-weight: 500; }
-.join input[type=email] { min-height: 48px; width: 100%; padding: 0 var(--space-md); border: var(--rule-hair) solid var(--color-muted); border-radius: var(--radius-pill); background: var(--color-light); }
-.join input[type=email]:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
-.join input[aria-invalid="true"] { border-color: var(--color-error); }
-.err { min-height: 1.4em; font-size: var(--text-sm); color: var(--color-error); }
-.privacy { font-size: var(--text-xs); color: var(--color-muted); }
-.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
-.thanks { display: grid; gap: var(--space-xs); }
-
-/* Footer: colophon block */
-.foot { padding-block: var(--section-gap-s) var(--space-2xl); border-top: var(--rule-hair) solid var(--color-rule); }
-.foot .container { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--gap-columns); font-size: var(--text-sm); color: var(--color-muted); }
-.foot .brand { display: grid; gap: var(--space-xs); }
-.foot .brand b { font: 500 var(--text-lg)/1 var(--font-display); color: var(--color-ink); letter-spacing: -0.02em; }
-.foot nav { display: flex; gap: var(--space-md); flex-wrap: wrap; }
-.foot p { max-width: 62ch; }
-
-.real-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-lg); margin-top: var(--space-lg); }
-.shot { margin: 0; display: grid; gap: var(--space-sm); align-content: start; }
-.shot .frame { border-radius: var(--radius-inner); overflow: hidden; background: var(--color-paper); box-shadow: inset 0 0 0 1px var(--color-rule), var(--shadow-card); }
-.shot .frame img { display: block; width: 100%; height: auto; }
-.shot figcaption { font-size: var(--text-sm); color: var(--color-muted); }
-.shot--big { margin-top: var(--space-xl); }
-/* a benefit, shown (EPIC-43 L-1), one unit per section, as on EpicSpine and EpicTeam (agent_team E43-S8 round 2): the
-   headline first, its one screen beside it in a window of fixed height, so a screen is never taller than its section */
-.section:has(> .proof) { padding-block: clamp(var(--space-2xl), 11vh, var(--space-3xl)); }
-.proof { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-xl) var(--space-2xl); align-items: center; }
-.proof .say { display: grid; gap: var(--space-md); align-content: center; }
-.proof h2 { font-size: clamp(2rem, 2.2vw + 0.8rem, 3.25rem); max-width: none; overflow-wrap: break-word; min-width: 0; }
-.was { font-size: var(--text-lead); line-height: 1.45; color: var(--color-ink-2); max-width: 30ch; }
-.pic { min-width: 0; }
-.win { max-height: min(480px, 60vh); display: grid; grid-template-columns: minmax(0, 1fr); place-items: start center; overflow: hidden; padding: var(--space-lg); }
-.win picture { display: contents; }
-.shot .win img { width: min(100%, var(--w, 100%)); height: auto; }
-.proof--wide { grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); }
-.proof--wide .say { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--space-sm) var(--gap-columns); align-items: end; }
-.proof--wide h2 { max-width: 22ch; }
-@media (max-width: 48rem) {
-  .proof, .proof--wide .say { grid-template-columns: minmax(0, 1fr); }
-  .proof { gap: var(--space-lg); }
-  .win { max-height: min(460px, 58svh); padding: var(--space-md); }
+.links { display: flex; gap: var(--space-lg); font-size: var(--text-sm); }
+.links a { text-decoration: none; color: var(--ink-2); } .links a:hover { color: var(--accent-hi); }
+@media (max-width: 760px) { .hide-s { display: none; } .links { gap: var(--space-md); } }
+/* bands: one idea per screen */
+.band { padding-block: var(--space-3xl); }
+.band.alt { background: var(--paper-2); }
+.band.dark { background: var(--night); color: var(--night-ink); }
+.band.dark h2 { color: var(--night-ink); }
+.band.dark .lead, .band.dark .muted { color: var(--night-muted); }
+.band > .container > .say { margin-bottom: var(--space-2xl); }
+.split { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-2xl); align-items: center; }
+@media (max-width: 900px) { .split { grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); } .band { padding-block: var(--space-2xl); } }
+/* hero */
+.hero { padding-block: var(--space-2xl) var(--space-3xl); }
+.hero-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: var(--space-2xl); align-items: center; }
+.hero .say { gap: var(--space-lg); }
+.facts { display: flex; flex-wrap: wrap; gap: var(--space-xl); margin-top: var(--space-md); padding-top: var(--space-lg); border-top: 1px solid var(--rule); }
+.facts li { display: grid; gap: 2px; }
+.facts b { font: 400 2.25rem/1 var(--font-display); letter-spacing: -0.03em; color: var(--accent); }
+.facts span { font-size: var(--text-sm); color: var(--muted); }
+.dark-shot { background: var(--night); border-radius: var(--radius); padding: clamp(10px, 1.4vw, 18px); }
+.dark-shot img { border-radius: var(--radius-in); }
+.dark-shot figcaption { color: var(--night-muted); font-size: var(--text-sm); padding: var(--space-sm) 4px 2px; }
+@media (max-width: 480px) { .facts { gap: var(--space-lg); } .facts b { font-size: 1.9rem; } }
+@media (max-width: 900px) { .hero-grid { grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); } }
+/* the demo */
+.band.dark h2 { margin-bottom: var(--space-xl); }
+.demo { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 9fr); gap: var(--space-xl); align-items: start; }
+.steps { display: grid; gap: var(--space-xs); counter-reset: s; }
+.steps button { width: 100%; display: flex; gap: var(--space-sm); align-items: center; text-align: left; padding: var(--space-sm) var(--space-md); border: 1px solid var(--night-rule); border-radius: var(--radius-in); background: transparent; color: var(--night-muted); font: 400 var(--text-md)/1.3 var(--font-body); cursor: pointer; transition: background-color 0.3s var(--ease), color 0.3s var(--ease), border-color 0.3s var(--ease); }
+.steps button span { display: inline-grid; place-items: center; flex: none; width: 26px; height: 26px; border-radius: 999px; border: 1px solid var(--night-rule); font-size: var(--text-sm); }
+.steps button:hover { color: var(--night-ink); }
+.steps button[aria-selected="true"] { background: var(--night-2); color: var(--night-ink); border-color: var(--accent); }
+.steps button[aria-selected="true"] span { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.stage { position: relative; display: grid; background: var(--night-2); border: 1px solid var(--night-rule); border-radius: var(--radius); padding: clamp(10px, 1.4vw, 18px); min-height: 0; }
+.frame { grid-area: 1 / 1; display: grid; gap: var(--space-sm); align-content: start; }
+.frame img { border-radius: var(--radius-in); border: 1px solid var(--night-rule); max-height: 640px; width: 100%; object-fit: cover; object-position: top; }
+.frame--phone img { width: auto; max-width: 100%; max-height: 640px; margin-inline: auto; object-fit: contain; }
+.frame figcaption { color: var(--night-ink); font-size: var(--text-md); padding-inline: 4px; padding-right: 56px; }
+.frame.on { animation: fade 0.5s var(--ease) both; }
+@keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.bar { height: 2px; background: var(--night-rule); border-radius: 2px; overflow: hidden; margin-top: var(--space-sm); }
+.bar i { display: block; height: 100%; width: 0; background: var(--accent); }
+.bar i.run { animation: fill var(--dur, 5s) linear both; }
+.paused .bar i.run { animation-play-state: paused; }
+@keyframes fill { to { width: 100%; } }
+.toggle { position: absolute; right: clamp(10px, 1.4vw, 18px); bottom: 18px; display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid var(--night-rule); border-radius: 999px; background: var(--night); color: var(--night-ink); cursor: pointer; }
+.toggle svg { width: 14px; height: 14px; }
+@media (max-width: 900px) {
+  .demo { grid-template-columns: minmax(0, 1fr); gap: var(--space-md); }
+  .steps { grid-auto-flow: column; grid-auto-columns: max-content; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+  .steps button { white-space: nowrap; padding: var(--space-xs) var(--space-sm); font-size: var(--text-sm); }
+  .frame img { max-height: 520px; }
+  .frame--phone img { max-height: 520px; }
 }
-/* a campaign's tree of goals (agent_team E43-S8): drawn by tools/goal_tree.py from the campaign's repo; the goal on
-   top, its steps, then the posts; the focus step in the accent; under 64rem the same tree reads as an outline */
-.pic--tree { justify-items: stretch; }
-.pic--tree .frame { width: 100%; padding: var(--space-xl) var(--space-lg); }
-.gt { display: block; width: 100%; height: auto; font-family: var(--font-body); }
-.gt--phone { display: none; max-width: 30rem; margin-inline: auto; }
-@media (max-width: 64rem) { .gt--wide { display: none; } .gt--phone { display: block; } }
-@media (max-width: 40rem) { .pic--tree .frame { padding: var(--space-md) var(--space-sm); } }
-.gt-line { fill: none; stroke: var(--color-rule-2); stroke-width: 1.25; }
-.gt-box rect { fill: var(--color-paper-2); stroke: var(--color-rule-2); stroke-width: 1; }
-.gt-name { fill: var(--color-ink); font-weight: 500; }
-.gt-sub { fill: var(--color-muted); }
-.gt-l0 rect { fill: var(--color-ink); stroke: none; }
-.gt-l0 .gt-name { fill: var(--color-paper); font-family: var(--font-display); font-weight: 400; }
-.gt-l0 .gt-sub { fill: var(--color-paper); opacity: 0.8; }
-.gt-l1 .gt-name { font-family: var(--font-display); font-weight: 400; }
-.gt-more rect { fill: none; stroke-dasharray: 4 3; }
-.gt-focus rect { fill: var(--color-accent-soft); stroke: var(--color-accent); stroke-width: 2; }
-.gt-dot { stroke-width: 1.5; }
-.gt-done { fill: var(--color-ok); stroke: var(--color-ok); background: var(--color-ok); }
-.gt-review { fill: var(--color-accent); stroke: var(--color-accent); background: var(--color-accent); }
-.gt-active { fill: transparent; stroke: var(--color-ink); box-shadow: inset 0 0 0 2px var(--color-ink); }
-.gt-planned { fill: transparent; stroke: var(--color-muted); stroke-dasharray: 2 2; box-shadow: inset 0 0 0 1px var(--color-muted); }
-.gt-key { display: flex; flex-wrap: wrap; gap: var(--space-xs) var(--space-lg); margin: 0; padding: 0; list-style: none; font-size: var(--text-sm); color: var(--color-ink-2); justify-self: start; }
-.gt-key li { display: inline-flex; align-items: center; gap: var(--space-xs); }
-.gt-key i { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
-.gt.gt--wide { width: min(100%, 980px, calc((100svh - 400px) * var(--ar, 2.2))); margin-inline: auto; }
-.gt-all { margin-top: var(--space-md); }
-.gt-all summary { display: inline-flex; align-items: center; min-height: 44px; padding: 0 var(--space-md); border-radius: var(--radius-pill); background: var(--color-paper-2); color: var(--color-ink); cursor: pointer; list-style: none; transition: background-color var(--dur-short) var(--ease-out); }
-.gt-all summary::-webkit-details-marker { display: none; }
-.gt-all summary:hover { background: var(--color-accent-soft); }
-.gt-all summary:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
-.gt-all[open] summary { margin-bottom: var(--space-lg); }
-.gt-all .gt.gt--wide { width: 100%; }
-
-@media (max-width: 68rem) {
-  .nav .links { display: none; }
-  .hero .container { grid-template-columns: minmax(0, 1fr); min-height: 0; gap: var(--space-xl); padding-block: var(--space-xl) var(--space-2xl); }
-  .stage { min-height: 0; padding: var(--space-xl) var(--space-md); }
-  .light { inset: 0 calc(-1 * var(--gutter)); border-radius: 0; }
-  .lane { grid-template-columns: minmax(0, 1fr); border-top: 0; }
-  .lane li { grid-template-columns: 56px minmax(0, 1fr); padding: var(--space-md) 0; border-top: var(--rule-hair) solid var(--color-rule); }
-  .lane li h3, .lane li p { grid-column: 2; }
-  .lane li .n { grid-row: span 2; font-size: var(--text-2xl); }
-  .team li { grid-template-columns: minmax(0, 1fr); gap: var(--space-xs); }
-  .team .when { text-align: left; }
-  .week, .alpha, .faq, .own, .foot .container { grid-template-columns: minmax(0, 1fr); }
-  .figures { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: var(--space-xl); }
-  .price { position: static; }
+/* the engine: one line, each part lights in turn */
+.engine { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 28px; position: relative; }
+.engine li { position: relative; display: grid; gap: 4px; align-content: start; padding: var(--space-md); border: 1px solid var(--rule-2); border-radius: var(--radius-in); background: var(--paper); transition: background-color 0.4s var(--ease), border-color 0.4s var(--ease), color 0.4s var(--ease); }
+.engine li b { font: 400 1.2rem/1.2 var(--font-display); letter-spacing: -0.01em; }
+.engine li span { font-size: var(--text-sm); color: var(--muted); }
+.engine li:not(:last-child)::after { content: ""; position: absolute; top: 50%; right: -24px; width: 20px; height: 1px; background: var(--rule-2); }
+.engine li:not(:last-child)::before { content: ""; position: absolute; top: calc(50% - 4px); right: -24px; border: 4px solid transparent; border-left: 6px solid var(--rule-2); border-right: 0; }
+.engine li:first-child { border-color: var(--accent); }
+.engine li.lit { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.engine li.lit span { color: var(--accent-ink); }
+.engine-back { margin-top: var(--space-md); font-size: var(--text-sm); color: var(--muted); }
+@media (max-width: 900px) {
+  .engine { grid-template-columns: minmax(0, 1fr); gap: 22px; max-width: 26rem; }
+  .engine li { grid-template-columns: 9rem 1fr; align-items: baseline; padding: var(--space-sm) var(--space-md); }
+  .engine li:not(:last-child)::after { top: auto; bottom: -18px; right: auto; left: 50%; width: 1px; height: 14px; }
+  .engine li:not(:last-child)::before { top: auto; bottom: -22px; right: auto; left: calc(50% - 4px); border: 4px solid transparent; border-top: 6px solid var(--rule-2); border-bottom: 0; }
 }
-@media (max-width: 60rem) { .real-grid { grid-template-columns: minmax(0, 1fr); } :root { --gutter: 24px; --section-gap-s: 88px; --section-gap: 104px; } }
-@media (max-width: 40rem) {
-  :root { --gutter: 16px; --section-gap-s: 72px; --section-gap: 88px; --gap-columns: 16px; }
-  .head { margin-bottom: var(--space-xl); }
-  .paths { grid-template-columns: minmax(0, 1fr); }
-  .join-card { padding: var(--space-xl) var(--space-lg); }
-  .join .row { grid-template-columns: minmax(0, 1fr); }
-  .inbox { padding: var(--space-md); }
-  .days { border-radius: var(--radius-inner); }
-  .day { border-radius: var(--radius-inner); }
-}
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
-  .post-text .caret { display: none; }
-}
+/* the wheel */
+.wheel-fig { max-width: 520px; width: 100%; justify-self: center; }
+.wheel { width: 100%; height: auto; font-family: var(--font-body); }
+.ring { fill: none; stroke: var(--rule-2); stroke-width: 1.5; }
+.ring-run { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-dasharray: 0 100; transform: rotate(-90deg); transform-origin: 260px 260px; }
+.hub circle { fill: var(--ink); }
+.hub-a { fill: var(--paper); font: 400 21px var(--font-display); }
+.hub-b { fill: oklch(80% 0.02 240); font-size: 14px; }
+.node rect { fill: var(--paper); stroke: var(--rule-2); transition: fill 0.35s var(--ease), stroke 0.35s var(--ease); }
+.node .n-a { font: 400 17px var(--font-display); fill: var(--ink); }
+.node .n-b { font-size: 13px; fill: var(--muted); }
+.node.lit rect { fill: var(--accent); stroke: var(--accent); }
+.node.lit .n-a, .node.lit .n-b { fill: var(--accent-ink); }
+.runner { fill: var(--accent); }
+/* objectives */
+.paper-shot { background: var(--night-2); border: 1px solid var(--night-rule); border-radius: var(--radius); padding: clamp(10px, 1.6vw, 22px); }
+.paper-shot img { border-radius: var(--radius-in); width: 100%; }
+/* WhatsApp phones */
+.phones { display: flex; gap: clamp(20px, 4vw, 56px); justify-content: center; flex-wrap: wrap; }
+.phone { display: grid; gap: var(--space-sm); justify-items: center; }
+.phone-in { width: min(320px, 82vw); background: var(--night); border-radius: 34px; padding: 12px; }
+.phone-in img { border-radius: 24px; width: 100%; }
+.phone figcaption { font-size: var(--text-sm); color: var(--muted); }
+#whatsapp .small { text-align: center; margin-top: var(--space-lg); }
+/* join */
+.join-card { display: grid; gap: var(--space-md); padding: var(--space-xl); background: var(--paper); border: 1px solid var(--rule); border-radius: var(--radius); }
+.join-card form { display: grid; gap: var(--space-xs); }
+.join-card label { font-size: var(--text-sm); color: var(--ink-2); }
+.join-card .row { display: flex; gap: var(--space-xs); }
+.join-card input[type=email] { flex: 1; min-width: 0; min-height: 48px; padding: 0 var(--space-md); border: 1px solid var(--rule-2); border-radius: 999px; background: var(--paper); font: inherit; }
+.join-card .err { min-height: 1.2em; font-size: var(--text-sm); color: oklch(52% 0.19 27); }
+.join-card .privacy { font-size: var(--text-sm); color: var(--muted); }
+.hp { position: absolute; left: -9999px; }
+@media (max-width: 480px) { .join-card { padding: var(--space-lg); } .join-card .row { flex-direction: column; } }
+/* the folded feature list (tools/feature_list.py) */
+.all-band { padding-block: var(--space-xl); border-top: 1px solid var(--rule); }
+.all-features > summary { cursor: pointer; color: var(--ink-2); padding-block: var(--space-sm); }
+.all-features .section { padding-block: var(--space-xl); }
+.all-features .container { padding-inline: 0; }
+.nice { display: grid; gap: var(--space-lg); }
+.nice h2 { font-size: clamp(1.5rem, 1.4vw + 0.9rem, 2.2rem); }
+.nice .was { color: var(--ink-2); max-width: 52ch; }
+.nice-list { display: grid; gap: var(--space-md); grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr)); }
+.nice-list li { display: grid; align-content: start; gap: 6px; padding: var(--space-md); border: 1px solid var(--rule); border-radius: var(--radius-in); }
+.nice-list h3 { font-size: var(--text-md); font-family: var(--font-body); font-weight: 500; letter-spacing: 0; }
+.nice-list p { color: var(--ink-2); font-size: var(--text-sm); }
+.foot { border-top: 1px solid var(--rule); padding-block: var(--space-xl); font-size: var(--text-sm); color: var(--muted); }
+.foot .container { display: flex; flex-wrap: wrap; gap: var(--space-md); justify-content: space-between; }
+.foot b { color: var(--ink); font-weight: 500; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } html { scroll-behavior: auto; } }
 </style>
 </head>
 <body>
-
-<!-- E43-S2 (EPIC-43): the brand family's shared header line, as on epicspine.dev, team.alpha9.io and social.alpha9.io -->
-<div class="family" aria-label="The Epic family"><div class="container"><a href="https://epicspine.dev/">EpicSpine</a><a href="https://epicspine.dev/team/">EpicTeam</a><b>EpicSocial</b></div></div>
+<div class="family" aria-label="The Epic family"><div class="container"><a href="https://epicspine.dev/">EpicSpine</a><a href="https://epicteam.app/">EpicTeam</a><b>EpicSocial</b></div></div>
 
 <header class="nav"><div class="container">
   <a class="wordmark" href="#top" aria-label="EpicSocial, back to top"><svg viewBox="0 0 32 32" aria-hidden="true"><g fill="#7c3bed"><path d="M6 0h20a6 6 0 0 1 6 6v16a6 6 0 0 1-6 6H15l-8 4v-4H6a6 6 0 0 1-6-6V6a6 6 0 0 1 6-6z"/></g><g fill="#fff"><g transform="translate(2.98 0) skewX(-12)"><path d="M8 8A4 4 0 0 1 12 4L24 4L24 8L14 8L14 12L20 12A4 4 0 0 1 24 16L24 20A4 4 0 0 1 20 24L8 24L8 20L18 20L18 16L12 16A4 4 0 0 1 8 12Z"/></g></g></svg>EpicSocial</a>
   <nav class="links" aria-label="Sections">
-    <a href="#everyday">Every day</a>
-    <a href="#yes">Your yes</a>
-    <a href="#threads">Threads</a>
-    <a href="#alpha">Alpha</a>
-    <a href="#faq">FAQ</a>
+    <a class="hide-s" href="#demo">Demo</a>
+    <a class="hide-s" href="#wheel">The wheel</a>
+    <a class="hide-s" href="#whatsapp">WhatsApp</a>
+    <a href="#join">Alpha</a>
   </nav>
-  <a class="btn btn--sm" href="#join">Join the waitlist</a>
+  <a class="btn btn--sm" href="../testers/">Apply to test</a>
 </div></header>
 
 <main>
-<section class="hero" id="top"><div class="container">
-  <div class="hero-copy">
-    <h1>AI agents that build your reputation.</h1>
-    <p class="lead">They find ideas, write posts and answer replies. You approve every post.</p>
+<!-- 1. the answer: one objective, a team that posts on every channel, measured -->
+<section class="band hero" id="top" aria-labelledby="h-top"><div class="container hero-grid">
+  <div class="say">
+    <p class="kicker">Real screens from our own Zenod campaign</p>
+    <h1 id="h-top">Set one objective. An AI team runs your campaign on every channel.</h1>
+    <p class="lead">It writes, posts, measures every post and tells you each evening on WhatsApp where it stands.</p>
     <div class="actions">
-      <a class="btn" href="#join">Join the waitlist</a>
-      <a class="btn btn--clear" href="#alpha">What alpha means</a>
+      <a class="btn" href="#demo">See the demo</a>
+      <a class="btn btn--clear" href="../testers/">Apply to test it</a>
     </div>
-    <p class="note">Alpha release, for founders, small businesses and creators. The waitlist is free.</p>
+    <ul class="facts" aria-label="This week, live">
+      <li><b>96</b><span>posts in 6 days</span></li>
+      <li><b>4</b><span>channels posting</span></li>
+      <li><b>2 h</b><span>between check-ins</span></li>
+    </ul>
   </div>
-
-  <div class="stage">
-    <div class="light" aria-hidden="true"><canvas data-light width="112" height="88"></canvas></div>
-    <figure class="inbox" id="inbox" aria-label="Example: your team at work on one post">
-      <div class="inbox-head">
-        <p class="inbox-title">Your team, this week</p>
-        <button class="toggle" type="button" id="playpause" aria-label="Pause the example" aria-pressed="false" hidden><svg viewBox="0 0 16 16" aria-hidden="true"><path id="pp-icon" d="M4 2h3v12H4zM9 2h3v12H9z" fill="currentColor"/></svg></button>
-      </div>
-      <div class="agents" role="list">
-        <div class="agent" role="listitem" data-agent="I"><span class="av">I</span>Ideas</div>
-        <div class="agent" role="listitem" data-agent="Re"><span class="av">Re</span>Researcher</div>
-        <div class="agent on" role="listitem" data-agent="W"><span class="av">W</span>Writer</div>
-        <div class="agent" role="listitem" data-agent="R"><span class="av">R</span>Responder</div>
-      </div>
-      <p class="doing" id="doing" aria-live="polite">The Writer drafted Wednesday’s post. It is waiting for you.</p>
-      <div class="post">
-        <div class="post-by"><span class="av av--you">FL</span><b>Forno Lume</b><span class="where">Reddit and X</span></div>
-        <p class="post-text" id="post-text">How long does good bread take? Ours takes 36 hours, and we touch it for about 30 minutes. The rest is slow fermentation, building flavour no shortcut can.</p>
-        <div class="post-foot"><span class="state wait" id="post-state">Waiting for you</span><span class="approve-fake" id="approve-fake" aria-hidden="true">Approve</span></div>
-      </div>
-      <div class="replies" id="replies">
-        <div class="reply"><span class="av">MA</span><span>Do you have a gluten-free loaf?</span></div>
-        <div class="reply from-team"><span class="av">R</span><span>Yes, every Saturday from 7:00. We keep a few aside if you message us.</span></div>
-      </div>
-      <figcaption class="caption">Example: Forno Lume, a made-up bakery.</figcaption>
-    </figure>
-  </div>
+  <figure class="dark-shot hero-shot">
+    <img src="shots/app-plan.webp" width="1200" height="982" alt="The Zenod plan in EpicSocial: day 6 of 7, 96 posts out against 51 planned, each of six messages with its posts, views and replies">
+    <figcaption>The Zenod plan, day 6 of 7. Six messages, each measured.</figcaption>
+  </figure>
 </div></section>
 
-<section class="section" id="tree" aria-labelledby="h-tree"><div class="container proof proof--wide">
-<div class="say">
-<h2 id="h-tree">Each campaign is a tree you can see.</h2>
-<p class="was">The goal on top, then its steps, then the posts. Before: “I lose track of what each post is for.”</p>
-</div>
-<figure class="shot pic pic--tree">
-<div class="frame gt-wrap">
-<!-- goal-tree:social begin (tools/goal_tree.py writes this) -->
-<svg class="gt gt--wide" viewBox="0 0 980 502" width="980" height="502" style="--ar:1.951" role="img" aria-labelledby="gt-social-wide-title gt-social-wide-desc"><title id="gt-social-wide-title">One campaign&#x27;s tree: goal, steps and posts</title><desc id="gt-social-wide-desc">Make the Epic family known, 2 goals and 21 steps in its repo. Under it: Campaign: get testers (planned), with its steps: A one-page plan for the campaign; The call for testers; Answer every reply within 3 hours.</desc><path class="gt-line" d="M490 85V117 M370 117H610 M370 117V149 M610 117V149"/><path class="gt-line" d="M370 241V273 M114 273H798 M114 273V305 M342 273V305 M570 273V305 M798 273V305"/><path class="gt-line" d="M342 371V403 M114 403H570 M114 403V435 M342 403V435 M570 403V435"/><g class="gt-box gt-l0"><rect x="290" y="8" width="400" height="77" rx="2"/><text class="gt-name" x="306" y="44.0" font-size="26">Make the Epic family known</text><text class="gt-sub" x="306" y="78.7" font-size="16">2 goals and 21 steps in its repo</text></g><g class="gt-box gt-l1"><rect x="258" y="149" width="224" height="92" rx="2"/><circle class="gt-dot gt-planned" cx="276" cy="170.9" r="5"><title>planned</title></circle><text class="gt-name" x="292" y="178.5" font-size="20">Campaign: get</text><text class="gt-name" x="292" y="202.9" font-size="20">testers</text><text class="gt-sub" x="292" y="230.3" font-size="15">8 steps</text></g><g class="gt-box gt-l2"><rect x="8" y="305" width="212" height="66" rx="2"/><circle class="gt-dot gt-done" cx="26" cy="326.6" r="5"><title>done</title></circle><text class="gt-name" x="42" y="333.8" font-size="19">A one-page plan</text><text class="gt-name" x="42" y="357.0" font-size="19">for the campaign</text></g><g class="gt-box gt-l2 gt-focus"><rect x="236" y="305" width="212" height="66" rx="2"/><circle class="gt-dot gt-active" cx="254" cy="326.6" r="5"><title>in progress</title></circle><text class="gt-name" x="270" y="333.8" font-size="19">The call for</text><text class="gt-name" x="270" y="357.0" font-size="19">testers</text></g><g class="gt-box gt-l3"><rect x="8" y="435" width="212" height="59" rx="2"/><text class="gt-name" x="24" y="461.2" font-size="16">Post on X</text></g><g class="gt-box gt-l3"><rect x="236" y="435" width="212" height="59" rx="2"/><circle class="gt-dot gt-active" cx="254" cy="455.1" r="5"><title>in progress</title></circle><text class="gt-name" x="270" y="461.2" font-size="16">Post on</text><text class="gt-name" x="270" y="480.7" font-size="16">r/SideProject</text></g><g class="gt-box gt-l3"><rect x="464" y="435" width="212" height="59" rx="2"/><circle class="gt-dot gt-active" cx="482" cy="455.1" r="5"><title>in progress</title></circle><text class="gt-name" x="498" y="461.2" font-size="16">Post on</text><text class="gt-name" x="498" y="480.7" font-size="16">r/alphaandbetausers</text></g><g class="gt-box gt-l2"><rect x="464" y="305" width="212" height="66" rx="2"/><circle class="gt-dot gt-planned" cx="482" cy="326.6" r="5"><title>planned</title></circle><text class="gt-name" x="498" y="333.8" font-size="19">Answer every</text><text class="gt-name" x="498" y="357.0" font-size="19">reply within 3 hours</text></g><g class="gt-box gt-l2 gt-more"><rect x="692" y="305" width="212" height="66" rx="2"/><text class="gt-name" x="708" y="333.8" font-size="19">+5 more steps</text></g><g class="gt-box gt-l1 gt-more"><rect x="498" y="149" width="224" height="92" rx="2"/><text class="gt-name" x="514" y="178.5" font-size="20">+1 more goal</text></g></svg>
-<svg class="gt gt--phone" viewBox="0 0 360 617" width="360" height="617" style="--ar:0.584" role="img" aria-labelledby="gt-social-phone-title gt-social-phone-desc"><title id="gt-social-phone-title">One campaign&#x27;s tree: goal, steps and posts</title><desc id="gt-social-phone-desc">Make the Epic family known, 2 goals and 21 steps in its repo. Under it: Campaign: get testers (planned), with its steps: A one-page plan for the campaign; The call for testers; Answer every reply within 3 hours.</desc><path class="gt-line" d="M15 72V583 M15 114H26 M15 583Q15 591 23 591H26"/><path class="gt-line" d="M37 146V529 M37 187H48 M37 249H48 M37 474H48 M37 529Q37 537 45 537H48"/><path class="gt-line" d="M59 271V403 M59 303H70 M59 357H70 M59 403Q59 411 67 411H70"/><g class="gt-box gt-l0"><rect x="4" y="4" width="352" height="68" rx="2"/><text class="gt-name" x="20" y="35.0" font-size="21">Make the Epic family known</text><text class="gt-sub" x="20" y="63.6" font-size="14">2 goals and 21 steps in its repo</text></g><g class="gt-box gt-l1"><rect x="26" y="82" width="330" height="64" rx="2"/><circle class="gt-dot gt-planned" cx="44" cy="103.0" r="5"><title>planned</title></circle><text class="gt-name" x="60" y="109.8" font-size="18">Campaign: get testers</text><text class="gt-sub" x="60" y="134.8" font-size="14">8 steps</text></g><g class="gt-box gt-l2"><rect x="48" y="156" width="308" height="61" rx="2"/><circle class="gt-dot gt-done" cx="66" cy="176.5" r="5"><title>done</title></circle><text class="gt-name" x="82" y="183.0" font-size="17">A one-page plan for the</text><text class="gt-name" x="82" y="203.7" font-size="17">campaign</text></g><g class="gt-box gt-l2 gt-focus"><rect x="48" y="227" width="308" height="44" rx="2"/><circle class="gt-dot gt-active" cx="66" cy="248.0" r="5"><title>in progress</title></circle><text class="gt-name" x="82" y="254.5" font-size="17">The call for testers</text></g><g class="gt-box gt-l3"><rect x="70" y="281" width="286" height="44" rx="2"/><text class="gt-name" x="86" y="307.5" font-size="16">Post on X</text></g><g class="gt-box gt-l3"><rect x="70" y="335" width="286" height="44" rx="2"/><circle class="gt-dot gt-active" cx="88" cy="355.4" r="5"><title>in progress</title></circle><text class="gt-name" x="104" y="361.5" font-size="16">Post on r/SideProject</text></g><g class="gt-box gt-l3"><rect x="70" y="389" width="286" height="44" rx="2"/><circle class="gt-dot gt-active" cx="88" cy="409.4" r="5"><title>in progress</title></circle><text class="gt-name" x="104" y="415.5" font-size="16">Post on r/alphaandbetausers</text></g><g class="gt-box gt-l2"><rect x="48" y="443" width="308" height="61" rx="2"/><circle class="gt-dot gt-planned" cx="66" cy="464.0" r="5"><title>planned</title></circle><text class="gt-name" x="82" y="470.5" font-size="17">Answer every reply within 3</text><text class="gt-name" x="82" y="491.2" font-size="17">hours</text></g><g class="gt-box gt-l2 gt-more"><rect x="48" y="515" width="308" height="44" rx="2"/><text class="gt-name" x="64" y="541.9" font-size="17">+5 more steps</text></g><g class="gt-box gt-l1 gt-more"><rect x="26" y="569" width="330" height="44" rx="2"/><text class="gt-name" x="42" y="596.9" font-size="18">+1 more goal</text></g></svg>
-<details class="gt-all"><summary>Show more of the tree</summary>
-<svg class="gt gt--wide" viewBox="0 0 1200 468" width="1200" height="468" style="--ar:2.566" role="img" aria-labelledby="gt-social-all-wide-title gt-social-all-wide-desc"><title id="gt-social-all-wide-title">One campaign&#x27;s tree: goal, steps and posts</title><desc id="gt-social-all-wide-desc">Make the Epic family known, 2 goals and 21 steps in its repo. Under it: Campaign: get testers (planned), with its steps: A one-page plan for the campaign; The call for testers; Answer every reply within 3 hours; Count the applications daily; A diagram for each post.</desc><path class="gt-line" d="M600 77V109 M500 109H700 M500 109V141 M700 109V141"/><path class="gt-line" d="M500 221V253 M96 253H1056 M96 253V285 M288 253V285 M480 253V285 M672 253V285 M864 253V285 M1056 253V285"/><path class="gt-line" d="M288 342V374 M96 374H480 M96 374V406 M288 374V406 M480 374V406"/><g class="gt-box gt-l0"><rect x="420" y="8" width="360" height="69" rx="2"/><text class="gt-name" x="436" y="40.0" font-size="22">Make the Epic family known</text><text class="gt-sub" x="436" y="69.8" font-size="14">2 goals and 21 steps in its repo</text></g><g class="gt-box gt-l1"><rect x="408" y="141" width="184" height="80" rx="2"/><circle class="gt-dot gt-planned" cx="426" cy="161.0" r="5"><title>planned</title></circle><text class="gt-name" x="442" y="167.0" font-size="16">Campaign: get</text><text class="gt-name" x="442" y="186.6" font-size="16">testers</text><text class="gt-sub" x="442" y="209.1" font-size="13">8 steps</text></g><g class="gt-box gt-l2"><rect x="8" y="285" width="176" height="57" rx="2"/><circle class="gt-dot gt-done" cx="26" cy="304.3" r="5"><title>done</title></circle><text class="gt-name" x="42" y="310.0" font-size="15">A one-page plan</text><text class="gt-name" x="42" y="328.3" font-size="15">for the campaign</text></g><g class="gt-box gt-l2 gt-focus"><rect x="200" y="285" width="176" height="57" rx="2"/><circle class="gt-dot gt-active" cx="218" cy="304.3" r="5"><title>in progress</title></circle><text class="gt-name" x="234" y="310.0" font-size="15">The call for</text><text class="gt-name" x="234" y="328.3" font-size="15">testers</text></g><g class="gt-box gt-l3"><rect x="8" y="406" width="176" height="54" rx="2"/><text class="gt-name" x="24" y="429.6" font-size="14">Post on X</text></g><g class="gt-box gt-l3"><rect x="200" y="406" width="176" height="54" rx="2"/><circle class="gt-dot gt-active" cx="218" cy="424.3" r="5"><title>in progress</title></circle><text class="gt-name" x="234" y="429.6" font-size="14">Post on</text><text class="gt-name" x="234" y="446.7" font-size="14">r/SideProject</text></g><g class="gt-box gt-l3"><rect x="392" y="406" width="176" height="54" rx="2"/><circle class="gt-dot gt-active" cx="410" cy="424.3" r="5"><title>in progress</title></circle><text class="gt-name" x="426" y="429.6" font-size="14">Post on</text><text class="gt-name" x="426" y="446.7" font-size="14">r/alphaandbetausers</text></g><g class="gt-box gt-l2"><rect x="392" y="285" width="176" height="57" rx="2"/><circle class="gt-dot gt-planned" cx="410" cy="304.3" r="5"><title>planned</title></circle><text class="gt-name" x="426" y="310.0" font-size="15">Answer every</text><text class="gt-name" x="426" y="328.3" font-size="15">reply within 3 hours</text></g><g class="gt-box gt-l2"><rect x="584" y="285" width="176" height="57" rx="2"/><circle class="gt-dot gt-planned" cx="602" cy="304.3" r="5"><title>planned</title></circle><text class="gt-name" x="618" y="310.0" font-size="15">Count the</text><text class="gt-name" x="618" y="328.3" font-size="15">applications daily</text></g><g class="gt-box gt-l2"><rect x="776" y="285" width="176" height="57" rx="2"/><circle class="gt-dot gt-planned" cx="794" cy="304.3" r="5"><title>planned</title></circle><text class="gt-name" x="810" y="310.0" font-size="15">A diagram for</text><text class="gt-name" x="810" y="328.3" font-size="15">each post</text></g><g class="gt-box gt-l2 gt-more"><rect x="968" y="285" width="176" height="57" rx="2"/><text class="gt-name" x="984" y="310.0" font-size="15">+3 more steps</text></g><g class="gt-box gt-l1 gt-more"><rect x="608" y="141" width="184" height="80" rx="2"/><text class="gt-name" x="624" y="167.0" font-size="16">+1 more goal</text></g></svg>
-<svg class="gt gt--phone" viewBox="0 0 360 695" width="360" height="695" style="--ar:0.518" role="img" aria-labelledby="gt-social-all-phone-title gt-social-all-phone-desc"><title id="gt-social-all-phone-title">One campaign&#x27;s tree: goal, steps and posts</title><desc id="gt-social-all-phone-desc">Make the Epic family known, 2 goals and 21 steps in its repo. Under it: Campaign: get testers (planned), with its steps: A one-page plan for the campaign; The call for testers; Answer every reply within 3 hours; Count the applications daily; A diagram for each post.</desc><path class="gt-line" d="M15 68V661 M15 108H26 M15 661Q15 669 23 669H26"/><path class="gt-line" d="M37 138V607 M37 170H48 M37 224H48 M37 447H48 M37 507H48 M37 561H48 M37 607Q37 615 45 615H48"/><path class="gt-line" d="M59 246V378 M59 278H70 M59 332H70 M59 378Q59 386 67 386H70"/><g class="gt-box gt-l0"><rect x="4" y="4" width="352" height="64" rx="2"/><text class="gt-name" x="20" y="33.0" font-size="19">Make the Epic family known</text><text class="gt-sub" x="20" y="59.2" font-size="13">2 goals and 21 steps in its repo</text></g><g class="gt-box gt-l1"><rect x="26" y="78" width="330" height="60" rx="2"/><circle class="gt-dot gt-planned" cx="44" cy="98.0" r="5"><title>planned</title></circle><text class="gt-name" x="60" y="104.1" font-size="16">Campaign: get testers</text><text class="gt-sub" x="60" y="126.6" font-size="13">8 steps</text></g><g class="gt-box gt-l2"><rect x="48" y="148" width="308" height="44" rx="2"/><circle class="gt-dot gt-done" cx="66" cy="167.8" r="5"><title>done</title></circle><text class="gt-name" x="82" y="173.5" font-size="15">A one-page plan for the campaign</text></g><g class="gt-box gt-l2 gt-focus"><rect x="48" y="202" width="308" height="44" rx="2"/><circle class="gt-dot gt-active" cx="66" cy="221.8" r="5"><title>in progress</title></circle><text class="gt-name" x="82" y="227.5" font-size="15">The call for testers</text></g><g class="gt-box gt-l3"><rect x="70" y="256" width="286" height="44" rx="2"/><text class="gt-name" x="86" y="280.5" font-size="14">Post on X</text></g><g class="gt-box gt-l3"><rect x="70" y="310" width="286" height="44" rx="2"/><circle class="gt-dot gt-active" cx="88" cy="329.2" r="5"><title>in progress</title></circle><text class="gt-name" x="104" y="334.5" font-size="14">Post on r/SideProject</text></g><g class="gt-box gt-l3"><rect x="70" y="364" width="286" height="44" rx="2"/><circle class="gt-dot gt-active" cx="88" cy="383.2" r="5"><title>in progress</title></circle><text class="gt-name" x="104" y="388.5" font-size="14">Post on r/alphaandbetausers</text></g><g class="gt-box gt-l2"><rect x="48" y="418" width="308" height="57" rx="2"/><circle class="gt-dot gt-planned" cx="66" cy="437.8" r="5"><title>planned</title></circle><text class="gt-name" x="82" y="443.5" font-size="15">Answer every reply within 3</text><text class="gt-name" x="82" y="461.8" font-size="15">hours</text></g><g class="gt-box gt-l2"><rect x="48" y="485" width="308" height="44" rx="2"/><circle class="gt-dot gt-planned" cx="66" cy="504.4" r="5"><title>planned</title></circle><text class="gt-name" x="82" y="510.1" font-size="15">Count the applications daily</text></g><g class="gt-box gt-l2"><rect x="48" y="539" width="308" height="44" rx="2"/><circle class="gt-dot gt-planned" cx="66" cy="558.4" r="5"><title>planned</title></circle><text class="gt-name" x="82" y="564.1" font-size="15">A diagram for each post</text></g><g class="gt-box gt-l2 gt-more"><rect x="48" y="593" width="308" height="44" rx="2"/><text class="gt-name" x="64" y="618.1" font-size="15">+3 more steps</text></g><g class="gt-box gt-l1 gt-more"><rect x="26" y="647" width="330" height="44" rx="2"/><text class="gt-name" x="42" y="673.1" font-size="16">+1 more goal</text></g></svg>
-</details>
-<!-- goal-tree:social end -->
-</div>
-<ul class="gt-key" aria-label="What the dots mean"><li><i class="gt-done"></i>Done</li><li><i class="gt-review"></i>Waiting for you</li><li><i class="gt-active"></i>In progress</li><li><i class="gt-planned"></i>Planned</li></ul>
-<figcaption>Our own campaign to find testers, drawn from its repo on 8 November 2026.</figcaption>
-</figure>
+<!-- 2. the mini demo: the product itself, in real screens -->
+<section class="band dark" id="demo" aria-labelledby="h-demo"><div class="container">
+  <h2 id="h-demo">See it work, in five screens.</h2>
+  <div class="demo" data-demo>
+    <ol class="steps" role="tablist" aria-label="Demo steps">
+      <li><button role="tab" aria-selected="true" aria-controls="d1" id="t1" data-i="0"><span>1</span>Your campaigns</button></li>
+      <li><button role="tab" aria-selected="false" aria-controls="d2" id="t2" data-i="1"><span>2</span>One objective, its numbers</button></li>
+      <li><button role="tab" aria-selected="false" aria-controls="d3" id="t3" data-i="2"><span>3</span>Every post in one pipeline</button></li>
+      <li><button role="tab" aria-selected="false" aria-controls="d4" id="t4" data-i="3"><span>4</span>Each message measured</button></li>
+      <li><button role="tab" aria-selected="false" aria-controls="d5" id="t5" data-i="4"><span>5</span>The evening picture</button></li>
+    </ol>
+    <div class="stage">
+      <figure class="frame on" role="tabpanel" id="d1" aria-labelledby="t1"><img src="shots/app-home.webp" width="1400" height="875" alt="EpicSocial home: three campaigns, each with its key results as coloured bars" loading="lazy"><figcaption>Home lists every campaign with its key results as lights.</figcaption></figure>
+      <figure class="frame" role="tabpanel" id="d2" aria-labelledby="t2" hidden><img src="shots/app-goal.webp" width="1200" height="700" alt="The Zenod campaign plan: 10 testers signed up, then 5 using it weekly, with the funnel from posts seen to sign-ups" loading="lazy"><figcaption>The campaign holds one objective and the funnel that moves it.</figcaption></figure>
+      <figure class="frame" role="tabpanel" id="d3" aria-labelledby="t3" hidden><img src="shots/app-pipeline.webp" width="1200" height="1128" alt="The pipeline: ideas, drafts, scheduled and posted columns of real Zenod posts" loading="lazy"><figcaption>Ideas become drafts, drafts get a slot, slots go out.</figcaption></figure>
+      <figure class="frame" role="tabpanel" id="d4" aria-labelledby="t4" hidden><img src="shots/app-plan.webp" width="1200" height="982" alt="The plan block: six messages ranked by replies a post" loading="lazy"><figcaption>Every post is read daily. The best message rises to the top.</figcaption></figure>
+      <figure class="frame frame--phone" role="tabpanel" id="d5" aria-labelledby="t5" hidden><img src="shots/wa-plan.webp" width="720" height="1395" alt="The evening WhatsApp picture of the Zenod plan" loading="lazy"><figcaption>At 18:30 the same numbers arrive on WhatsApp as a picture.</figcaption></figure>
+      <div class="bar" aria-hidden="true"><i></i></div>
+      <button class="toggle" type="button" data-pause aria-label="Pause the demo" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true"><path data-icon d="M4 2h3v12H4zM9 2h3v12H9z" fill="currentColor"/></svg></button>
+    </div>
+  </div>
 </div></section>
-<section class="section section--paper2" id="everyday" aria-labelledby="h-everyday"><div class="container proof">
-<div class="say">
-<h2 id="h-everyday">On Reddit and X, every day.</h2>
-<p class="was">You only say yes or no. Before: “I post when I find the time.”</p>
-</div>
-<figure class="shot pic">
-  <div class="frame win"><picture><source media="(max-width: 40rem)" srcset="shots/everyday-phone.webp" width="374" height="660"><img style="--w:960px" src="shots/everyday.webp" width="960" height="290" loading="lazy" alt="EpicSocial's numbers for our own X account, @ZenodAgent, over the last 7 days: 4 posts, 9 replies received, 23 replies sent, 3 followers, 29 impressions, each with a bar per day."></picture></div>
-<figcaption>Our own X account in EpicSocial, the week to 6 November 2026.</figcaption>
-</figure>
+
+<!-- 3. the engine: one number drives the posting -->
+<section class="band" id="engine" aria-labelledby="h-engine"><div class="container">
+  <div class="say">
+    <h2 id="h-engine">One number drives the posting.</h2>
+    <p class="lead">Say how many posts a day per channel. Every part of the engine reads that number.</p>
+  </div>
+  <ol class="engine" data-engine aria-label="The posting engine, in order">
+    <li><b>Posts a day</b><span>12 on each channel</span></li>
+    <li><b>Slots</b><span>spread over the day</span></li>
+    <li><b>Writer</b><span>fills each open slot</span></li>
+    <li><b>Publisher</b><span>posts at its time</span></li>
+    <li><b>Reader</b><span>measures every post daily</span></li>
+    <li><b>Key result</b><span>posts against the target</span></li>
+  </ol>
+  <p class="engine-back">The gap to the target is the first thing the Writer and Publisher read when they wake.</p>
 </div></section>
-<section class="section" id="yes" aria-labelledby="h-yes"><div class="container proof">
-<div class="say">
-<h2 id="h-yes">Nothing goes out unless you said yes.</h2>
-<p class="was">Before: “I’m scared of what a bot might say in my name.”</p>
-</div>
-<figure class="shot pic">
-  <div class="frame win"><picture><source media="(max-width: 40rem)" srcset="shots/yes-phone.webp" width="378" height="882"><img style="--w:788px" src="shots/yes.webp" width="788" height="536" loading="lazy" alt="A held X post in EpicSocial: waiting for your approval, its slot has passed and it is not posted. Four buttons: schedule for Sunday 15 November, pick a new time, give feedback, don't post."></picture></div>
-<figcaption>A post that missed its slot waits for you. 6 November 2026.</figcaption>
-</figure>
+
+<!-- 4. the wheel and the campaign manager -->
+<section class="band alt" id="wheel" aria-labelledby="h-wheel"><div class="container split">
+  <div class="say">
+    <h2 id="h-wheel">A campaign manager turns the wheel.</h2>
+    <p class="lead">Every 2 hours it reads the key results first, names what holds one back and fixes it.</p>
+    <p class="muted">It asks you only when a limit you own blocks a key result.</p>
+  </div>
+  <figure class="wheel-fig">
+    <svg class="wheel" data-wheel viewBox="0 0 520 520" role="img" aria-labelledby="wheel-t">
+      <title id="wheel-t">The campaign manager's loop: read the key results, name the cause, make one fix, ask you only for a limit of yours, report. Every 2 hours.</title>
+      <circle class="ring" cx="260" cy="260" r="186"/>
+      <circle class="ring-run" cx="260" cy="260" r="186" pathLength="100"/>
+      <g class="hub"><circle cx="260" cy="260" r="82"/><text x="260" y="252" text-anchor="middle" class="hub-a">Campaign</text><text x="260" y="276" text-anchor="middle" class="hub-a">manager</text><text x="260" y="302" text-anchor="middle" class="hub-b">every 2 hours</text></g>
+      <g class="node" data-n="0" transform="translate(260 74)"><rect x="-92" y="-30" width="184" height="60" rx="12"/><text y="-3" text-anchor="middle" class="n-a">Read key results</text><text y="18" text-anchor="middle" class="n-b">now against target</text></g>
+      <g class="node" data-n="1" transform="translate(437 203)"><rect x="-78" y="-30" width="156" height="60" rx="12"/><text y="-3" text-anchor="middle" class="n-a">Name the cause</text><text y="18" text-anchor="middle" class="n-b">one per gap</text></g>
+      <g class="node" data-n="2" transform="translate(369 411)"><rect x="-72" y="-30" width="144" height="60" rx="12"/><text y="-3" text-anchor="middle" class="n-a">One fix</text><text y="18" text-anchor="middle" class="n-b">through the engine</text></g>
+      <g class="node" data-n="3" transform="translate(151 411)"><rect x="-72" y="-30" width="144" height="60" rx="12"/><text y="-3" text-anchor="middle" class="n-a">Ask you</text><text y="18" text-anchor="middle" class="n-b">only for your limits</text></g>
+      <g class="node" data-n="4" transform="translate(83 203)"><rect x="-70" y="-30" width="140" height="60" rx="12"/><text y="-3" text-anchor="middle" class="n-a">Report</text><text y="18" text-anchor="middle" class="n-b">one line, a picture</text></g>
+      <circle class="runner" r="9" cx="260" cy="74"/>
+    </svg>
+  </figure>
 </div></section>
-<section class="section section--paper2" id="threads" aria-labelledby="h-threads"><div class="container proof">
-<div class="say">
-<h2 id="h-threads">The right threads come to you, reply drafted.</h2>
-<p class="was">Before: “I miss the threads that matter.”</p>
-</div>
-<figure class="shot pic">
-  <div class="frame win"><picture><source media="(max-width: 40rem)" srcset="shots/reply-phone.webp" width="340" height="1083"><img style="--w:926px" src="shots/reply.webp" width="926" height="459" loading="lazy" alt="A reply waiting in EpicSocial: where it goes, a Reddit thread in r/AI_Agents about agents handling stale state, and what it says, four short paragraphs drafted by the team. Buttons: schedule this reply, new iteration with feedback, deny."></picture></div>
-<figcaption>A thread the team found, with its reply drafted. 6 November 2026.</figcaption>
-</figure>
+
+<!-- 5. real objectives and key results -->
+<section class="band dark" id="okrs" aria-labelledby="h-okrs"><div class="container split">
+  <div class="say">
+    <h2 id="h-okrs">Real objectives. Lights you can trust.</h2>
+    <p class="lead">A key result turns green only when a post went out and was read. Our own two, this morning.</p>
+  </div>
+  <figure class="paper-shot"><img src="shots/okr.webp" width="720" height="377" alt="This morning's objectives: Zenod, 5 testers, 4 of 8 key results green; EpicSocial, every channel works, 6 of 10 green" loading="lazy"></figure>
 </div></section>
-<section class="section" id="rules" aria-labelledby="h-rules"><div class="container proof">
-<div class="say">
-<h2 id="h-rules">Say it once. Every next post follows it.</h2>
-<p class="was">Before: “I explain the same thing to every tool, every time.”</p>
-</div>
-<figure class="shot pic">
-  <div class="frame win"><picture><source media="(max-width: 40rem)" srcset="shots/rules-phone.webp" width="378" height="411"><img style="--w:788px" src="shots/rules.webp" width="788" height="367" loading="lazy" alt="The checks on one post: waiting for your approval because every post is held, then ticks for X brand voice, one idea per post, each post 280 characters or fewer, ends on the question, no hype words or exclamation marks, and more."></picture></div>
-<figcaption>Every post is checked against your rules before it reaches you.</figcaption>
-</figure>
+
+<!-- 6. the WhatsApp digests -->
+<section class="band" id="whatsapp" aria-labelledby="h-whatsapp"><div class="container">
+  <div class="say">
+    <h2 id="h-whatsapp">Every evening, the campaign on your WhatsApp.</h2>
+    <p class="lead">Two pictures at 18:30: every channel for 7 days, and the plan message by message. Red means nothing went out.</p>
+  </div>
+  <div class="phones">
+    <figure class="phone"><div class="phone-in"><img src="shots/wa-channels.webp" width="720" height="1513" alt="Evening picture: posts, views and replies on X, Reddit, LinkedIn, YouTube Shorts and TikTok for 7 days" loading="lazy"></div><figcaption>Each channel, 7 days</figcaption></figure>
+    <figure class="phone"><div class="phone-in"><img src="shots/wa-plan.webp" width="720" height="1395" alt="Evening picture: the plan, six messages with their posts and replies" loading="lazy"></div><figcaption>The plan, by message</figcaption></figure>
+  </div>
+  <p class="muted small">Sent 19 November 18:30 Mexico City. One account name hidden.</p>
 </div></section>
-<section class="section section--paper2" id="answered" aria-labelledby="h-answered"><div class="container proof">
-<div class="say">
-<h2 id="h-answered">See what people answered.</h2>
-<p class="was">Before: “I post and guess what worked.” What readers ask for comes next.</p>
-</div>
-<figure class="shot pic">
-  <div class="frame win"><picture><source media="(max-width: 40rem)" srcset="shots/answered-phone.webp" width="374" height="681"><img style="--w:960px" src="shots/answered.webp" width="960" height="365" loading="lazy" alt="EpicSocial's Reddit numbers for u/jordimr over 7 days: 3 posts, 7 replies received, 19 replies sent, 1 follower. The best Reddit post, P-0019 in r/AI_Agents, has 50 comments, score 6 and 13 replies from us."></picture></div>
-<figcaption>Jordi’s Reddit account, the week to 6 November 2026.</figcaption>
-</figure>
+
+<!-- 7. alpha: apply or wait -->
+<section class="band alt" id="join" aria-labelledby="h-join"><div class="container split">
+  <div class="say">
+    <h2 id="h-join">Alpha. We are looking for testers.</h2>
+    <p class="lead">Our own team runs Zenod on it every day. We set yours up with you, by hand.</p>
+    <div class="actions"><a class="btn" href="../testers/">Apply to test it</a></div>
+    <p class="muted small">X, Reddit, YouTube Shorts and TikTok post today. LinkedIn is next.</p>
+  </div>
+  <div class="join-card">
+    <h3>Rather wait? Join the waitlist.</h3>
+    <form id="wl" method="post" action="https://signup.alpha9.io/api/public/testers">
+      <label for="f-email">Email</label>
+      <div class="row">
+        <input type="email" id="f-email" name="email" required maxlength="254" autocomplete="email" inputmode="email" placeholder="you@example.com" aria-describedby="e-email">
+        <button class="btn" type="submit">Join</button>
+      </div>
+      <div class="err" id="e-email" role="alert"></div>
+      <input type="hidden" name="offer" value="waitlist-alpha">
+      <input type="hidden" name="source" value="social page">
+      <input type="hidden" name="back" value="https://epicspine.dev/social/">
+      <div class="hp" aria-hidden="true"><label for="website">Leave this empty</label><input id="website" name="website" tabindex="-1" autocomplete="off"></div>
+      <p class="privacy">Only your email, on our own list, to write to you about EpicSocial. Ask us and we delete it.</p>
+    </form>
+    <div class="thanks" id="thanks" role="status" hidden></div>
+  </div>
 </div></section>
+
+<!-- the full feature list (tools/feature_list.py writes it) stays on the page, folded -->
+<section class="band all-band" id="all" aria-label="Everything it does"><div class="container">
+<details class="all-features"><summary>Everything it does</summary>
 <!-- features:social begin (tools/feature_list.py writes this) -->
   <section class="section" id="campaign-at-a-glance" aria-labelledby="h-campaign-at-a-glance">
     <div class="container nice">
@@ -579,154 +442,66 @@ button, input, textarea { font: inherit; color: inherit; }
     </div>
   </section>
 <!-- features:social end -->
-
-<section class="section" id="alpha"><div class="container alpha">
-  <div>
-    <div class="head" style="margin-bottom: 0">
-      <h2>This is an alpha. We’re looking for testers.</h2>
-      <p>EpicSocial works: our own team posts with it every day for Zenod. But it is early, and we want a few people to use it on their own accounts before we open it to everyone.</p>
-    </div>
-    <ul class="alpha-list" aria-label="What alpha means">
-      <li><b>It is rough.</b> Some things will break or change from week to week. We fix them fast, and we tell you what changed.</li>
-      <li><b>We set it up with you.</b> Your brief, your channels and your first posts, together, by hand.</li>
-      <li><b>Your feedback decides what comes next.</b> A few lines a week, or a short call.</li>
-      <li><b>Nothing goes out without your OK.</b> Every post is a draft until you approve it.</li>
-    </ul>
-    <div class="paths">
-      <div><h3>Want to test it now?</h3><p>Testers run it on their own Reddit and X during the alpha. Read what we ask and apply at <a href="../testers/">epicsocial.app/testers</a>.</p></div>
-      <div><h3>Rather wait?</h3><p>Join the waitlist. We’ll write to you when EpicSocial opens to more people. Nothing to pay, no commitment. <a href="#join">Join the waitlist</a></p></div>
-    </div>
-  </div>
+</details>
 </div></section>
-
-<section class="section section--paper2" id="faq"><div class="container faq">
-  <h2>Questions</h2>
-  <div>
-    <details><summary>Is it AI?<svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></summary><p>Yes. Every member of the team is an AI agent. We don’t hide it: your profile and posts say AI helps run the account where the platform asks for it, and the Responder never pretends to be a person.</p></details>
-    <details><summary>Which networks?<svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></summary><p>Reddit and X at launch: that is where our own team posts every day. More channels (LinkedIn, Instagram) come later; some platforms need to approve our app before we can post for you.</p></details>
-    <details><summary>Where do the ideas come from?<svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></summary><p>From you first: a list of topics, a voice note, a line in chat. The Ideas agent adds its own from what is trending in your space, and keeps the list sorted. Each idea is researched before the Writer drafts it.</p></details>
-    <details><summary>Do I have to approve everything?<svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></summary><p>For the first two weeks, yes: nothing goes out without your OK. You approve a draft, or approve it with feedback and the Writer applies it before it goes out. After two weeks you choose: keep approving, or let the team post on its own and review after the fact.</p></details>
-    <details><summary>Will it reply to strangers or send DMs?<svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></summary><p>No. The Responder only answers people who commented on or mentioned your posts. No cold replies and no DMs to strangers: platforms ban that, and it reads as spam.</p></details>
-    <details><summary>What happens if I cancel?<svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></summary><p>The team stops working. Your files, with your brand voice, calendar, every post and every lesson, stay with you. You can even run the open-source team on them yourself.</p></details>
-    <details><summary>Can I run it myself instead?<svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></summary><p>Yes. The engine is open source. Bring your own server and your own AI key and run it for free. The hosted plan is for people who’d rather we handle the servers, the setup and the AI costs.</p></details>
-    <details><summary>What does “alpha” mean here?<svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></summary><p>It works and we use it every day, but it is early: things change from week to week, and we set each team up by hand with you. We are looking for testers to use it on their own accounts and tell us what is broken.</p></details>
-    <details><summary>Can I test it now?<svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></summary><p>Yes. Testers start during the alpha: <a href="../testers/">epicsocial.app/testers</a>.</p></details>
-    <details><summary>What happens when I join the waitlist?<svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></summary><p>Nothing yet: we keep your email and write to you when EpicSocial opens to more people. No payment, no newsletter.</p></details>
-  </div>
-</div></section>
-
-<section class="join" id="join">
-  <div class="light" aria-hidden="true"><canvas data-light width="120" height="60"></canvas></div>
-  <div class="container"><div class="join-card">
-    <h2>Join the waitlist.</h2>
-    <p>EpicSocial is in alpha. Leave your email and we’ll write to you when it opens to more people. Nothing to pay, no commitment. Want to start now? <a href="../testers/">Apply to test it</a>.</p>
-    <form id="wl" method="post" action="https://signup.alpha9.io/api/public/testers">
-      <label for="f-email">Email</label>
-      <div class="row">
-        <input type="email" id="f-email" name="email" required maxlength="254" autocomplete="email" inputmode="email" placeholder="you@example.com" aria-describedby="e-email">
-        <button class="btn" type="submit">Join the waitlist</button>
-      </div>
-      <div class="err" id="e-email" role="alert"></div>
-      <input type="hidden" name="offer" value="waitlist-alpha">
-      <input type="hidden" name="source" value="social page">
-      <input type="hidden" name="back" value="https://epicspine.dev/social/">
-      <div class="hp" aria-hidden="true"><label for="website">Leave this empty</label><input id="website" name="website" tabindex="-1" autocomplete="off"></div>
-      <p class="privacy">We keep only your email, on our own private list, to write to you about EpicSocial. No payment, no newsletter, no sharing. Ask us and we delete it.</p>
-    </form>
-    <div class="thanks" id="thanks" role="status" hidden></div>
-  </div></div>
-</section>
 </main>
 
 <footer class="foot"><div class="container">
-  <div class="brand"><b>EpicSocial</b><nav aria-label="The Epic family"><a href="https://epicspine.dev/">EpicSpine</a><a href="https://epicspine.dev/team/">EpicTeam</a><span>EpicSocial</span></nav></div>
-  <p>Alpha release. EpicSocial runs on EpicTeam and EpicSpine, both open source. Our first team, running on our own product, posts for Zenod; EpicSocial opens right after the Zenod launch. No cookies, no trackers.</p>
+  <b>EpicSocial</b>
+  <p>Alpha. Runs on EpicTeam and EpicSpine, both open source. No cookies, no trackers.</p>
 </div></footer>
-
 <script>
-document.documentElement.classList.add('js');
-const reduce = matchMedia('(prefers-reduced-motion: reduce)');
-
-// ---- The light: water caustics on a small canvas, scaled up by CSS. Colours come from the tokens. Pauses off screen; one still frame under reduced motion.
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const seen = (el, fn) => new IntersectionObserver((es) => es.forEach((e) => fn(e.isIntersecting)), { threshold: 0.25 }).observe(el);
+// ---- The mini demo (E46-S102): five real screens, one every 5 s; tap a step to jump, pause to read.
 (function () {
-  const probe = document.createElement('canvas').getContext('2d', { willReadFrequently: true });
-  const rgb = (name) => { probe.clearRect(0, 0, 1, 1); probe.fillStyle = getComputedStyle(document.documentElement).getPropertyValue(name).trim(); probe.fillRect(0, 0, 1, 1); return Array.from(probe.getImageData(0, 0, 1, 1).data.slice(0, 3)); };
-  const shade = rgb('--color-shade'), deep = rgb('--color-shade-2'), light = rgb('--color-light'), spark = rgb('--color-accent-bright');
-  document.querySelectorAll('canvas[data-light]').forEach((cv, k) => {
-    const ctx = cv.getContext('2d'), W = cv.width, H = cv.height, img = ctx.createImageData(W, H), d = img.data;
-    let visible = false, raf = 0, last = 0;
-    function frame(t) {
-      const time = t / 1000 * 0.35 + 23 + k * 11, TAU = 6.28318;
-      for (let y = 0; y < H; y++) {
-        for (let x = 0; x < W; x++) {
-          const px = (x / W) * TAU * 1.7 - 250, py = (y / W) * TAU * 1.7 - 250;
-          let ix = px, iy = py, c = 1;
-          for (let n = 0; n < 4; n++) {
-            const tt = time * (1 - 3.5 / (n + 1));
-            const nx = px + Math.cos(tt - ix) + Math.sin(tt + iy), ny = py + Math.sin(tt - iy) + Math.cos(tt + ix);
-            ix = nx; iy = ny;
-            c += 1 / Math.hypot(px / (Math.sin(ix + tt) / 0.005), py / (Math.cos(iy + tt) / 0.005));
-          }
-          c /= 4; c = 1.17 - Math.pow(c, 1.4);
-          let n = Math.min(1, Math.pow(Math.abs(c), 8));
-          const lo = 0.5 + 0.5 * Math.sin(x / W * 2.2 - y / H * 1.6 + time * 0.3);
-          const i = (y * W + x) * 4;
-          for (let ch = 0; ch < 3; ch++) {
-            const base = deep[ch] + (shade[ch] - deep[ch]) * (0.45 + 0.55 * lo);
-            let val = base + (light[ch] - base) * n;
-            if (n > 0.92) val += (spark[ch] - val) * (n - 0.92) * 0.6;
-            d[i + ch] = val;
-          }
-          d[i + 3] = 255;
-        }
-      }
-      ctx.putImageData(img, 0, 0);
-    }
-    function loop(t) { if (!visible || !awake || reduce.matches) return; if (t - last > 66) { frame(t); last = t; } raf = requestAnimationFrame(loop); }
-    frame(4200);
-    // agent_team E46-S57: the light moves from the visitor's first move, scroll or key (a still frame until then), so the
-    // page is ready to use at once on a phone instead of drawing light while it loads.
-    let awake = false;
-    const wake = () => { if (awake) return; awake = true; cancelAnimationFrame(raf); if (visible && !reduce.matches) raf = requestAnimationFrame(loop); };
-    for (const ev of ['pointermove', 'pointerdown', 'scroll', 'keydown', 'touchstart']) addEventListener(ev, wake, { once: true, passive: true });
-    new IntersectionObserver((es) => { visible = es[0].isIntersecting; cancelAnimationFrame(raf); if (visible && awake && !reduce.matches) raf = requestAnimationFrame(loop); }).observe(cv);
-  });
+  const root = document.querySelector('[data-demo]'); if (!root) return;
+  const tabs = [...root.querySelectorAll('[role=tab]')], frames = [...root.querySelectorAll('.frame')], bar = root.querySelector('.bar i');
+  const btn = root.querySelector('[data-pause]'), icon = root.querySelector('[data-icon]');
+  let i = 0, timer = 0, paused = reduce, visible = false;
+  const DUR = 5000;
+  function show(n, user) {
+    i = (n + frames.length) % frames.length;
+    tabs.forEach((t, k) => t.setAttribute('aria-selected', k === i));
+    frames.forEach((f, k) => { f.hidden = k !== i; f.classList.toggle('on', k === i); });
+    if (user && matchMedia('(max-width: 900px)').matches) tabs[i].scrollIntoView({ block: 'nearest', inline: 'center' });
+    run();
+  }
+  function run() {
+    clearTimeout(timer); bar.classList.remove('run'); void bar.offsetWidth;
+    if (paused || !visible) return;
+    bar.style.setProperty('--dur', DUR + 'ms'); bar.classList.add('run');
+    timer = setTimeout(() => show(i + 1), DUR);
+  }
+  function setPaused(p) { paused = p; root.classList.toggle('paused', p); btn.setAttribute('aria-pressed', p); btn.setAttribute('aria-label', p ? 'Play the demo' : 'Pause the demo'); icon.setAttribute('d', p ? 'M4 2l10 6-10 6z' : 'M4 2h3v12H4zM9 2h3v12H9z'); run(); }
+  tabs.forEach((t) => t.addEventListener('click', () => { show(+t.dataset.i, true); }));
+  root.querySelector('.steps').addEventListener('keydown', (e) => { if (e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); show(i + 1, true); tabs[i].focus(); } if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') { e.preventDefault(); show(i - 1, true); tabs[i].focus(); } });
+  btn.addEventListener('click', () => setPaused(!paused));
+  setPaused(paused);
+  seen(root, (v) => { visible = v; run(); });
 })();
-
-// ---- The hero example: the team drafts, you approve, it posts, the Responder answers. Loops with a pause button; still under reduced motion.
+// ---- The engine: the number lights each part in turn, then the key result, and again.
 (function () {
-  const agents = [...document.querySelectorAll('.agent')], doing = document.getElementById('doing');
-  const text = document.getElementById('post-text'), state = document.getElementById('post-state'), fake = document.getElementById('approve-fake');
-  const replies = [...document.querySelectorAll('#replies .reply')], btn = document.getElementById('playpause'), icon = document.getElementById('pp-icon');
-  const POST = text.textContent;
-  if (reduce.matches) return;
-  btn.hidden = false;
-  let paused = false, hover = false, timer = 0, step = 0, typed = 0;
-  const on = (k) => agents.forEach((a) => a.classList.toggle('on', a.dataset.agent === k));
-  const setState = (cls, label) => { state.className = 'state ' + cls; state.textContent = label; };
-  const STEPS = [
-    () => { on('I'); doing.textContent = 'The Ideas agent picks this week’s three posts.'; text.textContent = ''; typed = 0; setState('', 'Idea: why slow dough tastes better'); fake.style.opacity = 0; replies.forEach((r) => r.classList.add('pending')); return 2200; },
-    () => { on('Re'); doing.textContent = 'The Researcher reads 3 sources and finds the opening question.'; setState('', 'Researching'); return 2400; },
-    () => { on('W'); doing.textContent = 'The Writer drafts the post in your voice.'; setState('', 'Drafting'); return 400; },
-    () => { typed = Math.min(POST.length, typed + 3); text.innerHTML = ''; text.append(POST.slice(0, typed)); const c = document.createElement('span'); c.className = 'caret'; text.append(c); if (typed < POST.length) { step--; return 28; } return 500; },
-    () => { text.textContent = POST; doing.textContent = 'Your draft is ready. It is waiting for you.'; on(''); setState('wait', 'Waiting for you'); fake.style.opacity = 1; return 1800; },
-    () => { fake.classList.add('press'); return 220; },
-    () => { fake.classList.remove('press'); fake.style.opacity = 0; doing.textContent = 'You approved it. It goes out Wednesday at 10:00.'; setState('ok', 'Approved'); return 1600; },
-    () => { setState('ok', 'Posted on Reddit and X'); doing.textContent = 'Posted. Now people reply.'; return 1200; },
-    () => { replies[0].classList.remove('pending'); return 1400; },
-    () => { on('R'); doing.textContent = 'The Responder answers within 12 hours.'; replies[1].classList.remove('pending'); return 4200; },
-  ];
-  function tick() { if (paused || hover) return; const wait = STEPS[step](); step = (step + 1) % STEPS.length; timer = setTimeout(tick, wait); }
-  function stop() { clearTimeout(timer); }
-  btn.addEventListener('click', () => { paused = !paused; btn.setAttribute('aria-pressed', paused); btn.setAttribute('aria-label', paused ? 'Play the example' : 'Pause the example'); icon.setAttribute('d', paused ? 'M4 2l10 6-10 6z' : 'M4 2h3v12H4zM9 2h3v12H9z'); stop(); if (!paused) tick(); });
-  const fig = document.getElementById('inbox');
-  fig.addEventListener('mouseenter', () => { hover = true; stop(); });
-  fig.addEventListener('mouseleave', () => { hover = false; stop(); tick(); });
-  fig.addEventListener('focusin', () => { hover = true; stop(); });
-  fig.addEventListener('focusout', () => { hover = false; stop(); tick(); });
-  tick();
+  const ol = document.querySelector('[data-engine]'); if (!ol || reduce) return;
+  const li = [...ol.children]; let k = 0, t = 0;
+  const step = () => { li.forEach((x, n) => x.classList.toggle('lit', n === k)); k = (k + 1) % (li.length + 1); t = setTimeout(step, k === 0 ? 1400 : 700); };
+  seen(ol, (v) => { clearTimeout(t); if (v) { k = 0; step(); } else li.forEach((x) => x.classList.remove('lit')); });
 })();
-
+// ---- The wheel: a dot runs the loop (about 10 s a lap); each step lights as it passes.
+(function () {
+  const svg = document.querySelector('[data-wheel]'); if (!svg) return;
+  const nodes = [...svg.querySelectorAll('.node')], dot = svg.querySelector('.runner'), arc = svg.querySelector('.ring-run');
+  const LAP = 10000, R = 186, C = 260; let raf = 0, t0 = 0;
+  function frame(t) {
+    if (!t0) t0 = t; const f = ((t - t0) % LAP) / LAP, a = -Math.PI / 2 + f * 2 * Math.PI;
+    dot.setAttribute('cx', C + R * Math.cos(a)); dot.setAttribute('cy', C + R * Math.sin(a));
+    arc.style.strokeDasharray = (f * 100) + ' 100';
+    const at = Math.floor(f * 5 + 0.15) % 5; nodes.forEach((n, k) => n.classList.toggle('lit', k === at));
+    raf = requestAnimationFrame(frame);
+  }
+  if (reduce) { nodes[0].classList.add('lit'); return; }
+  seen(svg, (v) => { cancelAnimationFrame(raf); if (v) raf = requestAnimationFrame(frame); });
+})();
 // ---- Waitlist (E10-S6, EPIC-10-A2): a plain form post to the console's sign-up list (offer waitlist-alpha, email only, no payment).
 // The console answers 303 back to this page with ?signed=1 or ?error=<code>#join.
 const form = document.getElementById('wl'), thanks = document.getElementById('thanks');
@@ -742,7 +517,7 @@ form.addEventListener('submit', (e) => {
 const q = new URLSearchParams(location.search);
 if (q.get('signed') === '1') {
   form.hidden = true; thanks.hidden = false;
-  thanks.innerHTML = '<h3>You’re on the list.</h3><p>Thanks. We’ll write to you when EpicSocial opens to more people. Nothing to pay. Want to start sooner? <a href="../testers/">Apply to test it</a>.</p>';
+  thanks.innerHTML = '<h3>You’re on the list.</h3><p>Thanks. We’ll write to you when EpicSocial opens to more people. Want to start sooner? <a href="../testers/">Apply to test it</a>.</p>';
 } else if (q.get('error')) {
   const msg = { email: 'That email does not look right. Please check it.', too_many: 'Too many tries from here. Please try again in an hour.', full: 'The list is full for now. Please try again later.' }[q.get('error')] || 'Something went wrong. Please try again.';
   document.getElementById('e-email').textContent = msg;
