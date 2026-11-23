@@ -7,6 +7,7 @@ The claim is written into the row itself, in one commit pushed to the repo's int
 (console wake, T3 thread, desk, subagent, any host) meets the same lock: the git push. The row's Owner / Assignment
 cell becomes ``WHO — claimed <UTC>, lease until <UTC>`` and its Status ``active``. A live claim by someone else is
 refused (exit 3) and the message names the holder; a closed row (done, superseded, cancelled) is refused (exit 4).
+A row whose cell count differs from its header is refused (exit 6, agent_team E6-S233): repair it first.
 The worker's later commits that name the row renew the lease (the console reads them); ``--renew`` extends it by hand,
 ``--release`` gives the row back (Owner ``unassigned``, Status ``ready``) when it is still active; a row the worker
 moved on (review, monitoring, waiting, blocked) keeps its status.
@@ -97,6 +98,11 @@ def attempt(clone: Path, a: argparse.Namespace, branch: str) -> tuple[int, str]:
     if not hit:
         return 5, f"row {a.row} not found in {a.spine or 'the spines'} on origin/{branch}"
     f, i, header, cells = hit
+    if len(cells) != len(header):
+        # agent_team E6-S233 ("a claim can never break a ticket's row"): writing by column into a row whose cells no
+        # longer line up with its header would put the claim in the wrong column; repair the row first
+        return 6, (f"row {a.row} has {len(cells) - 2} cells but its header has {len(header) - 2}; nothing claimed. Repair the "
+                   f"row first (agent_team: python3 scripts/ledger_rows.py repair), then claim again")
     so, oo = col(header, "status", "state"), col(header, "owner", "assignee")
     if so < 0 or oo < 0:
         return 5, f"row {a.row}'s table has no Status or Owner column"

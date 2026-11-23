@@ -84,6 +84,17 @@ class ClaimCase(unittest.TestCase):
         self.assertEqual(self.claim(self.a, "--claim", "E9-S2", "--by", "run_A").returncode, 4)
         self.assertEqual(self.claim(self.a, "--claim", "E9-S9", "--by", "run_A").returncode, 5)
 
+    def test_a_row_out_of_columns_is_refused_untouched(self) -> None:
+        # agent_team E6-S233: E6-S213's row had a twelfth cell; a claim must not write by column into it
+        f = self.a / "docs" / "spines" / "epic-9.md"
+        f.write_text(f.read_text().replace("| E9-S1 | Ticket worker | unassigned | One |", "| E9-S1 | Ticket worker | unassigned | run_X (vps3) — review | One |"))
+        git(self.a, "commit", "-qam", "break")
+        git(self.a, "push", "-q", "origin", "HEAD:main")
+        r = self.claim(self.a, "--claim", "E9-S1", "--by", "run_A")
+        self.assertEqual(r.returncode, 6, r.stderr)
+        self.assertIn("12 cells but its header has 11", r.stderr)
+        self.assertIn("| unassigned | run_X (vps3) — review | One | ready |", self.row("E9-S1"))
+
     def test_a_racing_push_is_rechecked(self) -> None:
         # host B's checkout is behind (it never pulled A's claim); its claim clones origin fresh and sees A's lease
         self.claim(self.a, "--claim", "E9-S1", "--by", "run_A")
