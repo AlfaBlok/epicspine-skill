@@ -16,8 +16,10 @@ files that break the schema block, one line per issue; a repo with no pack is no
 from __future__ import annotations
 
 import os
+import re
 import subprocess
 import sys
+from collections import Counter
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -82,6 +84,61 @@ def doctrine_notes(name: str, text: str, new: bool, cache: dict) -> tuple[bool, 
     return blocks, f"{name}: " + "; ".join(notes) + ("" if blocks else " (advisory)") if notes else ""
 
 
+FENCE = ("```", "~~~")
+SEPARATOR_CELL = re.compile(r"^\s*:?-{3,}:?\s*$")
+
+
+def table_cells(line: str) -> int:
+    """How many cells a Markdown table line has: only an unescaped ``|`` splits (an odd run of backslashes escapes)."""
+    s = line.strip()
+    s = s[1:] if s.startswith("|") else s
+    count, slashes, cell = 1, 0, ""
+    for ch in s:
+        if ch == "|" and slashes % 2 == 0:
+            count, cell = count + 1, ""
+        else:
+            cell += ch
+        slashes = slashes + 1 if ch == "\\" else 0
+    return count - 1 if not cell.strip() and s.rstrip().endswith("|") and slashes == 0 else count
+
+
+def row_shape_notes(name: str, staged: str, before: str) -> list[str]:
+    """agent_team E48-S205: a table row this commit adds or changes must have as many cells as its header.
+
+    On 24 Nov a worker's hand edit left a stray empty ``| |`` cell in house_decision's HD-S61 row (12 cells under an
+    11-cell header) and Jordi's card press on it was refused. ``validate_spine.py`` sees a malformed row but only as an
+    advisory, so it passed. Rows the commit does not touch are left alone (an old broken row never blocks a commit).
+    """
+    old = Counter(line.strip() for line in before.splitlines())
+    lines, out, fence, header = staged.splitlines(), [], False, None
+    for i, line in enumerate(lines):
+        bare = line.strip()
+        if bare.startswith(FENCE):
+            fence = not fence
+            continue
+        if fence or not bare.startswith("|"):
+            header = None
+            continue
+        nxt = lines[i + 1].strip() if i + 1 < len(lines) else ""
+        if header is None:
+            parts = nxt.strip("|").split("|")
+            if nxt.startswith("|") and parts and all(SEPARATOR_CELL.match(p) for p in parts):
+                header = table_cells(line)
+            continue
+        if all(SEPARATOR_CELL.match(p) for p in bare.strip("|").split("|")):
+            continue
+        n = table_cells(line)
+        if n == header:
+            continue
+        if old[bare] > 0:
+            old[bare] -= 1
+            continue
+        row = bare.strip("|").split("|")[0].strip() or f"line {i + 1}"
+        out.append(f"{name} line {i + 1}: row {row} has {n} cells but its header has {header}: escape a literal | as \\|, "
+                   "drop the stray cell (an empty `| |`), or write the row by its columns")
+    return out
+
+
 def page_notes(names: list[str]) -> list[str]:
     """Advisory: staged pages that look like an epic (intent belongs in an epic) or that no epic links (orphans)."""
     cwd = Path.cwd().resolve()
@@ -119,6 +176,13 @@ def main() -> int:
                 say(note)
         elif not spines.D.skipped(Path.cwd(), path) and path.stem.lower() not in doctrine.CONVENTIONAL:
             pages.append(name)
+        if kind is not None or spines.is_goal(Path.cwd(), path, text):
+            staged = git("show", f":{name}").stdout
+            # a renamed doc is judged as moved, not rewritten; a new one row by row
+            before = "" if name in created else staged if name in added else git("show", f"HEAD:{name}").stdout
+            for note in row_shape_notes(name, staged, before):
+                blocked = True
+                say(note)
         if kind is None:
             continue
         result, hint = v.trackable(path), ""
