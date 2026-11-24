@@ -207,6 +207,9 @@ figure { margin: 0; }
 .foot .container { display: flex; flex-wrap: wrap; gap: var(--space-md); justify-content: space-between; }
 .foot b { color: var(--ink); font-weight: 500; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } html { scroll-behavior: auto; } }
+/* agent_team E97-S25 it3: today's screens (24 Nov), cropped to one feature each; tall phone crops kept to one screen */
+.hero-shot picture, .frame picture { display: block; }
+@media (max-width: 560px) { .hero-shot img { width: 100%; max-height: 560px; object-fit: cover; object-position: top; } }
 </style>
 </head>
 <body>
@@ -218,51 +221,49 @@ figure { margin: 0; }
     <a class="hide-s" href="#demo">Demo</a>
     <a class="hide-s" href="#wheel">The wheel</a>
     <a class="hide-s" href="#whatsapp">WhatsApp</a>
-    <a href="#join">Alpha</a>
+    <a href="#join">Credits</a>
   </nav>
-  <a class="btn btn--sm" href="../testers/">Apply to test</a>
+  <a class="btn btn--sm" href="../testers/">Get credits</a>
 </div></header>
 
 <main>
 <!-- 1. the answer: one objective, a team that posts on every channel, measured -->
 <section class="band hero" id="top" aria-labelledby="h-top"><div class="container hero-grid">
   <div class="say">
-    <p class="kicker">Real screens from our own Zenod campaign</p>
+    <p class="kicker">Free credits for startups and builders</p>
     <h1 id="h-top">Set one objective. An AI team runs your campaign on every channel.</h1>
     <p class="lead">It writes, posts, measures every post and tells you each evening on WhatsApp where it stands.</p>
     <div class="actions">
-      <a class="btn" href="#demo">See the demo</a>
-      <a class="btn btn--clear" href="../testers/">Apply to test it</a>
+      <a class="btn" href="../testers/">Apply for credits</a>
+      <a class="btn btn--clear" href="#demo">See the demo</a>
     </div>
     <ul class="facts" aria-label="This week, live">
-      <li><b>96</b><span>posts in 6 days</span></li>
+      <li><b>212</b><span>posts in 7 days</span></li>
       <li><b>4</b><span>channels posting</span></li>
       <li><b>2 h</b><span>between check-ins</span></li>
     </ul>
   </div>
   <figure class="dark-shot hero-shot">
-    <img src="shots/app-plan.webp" width="1200" height="982" alt="The Zenod plan in EpicSocial: day 6 of 7, 96 posts out against 51 planned, each of six messages with its posts, views and replies">
-    <figcaption>The Zenod plan, day 6 of 7. Six messages, each measured.</figcaption>
+    <picture><source media="(max-width: 560px)" srcset="shots/krs-phone-v2411.webp" width="780" height="1688"><img src="shots/krs-v2411.webp" width="1200" height="900" alt="Our Zenod campaign in EpicSocial: the objective Get 5 testers, 2 of 6 key results green, each key result with its light, where it stands and its target."></picture>
+    <figcaption>Our own Zenod campaign today: one objective, its key results, a light on each.</figcaption>
   </figure>
 </div></section>
 
 <!-- 2. the mini demo: the product itself, in real screens -->
 <section class="band dark" id="demo" aria-labelledby="h-demo"><div class="container">
-  <h2 id="h-demo">See it work, in five screens.</h2>
+  <h2 id="h-demo">See it work, in four screens.</h2>
   <div class="demo" data-demo>
     <ol class="steps" role="tablist" aria-label="Demo steps">
-      <li><button role="tab" aria-selected="true" aria-controls="d1" id="t1" data-i="0"><span>1</span>Your campaigns</button></li>
-      <li><button role="tab" aria-selected="false" aria-controls="d2" id="t2" data-i="1"><span>2</span>One objective, its numbers</button></li>
+      <li><button role="tab" aria-selected="true" aria-controls="d1" id="t1" data-i="0"><span>1</span>The benefits every post opens on</button></li>
+      <li><button role="tab" aria-selected="false" aria-controls="d2" id="t2" data-i="1"><span>2</span>A plan to green</button></li>
       <li><button role="tab" aria-selected="false" aria-controls="d3" id="t3" data-i="2"><span>3</span>Every post in one pipeline</button></li>
-      <li><button role="tab" aria-selected="false" aria-controls="d4" id="t4" data-i="3"><span>4</span>Each message measured</button></li>
-      <li><button role="tab" aria-selected="false" aria-controls="d5" id="t5" data-i="4"><span>5</span>The evening picture</button></li>
+      <li><button role="tab" aria-selected="false" aria-controls="d4" id="t4" data-i="3"><span>4</span>The evening picture</button></li>
     </ol>
     <div class="stage">
-      <figure class="frame on" role="tabpanel" id="d1" aria-labelledby="t1"><img src="shots/app-home.webp" width="1400" height="875" alt="EpicSocial home: three campaigns, each with its key results as coloured bars" loading="lazy"><figcaption>Home lists every campaign with its key results as lights.</figcaption></figure>
-      <figure class="frame" role="tabpanel" id="d2" aria-labelledby="t2" hidden><img src="shots/app-goal.webp" width="1200" height="700" alt="The Zenod campaign plan: 10 testers signed up, then 5 using it weekly, with the funnel from posts seen to sign-ups" loading="lazy"><figcaption>The campaign holds one objective and the funnel that moves it.</figcaption></figure>
-      <figure class="frame" role="tabpanel" id="d3" aria-labelledby="t3" hidden><img src="shots/app-pipeline.webp" width="1200" height="1128" alt="The pipeline: ideas, drafts, scheduled and posted columns of real Zenod posts" loading="lazy"><figcaption>Ideas become drafts, drafts get a slot, slots go out.</figcaption></figure>
-      <figure class="frame" role="tabpanel" id="d4" aria-labelledby="t4" hidden><img src="shots/app-plan.webp" width="1200" height="982" alt="The plan block: six messages ranked by replies a post" loading="lazy"><figcaption>Every post is read daily. The best message rises to the top.</figcaption></figure>
-      <figure class="frame frame--phone" role="tabpanel" id="d5" aria-labelledby="t5" hidden><img src="shots/wa-plan.webp" width="720" height="1395" alt="The evening WhatsApp picture of the Zenod plan" loading="lazy"><figcaption>At 18:30 the same numbers arrive on WhatsApp as a picture.</figcaption></figure>
+      <figure class="frame on" role="tabpanel" id="d1" aria-labelledby="t1"><picture><source media="(max-width: 560px)" srcset="shots/benefits-phone-v2411.webp" width="780" height="1688"><img src="shots/benefits-v2411.webp" width="1200" height="900" alt="The Benefits tab: what the product does for the people who use it, in their words. Every post opens on one of these." loading="lazy"></picture><figcaption>Every post opens on one benefit that works today.</figcaption></figure>
+      <figure class="frame" role="tabpanel" id="d2" aria-labelledby="t2" hidden><picture><source media="(max-width: 560px)" srcset="shots/plan-phone-v2411.webp" width="780" height="1688"><img src="shots/plan-v2411.webp" width="1200" height="900" alt="The Plan tab: how one key result gets to green, dated steps on a line and who does each." loading="lazy"></picture><figcaption>Each key result gets a dated plan to green.</figcaption></figure>
+      <figure class="frame" role="tabpanel" id="d3" aria-labelledby="t3" hidden><picture><source media="(max-width: 560px)" srcset="shots/pipeline-phone-v2411.webp" width="780" height="1688"><img src="shots/pipeline-v2411.webp" width="1200" height="900" alt="The pipeline: ideas, drafts, scheduled and posted columns of real Zenod posts, filtered by channel." loading="lazy"></picture><figcaption>Ideas become drafts, drafts get a slot, slots go out.</figcaption></figure>
+      <figure class="frame frame--phone" role="tabpanel" id="d4" aria-labelledby="t4" hidden><img src="shots/wa-plan.webp" width="720" height="1395" alt="The evening WhatsApp picture of the Zenod plan" loading="lazy"><figcaption>At 18:30 the same numbers arrive on WhatsApp as a picture.</figcaption></figure>
       <div class="bar" aria-hidden="true"><i></i></div>
       <button class="toggle" type="button" data-pause aria-label="Pause the demo" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true"><path data-icon d="M4 2h3v12H4zM9 2h3v12H9z" fill="currentColor"/></svg></button>
     </div>
@@ -334,9 +335,9 @@ figure { margin: 0; }
 <!-- 7. alpha: apply or wait -->
 <section class="band alt" id="join" aria-labelledby="h-join"><div class="container split">
   <div class="say">
-    <h2 id="h-join">Alpha. We are looking for testers.</h2>
-    <p class="lead">Our own team runs Zenod on it every day. We set yours up with you, by hand.</p>
-    <div class="actions"><a class="btn" href="../testers/">Apply to test it</a></div>
+    <h2 id="h-join">Free credits for startups and builders.</h2>
+    <p class="lead">We give EpicSocial credits to startups and builders to get their social kick started. Apply, tell us what you want to reach, and we may accept you. We set yours up with you, by hand.</p>
+    <div class="actions"><a class="btn" href="../testers/">Apply for credits</a></div>
     <p class="muted small">X, Reddit, YouTube Shorts and TikTok post today. LinkedIn is next.</p>
   </div>
   <div class="join-card">
