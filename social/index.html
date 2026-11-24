@@ -552,14 +552,14 @@ fetch('https://signup.alpha9.io/api/public/testers', { method: 'POST', body: new
   .then((r) => (r.ok ? r.json() : null)).then((a) => {
     const line = a && typeof a.line === 'string' ? a.line.trim() : '';
     if (!line) return;
-    amount.textContent = line; amount.hidden = false;
+    amount.textContent = line; amount.hidden = form.hidden; // after sending, the confirmation says it once
     const t = thanks.querySelector('[data-amount]');
     if (t) { t.textContent = line; t.hidden = false; }
   }).catch(() => {});
 if (q.get('signed') === '1') {
   form.hidden = true; thanks.hidden = false;
   thanks.innerHTML = '<h3>Your application is in.</h3><p class="amount" data-amount hidden></p><p>Thank you. We read every application and write back to the address you gave. If we accept you, we set up your team with you.</p><p class="privacy">Changed an answer? Send the form again with the same email.</p>';
-  if (!amount.hidden) { const t = thanks.querySelector('[data-amount]'); t.textContent = amount.textContent; t.hidden = false; }
+  if (amount.textContent) { amount.hidden = true; const t = thanks.querySelector('[data-amount]'); t.textContent = amount.textContent; t.hidden = false; }
   document.getElementById('apply').scrollIntoView({ block: 'start' }); thanks.focus({ preventScroll: true });
 } else if (q.get('error')) {
   err.textContent = { email: 'That email does not look right. Please check it.', too_many: 'Too many tries from here. Please try again in an hour.' }[q.get('error')] || 'Something went wrong. Please try again.';
