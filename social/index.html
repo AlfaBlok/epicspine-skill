@@ -186,7 +186,12 @@ figure { margin: 0; }
 .join-card form { display: grid; gap: var(--space-xs); }
 .join-card label { font-size: var(--text-sm); color: var(--ink-2); }
 .join-card .row { display: flex; gap: var(--space-xs); }
-.join-card input[type=email] { flex: 1; min-width: 0; min-height: 48px; padding: 0 var(--space-md); border: 1px solid var(--rule-2); border-radius: 999px; background: var(--paper); font: inherit; }
+.join-card input[type=email], .join-card input[type=text], .join-card textarea { width: 100%; min-width: 0; min-height: 48px; padding: 0 var(--space-md); border: 1px solid var(--rule-2); border-radius: var(--radius-in, 8px); background: var(--paper); color: var(--ink); font: inherit; }
+.join-card textarea { padding: var(--space-sm) var(--space-md); resize: vertical; min-height: 96px; }
+.join-card label { margin-top: var(--space-xs); }
+.join-card .opt { color: var(--muted); }
+.join-card button { margin-top: var(--space-sm); justify-self: start; }
+.join-card [aria-invalid=true] { border-color: oklch(52% 0.19 27); }
 .join-card .err { min-height: 1.2em; font-size: var(--text-sm); color: oklch(52% 0.19 27); }
 .join-card .privacy { font-size: var(--text-sm); color: var(--muted); }
 .hp { position: absolute; left: -9999px; }
@@ -221,9 +226,9 @@ figure { margin: 0; }
     <a class="hide-s" href="#demo">Demo</a>
     <a class="hide-s" href="#wheel">The wheel</a>
     <a class="hide-s" href="#whatsapp">WhatsApp</a>
-    <a href="#join">Credits</a>
+    <a href="#apply">Credits</a>
   </nav>
-  <a class="btn btn--sm" href="../testers/">Get credits</a>
+  <a class="btn btn--sm" href="#apply">Get credits</a>
 </div></header>
 
 <main>
@@ -234,7 +239,7 @@ figure { margin: 0; }
     <h1 id="h-top">Set one objective. An AI team runs your campaign on every channel.</h1>
     <p class="lead">It writes, posts, measures every post and tells you each evening on WhatsApp where it stands.</p>
     <div class="actions">
-      <a class="btn" href="../testers/">Apply for credits</a>
+      <a class="btn" href="#apply">Apply for credits</a>
       <a class="btn btn--clear" href="#demo">See the demo</a>
     </div>
     <ul class="facts" aria-label="This week, live">
@@ -332,30 +337,34 @@ figure { margin: 0; }
   <p class="muted small">Sent 19 November 18:30 Mexico City. One account name hidden.</p>
 </div></section>
 
-<!-- 7. alpha: apply or wait -->
-<section class="band alt" id="join" aria-labelledby="h-join"><div class="container split">
+<!-- 7. credits: apply (agent_team E40-S121, EPIC-107: the Apply for credits form asks for credits, never the November tester seats; no amount, his to set) -->
+<section class="band alt" id="apply" aria-labelledby="h-apply"><div class="container split">
   <div class="say">
-    <h2 id="h-join">Free credits for startups and builders.</h2>
+    <h2 id="h-apply">Free credits for startups and builders.</h2>
     <p class="lead">We give EpicSocial credits to startups and builders to get their social kick started. Apply, tell us what you want to reach, and we may accept you. We set yours up with you, by hand.</p>
-    <div class="actions"><a class="btn" href="../testers/">Apply for credits</a></div>
     <p class="muted small">X, Reddit, YouTube Shorts and TikTok post today. LinkedIn is next.</p>
   </div>
   <div class="join-card">
-    <h3>Rather wait? Join the waitlist.</h3>
-    <form id="wl" method="post" action="https://signup.alpha9.io/api/public/testers">
-      <label for="f-email">Email</label>
-      <div class="row">
-        <input type="email" id="f-email" name="email" required maxlength="254" autocomplete="email" inputmode="email" placeholder="you@example.com" aria-describedby="e-email">
-        <button class="btn" type="submit">Join</button>
-      </div>
-      <div class="err" id="e-email" role="alert"></div>
-      <input type="hidden" name="offer" value="waitlist-alpha">
-      <input type="hidden" name="source" value="social page">
-      <input type="hidden" name="back" value="https://epicspine.dev/social/">
+    <h3>Apply for credits</h3>
+    <form id="cr" method="post" action="https://signup.alpha9.io/api/public/testers" novalidate>
+      <label for="c-email">Email</label>
+      <input type="email" id="c-email" name="email" required maxlength="254" autocomplete="email" inputmode="email" placeholder="you@yourstartup.com">
+      <label for="c-name">Name <span class="opt">(optional)</span></label>
+      <input type="text" id="c-name" name="name" maxlength="120" autocomplete="name">
+      <label for="c-link">Your startup or product</label>
+      <input type="text" id="c-link" name="link" required maxlength="300" inputmode="url" autocomplete="url" placeholder="yourstartup.com">
+      <label for="c-goal">What do you want to reach?</label>
+      <textarea id="c-goal" name="useCase" required maxlength="1000" rows="3" placeholder="e.g. 200 sign-ups for our beta by January"></textarea>
+      <div class="err" id="c-err" role="alert"></div>
+      <button class="btn" type="submit">Send my application</button>
+      <input type="hidden" name="offer" value="credits">
+      <input type="hidden" name="plan" value="startup-credits">
+      <input type="hidden" name="source" value="epicsocial.app credits">
+      <input type="hidden" name="back" value="https://epicsocial.app/">
       <div class="hp" aria-hidden="true"><label for="website">Leave this empty</label><input id="website" name="website" tabindex="-1" autocomplete="off"></div>
-      <p class="privacy">Only your email, on our own list, to write to you about EpicSocial. Ask us and we delete it.</p>
+      <p class="privacy">Only your email and answers, on our own list, to write back about credits. Ask us and we delete them.</p>
     </form>
-    <div class="thanks" id="thanks" role="status" hidden></div>
+    <div class="thanks" id="thanks" role="status" tabindex="-1" hidden></div>
   </div>
 </div></section>
 
@@ -503,25 +512,29 @@ const seen = (el, fn) => new IntersectionObserver((es) => es.forEach((e) => fn(e
   if (reduce) { nodes[0].classList.add('lit'); return; }
   seen(svg, (v) => { cancelAnimationFrame(raf); if (v) raf = requestAnimationFrame(frame); });
 })();
-// ---- Waitlist (E10-S6, EPIC-10-A2): a plain form post to the console's sign-up list (offer waitlist-alpha, email only, no payment).
-// The console answers 303 back to this page with ?signed=1 or ?error=<code>#join.
-const form = document.getElementById('wl'), thanks = document.getElementById('thanks');
+// ---- Apply for credits (agent_team E40-S121): a plain form post to the console's sign-up list, offer `credits`.
+// The console answers 303 back to this page with ?signed=1 or ?error=<code>#apply.
+const form = document.getElementById('cr'), thanks = document.getElementById('thanks'), err = document.getElementById('c-err');
 form.querySelector('input[name=back]').value = location.origin + location.pathname;
 const src = new URLSearchParams(location.search).get('src');
-if (src) form.querySelector('input[name=source]').value = 'social page?' + src.slice(0, 40);
+if (src) form.querySelector('input[name=source]').value = 'epicsocial.app credits?' + src.slice(0, 40);
 form.addEventListener('submit', (e) => {
-  const email = document.getElementById('f-email').value.trim(), bad = !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
-  document.getElementById('e-email').textContent = bad ? 'Please enter a valid email.' : '';
-  document.getElementById('f-email').setAttribute('aria-invalid', bad ? 'true' : 'false');
-  if (bad) e.preventDefault();
+  const f = (id) => document.getElementById(id), checks = [
+    ['c-email', /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f('c-email').value.trim()), 'Please enter a valid email.'],
+    ['c-link', /^\S+\.\S{2,}$/.test(f('c-link').value.trim()), 'Please give your startup or product as a link, like yourstartup.com.'],
+    ['c-goal', f('c-goal').value.trim().length > 2, 'Please say in a few words what you want to reach.']];
+  const bad = checks.filter((c) => !c[1]);
+  checks.forEach((c) => f(c[0]).setAttribute('aria-invalid', c[1] ? 'false' : 'true'));
+  err.textContent = bad.length ? bad[0][2] : '';
+  if (bad.length) { e.preventDefault(); f(bad[0][0]).focus(); }
 });
 const q = new URLSearchParams(location.search);
 if (q.get('signed') === '1') {
   form.hidden = true; thanks.hidden = false;
-  thanks.innerHTML = '<h3>You’re on the list.</h3><p>Thanks. We’ll write to you when EpicSocial opens to more people. Want to start sooner? <a href="../testers/">Apply to test it</a>.</p>';
+  thanks.innerHTML = '<h3>Your application is in.</h3><p>Thank you. We read every application and write back to the address you gave. If we accept you, we set up your team with you.</p><p class="privacy">Changed an answer? Send the form again with the same email.</p>';
+  document.getElementById('apply').scrollIntoView({ block: 'start' }); thanks.focus({ preventScroll: true });
 } else if (q.get('error')) {
-  const msg = { email: 'That email does not look right. Please check it.', too_many: 'Too many tries from here. Please try again in an hour.', full: 'The list is full for now. Please try again later.' }[q.get('error')] || 'Something went wrong. Please try again.';
-  document.getElementById('e-email').textContent = msg;
+  err.textContent = { email: 'That email does not look right. Please check it.', too_many: 'Too many tries from here. Please try again in an hour.' }[q.get('error')] || 'Something went wrong. Please try again.';
 }
 </script>
 <!-- page view counter (agent_team E46-S17, E80-S2): our own, no cookie, nothing about the visitor kept. It sends the post id of a link's ?s= and only the host name of the site the visitor came from, keeps ?s= on links to our other pages, and adds both to the sign-up form so an application keeps its source. --><script>(function(){var q=new URLSearchParams(location.search),s=(q.get("s")||"").slice(0,40),r="";try{r=document.referrer?new URL(document.referrer).hostname.replace(/^www\./,""):""}catch(e){}var i=new Image(1,1);i.referrerPolicy="no-referrer";i.src="https://signup.alpha9.io/api/public/pv?p=/social/&h="+encodeURIComponent(location.hostname)+(s?"&s="+encodeURIComponent(s):"")+(r?"&r="+encodeURIComponent(r):"");if(s)document.querySelectorAll("a[href]").forEach(function(a){var v=a.getAttribute("href");if(v.charAt(0)==="#")return;try{var h=new URL(v,location.href);if(h.hostname!==location.hostname||h.searchParams.has("s"))return;h.searchParams.set("s",s);a.setAttribute("href",h.pathname+h.search+h.hash)}catch(e){}});document.querySelectorAll("form[action*='signup.alpha9.io']").forEach(function(f){[["s",s],["ref",r],["site",location.hostname]].forEach(function(p){if(!p[1])return;var x=document.createElement("input");x.type="hidden";x.name=p[0];x.value=p[1];f.appendChild(x)});if(location.hostname!=="epicspine.dev")f.querySelectorAll("input[name=back]").forEach(function(b){b.value=location.origin+location.pathname})})})();</script><noscript><img src="https://signup.alpha9.io/api/public/pv?p=/social/" alt="" width="1" height="1" style="position:absolute;left:-9999px" referrerpolicy="no-referrer" loading="eager"></noscript>
