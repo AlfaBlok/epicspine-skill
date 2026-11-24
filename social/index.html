@@ -183,6 +183,8 @@ figure { margin: 0; }
 #whatsapp .small { text-align: center; margin-top: var(--space-lg); }
 /* join */
 .join-card { display: grid; gap: var(--space-md); padding: var(--space-xl); background: var(--paper); border: 1px solid var(--rule); border-radius: var(--radius); }
+.join-card { transition: border-color 0.3s var(--ease), outline-color 0.3s var(--ease); outline: 2px solid transparent; outline-offset: 4px; }
+.join-card.here { border-color: var(--accent); outline-color: var(--accent-soft); }
 .join-card form { display: grid; gap: var(--space-xs); }
 .join-card label { font-size: var(--text-sm); color: var(--ink-2); }
 .join-card .row { display: flex; gap: var(--space-xs); }
@@ -518,6 +520,18 @@ const form = document.getElementById('cr'), thanks = document.getElementById('th
 form.querySelector('input[name=back]').value = location.origin + location.pathname;
 const src = new URLSearchParams(location.search).get('src');
 if (src) form.querySelector('input[name=source]').value = 'epicsocial.app credits?' + src.slice(0, 40);
+// Every Get credits and Apply for credits link takes you into the form: scroll to it, the cursor in Email, the card
+// outlined for a moment, also when you are already there (the card check found the nav button dead from #apply).
+const card = form.closest('.join-card'), still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let hereT = 0;
+document.querySelectorAll('a[href="#apply"]').forEach((a) => a.addEventListener('click', (e) => {
+  e.preventDefault();
+  if (location.hash !== '#apply') history.pushState(null, '', '#apply');
+  document.getElementById('apply').scrollIntoView({ behavior: still ? 'auto' : 'smooth', block: 'start' });
+  const first = form.hidden ? thanks : document.getElementById('c-email');
+  first.focus({ preventScroll: true });
+  card.classList.add('here'); clearTimeout(hereT); hereT = setTimeout(() => card.classList.remove('here'), 2400);
+}));
 form.addEventListener('submit', (e) => {
   const f = (id) => document.getElementById(id), checks = [
     ['c-email', /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f('c-email').value.trim()), 'Please enter a valid email.'],
