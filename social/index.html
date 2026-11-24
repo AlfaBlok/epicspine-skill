@@ -123,7 +123,7 @@ figure { margin: 0; }
 .frame { grid-area: 1 / 1; display: grid; gap: var(--space-sm); align-content: start; }
 .frame img { border-radius: var(--radius-in); border: 1px solid var(--night-rule); max-height: 640px; width: 100%; object-fit: cover; object-position: top; }
 .frame--phone img { width: auto; max-width: 100%; max-height: 640px; margin-inline: auto; object-fit: contain; }
-.frame figcaption { color: var(--night-ink); font-size: var(--text-md); padding-inline: 4px; padding-right: 56px; }
+.frame figcaption { color: var(--night-ink); font-size: var(--text-md); padding-inline: 4px; padding-right: 104px; }
 .frame.on { animation: fade 0.5s var(--ease) both; }
 @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 .bar { height: 2px; background: var(--night-rule); border-radius: 2px; overflow: hidden; margin-top: var(--space-sm); }
@@ -131,7 +131,7 @@ figure { margin: 0; }
 .bar i.run { animation: fill var(--dur, 5s) linear both; }
 .paused .bar i.run { animation-play-state: paused; }
 @keyframes fill { to { width: 100%; } }
-.toggle { position: absolute; right: clamp(10px, 1.4vw, 18px); bottom: 18px; display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid var(--night-rule); border-radius: 999px; background: var(--night); color: var(--night-ink); cursor: pointer; }
+.toggle { position: absolute; right: clamp(10px, 1.4vw, 18px); bottom: 18px; display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; font: 500 var(--text-sm)/1 var(--font-body); border: 1px solid var(--night-rule); border-radius: 999px; background: var(--night); color: var(--night-ink); cursor: pointer; }
 .toggle svg { width: 14px; height: 14px; }
 @media (max-width: 900px) {
   .demo { grid-template-columns: minmax(0, 1fr); gap: var(--space-md); }
@@ -272,7 +272,7 @@ figure { margin: 0; }
       <figure class="frame" role="tabpanel" id="d3" aria-labelledby="t3" hidden><picture><source media="(max-width: 560px)" srcset="shots/pipeline-phone-v2411.webp" width="780" height="1688"><img src="shots/pipeline-v2411.webp" width="1200" height="900" alt="The pipeline: ideas, drafts, scheduled and posted columns of real Zenod posts, filtered by channel." loading="lazy"></picture><figcaption>Ideas become drafts, drafts get a slot, slots go out.</figcaption></figure>
       <figure class="frame frame--phone" role="tabpanel" id="d4" aria-labelledby="t4" hidden><img src="shots/wa-plan.webp" width="720" height="1395" alt="The evening WhatsApp picture of the Zenod plan" loading="lazy"><figcaption>At 18:30 the same numbers arrive on WhatsApp as a picture.</figcaption></figure>
       <div class="bar" aria-hidden="true"><i></i></div>
-      <button class="toggle" type="button" data-pause aria-label="Pause the demo" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true"><path data-icon d="M4 2h3v12H4zM9 2h3v12H9z" fill="currentColor"/></svg></button>
+      <button class="toggle" type="button" data-pause aria-label="Pause the demo" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true"><path data-icon d="M4 2h3v12H4zM9 2h3v12H9z" fill="currentColor"/></svg><span data-word>Pause</span></button>
     </div>
   </div>
 </div></section>
@@ -469,7 +469,7 @@ const seen = (el, fn) => new IntersectionObserver((es) => es.forEach((e) => fn(e
 (function () {
   const root = document.querySelector('[data-demo]'); if (!root) return;
   const tabs = [...root.querySelectorAll('[role=tab]')], frames = [...root.querySelectorAll('.frame')], bar = root.querySelector('.bar i');
-  const btn = root.querySelector('[data-pause]'), icon = root.querySelector('[data-icon]');
+  const btn = root.querySelector('[data-pause]'), icon = root.querySelector('[data-icon]'), word = root.querySelector('[data-word]');
   let i = 0, timer = 0, paused = reduce, visible = false;
   const DUR = 5000;
   function show(n, user) {
@@ -485,7 +485,7 @@ const seen = (el, fn) => new IntersectionObserver((es) => es.forEach((e) => fn(e
     bar.style.setProperty('--dur', DUR + 'ms'); bar.classList.add('run');
     timer = setTimeout(() => show(i + 1), DUR);
   }
-  function setPaused(p) { paused = p; root.classList.toggle('paused', p); btn.setAttribute('aria-pressed', p); btn.setAttribute('aria-label', p ? 'Play the demo' : 'Pause the demo'); icon.setAttribute('d', p ? 'M4 2l10 6-10 6z' : 'M4 2h3v12H4zM9 2h3v12H9z'); run(); }
+  function setPaused(p) { paused = p; root.classList.toggle('paused', p); btn.setAttribute('aria-pressed', p); btn.setAttribute('aria-label', p ? 'Play the demo' : 'Pause the demo'); icon.setAttribute('d', p ? 'M4 2l10 6-10 6z' : 'M4 2h3v12H4zM9 2h3v12H9z'); word.textContent = p ? 'Play' : 'Pause'; run(); }
   tabs.forEach((t) => t.addEventListener('click', () => { show(+t.dataset.i, true); }));
   root.querySelector('.steps').addEventListener('keydown', (e) => { if (e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); show(i + 1, true); tabs[i].focus(); } if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') { e.preventDefault(); show(i - 1, true); tabs[i].focus(); } });
   btn.addEventListener('click', () => setPaused(!paused));
