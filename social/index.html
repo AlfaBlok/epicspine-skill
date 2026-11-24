@@ -192,6 +192,7 @@ figure { margin: 0; }
 .join-card textarea { padding: var(--space-sm) var(--space-md); resize: vertical; min-height: 96px; }
 .join-card label { margin-top: var(--space-xs); }
 .join-card .opt { color: var(--muted); }
+.join-card .amount { margin: 0; font-weight: 500; color: var(--accent-hi); } /* E40-S124: the amount, only once Jordi sets it */
 .join-card button { margin-top: var(--space-sm); justify-self: start; }
 .join-card [aria-invalid=true] { border-color: oklch(52% 0.19 27); }
 .join-card .err { min-height: 1.2em; font-size: var(--text-sm); color: oklch(52% 0.19 27); }
@@ -348,6 +349,7 @@ figure { margin: 0; }
   </div>
   <div class="join-card">
     <h3>Apply for credits</h3>
+    <p class="amount" id="c-amount" hidden></p>
     <form id="cr" method="post" action="https://signup.alpha9.io/api/public/testers" novalidate>
       <label for="c-email">Email</label>
       <input type="email" id="c-email" name="email" required maxlength="254" autocomplete="email" inputmode="email" placeholder="you@yourstartup.com">
@@ -543,9 +545,21 @@ form.addEventListener('submit', (e) => {
   if (bad.length) { e.preventDefault(); f(bad[0][0]).focus(); }
 });
 const q = new URLSearchParams(location.search);
+// How many credits a startup we accept gets (agent_team E40-S124): Jordi sets it on the console's Settings, when he wants.
+// Empty: nothing is shown, as before. Set: one line on the form and in the confirmation. Asked through the sign-up door.
+const amount = document.getElementById('c-amount');
+fetch('https://signup.alpha9.io/api/public/testers', { method: 'POST', body: new URLSearchParams({ amount: 'credits' }) })
+  .then((r) => (r.ok ? r.json() : null)).then((a) => {
+    const line = a && typeof a.line === 'string' ? a.line.trim() : '';
+    if (!line) return;
+    amount.textContent = line; amount.hidden = false;
+    const t = thanks.querySelector('[data-amount]');
+    if (t) { t.textContent = line; t.hidden = false; }
+  }).catch(() => {});
 if (q.get('signed') === '1') {
   form.hidden = true; thanks.hidden = false;
-  thanks.innerHTML = '<h3>Your application is in.</h3><p>Thank you. We read every application and write back to the address you gave. If we accept you, we set up your team with you.</p><p class="privacy">Changed an answer? Send the form again with the same email.</p>';
+  thanks.innerHTML = '<h3>Your application is in.</h3><p class="amount" data-amount hidden></p><p>Thank you. We read every application and write back to the address you gave. If we accept you, we set up your team with you.</p><p class="privacy">Changed an answer? Send the form again with the same email.</p>';
+  if (!amount.hidden) { const t = thanks.querySelector('[data-amount]'); t.textContent = amount.textContent; t.hidden = false; }
   document.getElementById('apply').scrollIntoView({ block: 'start' }); thanks.focus({ preventScroll: true });
 } else if (q.get('error')) {
   err.textContent = { email: 'That email does not look right. Please check it.', too_many: 'Too many tries from here. Please try again in an hour.' }[q.get('error')] || 'Something went wrong. Please try again.';
