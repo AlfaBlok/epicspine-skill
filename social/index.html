@@ -339,6 +339,38 @@ figure { margin: 0; }
   .si-how { grid-template-columns: minmax(0, 1fr); }
 }
 .sinbox { --si-ink: var(--ink); --si-muted: var(--muted); --si-line: var(--rule); --si-card: var(--paper); --si-accent: var(--accent); --si-warn: oklch(52% 0.16 40); --si-r: var(--radius-in); }
+.vision { --v-bg: var(--paper); --v-ink: var(--ink); --v-muted: var(--muted); --v-line: var(--rule); --v-stage: var(--paper-2); --v-accent: var(--accent); --v-serif: var(--font-display); --v-sans: var(--font-body); }
+/* Vision (agent_team E97-S38, his 25 Nov 14:34Z voice note): the pitch in pictured frames, a headline, a little context and a takeaway each */
+.vision .v-head { max-width: 46rem; margin-bottom: clamp(1.5rem, 4vw, 3rem); }
+.vision .v-head h2 { font-size: clamp(2rem, 2.2vw + 0.8rem, 3.25rem); max-width: 22ch; margin: 0 0 0.75rem; }
+.vision .v-head .lead { max-width: 40ch; margin: 0; }
+.v-frames { list-style: none; margin: 0; padding: 0; }
+.v-frame { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(1.5rem, 4vw, 4rem); align-items: center; padding-block: clamp(2rem, 4.5vw, 3.5rem); border-top: 1px solid var(--v-line); scroll-margin-top: 80px; }
+.v-frame:nth-child(even) { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
+.v-frame:nth-child(even) .v-pic { order: 2; }
+.v-pic { margin: 0; background: var(--v-stage); border-radius: 6px; aspect-ratio: 4 / 3; display: grid; place-items: center; }
+.v-pic svg { width: 88%; height: auto; color: var(--v-ink); overflow: visible; }
+.v-pic .s { fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.v-pic .s.fillpaper, .v-pic .fillpaper { fill: var(--v-bg); }
+.v-pic .af { fill: var(--v-accent); stroke: none; }
+.v-pic .paper { fill: var(--v-stage); }
+.v-pic .dot { fill: currentColor; opacity: .5; }
+.v-pic .beam { fill: currentColor; opacity: .07; }
+.v-pic .bar { fill: currentColor; opacity: .22; }
+.v-pic .chk { fill: none; stroke: var(--v-bg); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+.v-pic text { font: 400 11px var(--v-sans); fill: currentColor; opacity: .7; }
+.v-pic text.lblb { font-weight: 600; opacity: .9; font-size: 12px; }
+.v-pic text.big { font: 400 40px var(--v-serif); opacity: 1; }
+.v-n { font: 500 0.9rem var(--v-sans); color: var(--v-muted); margin: 0 0 0.6rem; }
+.v-frame h3 { font: 400 clamp(1.6rem, 1.4vw + 1.1rem, 2.4rem)/1.12 var(--v-serif); letter-spacing: -0.015em; max-width: 22ch; margin: 0 0 0.8rem; text-wrap: balance; color: var(--v-ink); }
+.v-ctx { font: 400 1.02rem/1.55 var(--v-sans); color: var(--v-muted); max-width: 44ch; margin: 0 0 1.1rem; }
+.v-take { font: 500 1.05rem/1.45 var(--v-sans); color: var(--v-ink); border-left: 2px solid var(--v-accent); padding-left: 0.9rem; max-width: 44ch; margin: 0; }
+@media (max-width: 760px) {
+  .v-frame, .v-frame:nth-child(even) { grid-template-columns: minmax(0, 1fr); gap: 1.1rem; padding-block: 1.75rem; }
+  .v-frame:nth-child(even) .v-pic { order: 0; }
+  .v-pic { aspect-ratio: 16 / 11; }
+  .v-pic svg { width: 92%; }
+}
 </style>
 </head>
 <body>
@@ -347,6 +379,7 @@ figure { margin: 0; }
 <header class="nav"><div class="container">
   <a class="wordmark" href="#top" aria-label="EpicSocial, back to top"><svg viewBox="0 0 32 32" aria-hidden="true"><g fill="#7c3bed"><path d="M6 0h20a6 6 0 0 1 6 6v16a6 6 0 0 1-6 6H15l-8 4v-4H6a6 6 0 0 1-6-6V6a6 6 0 0 1 6-6z"/></g><g fill="#fff"><g transform="translate(2.98 0) skewX(-12)"><path d="M8 8A4 4 0 0 1 12 4L24 4L24 8L14 8L14 12L20 12A4 4 0 0 1 24 16L24 20A4 4 0 0 1 20 24L8 24L8 20L18 20L18 16L12 16A4 4 0 0 1 8 12Z"/></g></g></svg>EpicSocial</a>
   <nav class="links" aria-label="Sections">
+    <a class="hide-s" href="#vision">Vision</a>
     <a class="hide-s" href="#boss">How it works</a>
     <a class="hide-s" href="#campaign">A campaign</a>
     <a class="hide-s" href="#whatsapp">WhatsApp</a>
@@ -401,6 +434,18 @@ figure { margin: 0; }
   </figure>
 </div></section>
 
+<!-- Vision: why EpicSocial exists, told like a pitch in six pictured frames (agent_team E97-S38, his 25 Nov 14:34Z voice note; the words come from its product deck) -->
+<section class="band vision" id="vision" aria-labelledby="h-vision"><div class="container">
+  <div class="v-head"><h2 id="h-vision">Why EpicSocial exists: every builder deserves a voice that keeps going.</h2><p class="lead">Our vision in six frames. Each makes one point, and together they tell the story.</p></div>
+  <ol class="v-frames">
+    <li class="v-frame" id="vision-1"><figure class="v-pic"><svg viewBox="0 0 320 240" role="img" aria-label="A finished piece of work on a plinth, the spotlight above it switched off."><path class="s" d="M40 30l46 18" /><rect class="s fillpaper" x="26" y="18" width="22" height="16" rx="3" transform="rotate(22 37 26)"/><path class="s" d="M80 46L148 168M80 46L232 150" stroke-dasharray="3 7" opacity=".5"/><rect class="s fillpaper" x="140" y="168" width="90" height="44" rx="2"/><path class="s fillpaper" d="M164 142l21-10 21 10v24l-21 10-21-10z"/><path class="s" d="M164 142l21 10 21-10M185 152v24"/><circle class="af" cx="185" cy="122" r="4"/><text x="185" y="230" text-anchor="middle" class="lbl">made, and unseen</text></svg></figure><div class="v-say"><p class="v-n">1 of 6</p><h3>Builders want to be seen for what they make.</h3><p class="v-ctx">Showing up on Reddit and X every day takes hours they do not have. So good work stays quiet.</p><p class="v-take">A project deserves a voice, even without spare hours.</p></div></li>
+    <li class="v-frame" id="vision-2"><figure class="v-pic"><svg viewBox="0 0 320 240" role="img" aria-label="A single dot for one post, beside a turning wheel for a campaign."><circle class="af" cx="70" cy="120" r="7"/><text x="70" y="160" text-anchor="middle" class="lbl">a post</text><circle class="s" cx="216" cy="120" r="62"/><circle class="s fillpaper" cx="274" cy="141" r="7"/><path class="s" d="M-6 -5L0 0L-6 5" transform="translate(232 180) rotate(165)"/><circle class="s fillpaper" cx="195" cy="178" r="7"/><path class="s" d="M-6 -5L0 0L-6 5" transform="translate(156 136) rotate(255)"/><circle class="s fillpaper" cx="158" cy="99" r="7"/><path class="s" d="M-6 -5L0 0L-6 5" transform="translate(200 60) rotate(345)"/><circle class="s fillpaper" cx="237" cy="62" r="7"/><path class="s" d="M-6 -5L0 0L-6 5" transform="translate(276 104) rotate(435)"/><text x="216" y="124" text-anchor="middle" class="lblb">a campaign</text><text x="216" y="212" text-anchor="middle" class="lbl">messages on a cadence</text></svg></figure><div class="v-say"><p class="v-n">2 of 6</p><h3>A post is one moment. A campaign keeps turning.</h3><p class="v-ctx">One post lands once and is gone. A campaign repeats its messages on a cadence and is measured against key results you set.</p><p class="v-take">Marketing becomes a motion with a direction.</p></div></li>
+    <li class="v-frame" id="vision-3"><figure class="v-pic"><svg viewBox="0 0 320 240" role="img" aria-label="A plan sheet with three arrows that all land on one target."><rect class="s fillpaper" x="30" y="58" width="96" height="124" rx="4"/><line class="s" x1="44" y1="84" x2="108" y2="84" opacity=".55"/><line class="s" x1="44" y1="106" x2="96" y2="106" opacity=".55"/><line class="s" x1="44" y1="128" x2="114" y2="128" opacity=".55"/><line class="s" x1="44" y1="150" x2="88" y2="150" opacity=".55"/><circle class="s" cx="240" cy="120" r="52"/><circle class="s" cx="240" cy="120" r="36"/><circle class="s" cx="240" cy="120" r="20"/><circle class="af" cx="240" cy="120" r="9"/><path class="s" d="M134 84C170 84 190 109 226 115" /><path class="s" d="M-6 -5L0 0L-6 5" transform="translate(226 115) rotate(5)"/><path class="s" d="M134 120C170 120 190 120 226 120" /><path class="s" d="M-6 -5L0 0L-6 5" transform="translate(226 120) rotate(0)"/><path class="s" d="M134 156C170 156 190 131 226 125" /><path class="s" d="M-6 -5L0 0L-6 5" transform="translate(226 125) rotate(-5)"/><text x="78" y="206" text-anchor="middle" class="lbl">the plan</text><text x="240" y="206" text-anchor="middle" class="lbl">your key result</text></svg></figure><div class="v-say"><p class="v-n">3 of 6</p><h3>A senior partner brings the plan.</h3><p class="v-ctx">It researches your space and proposes which messages to push, for how long and where. You approve it. Then it runs, reports daily and clears what blocks it.</p><p class="v-take">You spend your time on strategy.</p></div></li>
+    <li class="v-frame" id="vision-4"><figure class="v-pic"><svg viewBox="0 0 320 240" role="img" aria-label="Bars for five messages, one clearly longer than the rest."><line class="s" x1="96" y1="30" x2="96" y2="206"/><text x="84" y="51" text-anchor="end" class="lbl">Message 1</text><rect class="bar" x="98" y="37" width="70" height="18" rx="2"/><text x="84" y="85" text-anchor="end" class="lbl">Message 2</text><rect class="bar" x="98" y="71" width="118" height="18" rx="2"/><text x="84" y="119" text-anchor="end" class="lbl">Message 3</text><rect class="bar" x="98" y="105" width="52" height="18" rx="2"/><text x="84" y="153" text-anchor="end" class="lbl">Message 4</text><rect class="af" x="98" y="139" width="176" height="18" rx="2"/><text x="84" y="187" text-anchor="end" class="lbl">Message 5</text><rect class="bar" x="98" y="173" width="90" height="18" rx="2"/><text x="200" y="228" text-anchor="middle" class="lbl">which message people care about</text></svg></figure><div class="v-say"><p class="v-n">4 of 6</p><h3>Every message is a test.</h3><p class="v-ctx">Say a hundred posts, ten for each message. Each day the table fills up and shows which messages people care about.</p><p class="v-take">You learn what lands from data.</p></div></li>
+    <li class="v-frame" id="vision-5"><figure class="v-pic"><svg viewBox="0 0 320 240" role="img" aria-label="A drafted post with a large green check: it goes out only with your yes."><rect class="s fillpaper" x="54" y="34" width="180" height="168" rx="8"/><circle class="s" cx="80" cy="62" r="12"/><line class="s" x1="100" y1="58" x2="170" y2="58" opacity=".6"/><line class="s" x1="100" y1="68" x2="146" y2="68" opacity=".4"/><line class="s" x1="72" y1="98" x2="222" y2="98" opacity=".5"/><line class="s" x1="72" y1="116" x2="210" y2="116" opacity=".5"/><line class="s" x1="72" y1="134" x2="228" y2="134" opacity=".5"/><line class="s" x1="72" y1="152" x2="182" y2="152" opacity=".5"/><circle class="af" cx="236" cy="184" r="30"/><path class="chk" d="M222 184l10 10 18-20"/></svg></figure><div class="v-say"><p class="v-n">5 of 6</p><h3>You approve every post.</h3><p class="v-ctx">Nothing goes out without your yes until you choose to let it. It is open about being AI and never sends cold DMs.</p><p class="v-take">Your name stays in your hands.</p></div></li>
+    <li class="v-frame" id="vision-6"><figure class="v-pic"><svg viewBox="0 0 320 240" role="img" aria-label="A folder of your files with a green key beside it."><path class="s fillpaper" d="M50 80h64l14 16h112v108H50z"/><line class="s" x1="70" y1="130" x2="180" y2="130" opacity=".45"/><line class="s" x1="70" y1="150" x2="200" y2="150" opacity=".45"/><line class="s" x1="70" y1="170" x2="160" y2="170" opacity=".45"/><circle class="af" cx="246" cy="62" r="18"/><circle class="paper" cx="246" cy="62" r="7"/><path class="af" d="M236 76l-28 56 8 4 6-12 8 4 4-8-8-4 14-28z"/><text x="145" y="226" text-anchor="middle" class="lbl">your files</text></svg></figure><div class="v-say"><p class="v-n">6 of 6</p><h3>What it learns stays yours.</h3><p class="v-ctx">Your voice, your ideas, every post and every lesson live in files you own. If you cancel, you keep them all.</p><p class="v-take">Everything you build with it is yours to keep.</p></div></li>
+  </ol>
+</div></section>
 <!-- 2. the mission: no excuse not to communicate (his 24 Nov 20:52Z voice note); starts cheap, no price named until he sets one -->
 <section class="band dark" id="why" aria-labelledby="h-why"><div class="container split">
   <div class="say">
