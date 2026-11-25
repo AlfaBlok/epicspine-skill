@@ -39,7 +39,7 @@
 .nice-list li { display: grid; align-content: start; gap: var(--space-xs); padding: var(--space-md); border: 1px solid var(--color-rule); border-radius: var(--radius-card); background: var(--color-paper); }
 .nice-list h3 { font-size: var(--text-md); }
 .nice-list p { color: var(--color-ink-2); font-size: var(--text-sm); }
-/* agent_team E97-S28: the locked model (Jordi, 24 Nov: "your AI subscription, our console"): the €49 console on your own AI, optional compute at cost plus 20%; the seat bundles are retired */
+/* agent_team E97-S28, E97-S35: the locked model (Jordi, 24 Nov: "your AI subscription, our console"): the €49 console on your own AI, and an optional server shown as one plain price per size by the minute; the seat bundles are retired */
 .price { display: grid; gap: var(--space-xl); }
 .price .say { display: grid; gap: var(--space-md); }
 .price h2 { font-size: clamp(2rem, 2.2vw + 0.8rem, 3.25rem); max-width: 18ch; }
@@ -52,6 +52,10 @@
 .plan-card .amt small { font: 400 var(--text-md)/1.3 var(--font-body); letter-spacing: 0; color: var(--color-muted); }
 .plan-card .who { color: var(--color-ink-2); }
 .plan-card .btn { justify-self: start; margin-top: var(--space-xs); }
+.rates { width: 100%; border-collapse: collapse; font-size: var(--text-sm); font-variant-numeric: tabular-nums; }
+.rates th { text-align: left; font-weight: 400; color: var(--color-muted); padding: 0 0 var(--space-xs); }
+.rates td { padding: var(--space-xs) 0; border-top: 1px solid var(--color-rule); }
+.rates td + td, .rates th + th { text-align: right; padding-left: var(--space-sm); }
 .included { display: grid; gap: var(--space-sm); max-width: 44rem; }
 .included h3 { font-size: var(--text-md); }
 .included ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-xs); color: var(--color-ink-2); font-size: var(--text-md); }
@@ -474,7 +478,7 @@
         <li><h3>Sign up or sign in with Google or GitHub</h3><p>Press Continue with Google or Continue with GitHub on EpicTeam or EpicSocial. A new account gets its own world, an existing one signs straight in.</p></li>
         <li><h3>The team emails you. Your reply finds its ticket.</h3><p>The team writes to you from its own mailbox about one task, with its code in the subject. Reply from any mail app and your words land on that task by themselves.</p></li>
         <li><h3>Your agents send from their own addresses</h3><p>The team mails from dm@epicteam.app and hello@epicsocial.app, and mail to those addresses reaches you. No paid mailboxes and no clicks per address.</p></li>
-        <li><h3>Your AI subscription, our console</h3><p>EpicTeam is 49 euros a month for the console. Your team runs on your own AI seats, vault, repo and cloud, all in your name. If you want, we run your compute at cost plus 20%.</p></li>
+        <li><h3>Your AI subscription, our console</h3><p>EpicTeam is 49 euros a month for the console. Your team runs on your own AI seats, vault, repo and cloud, all in your name. If you want, we run your server too, billed by the minute: from 0.02 cents a minute, €8 a month at most.</p></li>
         <li><h3>Projects, not milestones.</h3><p>The screens say project wherever they used to say milestone, so each project reads as the thing you are building.</p></li>
         <li><h3>Your goals as a scorecard.</h3><p>Each pursuit you care about shows as one row with its deck, kit and value proposition one click away, and a mark for moving or stalled when nothing changed in three days.</p></li>
         <li><h3>One-time jobs, followed to done.</h3><p>A job that belongs to none of your goals, like a letter about a dispute, still runs from your voice note to a card you answer, and shows on the One-offs page in the side menu until it is done.</p></li>
@@ -711,9 +715,18 @@
           <a class="btn btn--primary" href="https://cloud.epicteam.app/login?next=%2F%3Fplan%3Down">Start for €49 a month</a>
         </div>
         <div class="plan-card">
-          <h3>Compute, if you want it</h3>
-          <div class="amt">Cost <small>plus 20%</small></div>
-          <p class="who">We run your agents on our cloud and bill what it costs us, plus 20%. Or run them on your own cloud.</p>
+          <h3>A server, if you want one</h3>
+          <div class="amt">€8 <small>a month at most</small></div>
+          <p class="who">We run your agents on our cloud, billed by the minute. Or run them on your own cloud.</p>
+          <table class="rates" id="server-prices">
+            <thead><tr><th scope="col">Size</th><th scope="col">A minute</th><th scope="col">A month at most</th></tr></thead>
+            <tbody>
+              <tr><td>Small, 2 cores, 4 GB</td><td>0.02 cents</td><td>€8</td></tr>
+              <tr><td>Medium, 4 cores, 8 GB</td><td>0.03 cents</td><td>€12</td></tr>
+              <tr><td>Large, 8 cores, 16 GB</td><td>0.06 cents</td><td>€22</td></tr>
+              <tr><td>Extra large, 16 cores, 32 GB</td><td>0.1 cents</td><td>€39</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
       <div class="included">
