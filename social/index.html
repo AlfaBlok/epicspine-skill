@@ -373,6 +373,20 @@ figure { margin: 0; }
   .v-pic { aspect-ratio: 16 / 11; }
   .v-pic svg { width: 92%; }
 }
+/* agent_team E46-S129: four real screens right under the hero */
+.screens h2 { max-width: 22ch; }
+.sc-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-xl) var(--space-lg); counter-reset: sc; }
+.sc { display: grid; gap: var(--space-sm); align-content: start; }
+.sc-pic { aspect-ratio: 4 / 3; border: 1px solid var(--rule); border-radius: var(--radius-in); background: #fff; overflow: hidden; }
+.sc-pic img { width: 100%; height: 100%; object-fit: cover; object-position: top left; }
+.sc-pic--post { background: var(--paper-2); }
+.sc-pic--post img { object-fit: contain; object-position: top center; padding: var(--space-md) var(--space-md) 0; }
+.sc-pic--call img { object-fit: contain; object-position: center; padding-inline: var(--space-sm); }
+.sc figcaption { display: grid; gap: 2px; }
+.sc figcaption b { font: 400 var(--text-lg)/1.25 var(--font-display); letter-spacing: -0.015em; }
+.sc figcaption b::before { counter-increment: sc; content: counter(sc) "  "; color: var(--accent); white-space: pre; }
+.sc figcaption span { color: var(--muted); font-size: var(--text-sm); }
+@media (max-width: 760px) { .sc-grid { grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); } .sc-pic { aspect-ratio: auto; } .sc-pic img { height: auto; } .sc-pic--call img { padding: var(--space-md) var(--space-sm); } .sc-pic--post img { padding-bottom: var(--space-md); } }
 </style>
 </head>
 <body>
@@ -383,7 +397,7 @@ figure { margin: 0; }
   <nav class="links" aria-label="Sections">
     <a href="vision/">Vision</a>
     <a class="hide-s" href="#boss">How it works</a>
-    <a class="hide-s" href="#campaign">A campaign</a>
+    <a class="hide-s" href="#screens">Screens</a>
     <a class="hide-s" href="#whatsapp">WhatsApp</a>
     <a class="hide-s" href="#apply">Credits</a>
   </nav>
@@ -398,7 +412,7 @@ figure { margin: 0; }
     <p class="lead">Say what you want to reach. They wake on their own and work on it day and night: they post, research, reply and test what to say. You, reader of this page, are the boss.</p>
     <div class="actions">
       <a class="btn" href="#apply">Get free credits</a>
-      <a class="btn btn--clear" href="#boss">How it works</a>
+      <a class="btn btn--clear" href="#screens">See the screens</a>
     </div>
   </div>
   <figure class="watch-fig" data-watch>
@@ -434,6 +448,23 @@ figure { margin: 0; }
       <p class="kr-now" aria-live="polite" data-kr-now>Every gear turns toward one key result going green.</p>
     </figcaption>
   </figure>
+</div></section>
+
+<!-- agent_team E46-S129, his chat voice note vn_b400d914 (25 Nov 23:53Z): "needs more screenshots early ... We should be showing
+     the channels. We should be showing the pipeline ... land it with, it's just gonna post on X for you ... a senior partner
+     voice ... this phone call thing." Real screens, taken read-only 26 Nov: the channels page and the pipeline from the Zenod memory
+     workspace on cloud.epicsocial.app, a post it made on X (X's public view of @ZenodMemory), the briefer call (spend line hidden). -->
+<section class="band screens" id="screens" aria-labelledby="h-screens"><div class="container">
+  <div class="say">
+    <h2 id="h-screens">Connect your channels. It posts on X for you.</h2>
+    <p class="lead">Four real screens from the team that runs our own socials. Then you call it, like a senior partner.</p>
+  </div>
+  <div class="sc-grid">
+    <figure class="sc"><div class="sc-pic"><img src="shots/channels-v2611.webp" width="1200" height="1003" alt="Connect your socials: X, Reddit, Instagram and TikTok connected, LinkedIn and YouTube not yet, each login kept in your own Bitwarden." loading="lazy"></div><figcaption><b>Your channels</b><span>X, Reddit, Instagram, TikTok, LinkedIn, YouTube. Logins stay in your own vault.</span></figcaption></figure>
+    <figure class="sc"><div class="sc-pic"><img src="shots/pipeline-v2611.webp" width="1200" height="753" alt="The pipeline: ideas, drafts, scheduled and posted columns of real posts, filtered by channel." loading="lazy"></div><figcaption><b>The posting pipeline</b><span>Ideas become drafts, drafts get a slot, slots go out.</span></figcaption></figure>
+    <figure class="sc"><div class="sc-pic sc-pic--post"><img src="shots/x-post-v2611.webp" width="1096" height="1390" alt="A post on X by @ZenodMemory, 18 November: say a voice note once, Claude, ChatGPT and Cursor can all read it afterwards." loading="lazy"></div><figcaption><b>It posts on X for you</b><span>A real post it wrote and sent for Zenod memory, 18 November.</span></figcaption></figure>
+    <figure class="sc"><div class="sc-pic sc-pic--call"><img src="shots/call-v2611.webp" width="1200" height="558" alt="The EpicSocial briefer: a Call button, then the blocker first, one goal at a time, and your decisions land on the desk." loading="lazy"></div><figcaption><b>Call your senior partner</b><span>A voice call: what holds you back, then the plan. Your decisions land as requests.</span></figcaption></figure>
+  </div>
 </div></section>
 
 <!-- Vision: why EpicSocial exists, told like a pitch in six pictured frames (agent_team E97-S38, his 25 Nov 14:34Z voice note; the words come from its product deck) -->
@@ -478,8 +509,8 @@ figure { margin: 0; }
 <!-- 4. the example campaign: three key results, current state, as he gave them -->
 <section class="band alt" id="campaign" aria-labelledby="h-campaign"><div class="container split">
   <div class="say">
-    <h2 id="h-campaign">One campaign. Three key results.</h2>
-    <p class="lead">This is the campaign we start for ourselves as we launch. Each key result has a target, where it stands today and a light.</p>
+    <h2 id="h-campaign">One goal. Three key results.</h2>
+    <p class="lead">Our own goal as we launch. Each key result has a target, where it stands today and a light.</p>
     <p class="muted">Unknown is an honest answer. The first job is to measure it.</p>
   </div>
   <figure class="score" data-ui aria-label="Example scorecard: Launch EpicSocial">
@@ -529,11 +560,11 @@ figure { margin: 0; }
     <ol class="reply" aria-label="What happens to your voice note">
       <li><b>Your voice note</b><span>speak your mind</span></li>
       <li><b>Team desk</b><span>reads every word</span></li>
-      <li><b>The plan changes</b><span>new actions, a new campaign</span></li>
+      <li><b>The plan changes</b><span>new posts, new actions</span></li>
       <li><b>Your inbox</b><span>the answer, in one place</span></li>
     </ol>
   </div>
-  <p class="muted small">Briefings from our own campaign, 19 November. One account name hidden.</p>
+  <p class="muted small">Briefings from our own launch, 19 November. One account name hidden.</p>
 </div></section>
 
 
@@ -544,15 +575,15 @@ figure { margin: 0; }
     <div class="container">
       <div class="si-say">
         <h2 id="h-smart-inbox">Twenty asks from your agents. The one that matters is on top.</h2>
-        <p class="lead">The agents running your campaigns ask you things: a post to sign off, a question on the plan, results to check. Your inbox sorts them by what matters to you, so an older ask on your top campaign sits above a newer ask on your third.</p>
+        <p class="lead">The agents running your socials ask you things: a post to sign off, a question on the plan, results to check. Your inbox sorts them by what matters to you, so an older ask on your top goal sits above a newer ask on your third.</p>
       </div>
-      <figure class="si-fig" aria-label="20 asks in arrival order become an inbox sorted by kind, urgent first, then by your campaigns">
-        <div class="si-col si-in"><p class="si-h">As they arrive</p><ol class="si-list"><li><span class="si-t">10:20</span><span class="si-n">Check last week&#x27;s results</span><span></span><span class="si-o" title="Your campaign 2">2</span></li><li><span class="si-t">09:55</span><span class="si-n">Answer: post as you or the company?</span><span></span><span class="si-o" title="Your campaign 3">3</span></li><li><span class="si-t">09:30</span><span class="si-n">Sign off tomorrow&#x27;s launch thread</span><span class=si-u>Urgent</span><span class="si-o" title="Your campaign 1">1</span></li><li><span class="si-t">08:40</span><span class="si-n">Answer: which subreddit first?</span><span></span><span class="si-o" title="Your campaign 1">1</span></li><li><span class="si-t">Yesterday</span><span class="si-n">Approve five replies</span><span></span><span class="si-o" title="Your campaign 2">2</span></li><li><span class="si-t">Yesterday</span><span class="si-n">Pick the hero video</span><span></span><span class="si-o" title="Your campaign 1">1</span></li><li class="si-more">+ 14 more, newest on top</li></ol></div>
+      <figure class="si-fig" aria-label="20 asks in arrival order become an inbox sorted by kind, urgent first, then by your goals">
+        <div class="si-col si-in"><p class="si-h">As they arrive</p><ol class="si-list"><li><span class="si-t">10:20</span><span class="si-n">Check last week&#x27;s results</span><span></span><span class="si-o" title="Your goal 2">2</span></li><li><span class="si-t">09:55</span><span class="si-n">Answer: post as you or the company?</span><span></span><span class="si-o" title="Your goal 3">3</span></li><li><span class="si-t">09:30</span><span class="si-n">Sign off tomorrow&#x27;s launch thread</span><span class=si-u>Urgent</span><span class="si-o" title="Your goal 1">1</span></li><li><span class="si-t">08:40</span><span class="si-n">Answer: which subreddit first?</span><span></span><span class="si-o" title="Your goal 1">1</span></li><li><span class="si-t">Yesterday</span><span class="si-n">Approve five replies</span><span></span><span class="si-o" title="Your goal 2">2</span></li><li><span class="si-t">Yesterday</span><span class="si-n">Pick the hero video</span><span></span><span class="si-o" title="Your goal 1">1</span></li><li class="si-more">+ 14 more, newest on top</li></ol></div>
         <div class="si-arrow" aria-hidden="true"><svg viewBox="0 0 56 24"><path d="M2 12H50M40 4l10 8-10 8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <div class="si-col si-out"><p class="si-h">In your inbox</p><div class="si-sec si-urgent"><p class="si-sh">Urgent <b>1</b></p><ol class="si-list"><li><span class="si-n">Sign off tomorrow&#x27;s launch thread</span><span class=si-u>Urgent</span><span class="si-o" title="Your campaign 1">1</span></li></ol></div><div class="si-sec "><p class="si-sh">Blocked on you <b>2</b></p><ol class="si-list"><li><span class="si-n">Answer: which subreddit first?</span><span class="si-o" title="Your campaign 1">1</span></li><li><span class="si-n">Answer: post as you or the company?</span><span class="si-o" title="Your campaign 3">3</span></li></ol></div><div class="si-sec "><p class="si-sh">Decisions waiting on you <b>2</b></p><ol class="si-list"><li><span class="si-n">Pick the hero video</span><span class="si-o" title="Your campaign 1">1</span></li><li><span class="si-n">Approve five replies</span><span class="si-o" title="Your campaign 2">2</span></li></ol></div><div class="si-sec "><p class="si-sh">Done, waiting for your review <b>15</b></p><ol class="si-list"><li><span class="si-n">Check last week&#x27;s results</span><span class="si-o" title="Your campaign 2">2</span></li><li class="si-more">+ 14 more, folded</li></ol></div></div>
-        <p class="si-key">Your campaigns, in your order: <span><span class="si-o" title="Your campaign 1">1</span> Launch week</span><span><span class="si-o" title="Your campaign 2">2</span> Founder story</span><span><span class="si-o" title="Your campaign 3">3</span> Hiring</span></p>
+        <div class="si-col si-out"><p class="si-h">In your inbox</p><div class="si-sec si-urgent"><p class="si-sh">Urgent <b>1</b></p><ol class="si-list"><li><span class="si-n">Sign off tomorrow&#x27;s launch thread</span><span class=si-u>Urgent</span><span class="si-o" title="Your goal 1">1</span></li></ol></div><div class="si-sec "><p class="si-sh">Blocked on you <b>2</b></p><ol class="si-list"><li><span class="si-n">Answer: which subreddit first?</span><span class="si-o" title="Your goal 1">1</span></li><li><span class="si-n">Answer: post as you or the company?</span><span class="si-o" title="Your goal 3">3</span></li></ol></div><div class="si-sec "><p class="si-sh">Decisions waiting on you <b>2</b></p><ol class="si-list"><li><span class="si-n">Pick the hero video</span><span class="si-o" title="Your goal 1">1</span></li><li><span class="si-n">Approve five replies</span><span class="si-o" title="Your goal 2">2</span></li></ol></div><div class="si-sec "><p class="si-sh">Done, waiting for your review <b>15</b></p><ol class="si-list"><li><span class="si-n">Check last week&#x27;s results</span><span class="si-o" title="Your goal 2">2</span></li><li class="si-more">+ 14 more, folded</li></ol></div></div>
+        <p class="si-key">Your goals, in your order: <span><span class="si-o" title="Your goal 1">1</span> Launch week</span><span><span class="si-o" title="Your goal 2">2</span> Founder story</span><span><span class="si-o" title="Your goal 3">3</span> Hiring</span></p>
       </figure>
-      <ol class="si-how"><li><h3>Urgent goes first</h3><p>Anything marked urgent, or that you asked for again, gets its own section at the very top.</p></li><li><h3>Then split by kind</h3><p>Blocked on you, decisions to make, finished work to check. Each kind folds, so you open one at a time.</p></li><li><h3>Then your order</h3><p>Inside each kind, asks follow the order you gave your campaigns. Move a campaign up and its asks move up with it.</p></li></ol>
+      <ol class="si-how"><li><h3>Urgent goes first</h3><p>Anything marked urgent, or that you asked for again, gets its own section at the very top.</p></li><li><h3>Then split by kind</h3><p>Blocked on you, decisions to make, finished work to check. Each kind folds, so you open one at a time.</p></li><li><h3>Then your order</h3><p>Inside each kind, asks follow the order you gave your goals. Move a goal up and its asks move up with it.</p></li></ol>
       <p class="si-cap">A drawing of the inbox with example asks. The sections and their order are the real app&#x27;s.</p>
     </div>
   </section>
@@ -568,9 +599,9 @@ figure { margin: 0; }
       <li><button role="tab" aria-selected="false" aria-controls="d4" id="t4" data-i="3"><span>4</span>The benefits each post opens on</button></li>
     </ol>
     <div class="stage">
-      <figure class="frame on" role="tabpanel" id="d1" aria-labelledby="t1"><picture><source media="(max-width: 560px)" srcset="shots/krs-phone-v2411.webp" width="780" height="1688"><img src="shots/krs-v2411.webp" width="1200" height="900" alt="Our Zenod campaign in EpicSocial: the objective Get 5 testers, each key result with its light, where it stands and its target." loading="lazy"></picture><figcaption>One objective, its key results, a light on each.</figcaption></figure>
+      <figure class="frame on" role="tabpanel" id="d1" aria-labelledby="t1"><picture><source media="(max-width: 560px)" srcset="shots/krs-phone-v2411.webp" width="780" height="1688"><img src="shots/krs-v2411.webp" width="1200" height="900" alt="Our Zenod memory launch in EpicSocial: the objective Get 5 testers, each key result with its light, where it stands and its target." loading="lazy"></picture><figcaption>One objective, its key results, a light on each.</figcaption></figure>
       <figure class="frame" role="tabpanel" id="d2" aria-labelledby="t2" hidden><picture><source media="(max-width: 560px)" srcset="shots/plan-phone-v2411.webp" width="780" height="1688"><img src="shots/plan-v2411.webp" width="1200" height="900" alt="The Plan tab: how one key result gets to green, dated steps on a line and who does each." loading="lazy"></picture><figcaption>Each key result gets a dated plan to green.</figcaption></figure>
-      <figure class="frame" role="tabpanel" id="d3" aria-labelledby="t3" hidden><picture><source media="(max-width: 560px)" srcset="shots/pipeline-phone-v2411.webp" width="780" height="1688"><img src="shots/pipeline-v2411.webp" width="1200" height="900" alt="The pipeline: ideas, drafts, scheduled and posted columns of real Zenod posts, filtered by channel." loading="lazy"></picture><figcaption>Ideas become drafts, drafts get a slot, slots go out.</figcaption></figure>
+      <figure class="frame" role="tabpanel" id="d3" aria-labelledby="t3" hidden><picture><source media="(max-width: 560px)" srcset="shots/pipeline-phone-v2411.webp" width="780" height="1688"><img src="shots/pipeline-v2411.webp" width="1200" height="900" alt="The pipeline: ideas, drafts, scheduled and posted columns of real Zenod memory posts, filtered by channel." loading="lazy"></picture><figcaption>Ideas become drafts, drafts get a slot, slots go out.</figcaption></figure>
       <figure class="frame" role="tabpanel" id="d4" aria-labelledby="t4" hidden><picture><source media="(max-width: 560px)" srcset="shots/benefits-phone-v2411.webp" width="780" height="1688"><img src="shots/benefits-v2411.webp" width="1200" height="900" alt="The Benefits tab: what the product does for the people who use it, in their words. Every post opens on one of these." loading="lazy"></picture><figcaption>Every post opens on one benefit that works today.</figcaption></figure>
       <div class="bar" aria-hidden="true"><i></i></div>
       <button class="toggle" type="button" data-pause aria-label="Pause the demo" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true"><path data-icon d="M4 2h3v12H4zM9 2h3v12H9z" fill="currentColor"/></svg><span data-word>Pause</span></button>
