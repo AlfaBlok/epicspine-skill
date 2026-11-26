@@ -255,6 +255,21 @@ figure { margin: 0; }
 .ladder li:first-child b { color: var(--ok); }
 .ladder span { color: var(--night-muted); }
 @media (max-width: 560px) { .ladder li { grid-template-columns: 1fr; gap: 4px; } }
+/* the price page: three tiers, Grow the default (agent_team E46-S133, Jordi's yes on E46-S44, 26 Nov) */
+.tiers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-lg); align-items: stretch; }
+.tier { position: relative; display: grid; gap: var(--space-md); align-content: start; padding: var(--space-xl) var(--space-lg); background: var(--paper); border: 1px solid var(--rule); border-radius: var(--radius); }
+.tier--pick { border: 2px solid var(--accent); }
+.tier-tag { position: absolute; top: -13px; left: var(--space-lg); padding: 3px 12px; border-radius: 999px; background: var(--accent); color: var(--accent-ink); font-size: 0.8rem; font-weight: 500; }
+.tier h3 { font-size: 1.5rem; }
+.tier-price { display: flex; align-items: baseline; gap: 6px; }
+.tier-price b { font: 400 3rem/1 var(--font-display); letter-spacing: -0.03em; }
+.tier-price span { color: var(--muted); }
+.tier-reach { font-weight: 500; color: var(--ink); }
+.tier ul { display: grid; gap: var(--space-xs); padding-top: var(--space-md); border-top: 1px solid var(--rule); }
+.tier li { position: relative; padding-left: 22px; color: var(--ink-2); }
+.tier li::before { content: ""; position: absolute; left: 2px; top: 0.55em; width: 10px; height: 6px; border-left: 2px solid var(--ok); border-bottom: 2px solid var(--ok); transform: rotate(-45deg); }
+.tiers-note { margin-top: var(--space-xl); }
+@media (max-width: 900px) { .tiers { grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); max-width: 30rem; } }
 .engine--5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
 .engine--5 li:first-child { background: var(--ink); border-color: var(--ink); color: var(--paper); }
 .engine--5 li:first-child span { color: oklch(85% 0.01 240); }
@@ -422,6 +437,7 @@ figure { margin: 0; }
     <a class="hide-s" href="#boss">How it works</a>
     <a class="hide-s" href="#screens">Screens</a>
     <a class="hide-s" href="#whatsapp">WhatsApp</a>
+    <a class="hide-s" href="#prices">Prices</a>
     <a class="hide-s" href="#apply">Credits</a>
   </nav>
   <a class="btn btn--sm" href="#apply">Get credits</a>
@@ -502,7 +518,7 @@ figure { margin: 0; }
   </ol>
   <p class="v-more"><a class="btn" href="vision/">Learn more: our vision</a></p>
 </div></section>
-<!-- 2. the mission: no excuse not to communicate (his 24 Nov 20:52Z voice note); starts cheap, no price named until he sets one -->
+<!-- 2. the mission: no excuse not to communicate (his 24 Nov 20:52Z voice note); the ladder names the three tiers, their prices are in #prices -->
 <section class="band dark" id="why" aria-labelledby="h-why"><div class="container split">
   <div class="say">
     <h2 id="h-why">You have no excuse not to communicate.</h2>
@@ -512,7 +528,7 @@ figure { margin: 0; }
   <ol class="ladder" aria-label="It starts cheap and grows with you">
     <li><b>Start</b><span>Posts on your channels, your scorecard every day, briefings on WhatsApp.</span></li>
     <li><b>Grow</b><span>Pictures and visuals made for every post.</span></li>
-    <li><b>Get serious</b><span>Competitor analysis and the strategies it suggests from them.</span></li>
+    <li><b>Pro</b><span>Competitor analysis and the strategies it suggests from them.</span></li>
   </ol>
 </div></section>
 
@@ -647,6 +663,49 @@ figure { margin: 0; }
     <li><b>Every day</b><span>Your scorecard: what moved, what did not, what the team does next.</span></li>
     <li><b>Day 30</b><span>A month of results for every message you tried. One may hit.</span></li>
   </ol>
+</div></section>
+
+<!-- prices: Start, Grow, Pro (agent_team E46-S133; Jordi's yes on E46-S44, 26 Nov: "Yes: put the three tiers on the price page").
+     A plain price a month only. Grow is the one sold as default, shown first on a phone. -->
+<section class="band" id="prices" aria-labelledby="h-prices"><div class="container">
+  <div class="say say--wide">
+    <h2 id="h-prices">Pick how much your team posts.</h2>
+    <p class="lead">Every plan sends you the daily briefing. Each step up adds platforms, posts and team members.</p>
+  </div>
+  <ul class="tiers" aria-label="Plans">
+    <li class="tier">
+      <h3>Start</h3>
+      <p class="tier-price"><b>€29</b><span>a month</span></p>
+      <p class="tier-reach">One platform, two posts a day.</p>
+      <ul>
+        <li>The Writer</li>
+        <li>Daily briefing</li>
+      </ul>
+    </li>
+    <li class="tier tier--pick">
+      <span class="tier-tag">Recommended</span>
+      <h3>Grow</h3>
+      <p class="tier-price"><b>€49</b><span>a month</span></p>
+      <p class="tier-reach">Two platforms, four posts a day.</p>
+      <ul>
+        <li>The Writer</li>
+        <li>A Creative designer</li>
+        <li>A Strategist</li>
+        <li>Daily briefing</li>
+      </ul>
+    </li>
+    <li class="tier">
+      <h3>Pro</h3>
+      <p class="tier-price"><b>€89</b><span>a month</span></p>
+      <p class="tier-reach">Three platforms, six posts a day.</p>
+      <ul>
+        <li>Everything in Grow</li>
+        <li>Competitive research</li>
+        <li>Daily briefing</li>
+      </ul>
+    </li>
+  </ul>
+  <p class="tiers-note muted">Startup or builder? <a href="#apply">Apply for free credits</a> first.</p>
 </div></section>
 
 <!-- 7. credits: apply (agent_team E40-S121, EPIC-107: the Apply for credits form asks for credits, never the November tester seats; no amount, his to set) -->
