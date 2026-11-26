@@ -373,6 +373,19 @@ figure { margin: 0; }
   .v-pic { aspect-ratio: 16 / 11; }
   .v-pic svg { width: 92%; }
 }
+
+/* agent_team E97-S43: "I wish we could animate these illustrations a little bit": each vision drawing draws itself in once as it
+   comes into view, then its one coloured mark breathes slowly. Nothing moves under reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .v-draw .s:not([stroke-dasharray]) { stroke-dasharray: 1; stroke-dashoffset: 1; }
+  .v-draw .af, .v-draw text { opacity: 0; }
+  .v-draw.in .s:not([stroke-dasharray]) { stroke-dashoffset: 0; transition: stroke-dashoffset 1.4s cubic-bezier(.5,0,.2,1); }
+  .v-draw.in .af { opacity: 1; transition: opacity 0.6s ease 1s; }
+  .v-draw.in text { opacity: .7; transition: opacity 0.6s ease 0.9s; }
+  .v-draw.in text.lblb, .v-draw.in text.big { opacity: 1; }
+  .v-draw.on .af { transform-box: fill-box; transform-origin: center; animation: v-breathe 3.6s ease-in-out 2s infinite; }
+}
+@keyframes v-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }
 </style>
 </head>
 <body>
@@ -410,6 +423,21 @@ figure { margin: 0; }
   <b>EpicSocial</b>
   <p>Alpha. Runs on EpicTeam and EpicSpine, both open source. No cookies, no trackers.</p>
 </div></footer>
+<script>
+/* agent_team E97-S43: vision drawings draw themselves in once (pathLength 1 on each stroke), headline highlight sweeps in */
+(function () {
+  if (!("IntersectionObserver" in window) || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  var io = new IntersectionObserver(function (es) {
+    es.forEach(function (e) { if (!e.isIntersecting) return; var t = e.target; t.classList.add("in"); setTimeout(function () { t.classList.add("on"); }, 1600); io.unobserve(t); });
+  }, { threshold: 0.3 });
+  [].slice.call(document.querySelectorAll(".v-pic svg")).forEach(function (svg) {
+    [].slice.call(svg.querySelectorAll(".s")).forEach(function (el) { if (/^(path|line|circle|rect|ellipse|polyline|polygon)$/.test(el.tagName)) el.setAttribute("pathLength", "1"); });
+    svg.classList.add("v-draw"); io.observe(svg);
+  });
+  var head = document.querySelector(".v-head mark") && document.querySelector(".v-head");
+  if (head) { document.documentElement.classList.add("js-hl"); io.observe(head); }
+})();
+</script>
 <!-- page view counter (agent_team E46-S17, E80-S2): our own, no cookie, nothing about the visitor kept. It sends the post id of a link's ?s= and only the host name of the site the visitor came from, keeps ?s= on links to our other pages, and adds both to the sign-up form so an application keeps its source. --><script>(function(){var q=new URLSearchParams(location.search),s=(q.get("s")||"").slice(0,40),r="";try{r=document.referrer?new URL(document.referrer).hostname.replace(/^www\./,""):""}catch(e){}var i=new Image(1,1);i.referrerPolicy="no-referrer";i.src="https://signup.alpha9.io/api/public/pv?p=/social/&h="+encodeURIComponent(location.hostname)+(s?"&s="+encodeURIComponent(s):"")+(r?"&r="+encodeURIComponent(r):"");if(s)document.querySelectorAll("a[href]").forEach(function(a){var v=a.getAttribute("href");if(v.charAt(0)==="#")return;try{var h=new URL(v,location.href);if(h.hostname!==location.hostname||h.searchParams.has("s"))return;h.searchParams.set("s",s);a.setAttribute("href",h.pathname+h.search+h.hash)}catch(e){}});document.querySelectorAll("form[action*='signup.alpha9.io']").forEach(function(f){[["s",s],["ref",r],["site",location.hostname]].forEach(function(p){if(!p[1])return;var x=document.createElement("input");x.type="hidden";x.name=p[0];x.value=p[1];f.appendChild(x)});if(location.hostname!=="epicspine.dev")f.querySelectorAll("input[name=back]").forEach(function(b){b.value=location.origin+location.pathname})})})();</script><noscript><img src="https://signup.alpha9.io/api/public/pv?p=/social/" alt="" width="1" height="1" style="position:absolute;left:-9999px" referrerpolicy="no-referrer" loading="eager"></noscript>
 </body>
 </html>

@@ -76,7 +76,7 @@
 .screens img { border: 1px solid #26262a; }
 .screens figcaption { color: #b9b5ac; font-size: var(--text-sm); }
 @media (max-width: 900px) { .screens { grid-template-columns: minmax(0, 1fr); } }
-@media (max-width: 560px) { .screens figure:nth-child(2) { display: none; } .screens img { max-width: 22rem; margin-inline: auto; } }
+@media (max-width: 560px) { .screens img { max-width: 22rem; margin-inline: auto; } }
 /* the fan-out, fan-in diagram */
 .ff-fig { padding: var(--space-lg) var(--space-lg) var(--space-md); }
 .ff { display: block; width: 100%; height: auto; font-family: var(--font-body); }
@@ -251,6 +251,39 @@
   .v-pic { aspect-ratio: 16 / 11; }
   .v-pic svg { width: 92%; }
 }
+
+/* agent_team E97-S43: his chat voice note vn_12365d18: "Why EpicTeam exists is more like a small title ... the big thing is from
+   one prompt at a time to one objective over time ... highlight one objective over time, and then over time underline ... a soft
+   background highlight ... maybe a certain animation". The label sits small above; the highlight fades in, then the underline. */
+.v-head .v-kicker { display: block; margin: 0 0 0.6rem; font: 600 0.8rem/1.2 var(--sans); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.v-head .v-line { display: block; }
+.v-head mark { color: inherit; background-color: var(--accent-soft); border-radius: 3px; padding: 0 0.1em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.v-head mark u { text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 0.07em; text-underline-offset: 0.14em; }
+@media (prefers-reduced-motion: no-preference) {
+  .js-hl .v-head mark { background-color: transparent; transition: background-color 1.1s ease 0.25s; }
+  .js-hl .v-head mark u { text-decoration-color: transparent; transition: text-decoration-color 0.6s ease 1.3s; }
+  .js-hl .v-head.in mark { background-color: var(--accent-soft); }
+  .js-hl .v-head.in mark u { text-decoration-color: var(--accent); }
+}
+
+/* agent_team E97-S43: "I wish we could animate these illustrations a little bit": each vision drawing draws itself in once as it
+   comes into view, then its one coloured mark breathes slowly. Nothing moves under reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .v-draw .s:not([stroke-dasharray]) { stroke-dasharray: 1; stroke-dashoffset: 1; }
+  .v-draw .af, .v-draw text { opacity: 0; }
+  .v-draw.in .s:not([stroke-dasharray]) { stroke-dashoffset: 0; transition: stroke-dashoffset 1.4s cubic-bezier(.5,0,.2,1); }
+  .v-draw.in .af { opacity: 1; transition: opacity 0.6s ease 1s; }
+  .v-draw.in text { opacity: .7; transition: opacity 0.6s ease 0.9s; }
+  .v-draw.in text.lblb, .v-draw.in text.big { opacity: 1; }
+  .v-draw.on .af { transform-box: fill-box; transform-origin: center; animation: v-breathe 3.6s ease-in-out 2s infinite; }
+}
+@keyframes v-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }
+/* agent_team E97-S43: real screens mixed in beside the ideas they prove (vn_12365d18), not all at the end */
+.inline-shot { display: grid; gap: var(--space-sm); max-width: 60rem; margin: clamp(1.5rem, 3vw, 2.5rem) auto 0; }
+.inline-shot img { border: 1px solid #26262a; }
+.inline-shot figcaption { color: #b9b5ac; font-size: var(--text-sm); padding-inline: 4px; }
+.si-real { margin: 0 auto clamp(1.5rem, 3vw, 2.5rem); max-width: 52rem; }
+@media (max-width: 560px) { .inline-shot img { max-width: 22rem; margin-inline: auto; } }
 </style>
 <!-- agent_team E43-S13: the whole page on paper (Jordi 2026-11-10 on the navy look: "I thought we had moved on from it");
      ../epic.css stays the layout underneath, paper.css maps its tokens onto the shared paper brand. -->
@@ -290,7 +323,7 @@
 
 <!-- Vision: why EpicTeam exists, told like a pitch in seven pictured frames (agent_team E97-S38, his 25 Nov 14:34Z voice note) -->
 <section class="band vision" id="vision" aria-labelledby="h-vision"><div class="container">
-  <div class="v-head"><h2 id="h-vision">Why EpicTeam exists: from one prompt at a time to one objective over time.</h2><p class="lead">Two of the seven frames of our vision. The whole story is on its own page.</p></div>
+  <div class="v-head"><p class="v-kicker">Why EpicTeam exists</p><h2 id="h-vision"><span class="v-line">From one prompt at a time</span> <span class="v-line">to <mark>one objective <u>over time</u></mark>.</span></h2><p class="lead">Two of the seven frames of our vision. The whole story is on its own page.</p></div>
   <ol class="v-frames">
     <li class="v-frame" id="vision-3"><figure class="v-pic"><svg viewBox="0 0 320 240" role="img" aria-label="A line of many small prompts climbing over time to a key result that turns green."><line class="s" x1="26" y1="206" x2="296" y2="206"/><line class="s" x1="34" y1="200" x2="34" y2="206" opacity=".35"/><line class="s" x1="41" y1="200" x2="41" y2="206" opacity=".35"/><line class="s" x1="48" y1="200" x2="48" y2="206" opacity=".35"/><line class="s" x1="55" y1="200" x2="55" y2="206" opacity=".35"/><line class="s" x1="62" y1="200" x2="62" y2="206" opacity=".35"/><line class="s" x1="69" y1="200" x2="69" y2="206" opacity=".35"/><line class="s" x1="76" y1="200" x2="76" y2="206" opacity=".35"/><line class="s" x1="83" y1="200" x2="83" y2="206" opacity=".35"/><line class="s" x1="90" y1="200" x2="90" y2="206" opacity=".35"/><line class="s" x1="97" y1="200" x2="97" y2="206" opacity=".35"/><line class="s" x1="104" y1="200" x2="104" y2="206" opacity=".35"/><line class="s" x1="111" y1="200" x2="111" y2="206" opacity=".35"/><line class="s" x1="118" y1="200" x2="118" y2="206" opacity=".35"/><line class="s" x1="125" y1="200" x2="125" y2="206" opacity=".35"/><line class="s" x1="132" y1="200" x2="132" y2="206" opacity=".35"/><line class="s" x1="139" y1="200" x2="139" y2="206" opacity=".35"/><line class="s" x1="146" y1="200" x2="146" y2="206" opacity=".35"/><line class="s" x1="153" y1="200" x2="153" y2="206" opacity=".35"/><line class="s" x1="160" y1="200" x2="160" y2="206" opacity=".35"/><line class="s" x1="167" y1="200" x2="167" y2="206" opacity=".35"/><line class="s" x1="174" y1="200" x2="174" y2="206" opacity=".35"/><line class="s" x1="181" y1="200" x2="181" y2="206" opacity=".35"/><line class="s" x1="188" y1="200" x2="188" y2="206" opacity=".35"/><line class="s" x1="195" y1="200" x2="195" y2="206" opacity=".35"/><line class="s" x1="202" y1="200" x2="202" y2="206" opacity=".35"/><line class="s" x1="209" y1="200" x2="209" y2="206" opacity=".35"/><line class="s" x1="216" y1="200" x2="216" y2="206" opacity=".35"/><line class="s" x1="223" y1="200" x2="223" y2="206" opacity=".35"/><line class="s" x1="230" y1="200" x2="230" y2="206" opacity=".35"/><line class="s" x1="237" y1="200" x2="237" y2="206" opacity=".35"/><line class="s" x1="244" y1="200" x2="244" y2="206" opacity=".35"/><line class="s" x1="251" y1="200" x2="251" y2="206" opacity=".35"/><line class="s" x1="258" y1="200" x2="258" y2="206" opacity=".35"/><line class="s" x1="265" y1="200" x2="265" y2="206" opacity=".35"/><line class="s" x1="272" y1="200" x2="272" y2="206" opacity=".35"/><line class="s" x1="279" y1="200" x2="279" y2="206" opacity=".35"/><line class="s" x1="286" y1="200" x2="286" y2="206" opacity=".35"/><polyline class="s" points="36,190 51,188 63,182 73,181 91,180 106,171 116,163 129,163 140,157 156,156 169,155 187,149 197,140 208,137 218,128 234,128 247,128 266,62"/><circle class="af" cx="272" cy="56" r="11"/><circle class="s" cx="36" cy="190" r="4"/><text x="36" y="226" text-anchor="start" class="lbl">start</text><text x="296" y="226" text-anchor="end" class="lbl">green</text><text x="272" y="32" text-anchor="middle" class="lbl">key result</text></svg></figure><div class="v-say"><h3>Now set one objective, and keep it over time.</h3><p class="v-ctx">An objective is ongoing. Hundreds of prompts serve it, each one changed to fit the moment, until its key results turn green.</p><p class="v-take">You move up from operator to decision maker.</p></div></li>
     <li class="v-frame" id="vision-5"><figure class="v-pic"><svg viewBox="0 0 320 240" role="img" aria-label="Left, lanterns shine in every direction. Right, every lantern points at one spot and lights a fire."><line class="s" x1="160" y1="22" x2="160" y2="218" opacity=".3"/><path class="beam" d="M30 50 L42 91 L60 81Z"/><rect class="s fillpaper" x="25" y="41" width="10" height="13" rx="2"/><path class="s" d="M27 41q3-6 6 0"/><path class="beam" d="M70 40 L31 59 L44 75Z"/><rect class="s fillpaper" x="65" y="31" width="10" height="13" rx="2"/><path class="s" d="M67 31q3-6 6 0"/><path class="beam" d="M110 60 L134 24 L115 17Z"/><rect class="s fillpaper" x="105" y="51" width="10" height="13" rx="2"/><path class="s" d="M107 51q3-6 6 0"/><path class="beam" d="M40 120 L83 123 L80 103Z"/><rect class="s fillpaper" x="35" y="111" width="10" height="13" rx="2"/><path class="s" d="M37 111q3-6 6 0"/><path class="beam" d="M90 110 L64 75 L51 91Z"/><rect class="s fillpaper" x="85" y="101" width="10" height="13" rx="2"/><path class="s" d="M87 101q3-6 6 0"/><path class="beam" d="M125 150 L144 189 L160 176Z"/><rect class="s fillpaper" x="120" y="141" width="10" height="13" rx="2"/><path class="s" d="M122 141q3-6 6 0"/><path class="beam" d="M50 180 L45 137 L26 144Z"/><rect class="s fillpaper" x="45" y="171" width="10" height="13" rx="2"/><path class="s" d="M47 171q3-6 6 0"/><path class="beam" d="M105 195 L62 192 L65 212Z"/><rect class="s fillpaper" x="100" y="186" width="10" height="13" rx="2"/><path class="s" d="M102 186q3-6 6 0"/><path class="beam" d="M186 48 L231 192 L249 184Z"/><rect class="s fillpaper" x="181" y="39" width="10" height="13" rx="2"/><path class="s" d="M183 39q3-6 6 0"/><path class="beam" d="M214 36 L230 190 L250 186Z"/><rect class="s fillpaper" x="209" y="27" width="10" height="13" rx="2"/><path class="s" d="M211 27q3-6 6 0"/><path class="beam" d="M244 32 L230 188 L250 188Z"/><rect class="s fillpaper" x="239" y="23" width="10" height="13" rx="2"/><path class="s" d="M241 23q3-6 6 0"/><path class="beam" d="M274 38 L230 186 L250 190Z"/><rect class="s fillpaper" x="269" y="29" width="10" height="13" rx="2"/><path class="s" d="M271 29q3-6 6 0"/><path class="beam" d="M300 52 L231 184 L249 192Z"/><rect class="s fillpaper" x="295" y="43" width="10" height="13" rx="2"/><path class="s" d="M297 43q3-6 6 0"/><path class="beam" d="M196 96 L231 192 L249 184Z"/><rect class="s fillpaper" x="191" y="87" width="10" height="13" rx="2"/><path class="s" d="M193 87q3-6 6 0"/><path class="beam" d="M290 100 L231 183 L249 193Z"/><rect class="s fillpaper" x="285" y="91" width="10" height="13" rx="2"/><path class="s" d="M287 91q3-6 6 0"/><path class="af" d="M240 174c8 10 14 16 12 24c-1 6-6 9-12 9s-11-3-12-9c-2-8 4-12 6-18c2 4 4 4 6-6z"/><text x="80" y="232" text-anchor="middle" class="lbl">scattered</text><text x="240" y="232" text-anchor="middle" class="lbl">one spot</text></svg></figure><div class="v-say"><h3>A thousand lanterns, pointed at one spot.</h3><p class="v-ctx">Start many agents with no shared aim and their light scatters. Point every one at the same objective and the light becomes fire.</p><p class="v-take">EpicTeam concentrates every agent's work on your objective.</p></div></li>
@@ -308,6 +341,7 @@
 <svg class="okr okr--phone" viewBox="0 0 360 650" role="img" aria-labelledby="okrp-t"><title id="okrp-t">The objective Get 5 testers, its four key results with their lights, and the ticket and agent under each</title><g class="okr-obj"><rect x="0" y="0" width="360" height="96" rx="4"/><text class="okr-k" x="16" y="26">OBJECTIVE · ZENOD</text><text class="okr-big" x="16" y="62">Get 5 testers</text><text class="okr-sm" x="16" y="84">2 of 6 key results green, by 30 November</text></g><path class="okr-l" style="--i:0" pathLength="1" d="M14 96V150H24"/><g class="okr-kr" style="--i:0"><rect x="24" y="120" width="336" height="60" rx="4"/><circle class="okr-light okr-amber" style="--i:0" cx="46" cy="150" r="8"/><text class="okr-n" x="64" y="146">Testers sign up</text><text class="okr-sm" x="64" y="166">now 3 of 5</text></g><g class="okr-t" style="--i:0"><rect x="48" y="188" width="312" height="30" rx="15"/><text x="64" y="208">Testers page link in every post</text></g><path class="okr-l" style="--i:1" pathLength="1" d="M14 150V290H24"/><g class="okr-kr" style="--i:1"><rect x="24" y="260" width="336" height="60" rx="4"/><circle class="okr-light okr-green" style="--i:1" cx="46" cy="290" r="8"/><text class="okr-n" x="64" y="286">Sign-up works end to end</text><text class="okr-sm" x="64" y="306">now proven</text></g><g class="okr-t" style="--i:1"><rect x="48" y="328" width="312" height="30" rx="15"/><text x="64" y="348">Sign-up test, three real people</text></g><path class="okr-l" style="--i:2" pathLength="1" d="M14 290V430H24"/><g class="okr-kr" style="--i:2"><rect x="24" y="400" width="336" height="60" rx="4"/><circle class="okr-light okr-red" style="--i:2" cx="46" cy="430" r="8"/><text class="okr-n" x="64" y="426">Testers connect WhatsApp</text><text class="okr-sm" x="64" y="446">now 1 of 3</text></g><g class="okr-t" style="--i:2"><rect x="48" y="468" width="312" height="30" rx="15"/><text x="64" y="488">One-tap WhatsApp link</text></g><path class="okr-l" style="--i:3" pathLength="1" d="M14 430V570H24"/><g class="okr-kr" style="--i:3"><rect x="24" y="540" width="336" height="60" rx="4"/><circle class="okr-light okr-red" style="--i:3" cx="46" cy="570" r="8"/><text class="okr-n" x="64" y="566">Testers send voice notes</text><text class="okr-sm" x="64" y="586">now 0 of 3</text></g><g class="okr-t" style="--i:3"><rect x="48" y="608" width="312" height="30" rx="15"/><text x="64" y="628">Voice feedback link per tester</text></g></svg>
         <figcaption class="okr-cap">Our own Zenod objective on 24 November, its tickets in short. The lights move as the work lands.</figcaption>
       </figure>
+      <figure class="inline-shot dark-shot"><picture><source media="(max-width: 560px)" srcset="shots/plan-phone-v2611.webp" width="780" height="1688"><img src="shots/plan-v2611.webp" width="1200" height="900" loading="lazy" alt="The Plan tab: one key result's plan to green, five dated steps on a line, who does each, what each changes, when it counts as green and what happens if it stalls."></picture><figcaption>The real app: each key result gets a plan to green.</figcaption></figure>
     </div>
   </section>
 
@@ -480,6 +514,7 @@
         </div>
         <figcaption class="fan-foot"><span>A real voice note, 7 November 2026.<span class="hide-s"> Open a card to see it full size.</span></span> <button class="btn btn--sm fan-replay" type="button" hidden>Play it again</button></figcaption>
       </figure>
+      <figure class="inline-shot dark-shot"><picture><source media="(max-width: 560px)" srcset="shots/inbox-phone-v2611.webp" width="780" height="1688"><img src="shots/inbox-v2611.webp" width="1200" height="900" loading="lazy" alt="The inbox: one card for one topic, with where it came from, the team's recommendation and an answer button for each choice."></picture><figcaption>The real app: the card that comes back to you, with one button per answer.</figcaption></figure>
     </div>
   </section>
 
@@ -493,6 +528,8 @@
         <h2 id="h-smart-inbox">Eighty cards in your inbox. The one that matters is on top.</h2>
         <p class="lead">Email sorts by time. Your EpicTeam inbox holds what your agents need from you: decisions, answers and finished work to check. It sorts them by what matters to you, so an older card on your top objective sits above a newer card on your fourth.</p>
       </div>
+      <!-- agent_team E97-S43: "we need to show the inbox, the real-life inbox" (vn_12365d18): the live inbox, read only, 26 Nov, every section folded so no card's words show -->
+      <figure class="inline-shot dark-shot si-real"><picture><source media="(max-width: 560px)" srcset="shots/inbox-real-phone-2611.webp" width="780" height="1653"><img src="shots/inbox-real-2611.webp" width="1200" height="922" loading="lazy" alt="The real EpicTeam inbox on 26 November: Urgent 3, Blocked on you 6, Decisions waiting on you 26, Goals to set 5, Done and waiting for your review 41, Ideas and digests 27, then Everything else and Snoozed reviews."></picture><figcaption>The real inbox this morning, each section folded: urgent first, then by kind.</figcaption></figure>
       <figure class="si-fig" aria-label="80 asks in arrival order become an inbox sorted by kind, urgent first, then by your objectives">
         <div class="si-col si-in"><p class="si-h">As they arrive</p><ol class="si-list"><li><span class="si-t">09:41</span><span class="si-n">Check the new waitlist page</span><span></span><span class="si-o" title="Your objective 3">3</span></li><li><span class="si-t">09:12</span><span class="si-n">Pick the beta date</span><span class=si-u>Urgent</span><span class="si-o" title="Your objective 1">1</span></li><li><span class="si-t">08:30</span><span class="si-n">Answer: which bank?</span><span></span><span class="si-o" title="Your objective 4">4</span></li><li><span class="si-t">08:05</span><span class="si-n">Answer: which country first?</span><span></span><span class="si-o" title="Your objective 1">1</span></li><li><span class="si-t">Yesterday</span><span class="si-n">Pick a logo</span><span></span><span class="si-o" title="Your objective 2">2</span></li><li><span class="si-t">Yesterday</span><span class="si-n">Send the beta email?</span><span></span><span class="si-o" title="Your objective 1">1</span></li><li class="si-more">+ 74 more, newest on top</li></ol></div>
         <div class="si-arrow" aria-hidden="true"><svg viewBox="0 0 56 24"><path d="M2 12H50M40 4l10 8-10 8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -555,11 +592,9 @@
 
   <section class="band dark" id="screens" aria-labelledby="h-screens">
     <div class="container">
-      <h2 id="h-screens">The real app, today.</h2>
+      <h2 id="h-screens">More of the real app, today.</h2>
       <div class="screens">
-        <figure><picture><source media="(max-width: 560px)" srcset="shots/plan-phone-v2611.webp" width="780" height="1688"><img src="shots/plan-v2611.webp" width="1200" height="900" loading="lazy" alt="The Plan tab: one key result's plan to green, five dated steps on a line, who does each, what each changes, when it counts as green and what happens if it stalls."></picture><figcaption>A plan to green for every key result</figcaption></figure>
         <figure><picture><source media="(max-width: 560px)" srcset="shots/search-phone-v2611.webp" width="780" height="1688"><img src="shots/search-v2611.webp" width="1200" height="900" loading="lazy" alt="Search: one word finds every objective, key result and ticket, each with where it stands."></picture><figcaption>Find any objective, result or ticket</figcaption></figure>
-        <figure><picture><source media="(max-width: 560px)" srcset="shots/inbox-phone-v2611.webp" width="780" height="1688"><img src="shots/inbox-v2611.webp" width="1200" height="900" loading="lazy" alt="The inbox: one card for one topic, with where it came from, the team's recommendation and an answer button for each choice."></picture><figcaption>Only what needs you</figcaption></figure>
         <figure><picture><source media="(max-width: 560px)" srcset="shots/seats-phone-v2611.webp" width="780" height="1688"><img src="shots/seats-v2611.webp" width="1200" height="900" loading="lazy" alt="Seats: 16 AI subscriptions in one pool, how many are working now, and each seat's 5-hour, weekly and credit usage."></picture><figcaption>16 subscriptions, one pool</figcaption></figure>
       </div>
     </div>
@@ -945,6 +980,21 @@ window.replayBtn = function (btn, reset, play, ms) {
     es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.remove("wait"); e.target.classList.add("play"); io.unobserve(e.target); } });
   }, { threshold: 0.35 });
   svgs.forEach(function (s) { io.observe(s); });
+})();
+</script>
+<script>
+/* agent_team E97-S43: vision drawings draw themselves in once (pathLength 1 on each stroke), headline highlight sweeps in */
+(function () {
+  if (!("IntersectionObserver" in window) || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  var io = new IntersectionObserver(function (es) {
+    es.forEach(function (e) { if (!e.isIntersecting) return; var t = e.target; t.classList.add("in"); setTimeout(function () { t.classList.add("on"); }, 1600); io.unobserve(t); });
+  }, { threshold: 0.3 });
+  [].slice.call(document.querySelectorAll(".v-pic svg")).forEach(function (svg) {
+    [].slice.call(svg.querySelectorAll(".s")).forEach(function (el) { if (/^(path|line|circle|rect|ellipse|polyline|polygon)$/.test(el.tagName)) el.setAttribute("pathLength", "1"); });
+    svg.classList.add("v-draw"); io.observe(svg);
+  });
+  var head = document.querySelector(".v-head mark") && document.querySelector(".v-head");
+  if (head) { document.documentElement.classList.add("js-hl"); io.observe(head); }
 })();
 </script>
 <!-- page view counter (agent_team E46-S17, E80-S2, E85-S7): our own, no cookie, nothing about the visitor kept. It sends the post id of a link's ?s= and only the host name of the site the visitor came from, keeps ?s= on links to our other pages, and adds both to the sign-up form so an application keeps its source. --><script>(function(){var q=new URLSearchParams(location.search),s=(q.get("s")||"").slice(0,40),r="";try{r=document.referrer?new URL(document.referrer).hostname.replace(/^www\./,""):""}catch(e){}var i=new Image(1,1);i.referrerPolicy="no-referrer";i.src="https://signup.alpha9.io/api/public/pv?p=/team/&h="+encodeURIComponent(location.hostname)+(s?"&s="+encodeURIComponent(s):"")+(r?"&r="+encodeURIComponent(r):"");if(s)document.querySelectorAll("a[href]").forEach(function(a){var v=a.getAttribute("href");if(v.charAt(0)==="#")return;try{var h=new URL(v,location.href);if(h.hostname!==location.hostname||h.searchParams.has("s"))return;h.searchParams.set("s",s);a.setAttribute("href",h.pathname+h.search+h.hash)}catch(e){}});document.querySelectorAll("form[action*='signup.alpha9.io']").forEach(function(f){[["s",s],["ref",r],["site",location.hostname]].forEach(function(p){if(!p[1])return;var x=document.createElement("input");x.type="hidden";x.name=p[0];x.value=p[1];f.appendChild(x)});if(location.hostname!=="epicspine.dev")f.querySelectorAll("input[name=back]").forEach(function(b){b.value=location.origin+location.pathname})})})();</script><noscript><img src="https://signup.alpha9.io/api/public/pv?p=/team/" alt="" width="1" height="1" style="position:absolute;left:-9999px" referrerpolicy="no-referrer" loading="eager"></noscript>

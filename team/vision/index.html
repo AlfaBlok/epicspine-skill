@@ -251,6 +251,33 @@
   .v-pic { aspect-ratio: 16 / 11; }
   .v-pic svg { width: 92%; }
 }
+
+/* agent_team E97-S43: his chat voice note vn_12365d18: "Why EpicTeam exists is more like a small title ... the big thing is from
+   one prompt at a time to one objective over time ... highlight one objective over time, and then over time underline ... a soft
+   background highlight ... maybe a certain animation". The label sits small above; the highlight fades in, then the underline. */
+.v-head .v-kicker { display: block; margin: 0 0 0.6rem; font: 600 0.8rem/1.2 var(--sans); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.v-head .v-line { display: block; }
+.v-head mark { color: inherit; background-color: var(--accent-soft); border-radius: 3px; padding: 0 0.1em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.v-head mark u { text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 0.07em; text-underline-offset: 0.14em; }
+@media (prefers-reduced-motion: no-preference) {
+  .js-hl .v-head mark { background-color: transparent; transition: background-color 1.1s ease 0.25s; }
+  .js-hl .v-head mark u { text-decoration-color: transparent; transition: text-decoration-color 0.6s ease 1.3s; }
+  .js-hl .v-head.in mark { background-color: var(--accent-soft); }
+  .js-hl .v-head.in mark u { text-decoration-color: var(--accent); }
+}
+
+/* agent_team E97-S43: "I wish we could animate these illustrations a little bit": each vision drawing draws itself in once as it
+   comes into view, then its one coloured mark breathes slowly. Nothing moves under reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .v-draw .s:not([stroke-dasharray]) { stroke-dasharray: 1; stroke-dashoffset: 1; }
+  .v-draw .af, .v-draw text { opacity: 0; }
+  .v-draw.in .s:not([stroke-dasharray]) { stroke-dashoffset: 0; transition: stroke-dashoffset 1.4s cubic-bezier(.5,0,.2,1); }
+  .v-draw.in .af { opacity: 1; transition: opacity 0.6s ease 1s; }
+  .v-draw.in text { opacity: .7; transition: opacity 0.6s ease 0.9s; }
+  .v-draw.in text.lblb, .v-draw.in text.big { opacity: 1; }
+  .v-draw.on .af { transform-box: fill-box; transform-origin: center; animation: v-breathe 3.6s ease-in-out 2s infinite; }
+}
+@keyframes v-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }
 </style>
 <!-- agent_team E43-S13: the whole page on paper (Jordi 2026-11-10 on the navy look: "I thought we had moved on from it");
      ../epic.css stays the layout underneath, paper.css maps its tokens onto the shared paper brand. -->
@@ -276,7 +303,7 @@
 <main>
 <!-- Vision: why EpicTeam exists, told like a pitch in seven pictured frames (agent_team E97-S38, his 25 Nov 14:34Z voice note) -->
 <section class="band vision vision-page" id="vision" aria-labelledby="h-vision"><div class="container">
-  <div class="v-head"><h1 id="h-vision">Why EpicTeam exists: from one prompt at a time to one objective over time.</h1><p class="lead">Our vision in seven frames. Each makes one point, and together they tell the story.</p></div>
+  <div class="v-head"><p class="v-kicker">Why EpicTeam exists</p><h1 id="h-vision"><span class="v-line">From one prompt at a time</span> <span class="v-line">to <mark>one objective <u>over time</u></mark>.</span></h1><p class="lead">Our vision in seven frames. Each makes one point, and together they tell the story.</p></div>
   <ol class="v-frames">
     <li class="v-frame" id="vision-1"><figure class="v-pic"><svg viewBox="0 0 320 240" role="img" aria-label="A campfire burning, its flame in green."><line class="s" x1="160" y1="50" x2="160" y2="32" opacity=".45"/><line class="s" x1="199" y1="60" x2="208" y2="45" opacity=".45"/><line class="s" x1="228" y1="89" x2="243" y2="80" opacity=".45"/><line class="s" x1="238" y1="128" x2="256" y2="128" opacity=".45"/><line class="s" x1="82" y1="128" x2="64" y2="128" opacity=".45"/><line class="s" x1="92" y1="89" x2="77" y2="80" opacity=".45"/><line class="s" x1="121" y1="60" x2="112" y2="45" opacity=".45"/><path class="af" d="M160 52C180 84 206 110 200 146C196 170 180 184 160 184C140 184 122 170 120 146C118 122 136 108 142 86C150 100 154 106 160 52Z"/><path class="paper" d="M160 112C170 128 180 140 177 156C175 168 168 174 160 174C152 174 144 168 143 156C142 144 152 136 160 112Z"/><path class="s" stroke-width="7" d="M104 206L216 180M104 180L216 206"/><circle class="dot" cx="196" cy="70" r="2.5"/><circle class="dot" cx="126" cy="80" r="2"/><circle class="dot" cx="206" cy="100" r="1.8"/></svg></figure><div class="v-say"><p class="v-n">1 of 7</p><h3>AI is the technology of our lifetime.</h3><p class="v-ctx">It is on the scale of discovering fire, and its power only grows from here. Yet we still reach it in a very limited way.</p><p class="v-take">What limits us now is how we use it.</p></div></li>
     <li class="v-frame" id="vision-2"><figure class="v-pic"><svg viewBox="0 0 320 240" role="img" aria-label="A question bubble and one answer, a single dot on an empty timeline."><path class="s" d="M44 40h120a10 10 0 0 1 10 10v40a10 10 0 0 1-10 10H78l-16 14v-14H44a10 10 0 0 1-10-10V50a10 10 0 0 1 10-10z"/><text x="104" y="82" text-anchor="middle" class="big">?</text><path class="s" d="M166 108h110a10 10 0 0 1 10 10v40a10 10 0 0 1-10 10h-12v14l-16-14h-82a10 10 0 0 1-10-10v-40a10 10 0 0 1 10-10z"/><line class="s" x1="172" y1="128" x2="266" y2="128" opacity=".5"/><line class="s" x1="172" y1="140" x2="252" y2="140" opacity=".5"/><line class="s" x1="172" y1="152" x2="232" y2="152" opacity=".5"/><line class="s" x1="34" y1="212" x2="286" y2="212" stroke-dasharray="2 6" opacity=".5"/><circle class="af" cx="120" cy="212" r="6"/><text x="120" y="232" text-anchor="middle" class="lbl">one moment, then it stops</text></svg></figure><div class="v-say"><p class="v-n">2 of 7</p><h3>We still use it one prompt at a time.</h3><p class="v-ctx">You ask, it answers, and it stops. A prompt is one snapshot: one question at one moment.</p><p class="v-take">Question and answer is the bottleneck.</p></div></li>
@@ -291,6 +318,21 @@
 </main>
 
 
+<script>
+/* agent_team E97-S43: vision drawings draw themselves in once (pathLength 1 on each stroke), headline highlight sweeps in */
+(function () {
+  if (!("IntersectionObserver" in window) || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  var io = new IntersectionObserver(function (es) {
+    es.forEach(function (e) { if (!e.isIntersecting) return; var t = e.target; t.classList.add("in"); setTimeout(function () { t.classList.add("on"); }, 1600); io.unobserve(t); });
+  }, { threshold: 0.3 });
+  [].slice.call(document.querySelectorAll(".v-pic svg")).forEach(function (svg) {
+    [].slice.call(svg.querySelectorAll(".s")).forEach(function (el) { if (/^(path|line|circle|rect|ellipse|polyline|polygon)$/.test(el.tagName)) el.setAttribute("pathLength", "1"); });
+    svg.classList.add("v-draw"); io.observe(svg);
+  });
+  var head = document.querySelector(".v-head mark") && document.querySelector(".v-head");
+  if (head) { document.documentElement.classList.add("js-hl"); io.observe(head); }
+})();
+</script>
 <!-- page view counter (agent_team E46-S17, E80-S2, E85-S7): our own, no cookie, nothing about the visitor kept. It sends the post id of a link's ?s= and only the host name of the site the visitor came from, keeps ?s= on links to our other pages, and adds both to the sign-up form so an application keeps its source. --><script>(function(){var q=new URLSearchParams(location.search),s=(q.get("s")||"").slice(0,40),r="";try{r=document.referrer?new URL(document.referrer).hostname.replace(/^www\./,""):""}catch(e){}var i=new Image(1,1);i.referrerPolicy="no-referrer";i.src="https://signup.alpha9.io/api/public/pv?p=/team/&h="+encodeURIComponent(location.hostname)+(s?"&s="+encodeURIComponent(s):"")+(r?"&r="+encodeURIComponent(r):"");if(s)document.querySelectorAll("a[href]").forEach(function(a){var v=a.getAttribute("href");if(v.charAt(0)==="#")return;try{var h=new URL(v,location.href);if(h.hostname!==location.hostname||h.searchParams.has("s"))return;h.searchParams.set("s",s);a.setAttribute("href",h.pathname+h.search+h.hash)}catch(e){}});document.querySelectorAll("form[action*='signup.alpha9.io']").forEach(function(f){[["s",s],["ref",r],["site",location.hostname]].forEach(function(p){if(!p[1])return;var x=document.createElement("input");x.type="hidden";x.name=p[0];x.value=p[1];f.appendChild(x)});if(location.hostname!=="epicspine.dev")f.querySelectorAll("input[name=back]").forEach(function(b){b.value=location.origin+location.pathname})})})();</script><noscript><img src="https://signup.alpha9.io/api/public/pv?p=/team/" alt="" width="1" height="1" style="position:absolute;left:-9999px" referrerpolicy="no-referrer" loading="eager"></noscript>
 </body>
 </html>
