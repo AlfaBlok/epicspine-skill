@@ -230,10 +230,21 @@ figure { margin: 0; }
 @keyframes spin { from { transform: rotate(var(--a)); } to { transform: rotate(calc(var(--a) + var(--dir) * 360deg)); } }
 @keyframes turn { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 @keyframes green { from { stroke-dasharray: 0 100; } 92% { stroke-dasharray: 100 0; } to { stroke-dasharray: 100 0; } }
-.kr-pick { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-xs); }
-.kr-pick button { min-height: 44px; padding: 0 var(--space-md); border: 1px solid var(--rule-2); border-radius: 999px; background: var(--paper); color: var(--ink); font: 500 var(--text-sm)/1 var(--font-body); cursor: pointer; transition: background-color 0.2s var(--ease), color 0.2s var(--ease); }
-.kr-pick button:hover { background: var(--paper-2); }
-.kr-pick button[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+/* agent_team E97-S43: each key result its own coloured bar, all moving; the ring of the watch is the one picked */
+.watch-fig { --kr-c: oklch(58% 0.15 250); --kr-e: linear; }
+.watch .kr-arc { stroke: var(--kr-c); transition: stroke 0.35s var(--ease); }
+.kr-bars { display: grid; gap: 6px; width: 100%; max-width: 480px; }
+.kr-bars button { display: grid; grid-template-columns: minmax(0, 1fr) 42%; align-items: center; gap: var(--space-md); width: 100%; min-height: 44px; padding: 0 var(--space-md); border: 1px solid transparent; border-radius: var(--radius-in); background: transparent; color: var(--ink-2); font: 500 var(--text-sm)/1.2 var(--font-body); text-align: left; cursor: pointer; transition: background-color 0.2s var(--ease), border-color 0.2s var(--ease); }
+.kr-bars button:hover { background: var(--paper-2); }
+.kr-bars button[aria-pressed="true"] { border-color: var(--rule-2); background: var(--paper); color: var(--ink); }
+.kr-bar { position: relative; height: 8px; border-radius: 999px; background: var(--rule); overflow: hidden; }
+.kr-bar s { position: absolute; inset: 0 auto 0 0; width: 64%; border-radius: inherit; background: var(--c); }
+@media (prefers-reduced-motion: no-preference) {
+  .watch-fig.run .kr-bar s { animation: krfill 24s var(--e) infinite; }
+  .watch-fig.run .kr-arc { animation: krring 24s var(--kr-e) infinite; }
+}
+@keyframes krfill { from { width: 2%; background: var(--c); } 88% { width: 100%; background: var(--c); } 92%, to { width: 100%; background: var(--ok); } }
+@keyframes krring { from { stroke-dasharray: 0 100; stroke: var(--kr-c); } 88% { stroke-dasharray: 100 0; stroke: var(--kr-c); } 92%, to { stroke-dasharray: 100 0; stroke: var(--ok); } }
 .kr-now { text-align: center; color: var(--ink-2); max-width: 44ch; margin-inline: auto; margin-top: var(--space-sm); min-height: 3.2em; }
 /* the ladder: starts cheap, grows with you (no price until Jordi sets one) */
 .ladder { display: grid; gap: var(--space-md); }
@@ -297,7 +308,6 @@ figure { margin: 0; }
 #boss .engine li.lit { background: var(--accent); }
 .engine-back { max-width: 60ch; }
 .engine--5 li span, .reply span, .score li span { font-size: var(--text-md); }
-.kr-pick button { border: 0; background: var(--paper-2); }
 /* entrance: each part of a section rises once as it comes in (only when the script runs) */
 .js .rise { opacity: 0; transform: translateY(24px); transition: opacity 0.7s var(--ease), transform 0.7s var(--ease); transition-delay: var(--dl, 0ms); }
 .js .rise.in { opacity: 1; transform: none; }
@@ -440,11 +450,14 @@ figure { margin: 0; }
 <g class="g-label" data-g="replier" transform="translate(168.1 344.6)"><rect class="g-tag" x="-44.2" y="-15" width="88.4" height="30" rx="15"/><text class="g-tag-t" y="6" text-anchor="middle">Replier</text></g>
     </svg>
     <figcaption>
-      <div class="kr-pick" role="group" aria-label="Pick a key result to see which gears turn it">
-        <button type="button" data-kr="0" aria-pressed="true">100 followers</button>
-        <button type="button" data-kr="1" aria-pressed="false">3 posts a day</button>
-        <button type="button" data-kr="2" aria-pressed="false">MCP ranking</button>
-      </div>
+      <!-- agent_team E97-S43: his chat voice note vn_12365d18 (25 Nov 23:56Z): "each one is moving. It's like its own progress bar ...
+           each one is in its own color, and the big picture is one of them". Three key results, each its own bar and colour,
+           filling over time; the watch's ring is the one you pick, and turns green when it lands. -->
+      <ul class="kr-bars" role="group" aria-label="Three key results, each with its own progress bar. Pick one to see the gears that turn it">
+        <li><button type="button" data-kr="0" aria-pressed="true" style="--c:oklch(58% 0.15 250);--e:linear"><span class="kr-l">3 posts a day</span><span class="kr-bar" aria-hidden="true"><s></s></span></button></li>
+        <li><button type="button" data-kr="1" aria-pressed="false" style="--c:oklch(70% 0.15 65);--e:cubic-bezier(.6,0,.4,1)"><span class="kr-l">10 new followers a week</span><span class="kr-bar" aria-hidden="true"><s></s></span></button></li>
+        <li><button type="button" data-kr="2" aria-pressed="false" style="--c:oklch(55% 0.235 358);--e:cubic-bezier(.7,0,.9,.6)"><span class="kr-l">Top 100 in search by year end</span><span class="kr-bar" aria-hidden="true"><s></s></span></button></li>
+      </ul>
       <p class="kr-now" aria-live="polite" data-kr-now>Every gear turns toward one key result going green.</p>
     </figcaption>
   </figure>
@@ -803,17 +816,19 @@ const seen = (el, fn) => new IntersectionObserver((es) => es.forEach((e) => fn(e
   const fig = document.querySelector('[data-watch]'); if (!fig) return;
   const svg = fig.querySelector('svg'), now = fig.querySelector('[data-kr-now]'), btns = [...fig.querySelectorAll('[data-kr]')];
   const KR = [
-    { g: ['manager', 'writer', 'replier', 'publisher', 'tester'], t: 'Reach 100 followers. Now 6. The writer, publisher, replier and tester turn it.' },
-    { g: ['manager', 'writer', 'publisher'], t: 'Post three times a day, averaged over 7 days. The writer and publisher turn it.' },
-    { g: ['manager', 'research', 'writer', 'desk'], t: 'Get into the MCP ranking for digital memory. Now unknown. The researcher measures it first.' }];
+    { g: ['manager', 'writer', 'publisher'], t: 'Post three times a day. The writer and publisher turn it.' },
+    { g: ['manager', 'writer', 'replier', 'publisher', 'tester'], t: 'Win 10 new followers a week. The writer, publisher, replier and tester turn it.' },
+    { g: ['manager', 'research', 'writer', 'desk'], t: 'Reach the top 100 in search by the end of the year. The researcher measures it first.' }];
   function pick(k) {
     btns.forEach((b, n) => b.setAttribute('aria-pressed', n === k));
     svg.querySelectorAll('[data-g]').forEach((el) => el.classList.toggle('on', KR[k].g.includes(el.dataset.g)));
+    fig.style.setProperty('--kr-c', btns[k].style.getPropertyValue('--c'));
+    fig.style.setProperty('--kr-e', btns[k].style.getPropertyValue('--e'));
     now.textContent = KR[k].t;
   }
   btns.forEach((b) => b.addEventListener('click', () => pick(+b.dataset.kr)));
   pick(0);
-  seen(svg, (v) => svg.classList.toggle('run', v));
+  seen(svg, (v) => { svg.classList.toggle('run', v); fig.classList.toggle('run', v); });
 })();
 // ---- Entrance (agent_team E46-S119): heading, text, then the figure of each section rise once as they come in.
 (function () {
