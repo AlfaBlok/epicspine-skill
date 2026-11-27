@@ -1066,7 +1066,8 @@ window.replayBtn = function (btn, reset, play, ms) {
 // Without script, or without IntersectionObserver, everything simply shows.
 (function () {
   if (!("IntersectionObserver" in window)) { return; }
-  var els = document.querySelectorAll(".band .say > *, .band .show, .band .pic, .ba-side");
+  // agent_team E97-S50: the closing band (#try, its Apply for credits button) shows at once: the last screen never waits on a rise
+  var els = document.querySelectorAll(".band:not(#try) .say > *, .band .show, .band .pic, .ba-side");
   var io = new IntersectionObserver(function (es) {
     es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
   }, { rootMargin: "0px 0px -8% 0px" });
