@@ -168,38 +168,32 @@
 .credits .say { display: grid; gap: var(--space-md); }
 .credits h2 { font-size: clamp(2rem, 2.2vw + 0.8rem, 3.25rem); max-width: 20ch; }
 .credits .lead { max-width: 52ch; }
-/* agent_team E97-S49 (his strategy call 27 Nov: "Uh, we need a waitlist."): one email box beside Apply for credits */
-.wl { display: grid; gap: var(--space-sm); max-width: 36rem; padding-top: var(--space-lg); border-top: 1px solid var(--color-rule); scroll-margin-top: 5rem; }
-.wl h3 { font-size: var(--text-md); }
-.wl p { color: var(--color-ink-2); font-size: var(--text-sm); }
-.wl form { display: flex; gap: var(--space-xs); flex-wrap: wrap; }
-.wl label.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-.wl input[type=email] { flex: 1 1 14rem; min-width: 0; min-height: 48px; padding: 0 var(--space-md); border: 1px solid var(--color-rule); border-radius: var(--radius-card); background: var(--color-paper); color: var(--color-ink); font: inherit; }
-.wl input[type=email][aria-invalid=true] { border-color: var(--color-error); }
-.wl .btn { flex: 0 0 auto; }
-.wl .wl-err { color: var(--color-error); font-size: var(--text-sm); min-height: 0; }
-.wl .wl-err:empty { display: none; }
-.wl .hp { position: absolute; left: -9999px; }
-.wl .wl-note { color: var(--color-muted); font-size: var(--text-xs, 0.8rem); }
-.wl form[hidden] { display: none; }
-.wl-thanks:focus { outline: none; }
-/* agent_team E97-S50 (his strategy call 27 Nov: "a way to apply for credits"): Apply for the credits we give keeps who and their objective */
-.cr-form { display: grid; gap: var(--space-md); max-width: 36rem; scroll-margin-top: 5rem; }
-.cr-form .f { display: grid; gap: var(--space-2xs, 0.25rem); }
-.cr-form label { font-size: var(--text-sm); font-weight: 600; color: var(--color-ink); }
-.cr-form label span { font-weight: 400; color: var(--color-muted); }
-.cr-form input, .cr-form textarea { width: 100%; min-height: 48px; padding: 0.7rem var(--space-md); border: 1px solid var(--color-rule); border-radius: var(--radius-card); background: var(--color-paper); color: var(--color-ink); font: inherit; box-sizing: border-box; }
-.cr-form textarea { min-height: 7rem; resize: vertical; }
-.cr-form [aria-invalid=true] { border-color: var(--color-error); }
-.cr-form .cr-err { color: var(--color-error); font-size: var(--text-sm); }
-.cr-form .cr-err:empty { display: none; }
-.cr-form .hp { position: absolute; left: -9999px; }
-.cr-form .cr-note { color: var(--color-muted); font-size: var(--text-xs, 0.8rem); }
-.cr-form[hidden] { display: none; }
-.cr-form.cr-flash { outline: 2px solid var(--color-accent); outline-offset: 12px; border-radius: var(--radius-card); transition: outline-color 0.6s; }
-.cr-thanks { scroll-margin-top: 5rem; display: grid; gap: var(--space-xs); max-width: 36rem; padding: var(--space-lg); border: 1px solid var(--color-accent); border-radius: var(--radius-card); }
-.cr-thanks:focus { outline: none; }
-.cr-thanks p { color: var(--color-ink-2); }
+/* agent_team E97-S49 round 2 (his review, 27 Nov: "At most you can have a modal and it should be more simple ... why you want this and the email and send ... more discreet"):
+   no form on the page; Apply for credits and a small Join the waitlist link open one modal with two fields */
+.cr-act { display: flex; flex-wrap: wrap; gap: var(--space-sm); align-items: center; }
+.wl-line { color: var(--color-muted); font-size: var(--text-sm); scroll-margin-top: 6rem; }
+.wl-line a { color: var(--color-ink-2); text-decoration: underline; text-underline-offset: 3px; }
+.wl-line a:hover { color: var(--color-accent); }
+.ask { width: min(30rem, calc(100vw - 2rem)); max-height: calc(100dvh - 2rem); padding: 0; border: 1px solid var(--color-rule); border-radius: var(--radius-card); background: var(--color-paper); color: var(--color-ink); }
+.ask::backdrop { background: rgba(28, 26, 22, 0.35); }
+.ask-in { display: grid; gap: var(--space-md); padding: var(--space-lg); }
+.ask-f { display: grid; gap: var(--space-md); }
+.ask-top { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-sm); }
+.ask-top h3 { font-size: var(--text-md); }
+.ask-x { border: 0; background: none; padding: 0.25rem 0; color: var(--color-muted); font: inherit; font-size: var(--text-sm); cursor: pointer; }
+.ask-x:hover { color: var(--color-ink); }
+.ask .f { display: grid; gap: var(--space-2xs, 0.25rem); }
+.ask label { font-size: var(--text-sm); font-weight: 600; color: var(--color-ink); }
+.ask input, .ask textarea { width: 100%; min-height: 48px; padding: 0.7rem var(--space-md); border: 1px solid var(--color-rule); border-radius: var(--radius-card); background: var(--color-paper); color: var(--color-ink); font: inherit; box-sizing: border-box; }
+.ask textarea { min-height: 6rem; resize: vertical; }
+.ask [aria-invalid=true] { border-color: var(--color-error); }
+.ask-err { color: var(--color-error); font-size: var(--text-sm); }
+.ask-err:empty { display: none; }
+.ask .hp { position: absolute; left: -9999px; }
+.ask-note { color: var(--color-muted); font-size: var(--text-xs, 0.8rem); }
+.ask form[hidden], .ask-thanks[hidden] { display: none; }
+.ask-thanks p { color: var(--color-ink-2); }
+.ask-thanks:focus { outline: none; }
 .cr-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-md); grid-template-columns: repeat(3, minmax(0, 1fr)); counter-reset: cr; }
 .cr-steps li { position: relative; display: grid; gap: var(--space-xs); align-content: start; padding: var(--space-lg); border: 1px solid var(--color-rule); border-radius: var(--radius-card); background: var(--color-paper); counter-increment: cr; }
 .cr-steps li::before { content: counter(cr); font: var(--display-weight) 2rem/1 var(--font-display); color: var(--color-accent); }
@@ -863,41 +857,30 @@
         <li><h3>We read it</h3><p>Every application is read by us, and every one gets an answer by email.</p></li>
         <li><h3>We may accept you</h3><p>If it fits, your team runs on our credits and starts on your objective.</p></li>
       </ol>
-      <form class="cr-form" id="cr-form" method="post" action="https://signup.alpha9.io/api/public/testers" novalidate>
-        <div class="f"><label for="cr-email">Email</label><input type="email" id="cr-email" name="email" required maxlength="254" autocomplete="email" inputmode="email" placeholder="you@yourteam.com"></div>
-        <div class="f"><label for="cr-name">Your name <span>(optional)</span></label><input type="text" id="cr-name" name="name" maxlength="120" autocomplete="name"></div>
-        <div class="f"><label for="cr-link">Your product or site <span>(optional)</span></label><input type="text" id="cr-link" name="link" maxlength="300" autocomplete="url" inputmode="url" placeholder="yourproduct.com"></div>
-        <div class="f"><label for="cr-obj">The objective you want to work on</label><textarea id="cr-obj" name="useCase" required maxlength="1000" placeholder="Ship our beta to 50 paying users by March"></textarea></div>
-        <input type="hidden" name="offer" value="team-credits">
-        <input type="hidden" name="source" value="epicteam.app credits">
-        <input type="hidden" name="back" value="https://epicteam.app/">
-        <div class="hp" aria-hidden="true"><label for="cr-website">Leave this empty</label><input id="cr-website" name="website" tabindex="-1" autocomplete="off"></div>
-        <p class="cr-err" id="cr-err" role="alert"></p>
-        <div class="actions">
-          <button class="btn btn--primary" type="submit">Apply for credits</button>
-          <a class="btn" href="#price">Or start for €49 a month</a>
-        </div>
-        <p class="cr-note">We keep what you write on our own list, only to answer you. Ask us and we delete it.</p>
-      </form>
-      <div class="cr-thanks" id="cr-thanks" role="status" tabindex="-1" hidden><h3>Your application is in.</h3><p>Thank you. We read it ourselves and answer you by email from dm@epicteam.app.</p></div>
-      <div class="wl" id="waitlist" aria-labelledby="h-waitlist">
-        <h3 id="h-waitlist">Not ready yet? Join the waitlist.</h3>
-        <p>Leave your email and we invite you when there is a place.</p>
-        <form id="wl-form" method="post" action="https://signup.alpha9.io/api/public/testers" novalidate>
-          <label class="sr" for="wl-email">Email</label>
-          <input type="email" id="wl-email" name="email" required maxlength="254" autocomplete="email" inputmode="email" placeholder="you@yourteam.com">
-          <button class="btn" type="submit">Join the waitlist</button>
-          <input type="hidden" name="offer" value="waitlist-team">
-          <input type="hidden" name="source" value="epicteam.app waitlist">
-          <input type="hidden" name="back" value="https://epicteam.app/">
-          <div class="hp" aria-hidden="true"><label for="wl-website">Leave this empty</label><input id="wl-website" name="website" tabindex="-1" autocomplete="off"></div>
-        </form>
-        <p class="wl-err" id="wl-err" role="alert"></p>
-        <p class="wl-note">Only your email, on our own list, to write when there is a place. Ask us and we delete it.</p>
-        <div class="wl-thanks" id="wl-thanks" role="status" tabindex="-1" hidden><h3>You are on the waitlist.</h3><p>Thank you. We write to you when there is a place.</p></div>
+      <div class="cr-act">
+        <a class="btn btn--primary" href="#cr-form">Apply for credits</a>
+        <a class="btn" href="#price">Or start for €49 a month</a>
       </div>
+      <p class="wl-line" id="waitlist">Not ready yet? <a href="#waitlist" data-ask="waitlist">Join the waitlist</a></p>
     </div>
   </section>
+  <dialog class="ask" id="ask" aria-labelledby="ask-h">
+    <div class="ask-in">
+      <div class="ask-top"><h3 id="ask-h">Join the waitlist</h3><button type="button" class="ask-x" id="ask-x">Close</button></div>
+      <form id="ask-form" method="post" action="https://signup.alpha9.io/api/public/testers" novalidate class="ask-f">
+        <div class="f"><label for="ask-why">Why do you want this?</label><textarea id="ask-why" name="useCase" required maxlength="1000"></textarea></div>
+        <div class="f"><label for="ask-email">Email</label><input type="email" id="ask-email" name="email" required maxlength="254" autocomplete="email" inputmode="email" placeholder="you@yourteam.com"></div>
+        <input type="hidden" name="offer" value="waitlist-team">
+        <input type="hidden" name="source" value="epicteam.app waitlist">
+        <input type="hidden" name="back" value="https://epicteam.app/">
+        <div class="hp" aria-hidden="true"><label for="ask-website">Leave this empty</label><input id="ask-website" name="website" tabindex="-1" autocomplete="off"></div>
+        <p class="ask-err" id="ask-err" role="alert"></p>
+        <div><button class="btn btn--primary" type="submit">Send</button></div>
+        <p class="ask-note">We keep it on our own list, only to answer you. Ask us and we delete it.</p>
+      </form>
+      <div class="ask-thanks" id="ask-thanks" role="status" tabindex="-1" hidden><p id="ask-thanks-p">Thank you. We write to you when there is a place.</p></div>
+    </div>
+  </dialog>
 
   <section class="band" id="price" aria-labelledby="h-price">
     <div class="container price">
@@ -954,62 +937,46 @@
   </section>
 </main>
 <script>
-// agent_team E97-S49: the waitlist box posts to the console's sign-up list (offer waitlist-team); the console answers 303
-// back here with ?signed=1 or ?error=<code>#waitlist. A plain thank-you, nothing else; no third-party script.
+// agent_team E97-S49 round 2: no form on the page. Apply for credits (#cr-form, offer team-credits) and the small
+// Join the waitlist link (#waitlist, offer waitlist-team) open one modal: why you want this, email, Send. It posts to
+// the console's sign-up list, which answers 303 back here with ?signed=1 or ?error=<code> and #waitlist or #credits.
 (function () {
-  var form = document.getElementById('wl-form'); if (!form) return;
-  var box = document.getElementById('wl-email'), err = document.getElementById('wl-err'), thanks = document.getElementById('wl-thanks');
-  form.querySelector('input[name=back]').value = location.origin + location.pathname;
-  form.addEventListener('submit', function (e) {
-    var ok = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(box.value.trim());
-    box.setAttribute('aria-invalid', ok ? 'false' : 'true');
-    err.textContent = ok ? '' : 'Please enter a valid email.';
-    if (!ok) { e.preventDefault(); box.focus(); }
-  });
-  if (location.hash !== '#waitlist') return;
-  var q = new URLSearchParams(location.search), wl = document.getElementById('waitlist');
-  if (q.get('signed') === '1') {
-    form.hidden = true; thanks.hidden = false; wl.querySelector('.wl-note').hidden = true;
-    wl.querySelector('#h-waitlist').hidden = true; wl.querySelector('#h-waitlist + p').hidden = true;
-    thanks.focus({ preventScroll: true });
-  } else if (q.get('error')) {
-    err.textContent = q.get('error') === 'email' ? 'Please enter a valid email.' : 'That did not go through. Please try again in a moment.';
+  var dlg = document.getElementById('ask'); if (!dlg || !dlg.showModal) return;
+  var form = document.getElementById('ask-form'), why = document.getElementById('ask-why'), email = document.getElementById('ask-email');
+  var err = document.getElementById('ask-err'), thanks = document.getElementById('ask-thanks'), head = document.getElementById('ask-h');
+  var MODES = {
+    waitlist: { h: 'Join the waitlist', offer: 'waitlist-team', source: 'epicteam.app waitlist', hint: 'What would your team work on?', done: 'You are on the waitlist. We write to you when there is a place.' },
+    credits: { h: 'Apply for the credits we give', offer: 'team-credits', source: 'epicteam.app credits', hint: 'Who you are and the objective you want your team to work on', done: 'Your application is in. We read it ourselves and answer you by email.' }
+  };
+  var mode = 'waitlist';
+  function open(m, state) {
+    mode = m; var M = MODES[m];
+    head.textContent = M.h; why.placeholder = M.hint;
+    form.querySelector('input[name=offer]').value = M.offer; form.querySelector('input[name=source]').value = M.source;
+    form.hidden = state === 'done'; thanks.hidden = state !== 'done';
+    if (state === 'done') { head.textContent = 'Thank you'; document.getElementById('ask-thanks-p').textContent = M.done; }
+    if (!dlg.open) dlg.showModal();
+    (state === 'done' ? thanks : why).focus();
   }
-  wl.scrollIntoView({ block: 'start' });
-})();
-</script>
-
-<script>
-// agent_team E97-S50: Apply for the credits we give posts to the console's sign-up list (offer team-credits): who, their
-// product and the objective they want to work on. The console answers 303 back here with ?signed=1 or ?error=<code>#credits.
-(function () {
-  var form = document.getElementById('cr-form'); if (!form) return;
-  var email = document.getElementById('cr-email'), obj = document.getElementById('cr-obj'), err = document.getElementById('cr-err'), thanks = document.getElementById('cr-thanks');
   form.querySelector('input[name=back]').value = location.origin + location.pathname;
   form.addEventListener('submit', function (e) {
-    var okE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.value.trim()), okO = obj.value.trim().length > 2;
-    email.setAttribute('aria-invalid', okE ? 'false' : 'true'); obj.setAttribute('aria-invalid', okO ? 'false' : 'true');
-    err.textContent = !okE ? 'Please enter a valid email.' : !okO ? 'Please write the objective you want to work on.' : '';
-    if (!okE || !okO) { e.preventDefault(); (okE ? obj : email).focus(); }
+    var okW = why.value.trim().length > 2, okE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.value.trim());
+    why.setAttribute('aria-invalid', okW ? 'false' : 'true'); email.setAttribute('aria-invalid', okE ? 'false' : 'true');
+    err.textContent = !okW ? 'Please tell us in a few words why you want it.' : !okE ? 'Please enter a valid email.' : '';
+    if (!okW || !okE) { e.preventDefault(); (okW ? email : why).focus(); }
   });
-  // every Get credits and Apply for credits link takes you into the form: scroll to it and put the cursor in Email,
-  // the address then names the form (#cr-form), also when it already ended in #credits.
-  document.querySelectorAll('a[href="#cr-form"]').forEach(function (a) {
-    a.addEventListener('click', function (e) {
-      e.preventDefault();
-      if (location.hash !== '#cr-form') history.pushState(null, '', '#cr-form');
-      (form.hidden ? thanks : form).scrollIntoView({ behavior: 'smooth', block: 'start' });
-      setTimeout(function () { (form.hidden ? thanks : email).focus({ preventScroll: true }); }, 450);
-      if (!form.hidden) { form.classList.add('cr-flash'); setTimeout(function () { form.classList.remove('cr-flash'); }, 2400); }
-    });
+  document.getElementById('ask-x').addEventListener('click', function () { dlg.close(); });
+  dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
+  dlg.addEventListener('close', function () { if (location.hash === '#cr-form' || location.hash === '#waitlist') history.replaceState(null, '', location.pathname); });
+  document.querySelectorAll('a[href="#cr-form"], a[href="#waitlist"]').forEach(function (a) {
+    a.addEventListener('click', function (e) { e.preventDefault(); open(a.getAttribute('href') === '#waitlist' ? 'waitlist' : 'credits'); });
   });
-  if (location.hash !== '#credits' && location.hash !== '#cr-form') return;
-  var q = new URLSearchParams(location.search);
-  if (q.get('signed') === '1') { form.hidden = true; thanks.hidden = false; thanks.focus({ preventScroll: true }); }
-  else if (q.get('error')) err.textContent = q.get('error') === 'email' ? 'Please enter a valid email.' : 'That did not go through. Please try again in a moment.';
-  // arriving at #credits lands on the form itself (on a phone the heading and steps fill the first screen)
-  var land = function () { (form.hidden ? thanks : form).scrollIntoView({ block: 'start' }); };
-  land(); window.addEventListener('load', function () { setTimeout(land, 0); setTimeout(land, 500); });
+  var h = location.hash, q = new URLSearchParams(location.search);
+  var m = h === '#waitlist' ? 'waitlist' : (h === '#credits' || h === '#cr-form') ? 'credits' : null;
+  if (!m) return;
+  if (q.get('signed') === '1') open(m, 'done');
+  else if (q.get('error')) { open(m); err.textContent = q.get('error') === 'email' ? 'Please enter a valid email.' : 'That did not go through. Please try again in a moment.'; }
+  else if (h !== '#credits') open(m);
 })();
 </script>
 
