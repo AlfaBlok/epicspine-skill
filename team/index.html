@@ -184,7 +184,7 @@
 .wl form[hidden] { display: none; }
 .wl-thanks:focus { outline: none; }
 /* agent_team E97-S50 (his strategy call 27 Nov: "a way to apply for credits"): Apply for the credits we give keeps who and their objective */
-.cr-form { display: grid; gap: var(--space-md); max-width: 36rem; }
+.cr-form { display: grid; gap: var(--space-md); max-width: 36rem; scroll-margin-top: 5rem; }
 .cr-form .f { display: grid; gap: var(--space-2xs, 0.25rem); }
 .cr-form label { font-size: var(--text-sm); font-weight: 600; color: var(--color-ink); }
 .cr-form label span { font-weight: 400; color: var(--color-muted); }
@@ -196,7 +196,7 @@
 .cr-form .hp { position: absolute; left: -9999px; }
 .cr-form .cr-note { color: var(--color-muted); font-size: var(--text-xs, 0.8rem); }
 .cr-form[hidden] { display: none; }
-.cr-thanks { display: grid; gap: var(--space-xs); max-width: 36rem; padding: var(--space-lg); border: 1px solid var(--color-accent); border-radius: var(--radius-card); }
+.cr-thanks { scroll-margin-top: 5rem; display: grid; gap: var(--space-xs); max-width: 36rem; padding: var(--space-lg); border: 1px solid var(--color-accent); border-radius: var(--radius-card); }
 .cr-thanks:focus { outline: none; }
 .cr-thanks p { color: var(--color-ink-2); }
 .cr-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-md); grid-template-columns: repeat(3, minmax(0, 1fr)); counter-reset: cr; }
@@ -990,6 +990,16 @@
     email.setAttribute('aria-invalid', okE ? 'false' : 'true'); obj.setAttribute('aria-invalid', okO ? 'false' : 'true');
     err.textContent = !okE ? 'Please enter a valid email.' : !okO ? 'Please write the objective you want to work on.' : '';
     if (!okE || !okO) { e.preventDefault(); (okE ? obj : email).focus(); }
+  });
+  // every Get credits and Apply for credits link takes you into the form: scroll to it and put the cursor in Email,
+  // also when the address already ends in #credits (a plain #credits link would do nothing then).
+  document.querySelectorAll('a[href="#credits"]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      if (location.hash !== '#credits') history.pushState(null, '', '#credits');
+      (form.hidden ? thanks : form).scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setTimeout(function () { (form.hidden ? thanks : email).focus({ preventScroll: true }); }, 450);
+    });
   });
   if (location.hash !== '#credits') return;
   var q = new URLSearchParams(location.search);
