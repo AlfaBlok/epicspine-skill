@@ -39,6 +39,7 @@
 .nice-list li { display: grid; align-content: start; gap: var(--space-xs); padding: var(--space-md); border: 1px solid var(--color-rule); border-radius: var(--radius-card); background: var(--color-paper); }
 .nice-list h3 { font-size: var(--text-md); }
 .nice-list p { color: var(--color-ink-2); font-size: var(--text-sm); }
+/* agent_team E97-S55 (Jordi's yes on E97-A11, 27 Nov): Run it yourself, free sits beside the €49 console, linking the open core */
 /* agent_team E97-S28, E97-S35: the locked model (Jordi, 24 Nov: "your AI subscription, our console"): the €49 console on your own AI, and an optional server shown as one plain price per size by the minute; the seat bundles are retired */
 .price { display: grid; gap: var(--space-xl); }
 .price .say { display: grid; gap: var(--space-md); }
@@ -894,6 +895,12 @@
           <div class="amt">€49 <small>a month</small></div>
           <p class="who">Objectives, key results, inbox and every persona, on your own AI.</p>
           <a class="btn btn--primary" href="https://cloud.epicteam.app/login?next=%2F%3Fplan%3Down">Start for €49 a month</a>
+        </div>
+        <div class="plan-card" id="run-it-yourself">
+          <h3>Run it yourself, free</h3>
+          <div class="amt">€0</div>
+          <p class="who">The open core for one team, on your own server and your own AI. Free under the AGPL.</p>
+          <a class="btn" href="https://github.com/AlfaBlok/epic-team-core">Get the code</a>
         </div>
         <div class="plan-card">
           <h3>A server, if you want one</h3>
