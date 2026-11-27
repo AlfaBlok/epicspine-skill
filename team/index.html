@@ -196,6 +196,7 @@
 .cr-form .hp { position: absolute; left: -9999px; }
 .cr-form .cr-note { color: var(--color-muted); font-size: var(--text-xs, 0.8rem); }
 .cr-form[hidden] { display: none; }
+.cr-form.cr-flash { outline: 2px solid var(--color-accent); outline-offset: 12px; border-radius: var(--radius-card); transition: outline-color 0.6s; }
 .cr-thanks { scroll-margin-top: 5rem; display: grid; gap: var(--space-xs); max-width: 36rem; padding: var(--space-lg); border: 1px solid var(--color-accent); border-radius: var(--radius-card); }
 .cr-thanks:focus { outline: none; }
 .cr-thanks p { color: var(--color-ink-2); }
@@ -999,13 +1000,16 @@
       if (location.hash !== '#credits') history.pushState(null, '', '#credits');
       (form.hidden ? thanks : form).scrollIntoView({ behavior: 'smooth', block: 'start' });
       setTimeout(function () { (form.hidden ? thanks : email).focus({ preventScroll: true }); }, 450);
+      if (!form.hidden) { form.classList.add('cr-flash'); setTimeout(function () { form.classList.remove('cr-flash'); }, 2400); }
     });
   });
   if (location.hash !== '#credits') return;
   var q = new URLSearchParams(location.search);
   if (q.get('signed') === '1') { form.hidden = true; thanks.hidden = false; thanks.focus({ preventScroll: true }); }
   else if (q.get('error')) err.textContent = q.get('error') === 'email' ? 'Please enter a valid email.' : 'That did not go through. Please try again in a moment.';
-  document.getElementById('credits').scrollIntoView({ block: 'start' });
+  // arriving at #credits lands on the form itself (on a phone the heading and steps fill the first screen)
+  var land = function () { (form.hidden ? thanks : form).scrollIntoView({ block: 'start' }); };
+  land(); window.addEventListener('load', function () { setTimeout(land, 0); });
 })();
 </script>
 
