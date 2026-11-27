@@ -185,6 +185,15 @@ figure { margin: 0; }
 .join-card .privacy { font-size: var(--text-sm); color: var(--muted); }
 .hp { position: absolute; left: -9999px; }
 @media (max-width: 480px) { .join-card { padding: var(--space-lg); } .join-card .row { flex-direction: column; } }
+/* agent_team E46-S141 (Jordi's briefer call 27 Nov: "the call to action right now is get on the wait list"): every post
+   links epicsocial.app/#waitlist; the link and the hero button open one small box: email and what you launch, Send */
+.wl { width: min(28rem, calc(100vw - 2rem)); max-height: calc(100dvh - 2rem); padding: 0; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--paper); color: var(--ink); }
+.wl::backdrop { background: oklch(23% 0.035 245 / 0.35); }
+.wl .join-card { border: 0; }
+.wl-top { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-sm); }
+.wl-x { border: 0; background: none; padding: 0.25rem 0; color: var(--muted); font: inherit; font-size: var(--text-sm); cursor: pointer; }
+.wl-x:hover { color: var(--ink); }
+.wl form[hidden], .wl .thanks[hidden] { display: none; }
 /* the folded feature list (tools/feature_list.py) */
 .all-band { padding-block: var(--space-xl); border-top: 1px solid var(--rule); }
 .all-features > summary { cursor: pointer; color: var(--ink-2); padding-block: var(--space-sm); }
@@ -450,8 +459,8 @@ figure { margin: 0; }
     <h1 id="h-top">Meet your new team of social agents.</h1>
     <p class="lead">Say what you want to reach. They wake on their own and work on it day and night: they post, research, reply and test what to say. You, reader of this page, are the boss.</p>
     <div class="actions">
-      <a class="btn" href="#apply">Get free credits</a>
-      <a class="btn btn--clear" href="#screens">See the screens</a>
+      <a class="btn" href="#waitlist">Join the wait list</a>
+      <a class="btn btn--clear" href="#apply">Get free credits</a>
     </div>
   </div>
   <figure class="watch-fig" data-watch>
@@ -825,6 +834,48 @@ figure { margin: 0; }
 <!-- features:social end -->
 </details>
 </div></section>
+<!-- agent_team E46-S141: the EpicSocial wait list (offer waitlist-alpha, kept with every sign-up; a post's ?s= rides along) -->
+<dialog class="wl" id="waitlist" aria-labelledby="wl-h">
+  <div class="join-card">
+    <div class="wl-top"><h3 id="wl-h">Join the wait list</h3><button type="button" class="wl-x" id="wl-x">Close</button></div>
+    <form id="wl-form" method="post" action="https://signup.alpha9.io/api/public/testers" novalidate>
+      <label for="wl-email">Email</label>
+      <input type="email" id="wl-email" name="email" required maxlength="254" autocomplete="email" inputmode="email" placeholder="you@yourproject.com">
+      <label for="wl-what">What do you want to launch? <span class="opt">(optional)</span></label>
+      <input type="text" id="wl-what" name="useCase" maxlength="300" placeholder="yourproject.com, or one line about it">
+      <div class="err" id="wl-err" role="alert"></div>
+      <button class="btn" type="submit">Send</button>
+      <input type="hidden" name="offer" value="waitlist-alpha">
+      <input type="hidden" name="source" value="epicsocial.app waitlist">
+      <input type="hidden" name="back" value="https://epicsocial.app/">
+      <div class="hp" aria-hidden="true"><label for="wl-website">Leave this empty</label><input id="wl-website" name="website" tabindex="-1" autocomplete="off"></div>
+      <p class="privacy">Only your email, on our own list, to tell you when your place opens. Ask us and we delete it.</p>
+    </form>
+    <div class="thanks" id="wl-thanks" role="status" tabindex="-1" hidden><p>You are on the wait list. We write to you when your place opens.</p></div>
+  </div>
+</dialog>
+<script>
+// agent_team E46-S141: #waitlist (a post's link) or #join (the console's 303 back for offer waitlist-alpha) opens the box
+(function () {
+  var d = document.getElementById("waitlist"); if (!d || !d.showModal) return;
+  var f = document.getElementById("wl-form"), em = document.getElementById("wl-email"), er = document.getElementById("wl-err"), ty = document.getElementById("wl-thanks");
+  function open(done) { f.hidden = !!done; ty.hidden = !done; if (!d.open) d.showModal(); (done ? ty : em).focus(); }
+  f.querySelector("input[name=back]").value = location.origin + location.pathname;
+  f.addEventListener("submit", function (e) {
+    var ok = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em.value.trim());
+    em.setAttribute("aria-invalid", ok ? "false" : "true"); er.textContent = ok ? "" : "Please enter a valid email.";
+    if (!ok) { e.preventDefault(); em.focus(); }
+  });
+  document.getElementById("wl-x").addEventListener("click", function () { d.close(); });
+  d.addEventListener("click", function (e) { if (e.target === d) d.close(); });
+  d.addEventListener("close", function () { if (location.hash === "#waitlist" || location.hash === "#join") history.replaceState(null, "", location.pathname + location.search.replace(/[?&](signed|waitlist|error)=[^&]*/g, "").replace(/^&/, "?")); });
+  document.querySelectorAll('a[href="#waitlist"]').forEach(function (a) { a.addEventListener("click", function (e) { e.preventDefault(); open(false); }); });
+  var h = location.hash, q = new URLSearchParams(location.search);
+  if (h !== "#waitlist" && h !== "#join") return;
+  if (q.get("signed") === "1") open(true);
+  else { open(false); if (q.get("error")) er.textContent = q.get("error") === "email" ? "Please enter a valid email." : "That did not go through. Please try again in a moment."; }
+})();
+</script>
 </main>
 
 <footer class="foot"><div class="container">
