@@ -334,7 +334,7 @@
       <li class="hide-s"><a href="#screens">Screens</a></li>
       <li class="hide-s"><a href="#price">Price</a></li>
     </ul>
-    <a class="btn btn--primary btn--sm" href="#credits">Get credits</a>
+    <a class="btn btn--primary btn--sm" href="#cr-form">Get credits</a>
   </div></nav>
 </header>
 
@@ -345,7 +345,7 @@
         <h1 id="h-top">Run 20+ agents automatically aligned to accomplish your objective.</h1>
         <p class="lead">Set one objective and its key results. The team wakes, works and reports to them. Credits for startups and builders.</p>
         <div class="actions">
-          <a class="btn btn--primary" href="#credits">Apply for credits</a>
+          <a class="btn btn--primary" href="#cr-form">Apply for credits</a>
           <a class="btn" href="#fan">See how</a>
         </div>
       </div>
@@ -946,7 +946,7 @@
         <h2 id="h-try">Want it for your team?</h2>
         <p class="lead">Building a startup? Apply for the credits we give and tell us your objective. Or start the €49 console on your own AI and sign up with Google, GitHub or email.</p>
         <div class="actions">
-          <a class="btn btn--primary" href="#credits">Apply for credits</a>
+          <a class="btn btn--primary" href="#cr-form">Apply for credits</a>
           <a class="btn" href="https://cloud.epicteam.app/login?next=%2F%3Fplan%3Down">Start for €49 a month</a>
         </div>
       </div>
@@ -993,23 +993,23 @@
     if (!okE || !okO) { e.preventDefault(); (okE ? obj : email).focus(); }
   });
   // every Get credits and Apply for credits link takes you into the form: scroll to it and put the cursor in Email,
-  // also when the address already ends in #credits (a plain #credits link would do nothing then).
-  document.querySelectorAll('a[href="#credits"]').forEach(function (a) {
+  // the address then names the form (#cr-form), also when it already ended in #credits.
+  document.querySelectorAll('a[href="#cr-form"]').forEach(function (a) {
     a.addEventListener('click', function (e) {
       e.preventDefault();
-      if (location.hash !== '#credits') history.pushState(null, '', '#credits');
+      if (location.hash !== '#cr-form') history.pushState(null, '', '#cr-form');
       (form.hidden ? thanks : form).scrollIntoView({ behavior: 'smooth', block: 'start' });
       setTimeout(function () { (form.hidden ? thanks : email).focus({ preventScroll: true }); }, 450);
       if (!form.hidden) { form.classList.add('cr-flash'); setTimeout(function () { form.classList.remove('cr-flash'); }, 2400); }
     });
   });
-  if (location.hash !== '#credits') return;
+  if (location.hash !== '#credits' && location.hash !== '#cr-form') return;
   var q = new URLSearchParams(location.search);
   if (q.get('signed') === '1') { form.hidden = true; thanks.hidden = false; thanks.focus({ preventScroll: true }); }
   else if (q.get('error')) err.textContent = q.get('error') === 'email' ? 'Please enter a valid email.' : 'That did not go through. Please try again in a moment.';
   // arriving at #credits lands on the form itself (on a phone the heading and steps fill the first screen)
   var land = function () { (form.hidden ? thanks : form).scrollIntoView({ block: 'start' }); };
-  land(); window.addEventListener('load', function () { setTimeout(land, 0); });
+  land(); window.addEventListener('load', function () { setTimeout(land, 0); setTimeout(land, 500); });
 })();
 </script>
 
