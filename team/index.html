@@ -183,6 +183,22 @@
 .wl .wl-note { color: var(--color-muted); font-size: var(--text-xs, 0.8rem); }
 .wl form[hidden] { display: none; }
 .wl-thanks:focus { outline: none; }
+/* agent_team E97-S50 (his strategy call 27 Nov: "a way to apply for credits"): Apply for the credits we give keeps who and their objective */
+.cr-form { display: grid; gap: var(--space-md); max-width: 36rem; }
+.cr-form .f { display: grid; gap: var(--space-2xs, 0.25rem); }
+.cr-form label { font-size: var(--text-sm); font-weight: 600; color: var(--color-ink); }
+.cr-form label span { font-weight: 400; color: var(--color-muted); }
+.cr-form input, .cr-form textarea { width: 100%; min-height: 48px; padding: 0.7rem var(--space-md); border: 1px solid var(--color-rule); border-radius: var(--radius-card); background: var(--color-paper); color: var(--color-ink); font: inherit; box-sizing: border-box; }
+.cr-form textarea { min-height: 7rem; resize: vertical; }
+.cr-form [aria-invalid=true] { border-color: var(--color-error); }
+.cr-form .cr-err { color: var(--color-error); font-size: var(--text-sm); }
+.cr-form .cr-err:empty { display: none; }
+.cr-form .hp { position: absolute; left: -9999px; }
+.cr-form .cr-note { color: var(--color-muted); font-size: var(--text-xs, 0.8rem); }
+.cr-form[hidden] { display: none; }
+.cr-thanks { display: grid; gap: var(--space-xs); max-width: 36rem; padding: var(--space-lg); border: 1px solid var(--color-accent); border-radius: var(--radius-card); }
+.cr-thanks:focus { outline: none; }
+.cr-thanks p { color: var(--color-ink-2); }
 .cr-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-md); grid-template-columns: repeat(3, minmax(0, 1fr)); counter-reset: cr; }
 .cr-steps li { position: relative; display: grid; gap: var(--space-xs); align-content: start; padding: var(--space-lg); border: 1px solid var(--color-rule); border-radius: var(--radius-card); background: var(--color-paper); counter-increment: cr; }
 .cr-steps li::before { content: counter(cr); font: var(--display-weight) 2rem/1 var(--font-display); color: var(--color-accent); }
@@ -838,18 +854,31 @@
   <section class="band" id="credits" aria-labelledby="h-credits">
     <div class="container credits">
       <div class="say">
-        <h2 id="h-credits">Credits for startups and builders.</h2>
-        <p class="lead">We are giving EpicTeam credits to startups and small B2B teams that build. Sign up and write the objective you want to reach, with its key results. We read every one, and we may accept you.</p>
+        <h2 id="h-credits">The credits we give startups and builders.</h2>
+        <p class="lead">We give EpicTeam credits to startups and small B2B teams that build. Tell us who you are and the objective you want to work on. We read every one, and we may accept you.</p>
       </div>
-      <ol class="cr-steps" aria-label="How to get credits">
-        <li><h3>Sign up</h3><p>With Google, GitHub or email. It takes a minute.</p></li>
-        <li><h3>Write your objective</h3><p>What you want to reach, and the key results that would prove it.</p></li>
-        <li><h3>We may accept you</h3><p>If it fits, your team runs on our credits and starts on your key results.</p></li>
+      <ol class="cr-steps" aria-label="How to get the credits we give">
+        <li><h3>Write your objective</h3><p>Who you are, and the one objective you want your team to work on.</p></li>
+        <li><h3>We read it</h3><p>Every application is read by us, and every one gets an answer by email.</p></li>
+        <li><h3>We may accept you</h3><p>If it fits, your team runs on our credits and starts on your objective.</p></li>
       </ol>
-      <div class="actions">
-        <a class="btn btn--primary" href="https://cloud.epicteam.app/login?next=%2F%3Fcredits%3D1">Apply for credits</a>
-        <a class="btn" href="#price">Or start for €49 a month</a>
-      </div>
+      <form class="cr-form" id="cr-form" method="post" action="https://signup.alpha9.io/api/public/testers" novalidate>
+        <div class="f"><label for="cr-email">Email</label><input type="email" id="cr-email" name="email" required maxlength="254" autocomplete="email" inputmode="email" placeholder="you@yourteam.com"></div>
+        <div class="f"><label for="cr-name">Your name <span>(optional)</span></label><input type="text" id="cr-name" name="name" maxlength="120" autocomplete="name"></div>
+        <div class="f"><label for="cr-link">Your product or site <span>(optional)</span></label><input type="text" id="cr-link" name="link" maxlength="300" autocomplete="url" inputmode="url" placeholder="yourproduct.com"></div>
+        <div class="f"><label for="cr-obj">The objective you want to work on</label><textarea id="cr-obj" name="useCase" required maxlength="1000" placeholder="Ship our beta to 50 paying users by March"></textarea></div>
+        <input type="hidden" name="offer" value="team-credits">
+        <input type="hidden" name="source" value="epicteam.app credits">
+        <input type="hidden" name="back" value="https://epicteam.app/">
+        <div class="hp" aria-hidden="true"><label for="cr-website">Leave this empty</label><input id="cr-website" name="website" tabindex="-1" autocomplete="off"></div>
+        <p class="cr-err" id="cr-err" role="alert"></p>
+        <div class="actions">
+          <button class="btn btn--primary" type="submit">Apply for credits</button>
+          <a class="btn" href="#price">Or start for €49 a month</a>
+        </div>
+        <p class="cr-note">We keep what you write on our own list, only to answer you. Ask us and we delete it.</p>
+      </form>
+      <div class="cr-thanks" id="cr-thanks" role="status" tabindex="-1" hidden><h3>Your application is in.</h3><p>Thank you. We read it ourselves and answer you by email from dm@epicteam.app.</p></div>
       <div class="wl" id="waitlist" aria-labelledby="h-waitlist">
         <h3 id="h-waitlist">Not ready yet? Join the waitlist.</h3>
         <p>Leave your email and we invite you when there is a place.</p>
@@ -914,9 +943,9 @@
     <div class="container split">
       <div class="say">
         <h2 id="h-try">Want it for your team?</h2>
-        <p class="lead">Building a startup? Apply for credits and tell us your objective. Or start the €49 console on your own AI and sign up with Google, GitHub or email.</p>
+        <p class="lead">Building a startup? Apply for the credits we give and tell us your objective. Or start the €49 console on your own AI and sign up with Google, GitHub or email.</p>
         <div class="actions">
-          <a class="btn btn--primary" href="https://cloud.epicteam.app/login?next=%2F%3Fcredits%3D1">Apply for credits</a>
+          <a class="btn btn--primary" href="#credits">Apply for credits</a>
           <a class="btn" href="https://cloud.epicteam.app/login?next=%2F%3Fplan%3Down">Start for €49 a month</a>
         </div>
       </div>
@@ -946,6 +975,27 @@
     err.textContent = q.get('error') === 'email' ? 'Please enter a valid email.' : 'That did not go through. Please try again in a moment.';
   }
   wl.scrollIntoView({ block: 'start' });
+})();
+</script>
+
+<script>
+// agent_team E97-S50: Apply for the credits we give posts to the console's sign-up list (offer team-credits): who, their
+// product and the objective they want to work on. The console answers 303 back here with ?signed=1 or ?error=<code>#credits.
+(function () {
+  var form = document.getElementById('cr-form'); if (!form) return;
+  var email = document.getElementById('cr-email'), obj = document.getElementById('cr-obj'), err = document.getElementById('cr-err'), thanks = document.getElementById('cr-thanks');
+  form.querySelector('input[name=back]').value = location.origin + location.pathname;
+  form.addEventListener('submit', function (e) {
+    var okE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.value.trim()), okO = obj.value.trim().length > 2;
+    email.setAttribute('aria-invalid', okE ? 'false' : 'true'); obj.setAttribute('aria-invalid', okO ? 'false' : 'true');
+    err.textContent = !okE ? 'Please enter a valid email.' : !okO ? 'Please write the objective you want to work on.' : '';
+    if (!okE || !okO) { e.preventDefault(); (okE ? obj : email).focus(); }
+  });
+  if (location.hash !== '#credits') return;
+  var q = new URLSearchParams(location.search);
+  if (q.get('signed') === '1') { form.hidden = true; thanks.hidden = false; thanks.focus({ preventScroll: true }); }
+  else if (q.get('error')) err.textContent = q.get('error') === 'email' ? 'Please enter a valid email.' : 'That did not go through. Please try again in a moment.';
+  document.getElementById('credits').scrollIntoView({ block: 'start' });
 })();
 </script>
 
