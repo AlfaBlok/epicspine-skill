@@ -168,6 +168,21 @@
 .credits .say { display: grid; gap: var(--space-md); }
 .credits h2 { font-size: clamp(2rem, 2.2vw + 0.8rem, 3.25rem); max-width: 20ch; }
 .credits .lead { max-width: 52ch; }
+/* agent_team E97-S49 (his strategy call 27 Nov: "Uh, we need a waitlist."): one email box beside Apply for credits */
+.wl { display: grid; gap: var(--space-sm); max-width: 36rem; padding-top: var(--space-lg); border-top: 1px solid var(--color-rule); scroll-margin-top: 5rem; }
+.wl h3 { font-size: var(--text-md); }
+.wl p { color: var(--color-ink-2); font-size: var(--text-sm); }
+.wl form { display: flex; gap: var(--space-xs); flex-wrap: wrap; }
+.wl label.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.wl input[type=email] { flex: 1 1 14rem; min-width: 0; min-height: 48px; padding: 0 var(--space-md); border: 1px solid var(--color-rule); border-radius: var(--radius-card); background: var(--color-paper); color: var(--color-ink); font: inherit; }
+.wl input[type=email][aria-invalid=true] { border-color: var(--color-error); }
+.wl .btn { flex: 0 0 auto; }
+.wl .wl-err { color: var(--color-error); font-size: var(--text-sm); min-height: 0; }
+.wl .wl-err:empty { display: none; }
+.wl .hp { position: absolute; left: -9999px; }
+.wl .wl-note { color: var(--color-muted); font-size: var(--text-xs, 0.8rem); }
+.wl form[hidden] { display: none; }
+.wl-thanks:focus { outline: none; }
 .cr-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-md); grid-template-columns: repeat(3, minmax(0, 1fr)); counter-reset: cr; }
 .cr-steps li { position: relative; display: grid; gap: var(--space-xs); align-content: start; padding: var(--space-lg); border: 1px solid var(--color-rule); border-radius: var(--radius-card); background: var(--color-paper); counter-increment: cr; }
 .cr-steps li::before { content: counter(cr); font: var(--display-weight) 2rem/1 var(--font-display); color: var(--color-accent); }
@@ -835,6 +850,22 @@
         <a class="btn btn--primary" href="https://cloud.epicteam.app/login?next=%2F%3Fcredits%3D1">Apply for credits</a>
         <a class="btn" href="#price">Or start for €49 a month</a>
       </div>
+      <div class="wl" id="waitlist" aria-labelledby="h-waitlist">
+        <h3 id="h-waitlist">Not ready yet? Join the waitlist.</h3>
+        <p>Leave your email and we invite you when there is a place.</p>
+        <form id="wl-form" method="post" action="https://signup.alpha9.io/api/public/testers" novalidate>
+          <label class="sr" for="wl-email">Email</label>
+          <input type="email" id="wl-email" name="email" required maxlength="254" autocomplete="email" inputmode="email" placeholder="you@yourteam.com">
+          <button class="btn" type="submit">Join the waitlist</button>
+          <input type="hidden" name="offer" value="waitlist-team">
+          <input type="hidden" name="source" value="epicteam.app waitlist">
+          <input type="hidden" name="back" value="https://epicteam.app/">
+          <div class="hp" aria-hidden="true"><label for="wl-website">Leave this empty</label><input id="wl-website" name="website" tabindex="-1" autocomplete="off"></div>
+        </form>
+        <p class="wl-err" id="wl-err" role="alert"></p>
+        <p class="wl-note">Only your email, on our own list, to write when there is a place. Ask us and we delete it.</p>
+        <div class="wl-thanks" id="wl-thanks" role="status" tabindex="-1" hidden><h3>You are on the waitlist.</h3><p>Thank you. We write to you when there is a place.</p></div>
+      </div>
     </div>
   </section>
 
@@ -892,6 +923,31 @@
     </div>
   </section>
 </main>
+<script>
+// agent_team E97-S49: the waitlist box posts to the console's sign-up list (offer waitlist-team); the console answers 303
+// back here with ?signed=1 or ?error=<code>#waitlist. A plain thank-you, nothing else; no third-party script.
+(function () {
+  var form = document.getElementById('wl-form'); if (!form) return;
+  var box = document.getElementById('wl-email'), err = document.getElementById('wl-err'), thanks = document.getElementById('wl-thanks');
+  form.querySelector('input[name=back]').value = location.origin + location.pathname;
+  form.addEventListener('submit', function (e) {
+    var ok = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(box.value.trim());
+    box.setAttribute('aria-invalid', ok ? 'false' : 'true');
+    err.textContent = ok ? '' : 'Please enter a valid email.';
+    if (!ok) { e.preventDefault(); box.focus(); }
+  });
+  if (location.hash !== '#waitlist') return;
+  var q = new URLSearchParams(location.search), wl = document.getElementById('waitlist');
+  if (q.get('signed') === '1') {
+    form.hidden = true; thanks.hidden = false; wl.querySelector('.wl-note').hidden = true;
+    wl.querySelector('#h-waitlist').hidden = true; wl.querySelector('#h-waitlist + p').hidden = true;
+    thanks.focus({ preventScroll: true });
+  } else if (q.get('error')) {
+    err.textContent = q.get('error') === 'email' ? 'Please enter a valid email.' : 'That did not go through. Please try again in a moment.';
+  }
+  wl.scrollIntoView({ block: 'start' });
+})();
+</script>
 
 <footer class="foot">
   <div class="container">
