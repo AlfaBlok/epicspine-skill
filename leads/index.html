@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Epic Leads: your next customers, one call at a time</title>
+<meta name="description" content="Epic Leads runs your sales cycle one person at a time: who fits, the first letter or email, a phone our voice agent answers, and the qualified lead with a meeting booked. 49 euros a month.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Epic Leads">
+<meta property="og:title" content="Epic Leads: your next customers, one call at a time">
+<meta property="og:description" content="Who fits, the first touch, a phone that answers, the lead with a meeting booked.">
+<meta name="theme-color" content="#f6f2e9">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231e3a8a'/%3E%3Cpath d='M11 8v16h11' stroke='%23f6f2e9' stroke-width='3.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<!-- agent_team E108-S20, iteration 2. Jordi 28 Nov 11:37Z, voice note vn_5d848463 on the card:
+     "Epic Lit is an entire new landing page ... It's a new product, bro."
+     Epic Leads' own landing page, in the paper family (agent_team paper-deck) with its own blue and letter L.
+     Facts only from agent_team docs/plans/epic-leads/README.md: the five steps, the country rules, the price,
+     the first campaign (30 Spanish dental clinics by posted letter, nothing sent). The call and the lead are marked as examples. -->
+<style>
+@font-face { font-family: "Newsreader"; font-weight: 400; font-display: swap; src: url("fonts/newsreader-400.ttf") format("truetype"); }
+@font-face { font-family: "Newsreader"; font-weight: 500; font-display: swap; src: url("fonts/newsreader-500.ttf") format("truetype"); }
+@font-face { font-family: "Instrument Sans"; font-weight: 400; font-display: swap; src: url("fonts/instrument-sans-400.ttf") format("truetype"); }
+@font-face { font-family: "Instrument Sans"; font-weight: 500; font-display: swap; src: url("fonts/instrument-sans-500.ttf") format("truetype"); }
+@font-face { font-family: "Instrument Sans"; font-weight: 600; font-display: swap; src: url("fonts/instrument-sans-600.ttf") format("truetype"); }
+:root {
+  color-scheme: light;
+  --bg: #f6f2e9;
+  --stage: #ece6d8;
+  --ink: #17201f;
+  --muted: #4b5552;
+  --faint: #8c928d;
+  --line: #cdc5b3;
+  --accent: #1e3a8a;
+  --accent-soft: #d9e0f3;
+  --on-accent: #f6f2e9;
+  --night: #121a2e;
+  --night-ink: #eef0f6;
+  --night-muted: #aab3c8;
+  --serif: "Newsreader", Georgia, serif;
+  --sans: "Instrument Sans", system-ui, sans-serif;
+  --max: 72rem;
+  --edge: clamp(1rem, 4vw, 3rem);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--ink); overflow-x: clip; }
+html { scroll-behavior: smooth; }
+body { font: 400 1.125rem/1.55 var(--serif); -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-underline-offset: 3px; }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.in { max-width: var(--max); margin: 0 auto; }
+h1, h2 { font-weight: 400; letter-spacing: -0.015em; margin: 0 0 1rem; text-wrap: balance; }
+h1 { font-size: clamp(2.6rem, 6vw, 5rem); line-height: 1.03; max-width: 13ch; }
+h2 { font-size: clamp(1.9rem, 3.6vw, 3rem); line-height: 1.1; max-width: 20ch; }
+h3 { font: 500 1.25rem/1.25 var(--serif); margin: 0 0 0.4rem; }
+p { margin: 0 0 1rem; }
+.lede { font-size: clamp(1.15rem, 1.7vw, 1.35rem); color: var(--muted); max-width: 38ch; }
+.small { font: 400 0.95rem/1.5 var(--sans); color: var(--muted); }
+.kicker { font: 500 0.85rem var(--sans); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin: 0 0 1rem; }
+
+/* nav */
+.nav { position: sticky; top: 0; z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); }
+.nav .in { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.75rem var(--edge); }
+.brand { display: flex; align-items: center; gap: 0.6rem; font: 600 1.05rem var(--sans); text-decoration: none; }
+.mark { width: 30px; height: 30px; flex: none; }
+.links { display: flex; gap: 1.5rem; font: 400 0.95rem var(--sans); }
+.links a { text-decoration: none; color: var(--muted); }
+.btn { display: inline-block; font: 500 1rem var(--sans); text-decoration: none; padding: 0.8rem 1.3rem; border-radius: 999px; background: var(--accent); color: var(--on-accent); }
+.btn.sm { padding: 0.5rem 1rem; font-size: 0.92rem; }
+.btn.ghost { background: none; color: var(--ink); border: 1px solid var(--ink); }
+@media (max-width: 760px) { .links { display: none; } }
+
+/* bands */
+.band { padding: clamp(4rem, 9vw, 7rem) var(--edge); border-bottom: 1px solid var(--line); }
+.band.alt { background: var(--stage); }
+.band.dark { background: var(--night); color: var(--night-ink); border-color: var(--night); }
+.band.dark .lede, .band.dark .small { color: var(--night-muted); }
+.band.dark .kicker { color: #9fb3ec; }
+.split { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(2rem, 5vw, 4.5rem); align-items: center; }
+@media (max-width: 860px) { .split { grid-template-columns: minmax(0, 1fr); } }
+
+/* hero */
+.hero { padding-top: clamp(3rem, 7vw, 5.5rem); }
+.cta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.25rem; margin-top: 1.5rem; }
+.cycle { width: 100%; max-width: 560px; height: auto; display: block; margin: 0 auto; }
+.cycle text { font-family: var(--sans); }
+.cycle .ring { fill: none; stroke: var(--line); stroke-width: 1.5; }
+.cycle .node rect { fill: var(--bg); stroke: var(--ink); stroke-width: 1.2; }
+.cycle .node.on rect { fill: var(--accent); stroke: var(--accent); }
+.cycle .node.on text { fill: var(--on-accent); }
+.cycle .t { font-size: 15px; font-weight: 500; fill: var(--ink); }
+.cycle .s { font-size: 12px; fill: var(--muted); }
+.cycle .node.on .s { fill: var(--accent-soft); }
+.cycle .mid1 { font-family: var(--serif); font-size: 22px; fill: var(--ink); }
+.cycle .mid2 { font-size: 12.5px; fill: var(--muted); }
+.cycle .dot { fill: var(--accent); }
+
+/* steps */
+.steps { list-style: none; padding: 0; margin: 2.5rem 0 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1.5rem; border-top: 1px solid var(--ink); counter-reset: s; }
+.steps li { padding-top: 1.25rem; font: 400 0.97rem/1.5 var(--sans); color: var(--muted); counter-increment: s; }
+.steps li::before { content: counter(s); display: block; font: 500 0.85rem var(--sans); color: var(--accent); margin-bottom: 0.6rem; }
+.steps b { display: block; font: 500 1.25rem/1.2 var(--serif); color: var(--ink); margin-bottom: 0.4rem; }
+@media (max-width: 960px) { .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .steps { grid-template-columns: minmax(0, 1fr); } }
+
+/* compare */
+.compare { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; margin-top: 2.5rem; }
+.way { border: 1px solid var(--ink); border-radius: 14px; padding: 1.5rem; background: var(--bg); }
+.way .flag { font: 500 0.85rem var(--sans); color: var(--muted); margin: 0 0 0.75rem; }
+.way h3 { font-size: 1.5rem; }
+.way ul { margin: 0.75rem 0 0; padding: 0; list-style: none; font: 400 0.97rem/1.5 var(--sans); color: var(--muted); }
+.way li { padding: 0.45rem 0; border-top: 1px solid var(--line); }
+@media (max-width: 700px) { .compare { grid-template-columns: minmax(0, 1fr); } }
+
+/* phone call */
+.phone { width: min(330px, 100%); margin: 0 auto; border: 1px solid #2c3754; border-radius: 34px; padding: 1.25rem 1rem 1.5rem; background: #0b1120; }
+.phone .top { text-align: center; font: 400 0.85rem var(--sans); color: var(--night-muted); margin-bottom: 0.25rem; }
+.phone .who { text-align: center; font: 500 1.25rem var(--serif); color: var(--night-ink); margin-bottom: 0.2rem; }
+.phone .time { text-align: center; font: 400 0.8rem var(--sans); color: #9fb3ec; margin-bottom: 1rem; }
+.bars { display: flex; justify-content: center; gap: 3px; height: 22px; align-items: center; margin-bottom: 1rem; }
+.bars i { width: 3px; border-radius: 2px; background: #9fb3ec; height: 30%; animation: talk 1.1s ease-in-out infinite; }
+.bars i:nth-child(2n) { animation-delay: .15s } .bars i:nth-child(3n) { animation-delay: .3s } .bars i:nth-child(5n) { animation-delay: .45s }
+@keyframes talk { 50% { height: 100%; } }
+.line { font: 400 0.9rem/1.45 var(--sans); padding: 0.6rem 0.75rem; border-radius: 12px; margin: 0.45rem 0; max-width: 88%; opacity: 0; transform: translateY(6px); transition: opacity .5s, transform .5s; }
+.line.show { opacity: 1; transform: none; }
+.line.them { background: #1c2742; color: var(--night-ink); }
+.line.us { background: var(--accent); color: var(--on-accent); margin-left: auto; }
+.example { font: 400 0.8rem var(--sans); color: var(--faint); text-align: center; margin-top: 0.9rem; }
+.band.dark .example { color: #7f89a3; }
+
+/* lead card */
+.lead { border: 1px solid var(--ink); border-radius: 16px; background: var(--bg); padding: 1.5rem; max-width: 440px; margin: 0 auto; font-family: var(--sans); }
+.lead .row1 { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
+.lead .name { font: 500 1.35rem var(--serif); }
+.pill { font: 500 0.8rem var(--sans); padding: 0.2rem 0.6rem; border-radius: 999px; background: var(--accent); color: var(--on-accent); white-space: nowrap; }
+.lead dl { margin: 1rem 0 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.5rem 1rem; font-size: 0.95rem; }
+.lead dt { color: var(--faint); }
+.lead dd { margin: 0; color: var(--ink); }
+.trail { margin-top: 1.1rem; padding-top: 1rem; border-top: 1px solid var(--line); display: flex; gap: 0.4rem; flex-wrap: wrap; font-size: 0.8rem; color: var(--muted); }
+.trail span { border: 1px solid var(--line); border-radius: 999px; padding: 0.15rem 0.55rem; }
+.trail span.on { border-color: var(--accent); color: var(--accent); }
+
+/* numbers */
+.nums { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; margin-top: 2.5rem; border-top: 1px solid var(--ink); }
+.nums div { padding-top: 1.25rem; font: 400 0.97rem/1.5 var(--sans); color: var(--muted); }
+.nums b { display: block; font: 400 clamp(2.4rem, 5vw, 3.6rem)/1 var(--serif); color: var(--accent); margin-bottom: 0.5rem; }
+@media (max-width: 640px) { .nums { grid-template-columns: minmax(0, 1fr); } }
+
+/* price */
+.price { text-align: center; }
+.price h2, .price .lede { margin-left: auto; margin-right: auto; }
+.amount { font: 400 clamp(3.4rem, 8vw, 5.5rem)/1 var(--serif); margin: 1.5rem 0 0.25rem; }
+.amount span { font: 400 1.1rem var(--sans); color: var(--muted); }
+.price .cta { justify-content: center; }
+.includes { list-style: none; padding: 0; margin: 2rem auto 0; max-width: 34rem; text-align: left; font: 400 1rem/1.5 var(--sans); color: var(--muted); }
+.includes li { padding: 0.6rem 0; border-top: 1px solid var(--line); }
+.includes li::before { content: "✓"; color: var(--accent); margin-right: 0.6rem; }
+
+.foot { padding: 2.5rem var(--edge); font: 400 0.9rem var(--sans); color: var(--muted); }
+.foot .in { display: flex; flex-wrap: wrap; gap: 0.75rem 2rem; justify-content: space-between; }
+@media (prefers-reduced-motion: reduce) { .bars i { animation: none; } .line { opacity: 1; transform: none; transition: none; } }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="in">
+    <a class="brand" href="#top" aria-label="Epic Leads home">
+      <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#1e3a8a"/><path d="M11 8v16h11" stroke="#f6f2e9" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Epic Leads
+    </a>
+    <nav class="links" aria-label="Sections">
+      <a href="#how">How it works</a>
+      <a href="#phone">The call</a>
+      <a href="#first">Our first campaign</a>
+      <a href="#price">Price</a>
+    </nav>
+    <a class="btn sm" href="https://cloud.epicteam.app/leads">Start</a>
+  </div>
+</header>
+
+<main>
+<section class="band hero" id="top" aria-labelledby="h-top">
+  <div class="in split">
+    <div>
+      <p class="kicker">Epic Leads</p>
+      <h1 id="h-top">Your next customers, one call at a time.</h1>
+      <p class="lede">Tell us what you sell and who it is for. Epic Leads finds who fits, makes the first touch, answers their call with a voice agent and hands you the lead with a meeting booked.</p>
+      <div class="cta">
+        <a class="btn" href="https://cloud.epicteam.app/leads">Start Epic Leads</a>
+        <span class="small">49 euros a month</span>
+      </div>
+    </div>
+    <figure style="margin:0" aria-label="The Epic Leads cycle: shortlist, first touch, a phone that answers, the lead, the person, and back to the shortlist">
+      <svg class="cycle" viewBox="0 0 560 520" role="img" aria-hidden="true">
+        <circle class="ring" cx="280" cy="260" r="190"/>
+        <circle class="dot" r="6" id="dot" cx="280" cy="70"/>
+        <g class="node on" data-i="0" transform="translate(280 70)"><rect x="-78" y="-30" width="156" height="60" rx="12"/><text class="t" text-anchor="middle" y="-4">Shortlist</text><text class="s" text-anchor="middle" y="15">who fits</text></g>
+        <g class="node" data-i="1" transform="translate(461 201)"><rect x="-78" y="-30" width="156" height="60" rx="12"/><text class="t" text-anchor="middle" y="-4">First touch</text><text class="s" text-anchor="middle" y="15">a letter or an email</text></g>
+        <g class="node" data-i="2" transform="translate(392 414)"><rect x="-78" y="-30" width="156" height="60" rx="12"/><text class="t" text-anchor="middle" y="-4">The call</text><text class="s" text-anchor="middle" y="15">our voice agent answers</text></g>
+        <g class="node" data-i="3" transform="translate(168 414)"><rect x="-78" y="-30" width="156" height="60" rx="12"/><text class="t" text-anchor="middle" y="-4">The lead</text><text class="s" text-anchor="middle" y="15">a meeting booked</text></g>
+        <g class="node" data-i="4" transform="translate(99 201)"><rect x="-78" y="-30" width="156" height="60" rx="12"/><text class="t" text-anchor="middle" y="-4">The person</text><text class="s" text-anchor="middle" y="15">one record, kept</text></g>
+        <text class="mid1" x="280" y="255" text-anchor="middle">One campaign</text>
+        <text class="mid2" x="280" y="280" text-anchor="middle">one product, one audience</text>
+      </svg>
+    </figure>
+  </div>
+</section>
+
+<section class="band alt" id="how" aria-labelledby="h-how">
+  <div class="in">
+    <p class="kicker">How it works</p>
+    <h2 id="h-how">Five steps, run for you, every week.</h2>
+    <p class="lede">Each campaign sells one product to one audience. What each call teaches goes into the next shortlist.</p>
+    <ol class="steps">
+      <li><b>Shortlist</b>Every business that fits your audience, each with the public source that shows it.</li>
+      <li><b>First touch</b>A short email, or a posted letter where email is not allowed, with your own phone number on it.</li>
+      <li><b>The call</b>When they call, our voice agent answers, explains your offer and asks what they need.</li>
+      <li><b>The lead</b>The ones who want more get a meeting in your calendar. You see what they said.</li>
+      <li><b>The person</b>One record per person, so the next touch starts where the last one ended.</li>
+    </ol>
+  </div>
+</section>
+
+<section class="band" id="touch" aria-labelledby="h-touch">
+  <div class="in">
+    <p class="kicker">The first touch</p>
+    <h2 id="h-touch">It follows each country's rules.</h2>
+    <p class="lede">Some countries allow a first email to a company. Others do not. Epic Leads picks the channel the law allows.</p>
+    <div class="compare">
+      <div class="way">
+        <p class="flag">Where email to companies is allowed</p>
+        <h3>An email</h3>
+        <ul>
+          <li>The Netherlands, Sweden, Norway, Finland</li>
+          <li>Sent to the company address, with a way to opt out</li>
+          <li>Your phone number and a page about your offer</li>
+        </ul>
+      </div>
+      <div class="way">
+        <p class="flag">Where a first email is barred</p>
+        <h3>A posted letter</h3>
+        <ul>
+          <li>Spain and Denmark</li>
+          <li>Printed and posted to the business address</li>
+          <li>A short code on the letter tells us who called</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band dark" id="phone" aria-labelledby="h-phone">
+  <div class="in split">
+    <div>
+      <p class="kicker">The call</p>
+      <h2 id="h-phone">Every call is answered, day or night.</h2>
+      <p class="lede">Your number rings through to our voice agent. It knows your offer, answers questions in the caller's language and books a meeting with the ones who are ready.</p>
+      <p class="small">You read every call afterwards: who called, what they asked, what was agreed.</p>
+    </div>
+    <div>
+      <div class="phone" id="call" aria-label="Example call">
+        <div class="top">Incoming call</div>
+        <div class="who">A dental clinic, Valencia</div>
+        <div class="time">Answered by Epic Leads</div>
+        <div class="bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="line them">Hola, we got your letter about the voice receptionist.</div>
+        <div class="line us">Thanks for calling. It answers your clinic's phone when the front desk is busy. How many calls do you miss in a week?</div>
+        <div class="line them">Quite a few on Mondays. How does a trial work?</div>
+        <div class="line us">I can book you fifteen minutes with our team. Is Tuesday at ten good?</div>
+      </div>
+      <p class="example">An example of how a call goes</p>
+    </div>
+  </div>
+</section>
+
+<section class="band alt" id="lead" aria-labelledby="h-lead">
+  <div class="in split">
+    <div>
+      <p class="kicker">The lead</p>
+      <h2 id="h-lead">A meeting in your calendar, with the context.</h2>
+      <p class="lede">Each lead arrives with who they are, what they need, what they asked on the call and the meeting time. The record stays, so the next touch starts where this one ended.</p>
+    </div>
+    <div>
+      <div class="lead" aria-label="Example lead">
+        <div class="row1"><span class="name">A dental clinic, Valencia</span><span class="pill">Meeting Tue 10:00</span></div>
+        <dl>
+          <dt>Who</dt><dd>The owner, a dentist</dd>
+          <dt>Need</dt><dd>Misses calls on Mondays</dd>
+          <dt>Asked</dt><dd>How the trial works and the price</dd>
+          <dt>From</dt><dd>Letter, code on the page</dd>
+        </dl>
+        <div class="trail" aria-label="Steps done"><span class="on">Listed</span><span class="on">Letter</span><span class="on">Called</span><span class="on">Lead</span><span>Customer</span></div>
+      </div>
+      <p class="example">An example lead</p>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="first" aria-labelledby="h-first">
+  <div class="in">
+    <p class="kicker">Our first campaign</p>
+    <h2 id="h-first">Our first customer is us.</h2>
+    <p class="lede">We use Epic Leads to sell our own voice receptionist to dental clinics in Spain, by posted letter. This is where it stands today.</p>
+    <div class="nums">
+      <div><b>30</b>owner-run dental clinics in Spain on the shortlist, each with its public source</div>
+      <div><b>1</b>letter, word for word, with a phone number our voice agent answers</div>
+      <div><b>0</b>letters posted so far. We show the numbers here as they move.</div>
+    </div>
+  </div>
+</section>
+
+<section class="band alt price" id="price" aria-labelledby="h-price">
+  <div class="in">
+    <p class="kicker">Price</p>
+    <h2 id="h-price">One price, one campaign running.</h2>
+    <div class="amount">49 euros <span>a month</span></div>
+    <div class="cta">
+      <a class="btn" href="https://cloud.epicteam.app/leads">Start Epic Leads</a>
+    </div>
+    <ul class="includes">
+      <li>Your own Epic Leads workspace</li>
+      <li>The shortlist, the first touch and the call, for one product and one audience</li>
+      <li>Every lead and every call, readable by you</li>
+      <li>One login with EpicTeam and EpicSocial</li>
+    </ul>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="in">
+    <span>Epic Leads, from the makers of <a href="https://epicteam.app/">EpicTeam</a> and <a href="https://epicsocial.app/">EpicSocial</a>.</span>
+    <a href="https://cloud.epicteam.app/leads">Sign in</a>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // The cycle: a dot travels the ring and lights each step in turn.
+  var nodes = document.querySelectorAll(".cycle .node");
+  var dot = document.getElementById("dot");
+  var cx = 280, cy = 260, r = 190, start = -Math.PI / 2, lap = 10000;
+  function frame(t) {
+    var p = (t % lap) / lap, a = start + p * 2 * Math.PI;
+    dot.setAttribute("cx", (cx + r * Math.cos(a)).toFixed(1));
+    dot.setAttribute("cy", (cy + r * Math.sin(a)).toFixed(1));
+    var i = Math.floor(((p + 0.1) % 1) * 5);
+    nodes.forEach(function (n, k) { n.classList.toggle("on", k === i); });
+    requestAnimationFrame(frame);
+  }
+  if (!reduce) requestAnimationFrame(frame);
+  // The call: lines appear one by one when it comes into view.
+  var lines = document.querySelectorAll("#call .line");
+  function play() { lines.forEach(function (l, k) { setTimeout(function () { l.classList.add("show"); }, 400 + k * 1100); }); }
+  if (reduce || !("IntersectionObserver" in window)) { lines.forEach(function (l) { l.classList.add("show"); }); return; }
+  var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { play(); io.disconnect(); } }); }, { threshold: 0.3 });
+  io.observe(document.getElementById("call"));
+})();
+</script>
+</body>
+</html>
