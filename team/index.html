@@ -53,6 +53,8 @@
 .plan-card .amt small { font: 400 var(--text-md)/1.3 var(--font-body); letter-spacing: 0; color: var(--color-muted); }
 .plan-card .who { color: var(--color-ink-2); }
 .plan-card .btn { justify-self: start; margin-top: var(--space-xs); }
+.plan-card .install { margin: 0; padding: var(--space-sm); border: 1px solid var(--color-rule); border-radius: 6px; font: 400 0.8rem/1.45 ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--color-ink); overflow-wrap: anywhere; white-space: normal; user-select: all; }
+.plan-card .install-note { font-size: var(--text-sm, 0.875rem); color: var(--color-muted); }
 .rates { width: 100%; border-collapse: collapse; font-size: var(--text-sm); font-variant-numeric: tabular-nums; }
 .rates th { text-align: left; font-weight: 400; color: var(--color-muted); padding: 0 0 var(--space-xs); }
 .rates td { padding: var(--space-xs) 0; border-top: 1px solid var(--color-rule); }
@@ -900,7 +902,9 @@
           <h3>Run it yourself, free</h3>
           <div class="amt">€0</div>
           <p class="who">The open core for one team, on your own server and your own AI. Free under the AGPL.</p>
-          <a class="btn" href="https://github.com/AlfaBlok/epic-team-core">Get the code</a>
+          <pre class="install" id="install-command" aria-label="The install command">curl -fsSL https://raw.githubusercontent.com/AlfaBlok/epic-team-core/main/install.sh | sudo bash</pre>
+          <p class="install-note">One command on a fresh Ubuntu or Debian server. It asks for your AI key in a hidden prompt and ends with your team&rsquo;s first wake.</p>
+          <a class="btn" href="https://github.com/AlfaBlok/epic-team-core#install-on-your-server">Get the code</a>
         </div>
         <div class="plan-card">
           <h3>A server, if you want one</h3>
